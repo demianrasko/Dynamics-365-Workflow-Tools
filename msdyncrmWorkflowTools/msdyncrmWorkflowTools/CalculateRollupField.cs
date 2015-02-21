@@ -1,0 +1,73 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Activities;
+using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Workflow;
+using Microsoft.Crm.Sdk.Messages;
+using Microsoft.Xrm.Sdk.Metadata.Query;
+using Microsoft.Xrm.Sdk.Query;
+using Microsoft.Xrm.Sdk.Messages;
+using Microsoft.Xrm.Sdk.Metadata;
+using msdyncrmWorkflowTools;
+
+
+namespace CalculateRollupField_WA
+{
+
+   
+    public class CalculateRollupField : CodeActivity
+    {
+        #region "Parameter Definition"
+        [RequiredArgument]
+        [Input("FieldName")]
+        [Default("")]        
+        public InArgument<String> FieldName { get; set; }
+
+        [RequiredArgument]
+        [Input("Parent Record URL")]
+        [ReferenceTarget("")]
+        public InArgument<String> ParentRecordURL { get; set; }
+        #endregion
+
+        protected override void Execute(CodeActivityContext executionContext)
+        {
+
+            #region "Load CRM Service from context"
+            ITracingService tracingService = executionContext.GetExtension<ITracingService>();
+            IWorkflowContext context = executionContext.GetExtension<IWorkflowContext>();
+            IOrganizationServiceFactory serviceFactory = executionContext.GetExtension<IOrganizationServiceFactory>();
+            IOrganizationService service = serviceFactory.CreateOrganizationService(context.UserId);
+            Common objCommon = new Common();
+            tracingService.Trace("Load CRM Service from context --- OK");
+            #endregion
+
+            #region "Read Parameters"
+            String _FieldName = this.FieldName.Get(executionContext);
+            String _ParentRecordURL = this.ParentRecordURL.Get(executionContext);
+            if (_ParentRecordURL == null || _ParentRecordURL == "")
+            {
+                return;
+            }
+            string[] urlParts = _ParentRecordURL.Split("?".ToArray());
+            string[] urlParams=urlParts[1].Split("&".ToCharArray());
+            string ParentObjectTypeCode=urlParams[0].Replace("etc=","");
+            string ParentId = urlParams[1].Replace("id=", "");
+            tracingService.Trace("ParentObjectTypeCode=" + ParentObjectTypeCode + "--ParentId=" + ParentId);
+            #endregion
+
+
+            #region "CalculateRollupField Execution"
+            string ParentEntityName = objCommon.sGetEntityNameFromCode(ParentObjectTypeCode, service);
+            CalculateRollupFieldRequest calculateRollup = new CalculateRollupFieldRequest();
+            calculateRollup.FieldName = _FieldName;
+            calculateRollup.Target = new EntityReference(ParentEntityName, new Guid(ParentId));
+            CalculateRollupFieldResponse resp = (CalculateRollupFieldResponse)service.Execute(calculateRollup);
+            #endregion
+            
+        }
+
+        
+    }
+}
