@@ -13,7 +13,7 @@ using Microsoft.Xrm.Sdk.Metadata;
 using msdyncrmWorkflowTools;
 
 
-namespace CalculateRollupField_WA
+namespace msdyncrmWorkflowTools
 {
 
    

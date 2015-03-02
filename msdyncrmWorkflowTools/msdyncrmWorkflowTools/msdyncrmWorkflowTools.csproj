@@ -71,6 +71,7 @@
     <Compile Include="CalculateRollupField.cs" />
     <Compile Include="Common.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SharingRecord.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="codes.snk" />
