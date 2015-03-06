@@ -35,12 +35,9 @@ namespace msdyncrmWorkflowTools
         {
 
             #region "Load CRM Service from context"
-            ITracingService tracingService = executionContext.GetExtension<ITracingService>();
-            IWorkflowContext context = executionContext.GetExtension<IWorkflowContext>();
-            IOrganizationServiceFactory serviceFactory = executionContext.GetExtension<IOrganizationServiceFactory>();
-            IOrganizationService service = serviceFactory.CreateOrganizationService(context.UserId);
-            Common objCommon = new Common();
-            tracingService.Trace("Load CRM Service from context --- OK");
+
+            Common objCommon = new Common(executionContext);
+            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
@@ -54,16 +51,16 @@ namespace msdyncrmWorkflowTools
             string[] urlParams=urlParts[1].Split("&".ToCharArray());
             string ParentObjectTypeCode=urlParams[0].Replace("etc=","");
             string ParentId = urlParams[1].Replace("id=", "");
-            tracingService.Trace("ParentObjectTypeCode=" + ParentObjectTypeCode + "--ParentId=" + ParentId);
+            objCommon.tracingService.Trace("ParentObjectTypeCode=" + ParentObjectTypeCode + "--ParentId=" + ParentId);
             #endregion
 
 
             #region "CalculateRollupField Execution"
-            string ParentEntityName = objCommon.sGetEntityNameFromCode(ParentObjectTypeCode, service);
+            string ParentEntityName = objCommon.sGetEntityNameFromCode(ParentObjectTypeCode, objCommon.service);
             CalculateRollupFieldRequest calculateRollup = new CalculateRollupFieldRequest();
             calculateRollup.FieldName = _FieldName;
             calculateRollup.Target = new EntityReference(ParentEntityName, new Guid(ParentId));
-            CalculateRollupFieldResponse resp = (CalculateRollupFieldResponse)service.Execute(calculateRollup);
+            CalculateRollupFieldResponse resp = (CalculateRollupFieldResponse)objCommon.service.Execute(calculateRollup);
             #endregion
             
         }
