@@ -94,12 +94,9 @@ namespace msdyncrmWorkflowTools
 
 
             #region "Load CRM Service from context"
-            ITracingService tracingService = executionContext.GetExtension<ITracingService>();
-            IWorkflowContext context = executionContext.GetExtension<IWorkflowContext>();
-            IOrganizationServiceFactory serviceFactory = executionContext.GetExtension<IOrganizationServiceFactory>();
-            IOrganizationService service = serviceFactory.CreateOrganizationService(null);
-            Common objCommon = new Common();
-            tracingService.Trace("Load CRM Service from context --- OK");
+
+            Common objCommon = new Common(executionContext);
+            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
@@ -112,7 +109,7 @@ namespace msdyncrmWorkflowTools
             string[] urlParams = urlParts[1].Split("&".ToCharArray());
             string objectTypeCode = urlParams[0].Replace("etc=", "");
             string objectId = urlParams[1].Replace("id=", "");
-            tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
+            objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
 
             EntityReference teamReference = this.Team.Get(executionContext);
             EntityReference systemuserReference = this.User.Get(executionContext);
@@ -126,7 +123,7 @@ namespace msdyncrmWorkflowTools
 
 
             #region "ApplyRoutingRuteamReferenceleRequest Execution"
-            string EntityName = objCommon.sGetEntityNameFromCode(objectTypeCode, service);
+            string EntityName = objCommon.sGetEntityNameFromCode(objectTypeCode, objCommon.service);
 
             EntityReference refObject = new EntityReference(EntityName,new Guid(objectId));
 
@@ -139,13 +136,13 @@ namespace msdyncrmWorkflowTools
                 foreach (EntityReference principalObject in principals)
                 {
                     revoqueRequest.Revokee = principalObject;
-                    RevokeAccessResponse revoqueResponse = (RevokeAccessResponse)service.Execute(revoqueRequest);
+                    RevokeAccessResponse revoqueResponse = (RevokeAccessResponse)objCommon.service.Execute(revoqueRequest);
                 }
 
-                tracingService.Trace("Revoqued Permissions--- OK");
+                objCommon.tracingService.Trace("Revoqued Permissions--- OK");
             }
 
-            tracingService.Trace("Grant Request--- Start");
+            objCommon.tracingService.Trace("Grant Request--- Start");
 
             GrantAccessRequest grantRequest = new GrantAccessRequest();
             grantRequest.Target = refObject;
@@ -154,10 +151,10 @@ namespace msdyncrmWorkflowTools
             foreach (EntityReference principalObject2 in principals)
             {
                 grantRequest.PrincipalAccess.Principal = principalObject2;
-                GrantAccessResponse grantResponse = (GrantAccessResponse)service.Execute(grantRequest);
+                GrantAccessResponse grantResponse = (GrantAccessResponse)objCommon.service.Execute(grantRequest);
             }
 
-            tracingService.Trace("Grant Request--- end");
+            objCommon.tracingService.Trace("Grant Request--- end");
 
             #endregion
 
