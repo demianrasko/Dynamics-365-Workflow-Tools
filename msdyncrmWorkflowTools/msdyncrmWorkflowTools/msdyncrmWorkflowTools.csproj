@@ -69,10 +69,14 @@
   <ItemGroup>
     <Compile Include="Class\ApplyRoutingRule.cs" />
     <Compile Include="Class\CalculateRollupField.cs" />
+    <Compile Include="Class\FieldLookupCurrentRecord.cs" />
     <Compile Include="Class\QueryValues.cs" />
+    <Compile Include="Class\ShareRecordWithTeam.cs" />
+    <Compile Include="Class\ShareRecordWithUser.cs" />
+    <Compile Include="Class\UnshareRecordWithTeam.cs" />
+    <Compile Include="Class\UnshareRecordWithUser.cs" />
     <Compile Include="Common.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Class\SharingRecord.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="codes.snk" />
