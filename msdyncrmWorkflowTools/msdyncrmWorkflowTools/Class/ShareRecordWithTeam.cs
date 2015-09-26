@@ -10,15 +10,15 @@ using System.Threading.Tasks;
 
 namespace msdyncrmWorkflowTools
 {
-    public class ShareRecordWithTeam: CodeActivity
+    public class ShareRecordWithTeam : CodeActivity
     {
         #region "Parameter Definition"
-        
+
         [RequiredArgument]
         [Input("Sharing Record URL")]
         [ReferenceTarget("")]
         public InArgument<String> SharingRecordURL { get; set; }
-        
+
         [RequiredArgument]
         [Input("Team")]
         [ReferenceTarget("team")]
@@ -74,7 +74,7 @@ namespace msdyncrmWorkflowTools
         public InArgument<bool> ShareShare { get; set; }
 
 
-        List<EntityReference> principals=new List<EntityReference>();
+        List<EntityReference> principals = new List<EntityReference>();
         #endregion
 
 
@@ -98,22 +98,23 @@ namespace msdyncrmWorkflowTools
             string objectId = urlParams[1].Replace("id=", "");
             objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
 
-            EntityReference teamReference = this.Team.Get(executionContext);            
+            EntityReference teamReference = this.Team.Get(executionContext);
+            principals.Clear();
 
-            if (teamReference != null) principals.Add(teamReference);            
-           
+            if (teamReference != null) principals.Add(teamReference);
+
             #endregion
 
             #region "ApplyRoutingRuteamReferenceleRequest Execution"
             string EntityName = objCommon.sGetEntityNameFromCode(objectTypeCode, objCommon.service);
 
-            EntityReference refObject = new EntityReference(EntityName,new Guid(objectId));            
+            EntityReference refObject = new EntityReference(EntityName, new Guid(objectId));
 
             objCommon.tracingService.Trace("Grant Request--- Start");
 
             GrantAccessRequest grantRequest = new GrantAccessRequest();
             grantRequest.Target = refObject;
-            grantRequest.PrincipalAccess =new PrincipalAccess();
+            grantRequest.PrincipalAccess = new PrincipalAccess();
             grantRequest.PrincipalAccess.AccessMask = (AccessRights)getMask(executionContext);
             foreach (EntityReference principalObject2 in principals)
             {
@@ -150,7 +151,7 @@ namespace msdyncrmWorkflowTools
             {
                 mask |= (UInt32)AccessRights.AssignAccess;
             }
-            
+
             if (ShareDelete)
             {
                 mask |= (UInt32)AccessRights.DeleteAccess;
@@ -168,10 +169,11 @@ namespace msdyncrmWorkflowTools
                 mask |= (UInt32)AccessRights.WriteAccess;
             }
 
-            
+
 
             return mask;
 
         }
     }
+
 }
