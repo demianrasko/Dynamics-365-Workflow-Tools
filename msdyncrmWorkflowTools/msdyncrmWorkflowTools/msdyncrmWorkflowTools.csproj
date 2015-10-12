@@ -69,6 +69,7 @@
   <ItemGroup>
     <Compile Include="Class\ApplyRoutingRule.cs" />
     <Compile Include="Class\CalculateRollupField.cs" />
+    <Compile Include="Class\CheckUserInTeam.cs" />
     <Compile Include="Class\FieldLookupCurrentRecord.cs" />
     <Compile Include="Class\QueryValues.cs" />
     <Compile Include="Class\ShareRecordWithTeam.cs" />
