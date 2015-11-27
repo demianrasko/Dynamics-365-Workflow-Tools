@@ -52,5 +52,24 @@ namespace msdyncrmWorkflowTools
             EntityMetadata entityMetadata = (EntityMetadata)response.EntityMetadata[0];
             return entityMetadata.SchemaName.ToLower();
         }
+
+        public List<string> getEntityAttributesToClone(string entityName, IOrganizationService service) {
+            List<string> atts = new List<string>();
+            RetrieveEntityRequest req = new RetrieveEntityRequest() {
+                EntityFilters=EntityFilters.Attributes, 
+                LogicalName= entityName
+            };
+
+            RetrieveEntityResponse res = (RetrieveEntityResponse)service.Execute(req);
+            foreach (AttributeMetadata attMetadata in res.EntityMetadata.Attributes)
+            {
+                if (attMetadata.IsValidForCreate.Value && !attMetadata.IsPrimaryId.Value)
+                {
+                    atts.Add(attMetadata.LogicalName);
+                }
+            }
+
+            return (atts);
+        }
     }
 }
