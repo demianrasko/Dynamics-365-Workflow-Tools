@@ -78,6 +78,7 @@
     <Compile Include="Class\QueryValues.cs" />
     <Compile Include="Class\RemoveFromMarketingList.cs" />
     <Compile Include="Class\CloneRecord.cs" />
+    <Compile Include="Class\SetProcess.cs" />
     <Compile Include="Class\ShareRecordWithTeam.cs" />
     <Compile Include="Class\ShareRecordWithUser.cs" />
     <Compile Include="Class\UnshareRecordWithTeam.cs" />
