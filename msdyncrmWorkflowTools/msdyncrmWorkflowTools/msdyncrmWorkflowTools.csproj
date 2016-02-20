@@ -70,9 +70,13 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Class\RemoveRoleFromTeam.cs" />
+    <Compile Include="Class\AddRoleToTeam.cs" />
+    <Compile Include="Class\RemoveRoleFromUser.cs" />
     <Compile Include="Class\AddToMarketingList.cs" />
     <Compile Include="Class\ApplyRoutingRule.cs" />
     <Compile Include="Class\CalculateRollupField.cs" />
+    <Compile Include="Class\AddRoleToUser.cs" />
     <Compile Include="Class\CheckUserInTeam.cs" />
     <Compile Include="Class\FieldLookupCurrentRecord.cs" />
     <Compile Include="Class\QueueItemCount.cs" />
