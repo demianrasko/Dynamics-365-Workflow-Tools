@@ -105,8 +105,9 @@ namespace msdyncrmWorkflowTools
                 Entity givenRole2 = givenRoles2.Entities[0].ToEntity<Entity>();
                 Guid entRoleId = (Guid)givenRole2.Attributes["roleid"];
 
-               
-                    objCommon.service.Associate(
+
+
+                objCommon.service.Associate(
                           "systemuser",
                           userReference.Id,
                           new Relationship("systemuserroles_association"),
