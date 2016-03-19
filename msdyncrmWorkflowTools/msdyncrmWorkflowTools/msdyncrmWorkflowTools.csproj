@@ -70,6 +70,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Class\StringFunctions.cs" />
     <Compile Include="Class\SetUserSettings.cs" />
     <Compile Include="Class\RemoveRoleFromTeam.cs" />
     <Compile Include="Class\AddRoleToTeam.cs" />
