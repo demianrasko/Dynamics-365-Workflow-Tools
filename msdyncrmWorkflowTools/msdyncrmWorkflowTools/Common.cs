@@ -63,9 +63,19 @@ namespace msdyncrmWorkflowTools
             RetrieveEntityResponse res = (RetrieveEntityResponse)service.Execute(req);
             foreach (AttributeMetadata attMetadata in res.EntityMetadata.Attributes)
             {
-                if (attMetadata.IsValidForCreate.Value && !attMetadata.IsPrimaryId.Value)
+                if ((attMetadata.IsValidForCreate.Value ||attMetadata.IsValidForUpdate.Value) 
+                    && !attMetadata.IsPrimaryId.Value)
                 {
-                    atts.Add(attMetadata.LogicalName);
+                    //tracingService.Trace("Tipo:{0}", attMetadata.AttributeTypeName.Value.ToLower());
+                    if (attMetadata.AttributeTypeName.Value.ToLower()== "partylisttype")
+                    {
+                        atts.Add("partylist-"+attMetadata.LogicalName);
+                        //atts.Add(attMetadata.LogicalName);
+                    }
+                    else
+                    {
+                        atts.Add(attMetadata.LogicalName);
+                    }
                 }
             }
 
