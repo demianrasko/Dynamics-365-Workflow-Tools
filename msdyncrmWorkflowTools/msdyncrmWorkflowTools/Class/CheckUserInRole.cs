@@ -96,7 +96,7 @@ namespace msdyncrmWorkflowTools
 
             this.isUserInRole.Set(executionContext, UserInRole);
 
-            
+
 
         }
     }
