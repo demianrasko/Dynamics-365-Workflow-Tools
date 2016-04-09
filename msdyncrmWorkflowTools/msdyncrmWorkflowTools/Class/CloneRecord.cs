@@ -145,8 +145,8 @@ Customer
             objCommon.tracingService.Trace("retrieved object OK");
 
             Entity newEntity = new Entity(entityName);
-
-            List<string> atts= objCommon.getEntityAttributesToClone(entityName, objCommon.service);
+            string PrimaryIdAttribute = "";
+            List<string> atts= objCommon.getEntityAttributesToClone(entityName, objCommon.service, ref PrimaryIdAttribute);
 
             
             foreach (string att in atts)
