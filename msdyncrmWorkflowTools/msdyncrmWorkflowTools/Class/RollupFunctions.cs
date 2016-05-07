@@ -130,7 +130,11 @@ namespace msdyncrmWorkflowTools
                 if (number > _max) _max = number;
             }
 
-            decimal _average = _sum / _count;
+            decimal _average = 0;
+            if (_count > 0)
+            {
+                _average = _sum / _count;
+            }
             this.Count.Set(executionContext, _count);
             this.Sum.Set(executionContext, _sum);
             this.Average.Set(executionContext, _average);
