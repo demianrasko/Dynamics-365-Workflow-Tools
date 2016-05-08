@@ -70,6 +70,11 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Class\RemoveFromAllMarketingLists.cs" />
+    <Compile Include="Class\IsMemberOfMarketingList.cs" />
+    <Compile Include="Class\CopyToStaticList.cs" />
+    <Compile Include="Class\CopyMarketingListMembers.cs" />
+    <Compile Include="Class\AddMarketingListToCampaign.cs" />
     <Compile Include="Class\QualifyLead.cs" />
     <Compile Include="Class\EntityJsonSerializer.cs" />
     <Compile Include="Class\DeleteRecord.cs" />
