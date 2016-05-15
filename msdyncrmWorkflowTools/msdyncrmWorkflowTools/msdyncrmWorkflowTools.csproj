@@ -70,6 +70,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Class\NumericFunctions.cs" />
     <Compile Include="Class\RemoveFromAllMarketingLists.cs" />
     <Compile Include="Class\IsMemberOfMarketingList.cs" />
     <Compile Include="Class\CopyToStaticList.cs" />
