@@ -23,6 +23,8 @@ namespace msdyncrmWorkflowTools.Class
         [ReferenceTarget("workflow")]
         public InArgument<EntityReference> Process { get; set; }
 
+ 
+
         protected override void Execute(CodeActivityContext executionContext)
         {
             #region "Load CRM Service from context"
@@ -45,6 +47,7 @@ namespace msdyncrmWorkflowTools.Class
             objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
 
             EntityReference process = this.Process.Get(executionContext);
+            
 
             #endregion
 
