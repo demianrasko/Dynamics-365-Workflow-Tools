@@ -70,6 +70,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Class\EntityMobileDeepLink.cs" />
     <Compile Include="Class\EmailToTeam.cs" />
     <Compile Include="Class\NumericFunctions.cs" />
     <Compile Include="Class\RemoveFromAllMarketingLists.cs" />
