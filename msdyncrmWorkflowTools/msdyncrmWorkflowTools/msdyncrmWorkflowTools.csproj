@@ -81,6 +81,7 @@
     <Compile Include="Class\QualifyLead.cs" />
     <Compile Include="Class\EntityJsonSerializer.cs" />
     <Compile Include="Class\DeleteRecord.cs" />
+    <Compile Include="Class\SendEmail.cs" />
     <Compile Include="Class\SetProcessStage.cs" />
     <Compile Include="Class\StringFunctions.cs" />
     <Compile Include="Class\SetUserSettings.cs" />
