@@ -83,6 +83,7 @@
     <Compile Include="Class\DeleteRecord.cs" />
     <Compile Include="Class\SendEmail.cs" />
     <Compile Include="Class\SetProcessStage.cs" />
+    <Compile Include="Class\GeoCodeAddress.cs" />
     <Compile Include="Class\StringFunctions.cs" />
     <Compile Include="Class\SetUserSettings.cs" />
     <Compile Include="Class\RemoveRoleFromTeam.cs" />
