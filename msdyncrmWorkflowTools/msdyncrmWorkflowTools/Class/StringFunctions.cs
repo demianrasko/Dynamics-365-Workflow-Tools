@@ -7,6 +7,7 @@ using System.Activities;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace msdyncrmWorkflowTools
@@ -72,6 +73,11 @@ namespace msdyncrmWorkflowTools
         public InArgument<int> SubStringLength{ get; set; }
 
 
+        [RequiredArgument]
+        [Input("Regular Expression")]
+        [Default("")]
+        public InArgument<String> RegularExpression { get; set; }
+
 
         [Output("Capitalized Text")]
         public OutArgument<String> CapitalizedText { get; set; }
@@ -90,6 +96,11 @@ namespace msdyncrmWorkflowTools
 
         [Output("Trimmed Text")]
         public OutArgument<string> TrimmedText { get; set; }
+
+        [Output("Regex Success")]
+        public OutArgument<bool> RegexSuccess { get; set; }
+        [Output("Regex Text")]
+        public OutArgument<string> RegexText { get; set; }
 
 
 
@@ -119,7 +130,7 @@ namespace msdyncrmWorkflowTools
             bool fromLefttoRight = this.FromLefttoRight.Get(executionContext);
             int startIndex = this.StartIndex.Get(executionContext);
             int subStringLength = this.SubStringLength.Get(executionContext);
-
+            string regularExpression = this.RegularExpression.Get(executionContext);
             #endregion
 
             string capitalizedText = "";
@@ -175,15 +186,30 @@ namespace msdyncrmWorkflowTools
                 }
                 subStringText = inputText.Substring(startIndex, subStringLength);
             }
-            
-            
+
+            //regex
+            string regexText = "";
+            bool regexSuccess = false;
+            if (regularExpression != "")
+            {
+                Regex regex = new Regex(regularExpression);
+                Match match = regex.Match(inputText);
+                if (match.Success)
+                {
+                    regexSuccess = true;
+                    regexText= match.Value;
+                }
+
+            }
+
             this.CapitalizedText.Set(executionContext, capitalizedText);
             this.TextLength.Set(executionContext, capitalizedText.Length);
             this.PaddedText.Set(executionContext, paddedText);
             this.ReplacedText.Set(executionContext, replacedText);
             this.SubstringText.Set(executionContext, subStringText);
             this.TrimmedText.Set(executionContext, inputText.Trim());
-
+            this.RegexSuccess.Set(executionContext, regexSuccess);
+            this.RegexText.Set(executionContext, regexText);
 
         }
         private static string CompareAndReplace(string text, string old, string @new, StringComparison comparison)
