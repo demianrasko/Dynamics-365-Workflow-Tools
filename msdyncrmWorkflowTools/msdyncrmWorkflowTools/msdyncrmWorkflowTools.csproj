@@ -63,6 +63,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceModel.Activities" />
     <Reference Include="System.Xaml" />
@@ -73,6 +74,8 @@
     <Compile Include="Class\AddUserToTeam.cs" />
     <Compile Include="Class\AssociateEntity.cs" />
     <Compile Include="Class\GoalRecalculate.cs" />
+    <Compile Include="Class\GetInitiatingUser.cs" />
+    <Compile Include="Class\EncryptText.cs" />
     <Compile Include="Class\RemoveUserFromTeam.cs" />
     <Compile Include="Class\EntityMobileDeepLink.cs" />
     <Compile Include="Class\EmailToTeam.cs" />
