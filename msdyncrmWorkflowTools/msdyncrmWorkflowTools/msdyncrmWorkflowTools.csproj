@@ -47,16 +47,16 @@
   <ItemGroup>
     <Reference Include="Microsoft.Crm.Sdk.Proxy, Version=8.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Users\demianr\Desktop\Crmsdk\8.1.0\Bin\Microsoft.Crm.Sdk.Proxy.dll</HintPath>
+      <HintPath>..\..\..\..\..\Users\demianr\Desktop\Crmsdk\8.2.0\Bin\Microsoft.Crm.Sdk.Proxy.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Xrm.Sdk, Version=8.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Users\demianr\Desktop\Crmsdk\8.1.0\Bin\Microsoft.Xrm.Sdk.dll</HintPath>
+      <HintPath>..\..\..\..\..\Users\demianr\Desktop\Crmsdk\8.2.0\Bin\Microsoft.Xrm.Sdk.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Xrm.Sdk.Workflow, Version=8.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Users\demianr\Desktop\Crmsdk\8.1.0\Bin\Microsoft.Xrm.Sdk.Workflow.dll</HintPath>
+      <HintPath>..\..\..\..\..\Users\demianr\Desktop\Crmsdk\8.2.0\Bin\Microsoft.Xrm.Sdk.Workflow.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Activities" />
@@ -72,6 +72,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class\AddUserToTeam.cs" />
+    <Compile Include="Class\SetState.cs" />
+    <Compile Include="Class\CheckAssociateEntity.cs" />
     <Compile Include="Class\AssociateEntity.cs" />
     <Compile Include="Class\GoalRecalculate.cs" />
     <Compile Include="Class\GetInitiatingUser.cs" />

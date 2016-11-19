@@ -61,12 +61,12 @@ namespace msdyncrmWorkflowTools
 
             string locationsRequest = CreateRequest(address, bingMapsKey);
             Response locationsResponse = MakeRequest(locationsRequest);
-            
-            
 
-            this.Latitude.Set(executionContext,Convert.ToDecimal( locationsResponse.ResourceSets[0].Resources[0].GeocodePoints[0].Coordinates[0]));
-            this.Longitude.Set(executionContext, Convert.ToDecimal(locationsResponse.ResourceSets[0].Resources[0].GeocodePoints[0].Coordinates[1]));
-           
+            if (locationsResponse != null)
+            {
+                this.Latitude.Set(executionContext, Convert.ToDecimal(locationsResponse.ResourceSets[0].Resources[0].GeocodePoints[0].Coordinates[0]));
+                this.Longitude.Set(executionContext, Convert.ToDecimal(locationsResponse.ResourceSets[0].Resources[0].GeocodePoints[0].Coordinates[1]));
+            }        
 
         }
         public  string CreateRequest(string queryString, string bingMapsKey)
