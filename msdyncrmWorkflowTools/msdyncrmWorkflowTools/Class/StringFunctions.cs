@@ -47,7 +47,6 @@ namespace msdyncrmWorkflowTools
         [Default("")]
         public InArgument<String> ReplaceOldValue { get; set; }
 
-        [RequiredArgument]
         [Input("Replace: New Value")]
         [Default("")]
         public InArgument<String> ReplaceNewValue { get; set; }
@@ -125,6 +124,7 @@ namespace msdyncrmWorkflowTools
 
             string replaceOldValue = this.ReplaceOldValue.Get(executionContext);
             string replaceNewValue = this.ReplaceNewValue.Get(executionContext);
+            if (replaceNewValue == null) replaceNewValue = "";
             bool caseSensitive = this.CaseSensitive.Get(executionContext);
 
             bool fromLefttoRight = this.FromLefttoRight.Get(executionContext);

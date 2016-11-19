@@ -17,7 +17,7 @@ namespace msdyncrmWorkflowTools
 {
 
    
-    public class AssociateEntity : CodeActivity
+    public class CheckAssociateEntity : CodeActivity
     {
         #region "Parameter Definition"
         [RequiredArgument]
@@ -29,6 +29,10 @@ namespace msdyncrmWorkflowTools
         [Input("Record URL")]
         [ReferenceTarget("")]
         public InArgument<String> RecordURL { get; set; }
+
+
+        [Output("Result")]
+        public OutArgument<bool> Result { get; set; }
         #endregion
 
         protected override void Execute(CodeActivityContext executionContext)
@@ -60,10 +64,28 @@ namespace msdyncrmWorkflowTools
 
             try
             {
-                EntityReferenceCollection relatedEntities = new EntityReferenceCollection();
-                relatedEntities.Add(new EntityReference(entityName, new Guid(ParentId)));
-                Relationship relationship = new Relationship(_relationshipName);
-                objCommon.service.Associate(objCommon.context.PrimaryEntityName, objCommon.context.PrimaryEntityId, relationship, relatedEntities);
+                string fetchXML = @"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='true'>
+                                      <entity name='"+ objCommon.context.PrimaryEntityName + @"'>
+                                        <link-entity name='"+ _relationshipName + @"' from='"+ objCommon.context.PrimaryEntityName + @"id' to='"+ objCommon.context.PrimaryEntityName + @"id' visible='false' intersect='true'>
+                                         <link-entity name='"+ entityName + @"' from='"+ entityName + @"id' to='"+ entityName + @"id' alias='ac'>
+                                                <filter type='and'>
+                                                  <condition attribute='"+ entityName + @"id' operator='eq' value='"+ ParentId + @"' />
+                                                </filter>
+                                              </link-entity>
+                                        </link-entity>
+                                      </entity>
+                                    </fetch>";
+                objCommon.tracingService.Trace(String.Format("FetchXML: {0} ", fetchXML));
+                EntityCollection relations = objCommon.service.RetrieveMultiple(new FetchExpression(fetchXML));
+
+                if (relations.Entities.Count > 0)
+                {
+                    this.Result.Set(executionContext, true);
+                }
+                else
+                {
+                    this.Result.Set(executionContext, false);
+                }
             }
             catch (FaultException<OrganizationServiceFault> ex)
             {
