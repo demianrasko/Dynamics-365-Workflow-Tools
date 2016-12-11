@@ -60,17 +60,26 @@ namespace msdyncrmWorkflowTools
 
             try
             {
-                EntityReferenceCollection relatedEntities = new EntityReferenceCollection();
-                relatedEntities.Add(new EntityReference(entityName, new Guid(ParentId)));
-                Relationship relationship = new Relationship(_relationshipName);
-                objCommon.service.Associate(objCommon.context.PrimaryEntityName, objCommon.context.PrimaryEntityId, relationship, relatedEntities);
+                EntityCollection relations = objCommon.getAssociations(objCommon.context.PrimaryEntityName, _relationshipName, entityName, ParentId);
+
+
+                if (relations.Entities.Count == 0)
+                {
+                    EntityReferenceCollection relatedEntities = new EntityReferenceCollection();
+                    relatedEntities.Add(new EntityReference(entityName, new Guid(ParentId)));
+                    Relationship relationship = new Relationship(_relationshipName);
+                    objCommon.service.Associate(objCommon.context.PrimaryEntityName, objCommon.context.PrimaryEntityId, relationship, relatedEntities);
+                }
             }
             catch (FaultException<OrganizationServiceFault> ex)
             {
-                if (ex.Detail.ErrorCode != 2147220937)//ignore if the error is a duplicate insert
-                {
-                    throw ex;
-                }
+                // if (ex.Detail.ErrorCode != 2147220937)//ignore if the error is a duplicate insert
+                //{
+                // throw ex;
+                //}
+            }
+            catch (System.Exception ex)
+            {
             }
             #endregion
 
