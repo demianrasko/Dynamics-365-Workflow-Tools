@@ -64,19 +64,7 @@ namespace msdyncrmWorkflowTools
 
             try
             {
-                string fetchXML = @"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='true'>
-                                      <entity name='"+ objCommon.context.PrimaryEntityName + @"'>
-                                        <link-entity name='"+ _relationshipName + @"' from='"+ objCommon.context.PrimaryEntityName + @"id' to='"+ objCommon.context.PrimaryEntityName + @"id' visible='false' intersect='true'>
-                                         <link-entity name='"+ entityName + @"' from='"+ entityName + @"id' to='"+ entityName + @"id' alias='ac'>
-                                                <filter type='and'>
-                                                  <condition attribute='"+ entityName + @"id' operator='eq' value='"+ ParentId + @"' />
-                                                </filter>
-                                              </link-entity>
-                                        </link-entity>
-                                      </entity>
-                                    </fetch>";
-                objCommon.tracingService.Trace(String.Format("FetchXML: {0} ", fetchXML));
-                EntityCollection relations = objCommon.service.RetrieveMultiple(new FetchExpression(fetchXML));
+                EntityCollection relations = objCommon.getAssociations(objCommon.context.PrimaryEntityName,_relationshipName,entityName, ParentId);
 
                 if (relations.Entities.Count > 0)
                 {

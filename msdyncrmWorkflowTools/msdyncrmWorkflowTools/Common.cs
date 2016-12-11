@@ -53,6 +53,27 @@ namespace msdyncrmWorkflowTools
             return entityMetadata.SchemaName.ToLower();
         }
 
+
+        public EntityCollection getAssociations(string PrimaryEntityName, string _relationshipName, string entityName, string ParentId)
+        {
+            //
+            string fetchXML = @"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='true'>
+                                      <entity name='" + PrimaryEntityName + @"'>
+                                        <link-entity name='" + _relationshipName + @"' from='" + PrimaryEntityName + @"id' to='" + PrimaryEntityName + @"id' visible='false' intersect='true'>
+                                         <link-entity name='" + entityName + @"' from='" + entityName + @"id' to='" + entityName + @"id' alias='ac'>
+                                                <filter type='and'>
+                                                  <condition attribute='" + entityName + @"id' operator='eq' value='" + ParentId + @"' />
+                                                </filter>
+                                              </link-entity>
+                                        </link-entity>
+                                      </entity>
+                                    </fetch>";
+            tracingService.Trace(String.Format("FetchXML: {0} ", fetchXML));
+            EntityCollection relations = service.RetrieveMultiple(new FetchExpression(fetchXML));
+
+            return relations;
+        }
+
         public List<string> getEntityAttributesToClone(string entityName, IOrganizationService service, 
             ref string PrimaryIdAttribute)
         {
