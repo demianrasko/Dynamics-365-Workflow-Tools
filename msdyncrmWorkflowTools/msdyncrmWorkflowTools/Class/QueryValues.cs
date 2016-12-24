@@ -24,7 +24,7 @@ namespace msdyncrmWorkflowTools
         [ReferenceTarget("")]
         public InArgument<String> Attribute1 { get; set; }
 
-       
+        [RequiredArgument]
         [Input("Attribute2")]
         [ReferenceTarget("")]
         public InArgument<String> Attribute2 { get; set; }
@@ -63,7 +63,6 @@ namespace msdyncrmWorkflowTools
 
         protected override void Execute(CodeActivityContext executionContext)
         {
-
             #region "Load CRM Service from context"
 
             Common objCommon = new Common(executionContext);
@@ -82,42 +81,67 @@ namespace msdyncrmWorkflowTools
             objCommon.tracingService.Trace(String.Format("EntityName: {0} - Attribute1:{1} - Attribute2:{2} - FilterAttribute1:{3} - FilterAttribute2:{4} - ValueAttribute1:{5} ValueAttribute2:{6}",
                 _EntityName, _Attribute1, _Attribute2, _FilterAttribute1, _FilterAttribute2, _ValueAttribute1, _ValueAttribute2));
             #endregion
-
-
-            #region "QueryExpression Execution"
-            QueryExpression qe = new QueryExpression();
-            qe.EntityName = _EntityName;
-            qe.ColumnSet = new ColumnSet();
-            if (_Attribute1 != null && _Attribute1!="") qe.ColumnSet.Columns.Add(_Attribute1);
-            if (_Attribute2 != null && _Attribute2 != "")  qe.ColumnSet.Columns.Add(_Attribute2);
-
-            FilterExpression filter = new FilterExpression(LogicalOperator.And);
-            if (_FilterAttribute1 != null && _FilterAttribute1 != "")
+            try
             {
-                ConditionExpression condition1 = new ConditionExpression();
-                condition1.AttributeName = _FilterAttribute1;
-                condition1.Values.Add(_ValueAttribute1);
-                condition1.Operator = ConditionOperator.Equal;
-                filter.Conditions.Add(condition1);
-            }
-            if (_FilterAttribute2 != null && _FilterAttribute2 != "")
-            {
-                ConditionExpression condition2 = new ConditionExpression();
-                condition2.AttributeName = _FilterAttribute2;
-                condition2.Values.Add(_ValueAttribute2);
-                condition2.Operator = ConditionOperator.Equal;
-                filter.Conditions.Add(condition2);
-            }
-            qe.Criteria=filter;
+               
 
-            EntityCollection results= objCommon.service.RetrieveMultiple(qe);
-            if (results.Entities.Count>0)
-            {
-                this.ResultValue1.Set(executionContext, results.Entities[0][_Attribute1]);
-                this.ResultValue2.Set(executionContext, results.Entities[0][_Attribute2]);
-            }
-            #endregion
 
+                #region "QueryExpression Execution"
+                QueryExpression qe = new QueryExpression();
+                qe.EntityName = _EntityName;
+                qe.ColumnSet = new ColumnSet();
+                if (_Attribute1 != null && _Attribute1 != "") qe.ColumnSet.Columns.Add(_Attribute1);
+                if (_Attribute2 != null && _Attribute2 != "") qe.ColumnSet.Columns.Add(_Attribute2);
+
+                FilterExpression filter = new FilterExpression(LogicalOperator.And);
+                if (_FilterAttribute1 != null && _FilterAttribute1 != "")
+                {
+                    ConditionExpression condition1 = new ConditionExpression();
+                    condition1.AttributeName = _FilterAttribute1;
+                    condition1.Values.Add(_ValueAttribute1);
+                    condition1.Operator = ConditionOperator.Equal;
+                    filter.Conditions.Add(condition1);
+                }
+                if (_FilterAttribute2 != null && _FilterAttribute2 != "")
+                {
+                    ConditionExpression condition2 = new ConditionExpression();
+                    condition2.AttributeName = _FilterAttribute2;
+                    condition2.Values.Add(_ValueAttribute2);
+                    condition2.Operator = ConditionOperator.Equal;
+                    filter.Conditions.Add(condition2);
+                }
+                qe.Criteria = filter;
+
+                objCommon.tracingService.Trace(String.Format("Executing Query..."));
+
+                EntityCollection results = objCommon.service.RetrieveMultiple(qe);
+
+                objCommon.tracingService.Trace(String.Format("Executed Query Ok, {0} records ...", results.Entities.Count));
+
+
+                if (results.Entities.Count > 0)
+                {
+                    objCommon.tracingService.Trace(String.Format("Setting results"));
+                    if (results.Entities[0].Attributes[_Attribute1] != null)
+                    {
+                        objCommon.tracingService.Trace(String.Format("Setting result1: {0}", results.Entities[0].Attributes[_Attribute1]));
+                        this.ResultValue1.Set(executionContext, results.Entities[0].Attributes[_Attribute1].ToString());
+                    }
+                    if (results.Entities[0].Attributes[_Attribute2] != null)
+                    {
+                        objCommon.tracingService.Trace(String.Format("Setting result2: {0}", results.Entities[0].Attributes[_Attribute2]));
+                        this.ResultValue2.Set(executionContext, results.Entities[0].Attributes[_Attribute2].ToString());
+                    }
+                    objCommon.tracingService.Trace(String.Format("End setting results"));
+                }
+                #endregion
+            }
+            catch (System.Exception ex)
+            {
+                objCommon.tracingService.Trace(String.Format("error: {0} - {1}",ex.Message, ex.StackTrace));
+                throw ex;
+
+            }
         }
     }
 }
