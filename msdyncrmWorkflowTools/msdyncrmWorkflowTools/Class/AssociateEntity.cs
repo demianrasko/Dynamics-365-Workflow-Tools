@@ -73,6 +73,8 @@ namespace msdyncrmWorkflowTools
             }
             catch (FaultException<OrganizationServiceFault> ex)
             {
+                objCommon.tracingService.Trace("Error : {0} - {1}", ex.Message, ex.StackTrace);
+                //throw ex;
                 // if (ex.Detail.ErrorCode != 2147220937)//ignore if the error is a duplicate insert
                 //{
                 // throw ex;
@@ -80,6 +82,8 @@ namespace msdyncrmWorkflowTools
             }
             catch (System.Exception ex)
             {
+                objCommon.tracingService.Trace("Error : {0} - {1}", ex.Message, ex.StackTrace);
+                //throw ex;
             }
             #endregion
 

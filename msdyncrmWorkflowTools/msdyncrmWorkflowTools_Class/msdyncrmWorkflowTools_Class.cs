@@ -27,6 +27,10 @@ namespace msdyncrmWorkflowTools
             tracing = null;
         }
 
+        public void QueryValues()
+        {
+        }
+
         public void UpdateChildRecords(string relationshipName, string parentEntityType, string parentEntityId, string parentFieldNameToUpdate, string setValueToUpdate, string childFieldNameToUpdate)
         {
             //1) Get child lookup field name
