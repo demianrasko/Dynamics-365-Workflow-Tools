@@ -31,6 +31,88 @@ namespace msdyncrmWorkflowTools
         {
         }
 
+        public void InsertOptionValue(bool globalOptionSet, string attributeName, string entityName, string optionText, int optionValue, int languageCode)
+        {
+            if (globalOptionSet)
+            {
+                InsertOptionValueRequest insertOptionValueRequest =
+                  new InsertOptionValueRequest
+                  {
+                      OptionSetName= attributeName,
+                      Value = optionValue,
+                      Label = new Label(optionText, languageCode)
+                  };
+                int insertOptionValue = ((InsertOptionValueResponse)service.Execute(insertOptionValueRequest)).NewOptionValue;
+            }
+            else
+            {
+                // Create a request.
+                InsertOptionValueRequest insertOptionValueRequest =
+                   new InsertOptionValueRequest
+                   {
+                       AttributeLogicalName = attributeName,
+                       EntityLogicalName = entityName,
+                       Value = optionValue,
+                       Label = new Label(optionText, languageCode)
+                   };
+                int insertOptionValue = ((InsertOptionValueResponse)service.Execute(insertOptionValueRequest)).NewOptionValue;
+            }
+            // Execute the request.
+            
+        }
+        public void AssociateEntity(string PrimaryEntityName, Guid PrimaryEntityId, string _relationshipName, string _relationshipEntityName, string entityName, string ParentId)
+        {
+            try
+            {
+                EntityCollection relations = getAssociations(PrimaryEntityName, PrimaryEntityId, _relationshipName, _relationshipEntityName, entityName, ParentId);
+
+
+                if (relations.Entities.Count == 0)
+                {
+                    EntityReferenceCollection relatedEntities = new EntityReferenceCollection();
+                    relatedEntities.Add(new EntityReference(entityName, new Guid(ParentId)));
+                    Relationship relationship = new Relationship(_relationshipName);
+                    service.Associate(PrimaryEntityName, PrimaryEntityId, relationship, relatedEntities);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error : {0} - {1}", ex.Message, ex.StackTrace);
+                //    objCommon.tracingService.Trace("Error : {0} - {1}", ex.Message, ex.StackTrace);//
+                //throw ex;
+                // if (ex.Detail.ErrorCode != 2147220937)//ignore if the error is a duplicate insert
+                //{
+                // throw ex;
+                //}
+            }
+            
+        }
+
+        public EntityCollection getAssociations(string PrimaryEntityName, Guid PrimaryEntityId, string _relationshipName, string _relationshipEntityName, string entityName, string ParentId)
+        {
+            //
+            string fetchXML = @"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='true'>
+                                      <entity name='" + PrimaryEntityName + @"'>
+                                        <link-entity name='" + _relationshipEntityName + @"' from='" + PrimaryEntityName + @"id' to='" + PrimaryEntityName + @"id' visible='false' intersect='true'>
+                                        <link-entity name='opportunity' from='opportunityid' to='opportunityid' alias='ab'>
+                                            <filter type='and'>
+                                            <condition attribute='opportunityid' operator='eq' value='"+ PrimaryEntityId.ToString()+ @"' />
+                                            </filter>
+                                        </link-entity>
+                                        <link-entity name='" + entityName + @"' from='" + entityName + @"id' to='" + entityName + @"id' alias='ac'>
+                                                <filter type='and'>
+                                                  <condition attribute='" + entityName + @"id' operator='eq' value='" + ParentId + @"' />
+                                                </filter>
+                                              </link-entity>
+                                        </link-entity>
+                                      </entity>
+                                    </fetch>";
+            
+            EntityCollection relations = service.RetrieveMultiple(new FetchExpression(fetchXML));
+
+            return relations;
+        }
+
         public void UpdateChildRecords(string relationshipName, string parentEntityType, string parentEntityId, string parentFieldNameToUpdate, string setValueToUpdate, string childFieldNameToUpdate)
         {
             //1) Get child lookup field name

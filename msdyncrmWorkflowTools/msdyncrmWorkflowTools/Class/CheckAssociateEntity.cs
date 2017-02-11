@@ -64,7 +64,7 @@ namespace msdyncrmWorkflowTools
 
             try
             {
-                EntityCollection relations = objCommon.getAssociations(objCommon.context.PrimaryEntityName,_relationshipName,entityName, ParentId);
+                EntityCollection relations = objCommon.getAssociations(objCommon.context.PrimaryEntityName, objCommon.context.PrimaryEntityId,_relationshipName, entityName, ParentId);
 
                 if (relations.Entities.Count > 0)
                 {
