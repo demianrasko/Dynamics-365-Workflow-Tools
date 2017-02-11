@@ -17,23 +17,39 @@ namespace msdyncrmWorkflowTools
 {
 
    
-    public class AssociateEntity : CodeActivity
+    public class InsertOptionValue : CodeActivity
     {
+
         #region "Parameter Definition"
+
         [RequiredArgument]
-        [Input("Relationship Name")]
+        [Input("Global Option Set")]
+        [Default("false")]
+        public InArgument<bool> GlobalOptionSet { get; set; }
+
+        [RequiredArgument]
+        [Input("Attribute Name")]
         [Default("")]        
-        public InArgument<String> RelationshipName { get; set; }
+        public InArgument<String> AttributeName { get; set; }
 
-        [RequiredArgument]
-        [Input("Relationship Entity Name")]
+        [Input("Entity Name")]
         [Default("")]
-        public InArgument<String> RelationshipEntityName { get; set; }
+        public InArgument<String> EntityName { get; set; }
 
         [RequiredArgument]
-        [Input("Record URL")]
+        [Input("Option Text")]
         [ReferenceTarget("")]
-        public InArgument<String> RecordURL { get; set; }
+        public InArgument<String> OptionText { get; set; }
+
+        [RequiredArgument]
+        [Input("Option Value")]
+        [ReferenceTarget("")]
+        public InArgument<int> OptionValue { get; set; }
+
+        [RequiredArgument]
+        [Input("Language Code")]
+        [ReferenceTarget("")]
+        public InArgument<int> LanguageCode { get; set; }
         #endregion
 
         protected override void Execute(CodeActivityContext executionContext)
@@ -46,28 +62,23 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            String _relationshipName = this.RelationshipName.Get(executionContext);
-            String _relationshipEntityName = this.RelationshipEntityName.Get(executionContext);
-            String _recordURL = this.RecordURL.Get(executionContext);
-            if (_recordURL == null || _recordURL == "")
-            {
-                return;
-            }
-            string[] urlParts = _recordURL.Split("?".ToArray());
-            string[] urlParams=urlParts[1].Split("&".ToCharArray());
-            string ParentObjectTypeCode=urlParams[0].Replace("etc=","");
-            string entityName = objCommon.sGetEntityNameFromCode(ParentObjectTypeCode, objCommon.service);
-            string ParentId = urlParams[1].Replace("id=", "");
-            objCommon.tracingService.Trace("ParentObjectTypeCode=" + ParentObjectTypeCode + "--ParentId=" + ParentId);
+            bool _GlobalOptionSet = this.GlobalOptionSet.Get(executionContext);
+            String _AttributeName = this.AttributeName.Get(executionContext);
+            String _EntityName = this.EntityName.Get(executionContext);
+            String _OptionText = this.OptionText.Get(executionContext);
+            int _OptionValue = this.OptionValue.Get(executionContext);
+            int _LanguageCode = this.LanguageCode.Get(executionContext);
+
+            objCommon.tracingService.Trace("_AttributeName=" + _AttributeName + "--_EntityName=" + _EntityName+ "--_OptionText="+ _OptionText+ "--_LanguageCode="+ _LanguageCode.ToString());
             #endregion
 
 
-            #region "Associate Execution"
+            #region "Insert Option Value"
 
             try
             {
                 msdyncrmWorkflowTools_Class commonClass = new msdyncrmWorkflowTools_Class(objCommon.service);
-                commonClass.AssociateEntity(objCommon.context.PrimaryEntityName, objCommon.context.PrimaryEntityId, _relationshipName, _relationshipEntityName, entityName, ParentId);
+                commonClass.InsertOptionValue(_GlobalOptionSet,_AttributeName, _EntityName, _OptionText, _OptionValue, _LanguageCode);
 
                 
             }
