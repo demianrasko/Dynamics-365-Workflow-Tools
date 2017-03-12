@@ -17,6 +17,10 @@ namespace msdyncrmWorkflowTools
         [ReferenceTarget("team")]
         public InArgument<EntityReference> Team { get; set; }
 
+        [Input("User")]
+        [ReferenceTarget("systemuser")]
+        public InArgument<EntityReference> User { get; set; }
+
         [Output("isUserInTeam")]
         public OutArgument<bool> isUserInTeam { get; set; }
 
@@ -31,9 +35,15 @@ namespace msdyncrmWorkflowTools
 
             #region "Read Parameters"
             EntityReference teamReference = this.Team.Get(executionContext);
-
+            EntityReference userReference = null;
+            
+            userReference = this.User.Get(executionContext);
+            
             objCommon.tracingService.Trace(String.Format("TeamId: {0} ", teamReference.Id.ToString()));
             #endregion
+
+            string userId = objCommon.context.InitiatingUserId.ToString();
+            if (userReference != null) userId = userReference.Id.ToString();
 
             string fetchXML = @"<fetch version=""1.0"" output-format=""xml - platform"" mapping=""logical"" distinct=""true""><entity name=""team"">
                          <attribute name=""teamid""/>
@@ -43,7 +53,7 @@ namespace msdyncrmWorkflowTools
                                 <link-entity name=""teammembership"" from=""teamid"" to=""teamid"" visible=""false"" intersect=""true"">
                                              <link-entity name=""systemuser"" from=""systemuserid"" to=""systemuserid"" alias=""ag"">
                                                         <filter type=""and"">
-                                                           <condition attribute=""systemuserid"" operator=""eq""  uitype=""systemuser"" value= """+ objCommon.context.InitiatingUserId.ToString() + @"""/>
+                                                           <condition attribute=""systemuserid"" operator=""eq""  uitype=""systemuser"" value= """+ userId + @"""/>
                                                                  </filter>
                                                                </link-entity>
                                                              </link-entity>
