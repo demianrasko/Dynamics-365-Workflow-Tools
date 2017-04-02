@@ -2,14 +2,14 @@ This step is very usefull to check if the user that initialized the Workflow exe
 
 For using this activity you mus access here and select CheckUserInTeam:
 
-![](Check If User is in Team_wf2.gif)
+![](Check%20If%20User%20is%20in%20Team_wf2.gif)
 
 Then, you must select the Team you want to check:
 
-![](Check If User is in Team_wf3.gif)
+![](Check%20If%20User%20is%20in%20Team_wf3.gif)
 The full params description is:
 * **Team (required)** : the Team to be searched
 * **IsUserInRole** : boolean with the result  
 
 After that you can use the result on your fields:
-![](Check If User is in Team_wf4.gif)
+![](Check%20If%20User%20is%20in%20Team_wf4.gif)
