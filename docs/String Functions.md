@@ -1,12 +1,12 @@
 This step allows you to execute some String Functions.
 
 For using this activity you must access here and select String Functions:
-![](String Functions_wf1.gif)
+![](String%20Functions_wf1.gif)
 
 
 Then in the activity you can fill all the parameters:
 
-![](String Functions_wf2.gif)
+![](String%20Functions_wf2.gif)
 
 The Input Parameters are:
 * Input Text: text to be transformed by the String Functions
