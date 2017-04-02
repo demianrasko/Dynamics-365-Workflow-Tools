@@ -2,11 +2,11 @@ This step is very usefull to Clone some record. You pass the URL of one record, 
 
 For using this activity you mus access here and select Clone Record:
 
-![](Clone Record_wfclone.gif)
+![](Clone%20Record_wfclone.gif)
 
 Then, you must select the record URL(dynamic) field from the entity you want to clone as follows:
 
-![](Clone Record_wfclone2.gif)
+![](Clone%20Record_wfclone2.gif)
 
 The full params description is:
 * **Clonning Record URL (required)** : the URL of the record you want to clone
