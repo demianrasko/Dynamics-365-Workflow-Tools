@@ -1,11 +1,11 @@
 Insert Option Value is an action to Add new values to global and local OptionSets.
 For using this action, first select the action:
 
-![](Insert Option Value_wf1.png)
+![](Insert%20Option%20Value_wf1.png)
 
 Then fill all the paramaters:
 
-![](Insert Option Value_wf2.png)
+![](Insert%20Option%20Value_wf2.png)
 
 The parameters are:
 * **Global Option Set**: set if the OptionSet is Global or not
