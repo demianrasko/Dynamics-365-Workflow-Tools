@@ -5,10 +5,10 @@ The steps to install it is really simple:
 Download the full Solution
 Import Solution in your Dynamics CRM 2015 environment
 The to use it, you will have a new Workflow Activity Action:
-![](Force Calculate Rollup Field_workflow4.gif)
+![](docs/Force Calculate Rollup Field_workflow4.gif)
 
 Then you have to pass two parameters:
-![](Force Calculate Rollup Field_workflow5.gif)
+![](docs/Force Calculate Rollup Field_workflow5.gif)
 
 * FieldName: The Rollup field schema name of the parent entity.
 * Parent RecordURL: You must to select the Parent field called Record URL
