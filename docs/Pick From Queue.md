@@ -3,11 +3,11 @@ With this solution you can automate the Queue Picking with workflows just by dat
 
 For using this activity you mus access here and select Pick From Queue:
 
-![](Pick From Queue_wf1.gif)
+![](Pick%20From%20Queue_wf1.gif)
 
 Then in the activity you can fill all the parameters:
 
-![](Pick From Queue_wf2.gif)
+![](Pick%20From%20Queue_wf2.gif)
 
 The Parameters are:
 * Source Queue: Select the source Queue where the items to be picked come from.
