@@ -1,11 +1,11 @@
 This step allows you to Qualify a Lead.
 
 For using this activity you must access here and select Qualify Lead:
-![](Qualify Lead_wf1.gif)
+![](Qualify%20Lead_wf1.gif)
 
 
 Then in the activity you can fill the following parameters: 
-![](Qualify Lead_wf2.gif)
+![](Qualify%20Lead_wf2.gif)
 
 The Parameters are:
 * Lead: Lead to be Qualified
