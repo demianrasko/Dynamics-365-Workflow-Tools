@@ -1,12 +1,12 @@
 This step allows you to modify the user settings.
 
 For using this activity you must access here and select Set User Settings:
-![](Set User Settings_wf1.gif)
+![](Set%20User%20Settings_wf1.gif)
 
 
 Then in the activity you can fill all the parameters:
 
-![](Set User Settings_wf2.gif)
+![](Set%20User%20Settings_wf2.gif)
 
 The Parameters are:
 * User: Select the User to be updated
