@@ -2,11 +2,11 @@ This step is very usefull to remove members from a Marketing Lists (accounts, co
 
 For using this activity you mus access here and select RemoveFromMarketingList:
 
-![](Remove From Marketing List_wf2.gif)
+![](Remove%20From%20Marketing%20List_wf2.gif)
 
 Then, you must select the Marketing List, an the record you want to remove from the list. You must select only one of account, contact or lead:
 
-![](Remove From Marketing List_w3.gif)
+![](Remove%20From%20Marketing%20List_w3.gif)
 
 The full params description is:
 * **Marketing List (required)** : the marketing List
