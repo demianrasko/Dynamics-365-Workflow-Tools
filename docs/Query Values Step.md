@@ -4,10 +4,10 @@ Could be very usefull to retrieve some parameters located in another entities su
 For use this in Workflows here are the steps:
 
 First select the step:
-![](Query Values Step_workflowActivity5.gif)
+![](Query%20Values%20Step_workflowActivity5.gif)
 
 Then, fill all the required fields:
-![](Query Values Step_workflowActivity6.gif)
+![](Query%20Values%20Step_workflowActivity6.gif)
 
 The full fields description are:
 * **EntityName (required)** : the schema name of the entity to be searched
@@ -23,7 +23,7 @@ The full fields description are:
 IMPORTANT NOTE: since version 1.0.36.0 the Attribute2 Parameter is required. for previous versions, please remember to fill something on it.
 
 Then you can use the retrieved values in following steps of the Workflow:
-![](Query Values Step_workflowActivity7.gif)
+![](Query%20Values%20Step_workflowActivity7.gif)
 
 
 
