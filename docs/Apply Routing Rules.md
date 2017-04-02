@@ -9,10 +9,10 @@ With this Workflow Activity, you can execute the active Routing Rule for one rec
 
 For use this in Workflows here are the steps:
 
-![](Apply Routing Rules_workflow6.gif)
+![](Apply%20Routing%20Rules_workflow6.gif)
 
-![](Apply Routing Rules_workflow7.gif)
+![](Apply%20Routing%20Rules_workflow7.gif)
 
-![](Apply Routing Rules_workflow8.gif)
+![](Apply%20Routing%20Rules_workflow8.gif)
 
 Note: The  Record URL, is a standard feature of Dynamics CRM, taht contains the full URL of a record. In this URL you have the entity type, and the record GUID. Right now this is the only way we have to pass a "Dynamic" EntityReference (with not hard coding an entity type) to Workflows Activities. If you pass this string URL as a parameter, in the Workflow Activity you can retrieve this entity Reference.
