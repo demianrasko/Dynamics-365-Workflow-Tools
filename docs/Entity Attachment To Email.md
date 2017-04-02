@@ -3,11 +3,11 @@ You can also filter the attached Files by FileName.
 
 For using this activity you mus access here and select Entity Attachment To Email:
 
-![](Entity Attachment To Email_wf1.gif)
+![](Entity%20Attachment%20To%20Email_wf1.gif)
 
 Then in the activity you can fill all the parameters:
 
-![](Entity Attachment To Email_wf2.gif)
+![](Entity%20Attachment%20To%20Email_wf2.gif)
 
 The Parameters are:
 * Main Record URL: The URL of the Record that contains the source Attachments
