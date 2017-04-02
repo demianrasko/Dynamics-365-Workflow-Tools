@@ -3,11 +3,11 @@ This step allows you to get the "count" of Items on one Queue, and filter them t
 
 For using this activity you mus access here and select Queue Item Count:
 
-![](Queue Item Count_wf1.gif)
+![](Queue%20Item%20Count_wf1.gif)
 
 Then in the activity you can fill all the parameters:
 
-![](Queue Item Count_wf2.gif)
+![](Queue%20Item%20Count_wf2.gif)
 
 The Parameters are:
 * Source Queue: Select the source Queue where the items to be count come from.
@@ -16,6 +16,6 @@ The Parameters are:
 
 
 You can use this step, in combination of the "Pick From Queue", here is an example:
-![](Queue Item Count_wf4.gif)
+![](Queue%20Item%20Count_wf4.gif)
 
 In this example, you can ask for the available work in the Queue "Test1", and if there are available (more than zero), pick some work.
