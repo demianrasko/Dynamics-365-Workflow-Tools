@@ -10,7 +10,7 @@ To import the Solution follow these steps:
 # Follow the wizzard steps
 
 To see how to use each of the tools includes in this solution, please access to the following links:
-* [Force Calculate Rollup Field](Force-Calculate-Rollup-Field)
+* [docs/Force Calculate Rollup Field](Force-Calculate-Rollup-Field)
 * [Apply Routing Rules](Apply-Routing-Rules)
 * [Query Values Step](Query-Values-Step)
 * [Share Record With Team](Share-Record-With-Team)
