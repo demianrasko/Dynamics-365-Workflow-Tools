@@ -2,11 +2,11 @@ The Update Child Records allows you to update multiple child records from a pare
 
 For using this action you need to select the action:
 
-![](Update Child Records_wf1.png)
+![](Update%20Child%20Records_wf1.png)
 
 Then fill all the parameters:
 
-![](Update Child Records_wf2.png)
+![](Update%20Child%20Records_wf2.png)
 
 The parameters are:
 * **Parent Record URL**: the URL of the parent record (recover dynamic on the workflow)
