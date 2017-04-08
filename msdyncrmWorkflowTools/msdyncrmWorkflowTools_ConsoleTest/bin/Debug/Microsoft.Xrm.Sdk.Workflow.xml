@@ -1,0 +1,2204 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>Microsoft.Xrm.Sdk.Workflow</name>
+  </assembly>
+  <members>
+    <member name="F:Microsoft.Xrm.Sdk.Workflow.WorkflowDependencyType.ArgumentEntityImage">
+      <summary>
+        <para>A dependency on an argument entity image. Value = 9.</para>
+      </summary>
+      <remarks>
+        <para>This type value is obsolete.</para>
+      </remarks>
+    </member>
+    <member name="F:Microsoft.Xrm.Sdk.Workflow.WorkflowDependencyType.AttributeDefinition">
+      <summary>
+        <para>A dependency on an attribute definition. Value = 8.</para>
+      </summary>
+    </member>
+    <member name="F:Microsoft.Xrm.Sdk.Workflow.WorkflowDependencyType.CustomEntityDefinition">
+      <summary>
+        <para>A dependency on a custom entity definition. Value = 7.</para>
+      </summary>
+    </member>
+    <member name="F:Microsoft.Xrm.Sdk.Workflow.WorkflowDependencyType.LocalParameter">
+      <summary>
+        <para>A dependency on a local parameter. Value = 2.</para>
+      </summary>
+    </member>
+    <member name="F:Microsoft.Xrm.Sdk.Workflow.WorkflowDependencyType.PrimaryEntityImage">
+      <summary>
+        <para>A dependency on a primary entity image. Value = 3.</para>
+      </summary>
+    </member>
+    <member name="F:Microsoft.Xrm.Sdk.Workflow.WorkflowDependencyType.PrimaryEntityPostImage">
+      <summary>
+        <para>A dependency on a primary entity post image. Value = 5.</para>
+      </summary>
+    </member>
+    <member name="F:Microsoft.Xrm.Sdk.Workflow.WorkflowDependencyType.PrimaryEntityPreImage">
+      <summary>
+        <para>A dependency on a primary entity pre image. Value = 4.</para>
+      </summary>
+    </member>
+    <member name="F:Microsoft.Xrm.Sdk.Workflow.WorkflowDependencyType.RelatedEntityImage">
+      <summary>
+        <para>A dependency on a related entity image. Value = 6.</para>
+      </summary>
+    </member>
+    <member name="F:Microsoft.Xrm.Sdk.Workflow.WorkflowDependencyType.SdkAssociation">
+      <summary>
+        <para>A dependency on an SDK association. Value = 1.</para>
+      </summary>
+    </member>
+    <member name="F:Microsoft.Xrm.Sdk.Workflow.WorkflowStepActivityStatus.Canceled">
+      <summary>
+        <para>Indicates the step has been canceled. Value = 4.</para>
+      </summary>
+    </member>
+    <member name="F:Microsoft.Xrm.Sdk.Workflow.WorkflowStepActivityStatus.Failed">
+      <summary>
+        <para>The step has failed. Value = 3.</para>
+      </summary>
+    </member>
+    <member name="F:Microsoft.Xrm.Sdk.Workflow.WorkflowStepActivityStatus.InProgress">
+      <summary>
+        <para>The step is in progress. Value = 1.</para>
+      </summary>
+    </member>
+    <member name="F:Microsoft.Xrm.Sdk.Workflow.WorkflowStepActivityStatus.SuccessfullyCompleted">
+      <summary>
+        <para>The step has successfully completed. Value = 2.</para>
+      </summary>
+    </member>
+    <member name="F:Microsoft.Xrm.Sdk.Workflow.WorkflowStepActivityStatus.Waiting">
+      <summary>
+        <para>Indicates the step is waiting. Value = 5.</para>
+      </summary>
+    </member>
+    <member name="F:Microsoft.Xrm.Sdk.Workflow.XrmTimeSpan.Zero">
+      <summary>
+        <para>Represents the zero XrmTimeSpan value. This field is read-only.</para>
+      </summary>
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.Activities.ActivityReference.#ctor">
+      <summary>
+        <para>Initializes a new instance of the  <see langword="ActivityReference" /> class.</para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.Activities.AssignEntity.#ctor">
+      <summary>
+        <para>Initializes a new instance of the  <see langword="AssignEntity" /> class.</para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.Activities.CreateEntity.#ctor">
+      <summary>
+        <para>Initializes a new instance of the  <see langword="CreateEntity" /> class.</para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.Activities.GetEntityProperty.#ctor">
+      <summary>
+        <para>
+          Initializes a new instance of the
+          <see langword="GetEntityProperty" /> class.</para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.Activities.GetPrimaryEntity.#ctor">
+      <summary>
+        <para>Initializes a new instance of the  <see langword="GetPrimaryEntity" /> class.</para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.Activities.Postpone.#ctor">
+      <summary>
+        <para>Initializes a new instance of the  <see langword="Postpone" /> class.</para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.Activities.ReferenceLiteral`1.#ctor">
+      <summary>
+        <para>
+          For internal use only.
+        </para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.Activities.ReferenceLiteral`1.#ctor(`0)">
+      <summary>
+        <para>
+          For internal use only.
+        </para>
+      </summary>
+      <param name="value">
+        <para />
+      </param>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.Activities.ReferenceLiteral`1.CanConvertToString(System.Windows.Markup.IValueSerializerContext)">
+      <summary>
+        <para>
+          For internal use only.
+        </para>
+      </summary>
+      <param name="context">
+        <para />
+      </param>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.boolean.aspx">Boolean</see></para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.Activities.ReferenceLiteral`1.ConvertToString(System.Windows.Markup.IValueSerializerContext)">
+      <summary>
+        <para>
+          For internal use only.
+        </para>
+      </summary>
+      <param name="context">
+        <para />
+      </param>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see></para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.Activities.ReferenceLiteral`1.ToString">
+      <summary>
+        <para>
+          For internal use only.
+        </para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see></para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.Activities.RetrieveEntity.#ctor">
+      <summary>
+        <para>Initializes a new instance of the  <see langword="RetrieveEntity" /> class.</para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.Activities.SendEmail.#ctor">
+      <summary>
+        <para>Initializes a new instance of the <see cref="T:Microsoft.Xrm.Sdk.Workflow.Activities.SendEmail" /> class.</para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.Activities.SendEmailFromTemplate.#ctor">
+      <summary>
+        <para>
+          Initializes a new instance of the
+          <see cref="T:Microsoft.Xrm.Sdk.Workflow.Activities.SendEmailFromTemplate" /> class.</para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.Activities.SetEntityProperty.#ctor">
+      <summary>
+        <para>
+          Initializes a new instance of the
+          <see langword="SetEntityProperty" /> class.</para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.Activities.SetState.#ctor">
+      <summary>
+        <para>Initializes a new instance of the  <see langword="SetState" /> class.</para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.Activities.StartChildWorkflow.#ctor">
+      <summary>
+        <para>Initializes a new instance of the <see cref="T:Microsoft.Xrm.Sdk.Workflow.Activities.StartChildWorkflow" /> class.</para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.Activities.UpdateEntity.#ctor">
+      <summary>
+        <para>Initializes a new instance of the  <see langword="UpdateEntity" /> class.</para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.Activities.Workflow.#ctor">
+      <summary>
+        <para>Initializes a new instance of the  <see langword="Workflow" /> class.</para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.ArgumentDescriptionAttribute.#ctor">
+      <summary>
+        <para>Initializes an instance of the <see cref="T:Microsoft.Xrm.Sdk.Workflow.ArgumentDescriptionAttribute" /> class.</para>
+      </summary>
+      <remarks>
+        <para>The <see langword="Value" /> property defaults to an empty string.</para>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.ArgumentDescriptionAttribute.#ctor(System.String)">
+      <summary>
+        <para>Initializes an instance of the <see cref="T:Microsoft.Xrm.Sdk.Workflow.ArgumentDescriptionAttribute" /> class setting the <see langword="Value" /> property.</para>
+      </summary>
+      <param name="value">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see>. A description of the argument.</para>
+      </param>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.ArgumentDirectionAttribute.#ctor">
+      <summary>
+        <para />
+      </summary>
+      <remarks>
+        <para>Initializes an instance of the <see cref="T:Microsoft.Xrm.Sdk.Workflow.ArgumentDirectionAttribute" /> class.</para>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.ArgumentDirectionAttribute.#ctor(Microsoft.Xrm.Sdk.Workflow.ArgumentDirection)">
+      <summary>
+        <para>Initializes an instance of the <see cref="T:Microsoft.Xrm.Sdk.Workflow.ArgumentDirectionAttribute" /> class using an argument direction.</para>
+      </summary>
+      <param name="value">
+        <para>Type: <see cref="T:Microsoft.Xrm.Sdk.Workflow.ArgumentDirection" />. The argument direction.</para>
+      </param>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.ArgumentEntityAttribute.#ctor">
+      <summary>
+        <para>Initializes an instance of the <see cref="T:Microsoft.Xrm.Sdk.Workflow.ArgumentEntityAttribute" /> class.</para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.ArgumentEntityAttribute.#ctor(System.String)">
+      <summary>
+        <para>Initializes an instance of the <see cref="T:Microsoft.Xrm.Sdk.Workflow.ArgumentEntityAttribute" /> class with the provided serialized entity record value.</para>
+      </summary>
+      <param name="value">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see>. The serialized entity record.</para>
+      </param>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.ArgumentRequiredAttribute.#ctor">
+      <summary>
+        <para>Initializes an instance of the <see cref="T:Microsoft.Xrm.Sdk.Workflow.ArgumentRequiredAttribute" /> class.</para>
+      </summary>
+      <remarks>
+        <para>By default, the argument is not required.</para>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.ArgumentRequiredAttribute.#ctor(System.Boolean)">
+      <summary>
+        <para>Initializes an instance of the <see cref="T:Microsoft.Xrm.Sdk.Workflow.ArgumentRequiredAttribute" /> class with the passed value.</para>
+      </summary>
+      <param name="value">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.boolean.aspx">Boolean</see>. Set to true if the argument is required; otherwise, false</para>
+      </param>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.ArgumentTargetAttribute.#ctor">
+      <summary>
+        <para>Initializes an instance of the <see cref="T:Microsoft.Xrm.Sdk.Workflow.ArgumentTargetAttribute" /> class.</para>
+      </summary>
+      <remarks>
+        <para>The <see langword="Value" /> property is set to false by default.</para>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.ArgumentTargetAttribute.#ctor(System.Boolean)">
+      <summary>
+        <para>Initializes an instance of the <see cref="T:Microsoft.Xrm.Sdk.Workflow.ArgumentTargetAttribute" /> class setting the <see langword="Value" /> property .</para>
+      </summary>
+      <param name="value">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.boolean.aspx">Boolean</see>. When true, the argument indicates the primary entity; otherwise, false</para>
+      </param>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.AttributeDependency.#ctor">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.AttributeDependency.#ctor(System.String,System.String,System.String)">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <param name="parameterName">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see></para>
+      </param>
+      <param name="dependentEntityName">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see></para>
+      </param>
+      <param name="dependentAttributeName">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see></para>
+      </param>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.AttributeTargetAttribute.#ctor(System.String,System.String)">
+      <summary>
+        <para>Initializes a new instance of the AttributeTargetAttribute class.</para>
+      </summary>
+      <param name="entityName">
+        <para>Specifies a String containing the logical name of the entity. See Remarks.</para>
+      </param>
+      <param name="attributeName">
+        <para>Specifies a String containing the logical name of the attribute.</para>
+      </param>
+      <remarks>
+        <para>The name of an entity is always lowercase, for example, account or new_bankaccount. </para>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.CustomEntityDependency.#ctor">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.CustomEntityDependency.#ctor(System.String,System.String)">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <param name="parameterName">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see>.</para>
+      </param>
+      <param name="customEntityName">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see>.</para>
+      </param>
+      <remarks>
+        <para />
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.DefaultAttribute.#ctor(System.String)">
+      <summary>
+        <para>Initializes a new instance of the DefaultAttribute class setting the value property.</para>
+      </summary>
+      <param name="value">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see>. Specifies a String containing the attribute value.</para>
+      </param>
+      <remarks>
+        <para>If the default value is for an attribute of type lookup, a customer or an owner, then you must use the DefaultAttribute Constructor (String, String) constructor and supply the entity name.</para>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.DefaultAttribute.#ctor(System.String,System.String)">
+      <summary>
+        <para>Initializes a new instance of the DefaultAttribute class setting the value and entity name properties.</para>
+      </summary>
+      <param name="value">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see>. Specifies a String containing the attribute value.</para>
+      </param>
+      <param name="entityName">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see>. Specifies a String containing the name of the entity.</para>
+      </param>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.Designers.WorkflowDesigner.#ctor">
+      <summary>
+        <para>Initializes a new instance of the <see cref="T:Microsoft.Xrm.Sdk.Workflow.Designers.WorkflowDesigner" /> class.</para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.Designers.WorkflowDesigner.InitializeComponent">
+      <summary>
+        <para>
+          For internal use only.
+        </para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.EntityCreatedByDependency.#ctor">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.EntityCreatedByDependency.#ctor(System.String,System.String)">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <param name="parameterName">
+        <para />
+      </param>
+      <param name="entityAttributes">
+        <para />
+      </param>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.EntityDependencyBase.#ctor">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.EntityDependencyBase.#ctor(System.String,System.String)">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <param name="parameterName">
+        <para />
+      </param>
+      <param name="entityAttributes">
+        <para />
+      </param>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.InputAttribute.#ctor(System.String)">
+      <summary>
+        <para>Initializes a new instance of the InputAttribute class setting the name property.</para>
+      </summary>
+      <param name="name">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see>. Specifies a String containing the name of the parameter that will appears in the workflow designer UI.</para>
+      </param>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.IStorageService.RetrieveData(System.Guid)">
+      <summary>
+        <para>
+          For internal use only.
+        </para>
+      </summary>
+      <param name="dataId">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.guid.aspx">Guid</see>.</para>
+      </param>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.object.aspx">Object</see>.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.IStorageService.SaveData(System.Guid,System.Object)">
+      <summary>
+        <para>
+          For internal use only.
+        </para>
+      </summary>
+      <param name="dataId">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.guid.aspx">Guid</see>.</para>
+      </param>
+      <param name="data">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.object.aspx">Object</see>.</para>
+      </param>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.guid.aspx">Guid</see>.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.IWaitNotificationService.RegisterListener(System.Guid,System.String,System.Guid,System.String)">
+      <summary>
+        <para>
+          For internal use only.
+        </para>
+      </summary>
+      <param name="queueId">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.guid.aspx">Guid</see>.</para>
+      </param>
+      <param name="entityName">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see>.</para>
+      </param>
+      <param name="entityId">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.guid.aspx">Guid</see>.</para>
+      </param>
+      <param name="attributeName">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see>.</para>
+      </param>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.guid.aspx">Guid</see> .</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.IWaitNotificationService.UnregisterAllListeners">
+      <summary>
+        <para>
+          For internal use only.
+        </para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.IWaitNotificationService.UnregisterListener(System.Guid)">
+      <summary>
+        <para>
+          For internal use only.
+        </para>
+      </summary>
+      <param name="subscriptionId">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.guid.aspx">Guid</see>.</para>
+      </param>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.LocalParameterDependency.#ctor(System.String,System.Type)">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <param name="parameterName">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see>.</para>
+      </param>
+      <param name="parameterType">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.type.aspx">Type</see>.</para>
+      </param>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.OutputAttribute.#ctor(System.String)">
+      <summary>
+        <para>Initializes a new instance of the <see langword="OutputAttribute" /> class.</para>
+      </summary>
+      <param name="name">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see>. Specifies a String containing the name of the parameter that will appears in the process designer UI.</para>
+      </param>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.ParameterAttribute.#ctor(System.String)">
+      <summary>
+        <para>Initializes a new instance of the <see langword="ParameterAttribute" /> class.</para>
+      </summary>
+      <param name="name">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see>. The name of the parameter that will appear in the process designer UI.</para>
+      </param>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.ParameterDependencyBase.#ctor">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.ParameterDependencyBase.#ctor(System.String)">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <param name="parameterName">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see>.</para>
+      </param>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.PreImageDependency.#ctor">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.PreImageDependency.#ctor(System.String,System.String)">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <param name="parameterName">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see>.</para>
+      </param>
+      <param name="entityAttributes">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see>.</para>
+      </param>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.PrimaryEntityDependency.#ctor">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.PrimaryEntityDependency.#ctor(System.String,System.String,System.Int32)">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <param name="parameterName">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see>.</para>
+      </param>
+      <param name="entityAttributes">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see>.</para>
+      </param>
+      <param name="type">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.int32.aspx">Int32</see>.</para>
+      </param>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.ReferenceTargetAttribute.#ctor(System.String)">
+      <summary>
+        <para>Initializes a new instance of the <see langword="ReferenceTargetAttribute" /> class.</para>
+      </summary>
+      <param name="entityName">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see>. Specifies a String containing the name of the entity.</para>
+      </param>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.RelatedEntityDependency.#ctor">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.RelatedEntityDependency.#ctor(System.String,System.String,System.String,System.String)">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <param name="parameterName">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see>.</para>
+      </param>
+      <param name="entityAttributes">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see>.</para>
+      </param>
+      <param name="relatedAttributeName">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see>.</para>
+      </param>
+      <param name="relatedEntityName">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see>.</para>
+      </param>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.WaitSubscription.#ctor(System.String,System.Guid,System.String)">
+      <summary>
+        <para>
+          Initializes a new instance of the
+          <see cref="T:Microsoft.Xrm.Sdk.Workflow.WaitSubscription" /> class.</para>
+      </summary>
+      <param name="entityName">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see>.</para>
+      </param>
+      <param name="entityId">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.guid.aspx">Guid</see>.</para>
+      </param>
+      <param name="attributeName">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see>.</para>
+      </param>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.WorkflowArgument.#ctor">
+      <summary>
+        <para>Initializes an instance of the <see cref="T:Microsoft.Xrm.Sdk.Workflow.WorkflowArgument" /> class.</para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.XrmTimeSpan.#ctor(System.Int32,System.Int32,System.Int32)">
+      <summary>
+        <para>Initializes a new instance of the XrmTimeSpan class setting the days, hours and minutes.</para>
+      </summary>
+      <param name="days">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.int32.aspx">Int32</see>. Specifies the days for the time span.</para>
+      </param>
+      <param name="hours">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.int32.aspx">Int32</see>. Specifies the hours for the time span.</para>
+      </param>
+      <param name="minutes">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.int32.aspx">Int32</see>. Specifies the minutes for the time span.</para>
+      </param>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.XrmTimeSpan.#ctor(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>
+        <para>Initializes a new instance of the XrmTimeSpan class setting the years, months, days, hours and minutes.</para>
+      </summary>
+      <param name="years">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.int32.aspx">Int32</see>. Specifies the years for the time span.</para>
+      </param>
+      <param name="months">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.int32.aspx">Int32</see>. Specifies the months for the time span.</para>
+      </param>
+      <param name="days">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.int32.aspx">Int32</see>. Specifies the days for the time span.</para>
+      </param>
+      <param name="hours">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.int32.aspx">Int32</see>. Specifies the hours for the time span.</para>
+      </param>
+      <param name="minutes">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.int32.aspx">Int32</see>. Specifies the minutes for the time span.</para>
+      </param>
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.XrmTimeSpan.#ctor(System.TimeSpan)">
+      <summary>
+        <para>Initializes a new instance of the CrmTimeSpan class setting the time span.</para>
+      </summary>
+      <param name="value">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.timespan.aspx">TimeSpan</see>. Specifies the time span.</para>
+      </param>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.XrmTimeSpan.Add(System.DateTime)">
+      <summary>
+        <para>Adds the specified date/time value to this instance.</para>
+      </summary>
+      <param name="value">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.datetime.aspx">DateTime</see>. A date/time value to add to the current instance value.</para>
+      </param>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.datetime.aspx">DateTime</see> The resultant date and time value.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.XrmTimeSpan.CreateXrmTimeSpan(Microsoft.Xrm.Sdk.Workflow.XrmTimeSpan)">
+      <summary>
+        <para>Creates an instance of a XrmTimeSpan class setting the time span members.</para>
+      </summary>
+      <param name="cts">
+        <para>Type: <see cref="T:Microsoft.Xrm.Sdk.Workflow.XrmTimeSpan" />. Specifies the time span.</para>
+      </param>
+      <returns>
+        <para>Type: <see cref="T:Microsoft.Xrm.Sdk.Workflow.XrmTimeSpan" />The instance of a XrmTimeSpan class where the time span members are set.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.XrmTimeSpan.CreateXrmTimeSpan(System.Int32,System.Int32,System.Int32)">
+      <summary>
+        <para>Creates an instance of a  XrmTimeSpan class setting the days, hours and minutes.</para>
+      </summary>
+      <param name="days">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.int32.aspx">Int32</see>. Specifies the days for the time span.</para>
+      </param>
+      <param name="hours">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.int32.aspx">Int32</see>. Specifies the hours for the time span.</para>
+      </param>
+      <param name="minutes">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.int32.aspx">Int32</see>. Specifies the minutes for the time span.</para>
+      </param>
+      <returns>
+        <para>Type: <see cref="T:Microsoft.Xrm.Sdk.Workflow.XrmTimeSpan" />The instance of a XrmTimeSpan class where the days, hours, and minutes are set.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.XrmTimeSpan.CreateXrmTimeSpan(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <summary>
+        <para>Creates an instance of a XrmTimeSpan class setting the years, months, days, hours and minutes.</para>
+      </summary>
+      <param name="years">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.int32.aspx">Int32</see>. Specifies the years for the time span.</para>
+      </param>
+      <param name="months">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.int32.aspx">Int32</see>. Specifies the months for the time span.</para>
+      </param>
+      <param name="days">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.int32.aspx">Int32</see>. Specifies the days for the time span.</para>
+      </param>
+      <param name="hours">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.int32.aspx">Int32</see>. Specifies the hours for the time span.</para>
+      </param>
+      <param name="minutes">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.int32.aspx">Int32</see>. Specifies the minutes for the time span.</para>
+      </param>
+      <returns>
+        <para>Type: <see cref="T:Microsoft.Xrm.Sdk.Workflow.XrmTimeSpan" />The instance of a XrmTimeSpan class where the years, months, days, hours, and minutes are set.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.XrmTimeSpan.Equals(Microsoft.Xrm.Sdk.Workflow.XrmTimeSpan)">
+      <summary>
+        <para>Returns a value indicating whether this instance is equal to a specified XrmTimeSpan object.</para>
+      </summary>
+      <param name="value">
+        <para>Type: <see cref="T:Microsoft.Xrm.Sdk.Workflow.XrmTimeSpan" />. Specifies the XrmTimeSpan instance to test for equality with the current instance.</para>
+      </param>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.boolean.aspx">Boolean</see>true if the value represents the same time interval as the current XrmTimeSpan structure; otherwise, false.</para>
+      </returns>
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.XrmTimeSpan.Equals(System.Object)">
+      <summary>
+        <para>Returns a value indicating whether this instance is equal to a specified object.</para>
+      </summary>
+      <param name="obj">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.object.aspx">Object</see>. Specifies the object to test for equality with the current instance.</para>
+      </param>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.boolean.aspx">Boolean</see>true if value is a XrmTimeSpan object that represents the same time interval as the current XrmTimeSpan structure; otherwise, false.</para>
+      </returns>
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.XrmTimeSpan.GetHashCode">
+      <summary>
+        <para>Returns a hash code for this instance.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.int32.aspx">Int32</see> The hash code for this instance.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.XrmTimeSpan.op_Equality(Microsoft.Xrm.Sdk.Workflow.XrmTimeSpan,Microsoft.Xrm.Sdk.Workflow.XrmTimeSpan)">
+      <summary>
+        <para>Indicates whether two XrmTimeSpan instances are equal.</para>
+      </summary>
+      <param name="span1">
+        <para>Type: <see cref="T:Microsoft.Xrm.Sdk.Workflow.XrmTimeSpan" />. Specifies a XrmTimeSpan.</para>
+      </param>
+      <param name="span2">
+        <para>Type: <see cref="T:Microsoft.Xrm.Sdk.Workflow.XrmTimeSpan" />. Specifies a XrmTimeSpan.</para>
+      </param>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.boolean.aspx">Boolean</see>true if the values of span1 and span2 are equal; otherwise, false.</para>
+      </returns>
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.XrmTimeSpan.op_Inequality(Microsoft.Xrm.Sdk.Workflow.XrmTimeSpan,Microsoft.Xrm.Sdk.Workflow.XrmTimeSpan)">
+      <summary>
+        <para>Indicates whether two XrmTimeSpan instances are not equal.</para>
+      </summary>
+      <param name="span1">
+        <para>Type: <see cref="T:Microsoft.Xrm.Sdk.Workflow.XrmTimeSpan" />. Specifies a XrmTimeSpan.</para>
+      </param>
+      <param name="span2">
+        <para>Type: <see cref="T:Microsoft.Xrm.Sdk.Workflow.XrmTimeSpan" />. Specifies a XrmTimeSpan.</para>
+      </param>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.boolean.aspx">Boolean</see>true if the values of span1 and span2 are not equal; otherwise, false.</para>
+      </returns>
+      <remarks>
+        <para>Returns a Boolean type. true of the values of span1 and span2 are not equal; otherwise false.</para>
+      </remarks>
+    </member>
+    <member name="M:Microsoft.Xrm.Sdk.Workflow.XrmTimeSpan.Subtract(System.DateTime)">
+      <summary>
+        <para>Subtracts the specified XrmTimeSpan from this instance.</para>
+      </summary>
+      <param name="value">
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.datetime.aspx">DateTime</see>. Specifies a date/time value to subtract.</para>
+      </param>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.datetime.aspx">DateTime</see> The value resulting when the passed value is subtracted from this instance.</para>
+      </returns>
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.ActivityReference.Arguments">
+      <summary>
+        <para>
+          For internal use only.
+        </para>
+      </summary>
+      <returns>
+        <para>Returns <see href="https://msdn.microsoft.com/library/xfhwa508.aspx">Dictionary</see>.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.ActivityReference.AssemblyQualifiedName">
+      <summary>
+        <para>
+          For internal use only.
+        </para>
+      </summary>
+      <returns>
+        <para>Returns <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see>.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.ActivityReference.Properties">
+      <summary>
+        <para>
+          For internal use only.
+        </para>
+      </summary>
+      <returns>
+        <para>Returns <see href="https://msdn.microsoft.com/library/xfhwa508.aspx">Dictionary</see>.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.AssignEntity.Entity">
+      <summary>
+        <para>Gets the resulting record following the assignment to a new owner.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd485644.aspx">OutArgument</see>&lt;<see cref="T:Microsoft.Xrm.Sdk.Entity" />&gt;The resulting record following the assignment to a new owner.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.AssignEntity.EntityId">
+      <summary>
+        <para>Sets the ID of the record to assign.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd465965.aspx">InArgument</see>&lt;<see href="https://msdn.microsoft.com/library/system.guid.aspx">Guid</see>&gt;The ID of the record to assign.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.AssignEntity.EntityName">
+      <summary>
+        <para>Set the logical name of the entity specified by the <paramref name="EntityId" /> property.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd465965.aspx">InArgument</see>&lt;<see href="https://msdn.microsoft.com/library/system.string.aspx">String</see>&gt;The the logical name of the entity.</para>
+      </returns>
+      <remarks>
+        <para>A workflow dependency for this entity will be added.</para>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.AssignEntity.Owner">
+      <summary>
+        <para>Sets the new owner for the record.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd465965.aspx">InArgument</see>&lt;<see cref="T:Microsoft.Xrm.Sdk.EntityReference" />&gt;The ID of the record to assign.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.CreateEntity.Entity">
+      <summary>
+        <para>Gets or sets the entity instance (record).</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd502004.aspx">InOutArgument</see>&lt;<see cref="T:Microsoft.Xrm.Sdk.Entity" />&gt;The entity instance (record).</para>
+      </returns>
+      <remarks>
+        <para>This is an entity instance of the type specified by the <see langword="EntityName" /> property. On input, the attribute values that have been set will be used to create the record. Only attribute values for attributes that are valid for create and that the user has access to create will be used, all others will be ignored.</para>
+        <para>On output, this the entity instance that was created.</para>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.CreateEntity.EntityId">
+      <summary>
+        <para>Gets the ID of the record that was created.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd485644.aspx">OutArgument</see>&lt;<see href="https://msdn.microsoft.com/library/system.guid.aspx">Guid</see>&gt;The ID of the record that was created.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.CreateEntity.EntityName">
+      <summary>
+        <para>Sets the logical entity name of the record to create.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd465965.aspx">InArgument</see>&lt;<see href="https://msdn.microsoft.com/library/system.string.aspx">String</see>&gt;The logical entity name of the record to create.</para>
+      </returns>
+      <remarks>
+        <para>This must be the entity name of the record specified in the <see langword="Entity" /> property.</para>
+        <para>A workflow dependency for this entity will be added.</para>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.GetEntityProperty.Attribute">
+      <summary>
+        <para>Gets or sets the logical name of the attribute.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd465965.aspx">InArgument</see> The logical name of the attribute.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.GetEntityProperty.Entity">
+      <summary>
+        <para>Gets or sets the entity record from which to get the attribute value.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd465965.aspx">InArgument</see> The entity record from which to get the attribute value.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.GetEntityProperty.EntityName">
+      <summary>
+        <para>Gets or sets the logical name of the entity.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd465965.aspx">InArgument</see> The logical name of the entity.</para>
+      </returns>
+      <remarks>
+        <para>If specified, a workflow dependency for this entity will be added.</para>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.GetEntityProperty.TargetType">
+      <summary>
+        <para>Gets or sets the type of the value to be retrieved.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd465965.aspx">InArgument</see> The type of the value to be retrieved.</para>
+      </returns>
+      <remarks>
+        <para>If no type is specified, the value is returned in it’s native type.</para>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.GetEntityProperty.Value">
+      <summary>
+        <para>Gets the value of the specified entity attribute.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd485644.aspx">OutArgument</see> The value of the specified entity attribute.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.GetPrimaryEntity.PrimaryEntityReference">
+      <summary>
+        <para>Gets the entity reference for the primary entity.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd485644.aspx">OutArgument</see>The entity reference for the primary entity.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.Postpone.BlockExecution">
+      <summary>
+        <para>Sets whether the workflow execution should be suspended.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd465965.aspx">InArgument</see> Indicates whether the workflow execution should be suspended.</para>
+      </returns>
+      <remarks>
+        <para>If <see langword="true" />, workflow execution will be suspended.</para>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.Postpone.BookmarkCallback">
+      <summary>
+        <para>Gest the callback method used when workflow execution is resumed.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.activities.bookmarkcallback.aspx">BookmarkCallback</see>The callback method used when workflow execution is resumed.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.Postpone.PostponeUntil">
+      <summary>
+        <para>Sets the date and time the workflow execution will resume.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd465965.aspx">InArgument</see> The date and time the workflow execution will resume.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.ReferenceLiteral`1.Value">
+      <summary>
+        <para>
+          For internal use only.
+        </para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see></para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.RetrieveEntity.Attributes">
+      <summary>
+        <para>Sets the collection of logical names of the attributes to be retrieved.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd465965.aspx">InArgument</see> The collection of logical names of the attributes to be retrieved.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.RetrieveEntity.Entity">
+      <summary>
+        <para>Gets the retrieved entity record.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd485644.aspx">OutArgument</see> The retrieved entity record.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.RetrieveEntity.EntityId">
+      <summary>
+        <para>Sets the ID of the entity record to be retrieved.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd465965.aspx">InArgument</see> The ID of the entity record to be retrieved.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.RetrieveEntity.EntityName">
+      <summary>
+        <para>Set the logical name of the entity specified by the <paramref name="EntityId" /> property.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd465965.aspx">InArgument</see> The logical name of the entity specified by the <paramref name="EntityId" /> property.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.RetrieveEntity.ThrowIfNotExists">
+      <summary>
+        <para>Sets whether the workflow should throw an exception if the entity record does not exist.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd465965.aspx">InArgument</see> Indicates whether the workflow should throw an exception if the entity record does not exist.</para>
+      </returns>
+      <remarks>
+        <para>If not specified, this property is <see langword="true" /> by default.</para>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.SendEmail.Entity">
+      <summary>
+        <para>Gets or sets the e-mail record.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd502004.aspx">InOutArgument</see>The e-mail record.</para>
+      </returns>
+      <remarks>
+        <para>On input, this is an <see langword="Email" /> record that will be used to create the e-mail message.</para>
+        <para>On output, this the email record that was created.</para>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.SendEmail.EntityId">
+      <summary>
+        <para>Gets or sets the ID of the resulting e-mail record.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd485644.aspx">OutArgument</see>The ID of the resulting e-mail record.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.SendEmailFromTemplate.Entity">
+      <summary>
+        <para>Gets or sets the e-mail record.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd502004.aspx">InOutArgument</see>The e-mail record.</para>
+      </returns>
+      <remarks>
+        <para>On input, this is an <see langword="Email" /> entity record that will be used to create the e-mail message.</para>
+        <para>On output, this the email entity instance that was created.</para>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.SendEmailFromTemplate.EntityId">
+      <summary>
+        <para>Gets or sets the ID of the resulting e-mail.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd485644.aspx">OutArgument</see>The ID of the resulting e-mail.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.SendEmailFromTemplate.RegardingId">
+      <summary>
+        <para>Gets or sets the ID of the entity record with which the e-mail message is associated.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd465965.aspx">InArgument</see>The ID of the entity record with which the e-mail message is associated.</para>
+      </returns>
+      <remarks>
+        <para>The <paramref name="RegardingId" /> property is the ID of an entity record that is valid for the <see langword="Email.RegardingObjectId" /> attribute. The <see langword="RegardingType" /> property must contain the logical name of the entity type for this entity record.</para>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.SendEmailFromTemplate.RegardingType">
+      <summary>
+        <para>Gets or sets the logical entity name of the entity represented by the <paramref name="RegardingdId" /> property.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd465965.aspx">InArgument</see>The logical entity name of the entity represented by the <see langword="RegardingdId" /> property.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.SendEmailFromTemplate.TemplateId">
+      <summary>
+        <para>Gets or sets the ID of the e-mail template to use.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd465965.aspx">InArgument</see>The ID of the e-mail template to use. </para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.SetEntityProperty.Attribute">
+      <summary>
+        <para>Sets the logical name of the attribute.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd465965.aspx">InArgument</see> The logical name of the attribute.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.SetEntityProperty.Entity">
+      <summary>
+        <para>Gets or sets the entity record.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd502004.aspx">InOutArgument</see> The entity record.</para>
+      </returns>
+      <remarks>
+        <para>This is a record of the type specified by the <see langword="EntityName" /> property. </para>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.SetEntityProperty.EntityName">
+      <summary>
+        <para>Sets the logical entity name of the record specified in the <see langword="Entity" /> property.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd465965.aspx">InArgument</see> The logical entity name of the record specified in the <see langword="Entity" /> property.</para>
+      </returns>
+      <remarks>
+        <para>If specified, a workflow dependency for this entity will be added.</para>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.SetEntityProperty.TargetType">
+      <summary>
+        <para>Sets the type for the value to be converted to.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd465965.aspx">InArgument</see> The type for the value to be converted to.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.SetEntityProperty.Value">
+      <summary>
+        <para>Sets the value for the attribute specified in the <paramref name="Attribute" /> property.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd465965.aspx">InArgument</see> The value for the attribute specified in the <paramref name="Attribute" /> property.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.SetState.Entity">
+      <summary>
+        <para>Gets the resulting entity record following the update.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd485644.aspx">OutArgument</see> The resulting entity record following the update.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.SetState.EntityId">
+      <summary>
+        <para>Sets the ID of the entity record to update.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd465965.aspx">InArgument</see> The ID of the entity record to update.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.SetState.EntityName">
+      <summary>
+        <para>Set the logical name of the entity specified by the <paramref name="EntityId" /> property.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd465965.aspx">InArgument</see> The logical name of the entity specified by the <paramref name="EntityId" /> property.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.SetState.State">
+      <summary>
+        <para>Sets the new state for the entity record.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd465965.aspx">InArgument</see> The new state for the entity record.</para>
+      </returns>
+      <remarks />Record state and status</member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.SetState.Status">
+      <summary>
+        <para>Sets the new status that corresponds to the <paramref name="State" /> property.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd465965.aspx">InArgument</see> The new status that corresponds to the <paramref name="State" /> property.</para>
+      </returns>
+      <remarks>
+        <para>Must be a valid status for the specified state.</para>
+      </remarks>Record state and status</member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.StartChildWorkflow.EntityId">
+      <summary>
+        <para>Sets the ID of the primary entity for the child workflow.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd465965.aspx">InArgument</see> The ID of the primary entity for the child workflow.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.StartChildWorkflow.EntityName">
+      <summary>
+        <para>Sets the logical name of the entity specified by the <paramref name="EntityId" /> property.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd465965.aspx">InArgument</see> The logical name of the entity specified by the <paramref name="EntityId" /> property.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.StartChildWorkflow.InputParameters">
+      <summary>
+        <para>Gets or sets the input parameters.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd465965.aspx">InArgument</see>The input parameters.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.StartChildWorkflow.WorkflowId">
+      <summary>
+        <para>Sets the ID of the workflow to be started.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd465965.aspx">InArgument</see> The ID of the workflow to be started.</para>
+      </returns>
+      <remarks>
+        <para>The <paramref name="WorfklowId" /> property corresponds to the <see langword="Workflow.WorkflowId" /> attribute which is the primary key for the <see langword="Workflow" /> entity.</para>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.UpdateEntity.Entity">
+      <summary>
+        <para>Gets or sets the record.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd502004.aspx">InOutArgument</see> The record to update.</para>
+      </returns>
+      <remarks>
+        <para>This is an entity instance of the type specified by the <see langword="EntityName" /> property. On input, the attribute values that have been set will be used update the record. Only attribute values for attributes that are valid for update and that the user has access to update will be used, all others will be ignored.</para>
+        <para>On output, this is the record that was updated.</para>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.UpdateEntity.EntityName">
+      <summary>
+        <para>Sets the logical entity name of the record to update.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/dd465965.aspx">InArgument</see> The logical entity name of the record to update.</para>
+      </returns>
+      <remarks>
+        <para>This must be the name of the record specified in the <see langword="Entity" /> property.</para>
+        <para>If specified, it will be added to the workflow dependencies.</para>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.Workflow.Activities">
+      <summary>
+        <para>Gets the collection of activities for this workflow.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/ms132397.aspx">Collection</see> The collection of activities for this workflow.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.Workflow.BookmarkCallback">
+      <summary>
+        <para>Gets the callback method called when the workflow is resumed.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.activities.bookmarkcallback.aspx">BookmarkCallback</see>The callback method called when the workflow is resumed.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.Workflow.OnChildComplete">
+      <summary>
+        <para>Gets the callback method called when a child of this sequence completes execution.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.activities.completioncallback.aspx">CompletionCallback</see>The callback method called when a child of this sequence completes execution.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.Activities.Workflow.Variables">
+      <summary>
+        <para>Gets the collection of workflow variables.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/ms132397.aspx">Collection</see> The collection of workflow variables.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.ArgumentDescriptionAttribute.ArgumentValue">
+      <summary>
+        <para>Gets the description of the argument.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.object.aspx">Object</see>The description of the argument.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.ArgumentDescriptionAttribute.Value">
+      <summary>
+        <para>Gets or sets the argument’s description.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see>The argument’s description.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.ArgumentDirectionAttribute.ArgumentValue">
+      <summary>
+        <para>Gets the argument’s value.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.object.aspx">Object</see>The argument’s value.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.ArgumentDirectionAttribute.Value">
+      <summary>
+        <para>Gets or sets the data direction of a custom attribute for an action.</para>
+      </summary>
+      <returns>
+        <para>Type: <see cref="T:Microsoft.Xrm.Sdk.Workflow.ArgumentDirection" />The data direction of a custom attribute. Value=0 (input), or 1 (output).</para>
+      </returns>
+      <remarks />
+      <seealso cref="T:Microsoft.Xrm.Sdk.Workflow.ArgumentDirection" />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.ArgumentEntityAttribute.ArgumentValue">
+      <summary>
+        <para>Gets the entity value.</para>
+      </summary>
+      <returns>
+        <para>Type: <see cref="T:System.Object" />An entity that is passed to the workflow at run-time.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.ArgumentEntityAttribute.Value">
+      <summary>
+        <para>Gets or sets the entity.</para>
+      </summary>
+      <returns>
+        <para>Type: <see cref="T:System.String" />The serialized entity record.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.ArgumentRequiredAttribute.ArgumentValue">
+      <summary>
+        <para>Gets the argument value.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.object.aspx">Object</see>The argument value.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.ArgumentRequiredAttribute.Value">
+      <summary>
+        <para>Gets or sets the argument value.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.boolean.aspx">Boolean</see>True if the argument is required; otherwise, false.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.ArgumentTargetAttribute.ArgumentValue">
+      <summary>
+        <para>Gets the primary entity for which the workflow is run.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.object.aspx">Object</see>The primary entity for which the workflow is run.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.ArgumentTargetAttribute.Value">
+      <summary>
+        <para>Gets a value indicating the argument is the primary entity for which the workflow is run.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.boolean.aspx">Boolean</see>When true, the argument is the primary entity for the workflow; otherwise, false.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.AttributeDependency.DependentAttributeName">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see></para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.AttributeDependency.DependentEntityName">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see></para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.AttributeDependency.ParameterType">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.type.aspx">Type</see></para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.AttributeTargetAttribute.AttributeName">
+      <summary>
+        <para>Gets the logical name of the target attribute.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see>The logical name of the target attribute.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.AttributeTargetAttribute.EntityName">
+      <summary>
+        <para>Gets the logical name of the entity.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see>The logical name of the entity.</para>
+      </returns>
+      <remarks>
+        <para>The name of an entity is always lowercase, for example, account or new_bankaccount. </para>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.CustomEntityDependency.CustomEntityName">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see> .</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.CustomEntityDependency.ParameterType">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.type.aspx">Type</see> .</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.DefaultAttribute.EntityName">
+      <summary>
+        <para>Gets the entity name for a value of type lookup, a customer or an owner.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see> The entity name for a value of type lookup, a customer or an owner.</para>
+      </returns>
+      <remarks>
+        <para>The name of an entity is always lowercase, for example, account or new_bankaccount.</para>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.DefaultAttribute.Value">
+      <summary>
+        <para>Gets the default value.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see> The default value.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.EntityDependencyBase.EntityAttributes">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <returns>
+        <para>Returns <see cref="T:System.String" />.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.EntityDependencyBase.ParameterType">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <returns>
+        <para>Returns <see cref="T:System.Type" />.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.IWaitNotificationService.SubscriptionToRegister">
+      <summary>
+        <para>
+          For internal use only.
+        </para>
+      </summary>
+      <returns>
+        <para>Type: <see cref="T:Microsoft.Xrm.Sdk.Workflow.WaitSubscription" />.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.IWorkflowArgument.ArgumentValue">
+      <summary>
+        <para>Gets the argument’s value.</para>
+      </summary>
+      <returns>
+        <para>Returns <see href="https://msdn.microsoft.com/library/system.object.aspx">Object</see>The arguments value.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.IWorkflowContext.ParentContext">
+      <summary>
+        <para>Gets the parent context.</para>
+      </summary>
+      <returns>
+        <para>Type:  <see cref="T:Microsoft.Xrm.Sdk.Workflow.IWorkflowContext" />The parent context.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.IWorkflowContext.StageName">
+      <summary>
+        <para>Gets the stage information of the process instance.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see>The stage information of the process instance.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.IWorkflowContext.WorkflowCategory">
+      <summary>
+        <para>Gets the process category information of the process instance: workflow or dialog.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.int32.aspx">Int32</see> The process category information of the process instance: workflow or dialog.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.IWorkflowContext.WorkflowMode">
+      <summary>
+        <para>Indicates how the workflow is to be executed.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.int32.aspx">Int32</see>Value = 0 (background/asynchronous), 1 (real-time).</para>
+      </returns>
+      <remarks>
+        <para>This property is obsolete.</para>
+      </remarks>Create real-time workflows</member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.LocalParameterDependency.ParameterType">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.type.aspx">Type</see>.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.ParameterAttribute.Name">
+      <summary>
+        <para>Gets the name of the parameter that will appear in the process designer UI.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see> The name of the parameter that will appear in the process designer UI.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.ParameterDependencyBase.ParameterName">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see> .</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.ParameterDependencyBase.ParameterType">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.type.aspx">Type</see> .</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.PrimaryEntityDependency.Type">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.int32.aspx">Int32</see>. </para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.ReferenceTargetAttribute.EntityName">
+      <summary>
+        <para>Gets the name of the entity for the attribute.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see> The name of the entity for the attribute.</para>
+      </returns>
+      <remarks>
+        <para>The name of an entity is always lowercase, for example, account or new_bankaccount. </para>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.RelatedEntityDependency.RelatedAttributeName">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see> .</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.RelatedEntityDependency.RelatedEntityName">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see> .</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.WaitSubscription.AttributeName">
+      <summary>
+        <para>
+          For internal use only.
+        </para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see>.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.WaitSubscription.EntityId">
+      <summary>
+        <para>
+          For internal use only.
+        </para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.guid.aspx">Guid</see> .</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.WaitSubscription.EntityName">
+      <summary>
+        <para>
+          For internal use only.
+        </para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see>.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.WorkflowArgument.ArgumentType">
+      <summary>
+        <para>Gets or sets the data type of the workflow argument.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.type.aspx">Type</see>The data type of the workflow argument.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.WorkflowArgument.ContainerType">
+      <summary>
+        <para>Gets or sets the collection type that can contain the workflow argument. </para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.type.aspx">Type</see>The collection type that can contain the workflow argument.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.WorkflowArgument.Description">
+      <summary>
+        <para>Gets or sets a description of the workflow argument.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see>A description of the workflow argument.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.WorkflowArgument.Direction">
+      <summary>
+        <para>Gets or sets the data direction of the workflow argument.</para>
+      </summary>
+      <returns>
+        <para>Type: <see cref="T:Microsoft.Xrm.Sdk.Workflow.ArgumentDirection" />Specifies if the argument is input to or output from the workflow.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.WorkflowArgument.EntityName">
+      <summary>
+        <para>Gets or sets the logical name of the primary entity that the workflow is executing for. </para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see>The logical name of the primary entity.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.WorkflowArgument.Name">
+      <summary>
+        <para>Gets or sets a name for the workflow argument.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.string.aspx">String</see>A name for the workflow argument.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.WorkflowArgument.Required">
+      <summary>
+        <para>Gets or sets if the workflow argument is required.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.boolean.aspx">Boolean</see>true if the argument is required; otherwise false.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.WorkflowArgument.Target">
+      <summary>
+        <para>Gets or sets whether the argument is the primary entity being supplied to the workflow.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.boolean.aspx">Boolean</see>true if the argument is the primary entity; otherwise, false.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.WorkflowArgument.Value">
+      <summary>
+        <para>Gets or sets the value of the workflow argument.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.object.aspx">Object</see>The value of the workflow argument.</para>
+      </returns>
+      <remarks />
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.XrmTimeSpan.Days">
+      <summary>
+        <para>Gets the number of whole days represented by the current XrmTimeSpan structure.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.int32.aspx">Int32</see> The number of whole days represented by the current XrmTimeSpan structure.</para>
+      </returns>
+      <remarks>
+        <para>The value of this property is an Int32 type that is the day component of this instance. The return value can be positive or negative.</para>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.XrmTimeSpan.Hours">
+      <summary>
+        <para>Gets the number of whole hours represented by the current XrmTimeSpan structure.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.int32.aspx">Int32</see>The number of whole hours represented by the current XrmTimeSpan structure.</para>
+      </returns>
+      <remarks>
+        <para>The value of this property is an Int32 type that is the hours component of this instance. The return value ranges from -23 through 23.</para>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.XrmTimeSpan.Minutes">
+      <summary>
+        <para>Gets the number of whole minutes represented by the current XrmTimeSpan structure.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.int32.aspx">Int32</see> The number of whole minutes represented by the current XrmTimeSpan structure.</para>
+      </returns>
+      <remarks>
+        <para>The value of this property is an Int32 type that is the minutes component of this instance. The return value ranges from -59 through 59.</para>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.XrmTimeSpan.Months">
+      <summary>
+        <para>Gets the number of whole months represented by the current XrmTimeSpan structure.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.int32.aspx">Int32</see> The number of whole months represented by the current XrmTimeSpan structure.</para>
+      </returns>
+      <remarks>
+        <para>The value of this property is an Int32 type that is the months component of this instance. The return value ranges from -12 through 12.</para>
+      </remarks>
+    </member>
+    <member name="P:Microsoft.Xrm.Sdk.Workflow.XrmTimeSpan.Years">
+      <summary>
+        <para>Gets the number of whole years represented by the current XrmTimeSpan structure.</para>
+      </summary>
+      <returns>
+        <para>Type: <see href="https://msdn.microsoft.com/library/system.int32.aspx">Int32</see> The number of whole years represented by the current XrmTimeSpan structure.</para>
+      </returns>
+      <remarks>
+        <para>The value of this property is an Int32 type that is the years component of this instance.</para>
+      </remarks>
+    </member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.Activities.ActivityReference">
+      <summary>
+        <para>
+          For internal use only.
+        </para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.Activities.AssignEntity">
+      <summary>
+        <para>Activity used to assign a record to a new owner or routes it to a queue.</para>
+      </summary>
+      <remarks />Custom XAML workflows</member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.Activities.CreateEntity">
+      <summary>
+        <para>Creates an record.</para>
+      </summary>
+      <remarks />Custom XAML workflows</member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.Activities.GetEntityProperty">
+      <summary>
+        <para>Retrieves the value of an entity attribute and converts the value to the specified type.</para>
+      </summary>
+      <remarks />Custom XAML workflows</member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.Activities.GetPrimaryEntity">
+      <summary>
+        <para>Retrieves an entity reference for the primary entity for the workflow instance.</para>
+      </summary>
+      <remarks />Custom XAML workflows</member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.Activities.Postpone">
+      <summary>
+        <para>Suspends the workflow until the specified date and time. </para>
+      </summary>
+      <remarks>
+        <para>Use this activity type instead of the Windows Workflow Foundation<see langword="Delay" /> activity.</para>
+      </remarks>Custom XAML workflows</member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.Activities.ReferenceLiteral`1">
+      <summary>
+        <para>
+          For internal use only.
+        </para>
+      </summary>
+      <typeparam name="T">
+        <para />
+      </typeparam>
+      <remarks />
+    </member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.Activities.RetrieveEntity">
+      <summary>
+        <para>Retrieves a record.</para>
+      </summary>
+      <remarks />Custom XAML workflows</member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.Activities.SendEmail">
+      <summary>
+        <para>Sends an e-mail message.</para>
+      </summary>
+      <remarks />Custom XAML workflows</member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.Activities.SendEmailFromTemplate">
+      <summary>
+        <para>Sends an e-mail message to a recipient using an e-mail template.</para>
+      </summary>
+      <remarks />Custom XAML workflows</member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.Activities.SetEntityProperty">
+      <summary>
+        <para>Sets a property (attribute) of an entity record.</para>
+      </summary>
+      <remarks />Custom XAML workflows</member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.Activities.SetState">
+      <summary>
+        <para>Sets the state and status of a record.</para>
+      </summary>
+      <remarks />Custom XAML workflows</member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.Activities.StartChildWorkflow">
+      <summary>
+        <para>Starts a child workflow.</para>
+      </summary>
+      <remarks />Custom XAML workflows</member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.Activities.UpdateEntity">
+      <summary>
+        <para>Updates a record.</para>
+      </summary>
+      <remarks />Custom XAML workflows</member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.Activities.Workflow">
+      <summary>
+        <para>The base class for all workflows in Microsoft Dynamics 365.</para>
+      </summary>
+      <remarks />Custom XAML workflows</member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.ArgumentDescriptionAttribute">
+      <summary>
+        <para>Specifies a description for the argument.</para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.ArgumentDirection">
+      <summary>
+        <para>Contains values for the argument data flow direction.</para>
+      </summary>
+      <remarks />Create your own actions</member>
+    <member name="F:Microsoft.Xrm.Sdk.Workflow.ArgumentDirection.Input">
+      <summary>
+        <para>Indicates the argument is a property of a message request. </para>
+      </summary>
+    </member>
+    <member name="F:Microsoft.Xrm.Sdk.Workflow.ArgumentDirection.Output">
+      <summary>
+        <para>Indicates the argument is a property of a message response. </para>
+      </summary>
+    </member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.ArgumentDirectionAttribute">
+      <summary>
+        <para>Specifies the direction, either input or output, for an action argument. </para>
+      </summary>
+      <remarks>
+        <para>An input argument becomes a custom property on the message request of an action. An output argument becomes a custom property on the message response of an action. </para>
+      </remarks>Create your own actions</member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.ArgumentEntityAttribute">
+      <summary>
+        <para>Identifies the argument is an entity to be passed to the workflow at run-time.</para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.ArgumentRequiredAttribute">
+      <summary>
+        <para>Specifies that the argument is required.</para>
+      </summary>
+      <remarks />Create your own actions</member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.ArgumentTargetAttribute">
+      <summary>
+        <para>Identifies the argument is the primary entity for which the workflow is run.</para>
+      </summary>
+      <remarks>
+        <para>This attribute is automatically generated or added and is optional for global actions.</para>
+      </remarks>Create your own actions</member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.AttributeDependency">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <remarks>
+        <para />
+      </remarks>Add metadata to a custom workflow activity<seealso cref="N:Microsoft.Xrm.Sdk.Workflow" /></member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.AttributeTargetAttribute">
+      <summary>
+        <para>Contains a required attribute of a parameter picklist or status parameter types.</para>
+      </summary>
+      <remarks />Process classes, attributes, and types</member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.CustomEntityDependency">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.DefaultAttribute">
+      <summary>
+        <para>Specifies an optional default value that is assigned to a parameter.</para>
+      </summary>
+      <remarks>
+        <para>This attribute is optional.</para>
+      </remarks>Process classes, attributes, and types</member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.Designers.WorkflowDesigner">
+      <summary>
+        <para>
+          For internal use only.
+        </para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.EntityCreatedByDependency">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.EntityDependencyBase">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.InputAttribute">
+      <summary>
+        <para>Specifies an input parameter.</para>
+      </summary>
+      <remarks />Process classes, attributes, and types</member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.IStorageService">
+      <summary>
+        <para>
+          For internal use only.
+        </para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.IWaitNotificationService">
+      <summary>
+        <para>
+          For internal use only.
+        </para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.IWorkflowArgument">
+      <summary>
+        <para>Represents an argument to be supplied to a workflow at run-time. </para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.IWorkflowContext">
+      <summary>
+        <para>Provides access to the data associated with the process instance.</para>
+      </summary>
+      <remarks />Use the IOrganization web service in a custom workflow activitySample: Azure aware custom workflow activitySample: Create a custom activitySample: Update next birthday using a custom workflow activity</member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.LocalParameterDependency">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.OutputAttribute">
+      <summary>
+        <para>Specifies an output parameter.</para>
+      </summary>
+      <remarks />Process classes, attributes, and types</member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.ParameterAttribute">
+      <summary>
+        <para>Specifies the abstract base class used for attributes.</para>
+      </summary>
+      <remarks />Process classes, attributes, and types</member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.ParameterDependencyBase">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.PreImageDependency">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.PrimaryEntityDependency">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <remarks />Add metadata to a custom workflow activity</member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.ReferenceTargetAttribute">
+      <summary>
+        <para>Specifies the required attribute of a parameter for lookup, customer or owner parameter types.</para>
+      </summary>
+      <remarks>
+        <para>Note that only a single instance of this attribute can be added.</para>
+      </remarks>Process classes, attributes, and types</member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.RelatedEntityDependency">
+      <summary>
+        <para>Obsolete.</para>
+      </summary>
+      <remarks />Add metadata to a custom workflow activity</member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.WaitSubscription">
+      <summary>
+        <para>
+          For internal use only.
+        </para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.WorkflowArgument">
+      <summary>
+        <para>An argument to be passed to a workflow at run-time.</para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.WorkflowDependencyType">
+      <summary>
+        <para>Contains the integer flags to set the <see langword="WorkflowDependency.Type" /> attribute. </para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.WorkflowPropertyType">
+      <summary>
+        <para>Contains values for the property types supported by workflows.</para>
+      </summary>
+      <remarks />Sample: Create a process using a templateSample: Run a workflow</member>
+    <member name="F:Microsoft.Xrm.Sdk.Workflow.WorkflowPropertyType.Boolean">
+      <summary>
+        <para>A <see langword="Boolean" /> property. Value = 0.</para>
+      </summary>
+    </member>
+    <member name="F:Microsoft.Xrm.Sdk.Workflow.WorkflowPropertyType.DateTime">
+      <summary>
+        <para>A <see langword="DateTime" /> property. Value = 1.</para>
+      </summary>
+    </member>
+    <member name="F:Microsoft.Xrm.Sdk.Workflow.WorkflowPropertyType.Decimal">
+      <summary>
+        <para>A <see langword="Decimal" /> property. Value = 2.</para>
+      </summary>
+    </member>
+    <member name="F:Microsoft.Xrm.Sdk.Workflow.WorkflowPropertyType.Float">
+      <summary>
+        <para>A <see langword="Float" /> property. Value = 3.</para>
+      </summary>
+    </member>
+    <member name="F:Microsoft.Xrm.Sdk.Workflow.WorkflowPropertyType.Integer">
+      <summary>
+        <para>An <see langword="Integer" /> property. Value = 4.</para>
+      </summary>
+    </member>
+    <member name="F:Microsoft.Xrm.Sdk.Workflow.WorkflowPropertyType.EntityReference">
+      <summary>
+        <para>An <see cref="T:Microsoft.Xrm.Sdk.EntityReference" /> property. Value = 5.</para>
+      </summary>
+    </member>
+    <member name="F:Microsoft.Xrm.Sdk.Workflow.WorkflowPropertyType.Money">
+      <summary>
+        <para>A <see langword="Money" /> property. Value = 6.</para>
+      </summary>
+    </member>
+    <member name="F:Microsoft.Xrm.Sdk.Workflow.WorkflowPropertyType.PartyList">
+      <summary>
+        <para>A <see cref="F:Microsoft.Xrm.Sdk.Metadata.AttributeTypeCode.PartyList" /> property. Value = 7.</para>
+      </summary>
+    </member>
+    <member name="F:Microsoft.Xrm.Sdk.Workflow.WorkflowPropertyType.OptionSetValue">
+      <summary>
+        <para>An <see cref="T:Microsoft.Xrm.Sdk.OptionSetValue" /> property. Value = 8.</para>
+      </summary>
+    </member>
+    <member name="F:Microsoft.Xrm.Sdk.Workflow.WorkflowPropertyType.Guid">
+      <summary>
+        <para>A <see langword="Guid" /> property. Value = 9.</para>
+      </summary>
+    </member>
+    <member name="F:Microsoft.Xrm.Sdk.Workflow.WorkflowPropertyType.String">
+      <summary>
+        <para>A <see langword="String" /> property. Value = 10.</para>
+      </summary>
+    </member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.WorkflowStepActivityStatus">
+      <summary>
+        <para>Contains values for the workflow step activity status.</para>
+      </summary>
+      <remarks />
+    </member>
+    <member name="T:Microsoft.Xrm.Sdk.Workflow.XrmTimeSpan">
+      <summary>
+        <para>Represents a time interval. </para>
+      </summary>
+      <remarks>
+        <para>This is similar to System.TimeSpan but with added support for month and year.</para>
+      </remarks>
+    </member>
+  </members>
+</doc>

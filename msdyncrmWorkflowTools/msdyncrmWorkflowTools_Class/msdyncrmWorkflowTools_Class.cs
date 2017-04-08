@@ -31,6 +31,8 @@ namespace msdyncrmWorkflowTools
         {
         }
 
+        
+
         public void InsertOptionValue(bool globalOptionSet, string attributeName, string entityName, string optionText, int optionValue, int languageCode)
         {
             if (globalOptionSet)
@@ -94,9 +96,9 @@ namespace msdyncrmWorkflowTools
             string fetchXML = @"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='true'>
                                       <entity name='" + PrimaryEntityName + @"'>
                                         <link-entity name='" + _relationshipEntityName + @"' from='" + PrimaryEntityName + @"id' to='" + PrimaryEntityName + @"id' visible='false' intersect='true'>
-                                        <link-entity name='opportunity' from='opportunityid' to='opportunityid' alias='ab'>
+                                        <link-entity name='"+ PrimaryEntityName + @"' from='"+ PrimaryEntityName + @"id' to='"+ PrimaryEntityName + @"id' alias='ab'>
                                             <filter type='and'>
-                                            <condition attribute='opportunityid' operator='eq' value='"+ PrimaryEntityId.ToString()+ @"' />
+                                            <condition attribute='"+ PrimaryEntityName + @"id' operator='eq' value='"+ PrimaryEntityId.ToString()+ @"' />
                                             </filter>
                                         </link-entity>
                                         <link-entity name='" + entityName + @"' from='" + entityName + @"id' to='" + entityName + @"id' alias='ac'>
