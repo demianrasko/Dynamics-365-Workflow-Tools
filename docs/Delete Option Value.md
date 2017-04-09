@@ -12,3 +12,5 @@ The parameters are:
 * **Attribute Name**: name of the local or global OptionSet
 * **Entity Name**: (optional) with the name of the entity. Only required for local optionsets
 * **Option Value**: Value of the new option to be added
+
+NOTE: It could requires to publish customizations.
