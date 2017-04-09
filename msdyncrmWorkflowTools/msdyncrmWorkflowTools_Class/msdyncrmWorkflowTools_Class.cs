@@ -31,7 +31,35 @@ namespace msdyncrmWorkflowTools
         {
         }
 
-        
+
+        public void DeleteOptionValue(bool globalOptionSet, string attributeName, string entityName, int optionValue)
+        {
+            if (globalOptionSet)
+            {
+
+                DeleteOptionValueRequest deleteOptionValueRequest =
+                  new DeleteOptionValueRequest
+                  {
+                      OptionSetName = attributeName,
+                      Value = optionValue                    
+                  };
+                service.Execute(deleteOptionValueRequest);
+            }
+            else
+            {
+                // Create a request.
+                DeleteOptionValueRequest insertOptionValueRequest =
+                   new DeleteOptionValueRequest
+                   {
+                       AttributeLogicalName = attributeName,
+                       EntityLogicalName = entityName,
+                       Value = optionValue
+                   };
+                service.Execute(insertOptionValueRequest);
+            }
+
+        }
+
 
         public void InsertOptionValue(bool globalOptionSet, string attributeName, string entityName, string optionText, int optionValue, int languageCode)
         {
