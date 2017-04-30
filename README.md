@@ -61,5 +61,5 @@ To see how to use each of the tools includes in this solution, please access to 
 * [Delete Option Value](/docs/Delete%20Option%20Value.md)
 * [Sales Literature To Email](/docs/Sales%20Literature%20To%20Email.md)
 
-![](docs/Home_wf1.png)
+![](docs/Home_wf1.gif)
 
