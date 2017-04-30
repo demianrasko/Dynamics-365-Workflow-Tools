@@ -60,6 +60,74 @@ namespace msdyncrmWorkflowTools
 
         }
 
+        public void SalesLiteratureToEmail(string _FileName, string salesLiteratureId, string emailid)
+        {
+            if (_FileName == "*")
+                _FileName = "";
+            _FileName = _FileName.Replace("*", "%");
+
+            #region "Query Attachments"
+            string fetchXML = @"
+                    <fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false'>
+                      <entity name='salesliteratureitem'>
+                        <attribute name='filename' />
+                        <attribute name='salesliteratureitemid' />
+                        <attribute name='title' />
+                        <attribute name='documentbody' />
+                        <attribute name='mimetype' />
+
+                        <filter type='and'>
+                          <condition attribute='filename' operator='like' value='%" + _FileName + @"%' />
+                          <condition attribute='salesliteratureid' operator='eq' value='" + salesLiteratureId + @"' />
+                        </filter>
+                      </entity>
+                    </fetch>";
+            if (tracing!=null)tracing.Trace(String.Format("FetchXML: {0} ", fetchXML));
+            EntityCollection attachmentFiles = service.RetrieveMultiple(new FetchExpression(fetchXML));
+
+            if (attachmentFiles.Entities.Count == 0)
+            {
+                if (tracing!=null) tracing.Trace(String.Format("No Attachment Files found."));
+                return;
+            }
+
+
+            #endregion
+
+            #region "Add Attachments to Email"
+            int i = 1;
+            foreach (Entity file in attachmentFiles.Entities)
+            {
+                Entity _Attachment = new Entity("activitymimeattachment");
+                _Attachment["objectid"] = new EntityReference("email", new Guid (emailid));
+                _Attachment["objecttypecode"] = "email";
+                _Attachment["attachmentnumber"] = i;
+                i++;
+
+                if (file.Attributes.Contains("title"))
+                {
+                    _Attachment["subject"] = file.Attributes["title"].ToString();
+                }
+                if (file.Attributes.Contains("filename"))
+                {
+                    _Attachment["filename"] = file.Attributes["filename"].ToString();
+                }
+                if (file.Attributes.Contains("documentbody"))
+                {
+                    _Attachment["body"] = file.Attributes["documentbody"].ToString();
+                }
+                if (file.Attributes.Contains("mimetype"))
+                {
+                    _Attachment["mimetype"] = file.Attributes["mimetype"].ToString();
+                }
+
+                service.Create(_Attachment);
+
+
+            }
+
+            #endregion
+        }
 
         public void InsertOptionValue(bool globalOptionSet, string attributeName, string entityName, string optionText, int optionValue, int languageCode)
         {
