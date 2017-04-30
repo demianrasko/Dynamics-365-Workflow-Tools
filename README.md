@@ -58,5 +58,7 @@ To see how to use each of the tools includes in this solution, please access to 
 * [Update Child Records](/docs/Update%20Child%20Records.md)
 * [Disassociate Entity](/docs/Disassociate%20Entity.md)
 * [Insert Option Value](/docs/Insert%20Option%20Value.md)
+* [Delete Option Value](/docs/Delete%20Option%20Value.md)
 
 ![](docs/Home_wf1.png)
+
