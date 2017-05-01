@@ -4,10 +4,10 @@ You must import this solution, to use it.
 
 To import the Solution follow these steps:
 
-# Download the ZIP file from the DOWNLOADS tab
-# Access to the Dynamics CRM environment and navigate to Settings>Solutions
-# Click on Import and select the ZIP file
-# Follow the wizzard steps
+* Download the ZIP file from the DOWNLOADS tab
+ Access to the Dynamics CRM environment and navigate to Settings>Solutions
+* Click on Import and select the ZIP file
+* Follow the wizzard steps
 
 To see how to use each of the tools includes in this solution, please access to the following links:
 * [Force Calculate Rollup Field](/docs/Force%20Calculate%20Rollup%20Field.md)
