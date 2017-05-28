@@ -62,10 +62,12 @@
     <Reference Include="System.Activities" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceModel.Activities" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
@@ -74,10 +76,12 @@
     <Compile Include="..\msdyncrmWorkflowTools_Class\msdyncrmWorkflowTools_Class.cs">
       <Link>msdyncrmWorkflowTools_Class.cs</Link>
     </Compile>
+    <Compile Include="Class\AzureTextAnalyticsSentiment.cs" />
     <Compile Include="Class\DeleteOptionValue.cs" />
     <Compile Include="Class\SalesLiteratureToEmail.cs" />
     <Compile Include="Class\InsertOptionValue.cs" />
     <Compile Include="Class\DisassociateEntity.cs" />
+    <Compile Include="Class\AzureFunctionCall.cs" />
     <Compile Include="Class\UpdateChildRecords.cs" />
     <Compile Include="Class\AddUserToTeam.cs" />
     <Compile Include="Class\SetState.cs" />

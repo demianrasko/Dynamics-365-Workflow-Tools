@@ -19,7 +19,19 @@ namespace msdyncrmWorkflowTools_ConsoleTest
         {
             var classObj = new msdyncrmWorkflowTools_Class(service);
 
-            classObj.SalesLiteratureToEmail("*.*", "978CE02B-E72D-E711-80F6-5065F38B5621", "9588F65E-EA2D-E711-80F6-5065F38B5621");
+
+            string result = classObj.AzureTranslateText("9e244b5792ed4d6792b44603801e93cb", "Hola como te va?", "", "en");
+
+            //string jsonresult=classObj.AzureTextAnalyticsSentiment("8c8f3ccfbad44ac4b992901b3df0f797", "Muy malo, desastrozo","en");
+
+            //classObj.AzureFunctionCall(@"{
+            //         ""topic"": ""asunto"",
+            //         ""fullname"": ""Demian Adolfo Raschkovan"",
+            //         ""email"" :""demian_Rasko@yahoo.com""
+            //     }",
+            // "https://crmsaturday990f.queue.core.windows.net/crmsaturdaystoragequeue");
+
+            // classObj.SalesLiteratureToEmail("*.*", "978CE02B-E72D-E711-80F6-5065F38B5621", "9588F65E-EA2D-E711-80F6-5065F38B5621");
 
 
             //classObj.InsertOptionValue(true, "purchaseprocess", "opportunity", "Tipo22", 22, 3082);
