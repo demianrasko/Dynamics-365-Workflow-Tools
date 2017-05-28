@@ -4,10 +4,10 @@ You must import this solution, to use it.
 
 To import the Solution follow these steps:
 
-# Download the ZIP file from the DOWNLOADS tab
-# Access to the Dynamics CRM environment and navigate to Settings>Solutions
-# Click on Import and select the ZIP file
-# Follow the wizzard steps
+* Download the ZIP file from the DOWNLOADS tab
+ Access to the Dynamics CRM environment and navigate to Settings>Solutions
+* Click on Import and select the ZIP file
+* Follow the wizzard steps
 
 To see how to use each of the tools includes in this solution, please access to the following links:
 * [Force Calculate Rollup Field](/docs/Force%20Calculate%20Rollup%20Field.md)
@@ -59,6 +59,7 @@ To see how to use each of the tools includes in this solution, please access to 
 * [Disassociate Entity](/docs/Disassociate%20Entity.md)
 * [Insert Option Value](/docs/Insert%20Option%20Value.md)
 * [Delete Option Value](/docs/Delete%20Option%20Value.md)
+* [Sales Literature To Email](/docs/Sales%20Literature%20To%20Email.md)
 
-![](docs/Home_wf1.png)
+![](docs/Home_wf1_40.png)
 
