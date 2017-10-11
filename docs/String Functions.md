@@ -31,3 +31,5 @@ The Output Parameters are:
 * TrimmedText
 * RegexSuccess
 * RegexText
+* Uppercase Text
+* Lowercase Text
