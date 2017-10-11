@@ -33,3 +33,6 @@ The Output Parameters are:
 * RegexText
 * Uppercase Text
 * Lowercase Text
+
+
+![](string%20functions_33.png)
