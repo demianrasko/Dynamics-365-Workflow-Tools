@@ -20,19 +20,21 @@ namespace msdyncrmWorkflowTools_ConsoleTest
             var classObj = new msdyncrmWorkflowTools_Class(service);
 
 
-            string result = classObj.AzureTranslateText("9e244b5792ed4d6792b44603801e93cb", "Hola como te va?", "", "en");
+            //string result = classObj.AzureTranslateText("9e244b5792ed4d6792b44603801e93cb", "Hola como te va?", "", "en");
 
             //string jsonresult=classObj.AzureTextAnalyticsSentiment("8c8f3ccfbad44ac4b992901b3df0f797", "Muy malo, desastrozo","en");
 
-            //classObj.AzureFunctionCall(@"{
-            //         ""topic"": ""asunto"",
-            //         ""fullname"": ""Demian Adolfo Raschkovan"",
-            //         ""email"" :""demian_Rasko@yahoo.com""
-            //     }",
-            // "https://crmsaturday990f.queue.core.windows.net/crmsaturdaystoragequeue");
+            /*classObj.AzureFunctionCall(@"{
+                     ""topic"": ""asunto"",
+                     ""fullname"": ""Demian Adolfo Raschkovan"",
+                     ""email"" :""demian_Rasko@yahoo.com""
+                 }",
+                 "https://crmsaturday.azurewebsites.net/api/CRMSaturdayGenericWebHook?code=jgOU91LUbxxt/oQko7GRTuezpPWrNJsbOt8Nl1HykRRuOFPyJzQu7Q==");
+            */ //"https://crmsaturday990f.queue.core.windows.net/crmsaturdaystoragequeue");
 
             // classObj.SalesLiteratureToEmail("*.*", "978CE02B-E72D-E711-80F6-5065F38B5621", "9588F65E-EA2D-E711-80F6-5065F38B5621");
 
+            classObj.UpdateChildRecords("SalesOrderDetail_Dynamicpropertyinstance", "salesorderdetail", "3BDA2E2D-6C6A-E711-8106-5065F38A1B01", "", "333", "valuestring");
 
             //classObj.InsertOptionValue(true, "purchaseprocess", "opportunity", "Tipo22", 22, 3082);
             //classObj.InsertOptionValue(false, "cdi_test", "opportunity", "Tipo4", 1, 3082);
@@ -48,9 +50,9 @@ namespace msdyncrmWorkflowTools_ConsoleTest
         public static IOrganizationService GetCrmService()
         {
 
-            const string crmServerUrl = "https://demianrasko100.crm4.dynamics.com";
-            const string userName = "admin@XXXXX.onmicrosoft.com";
-            const string password = "XXXXXX";
+            const string crmServerUrl = "https://demianrasko.crm4.dynamics.com";
+            const string userName = "demianrasko@demianrasko.onmicrosoft.com";
+            const string password = "xxxxx";
 
              var connectionStringCrmOnline = string.Format("Url={0}; Username={1}; Password={2};authtype=Office365;", crmServerUrl, userName, password);
 

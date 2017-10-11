@@ -43,9 +43,9 @@ namespace msdyncrmWorkflowTools
 
             #region "Read Parameters"
 
-            string _functionURL= this.FunctionURL.Get(executionContext);
-            string _jsonData = this.JsonData.Get(executionContext);
-            objCommon.tracingService.Trace("FunctionURL:"+ FunctionURL+ " -- JsonData:"+ JsonData);
+            String _functionURL= this.FunctionURL.Get(executionContext);
+            String _jsonData = this.JsonData.Get(executionContext);
+            objCommon.tracingService.Trace("FunctionURL:"+ _functionURL + " -- JsonData:"+ _jsonData);
 
             #endregion
 

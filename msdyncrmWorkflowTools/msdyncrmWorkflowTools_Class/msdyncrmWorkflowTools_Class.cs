@@ -16,8 +16,7 @@ using System.Net.Http.Headers;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Xml;
-
-
+using Microsoft.Crm.Sdk.Messages;
 
 namespace msdyncrmWorkflowTools
 {
@@ -367,6 +366,14 @@ namespace msdyncrmWorkflowTools
 
             foreach (Entity child in retrieved.Entities)
             {
+                if (childEntityType.ToLower() == "dynamicpropertyinstance")
+                {
+                    //pending...
+                    UpdateProductPropertiesRequest req2 = new UpdateProductPropertiesRequest();
+                   // req2.
+                    break;
+                }
+                     
                 Entity entUpdate = new Entity(childEntityType);
                 entUpdate.Id = child.Id;
                 entUpdate.Attributes.Add(childFieldNameToUpdate, valueToUpdate);

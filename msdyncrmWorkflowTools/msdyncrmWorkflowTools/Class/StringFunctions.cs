@@ -102,6 +102,12 @@ namespace msdyncrmWorkflowTools
         public OutArgument<string> RegexText { get; set; }
 
 
+        [Output("Uppercase Text")]
+        public OutArgument<string> UppercaseText { get; set; }
+
+
+        [Output("Lowercase Text")]
+        public OutArgument<string> LowercaseText { get; set; }
 
         #endregion
 
@@ -202,6 +208,9 @@ namespace msdyncrmWorkflowTools
 
             }
 
+            string uppercaseText = inputText.ToUpper();
+            string lowercaseText = inputText.ToLower();
+
             this.CapitalizedText.Set(executionContext, capitalizedText);
             this.TextLength.Set(executionContext, capitalizedText.Length);
             this.PaddedText.Set(executionContext, paddedText);
@@ -210,6 +219,9 @@ namespace msdyncrmWorkflowTools
             this.TrimmedText.Set(executionContext, inputText.Trim());
             this.RegexSuccess.Set(executionContext, regexSuccess);
             this.RegexText.Set(executionContext, regexText);
+
+            this.UppercaseText.Set(executionContext, uppercaseText);
+            this.LowercaseText.Set(executionContext, lowercaseText);
 
         }
         private static string CompareAndReplace(string text, string old, string @new, StringComparison comparison)
