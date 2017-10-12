@@ -34,7 +34,17 @@ namespace msdyncrmWorkflowTools_ConsoleTest
 
             // classObj.SalesLiteratureToEmail("*.*", "978CE02B-E72D-E711-80F6-5065F38B5621", "9588F65E-EA2D-E711-80F6-5065F38B5621");
 
-            classObj.UpdateChildRecords("SalesOrderDetail_Dynamicpropertyinstance", "salesorderdetail", "3BDA2E2D-6C6A-E711-8106-5065F38A1B01", "", "333", "valuestring");
+
+            string capitalizedText = "", paddedText = "", replacedText = "", subStringText = "", regexText = "", uppercaseText = "", lowercaseText = "";
+            bool regexSuccess = false;
+
+            bool test = classObj.StringFunctions(true, "Demian", "w", true, 150, true,
+                "w", "w", 150, 0, true, "w",
+                ref capitalizedText, ref paddedText, ref replacedText, ref subStringText, ref regexText,
+                ref uppercaseText, ref lowercaseText, ref regexSuccess);
+
+
+            //classObj.UpdateChildRecords("SalesOrderDetail_Dynamicpropertyinstance", "salesorderdetail", "3BDA2E2D-6C6A-E711-8106-5065F38A1B01", "", "333", "valuestring");
 
             //classObj.InsertOptionValue(true, "purchaseprocess", "opportunity", "Tipo22", 22, 3082);
             //classObj.InsertOptionValue(false, "cdi_test", "opportunity", "Tipo4", 1, 3082);
@@ -52,7 +62,7 @@ namespace msdyncrmWorkflowTools_ConsoleTest
 
             const string crmServerUrl = "https://demianrasko.crm4.dynamics.com";
             const string userName = "demianrasko@demianrasko.onmicrosoft.com";
-            const string password = "xxxxx";
+            const string password = "XXX";
 
              var connectionStringCrmOnline = string.Format("Url={0}; Username={1}; Password={2};authtype=Office365;", crmServerUrl, userName, password);
 

@@ -137,79 +137,19 @@ namespace msdyncrmWorkflowTools
             int startIndex = this.StartIndex.Get(executionContext);
             int subStringLength = this.SubStringLength.Get(executionContext);
             string regularExpression = this.RegularExpression.Get(executionContext);
+
             #endregion
 
-            string capitalizedText = "";
-            if (capitalizeAllWords)
-            {
-                // All words
-                capitalizedText = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(inputText);
-            }
-            else
-            {
-                // First Letter only
-                capitalizedText = inputText.Substring(0, 1).ToUpper() + inputText.Substring(1);
-            }
+            string capitalizedText="", paddedText = "", replacedText = "", subStringText = "", regexText = "", uppercaseText = "", lowercaseText="";
+            bool regexSuccess=false;
 
-            //padding
-            string paddedText = "";
-            if (padCharacter == "")
-                padCharacter = " ";
-            if (padontheLeft)
-            {
-                paddedText = inputText.PadLeft(finalLengthwithPadding, padCharacter.ToCharArray()[0]);
-            }
-            else
-            {
-                paddedText = inputText.PadRight(finalLengthwithPadding, padCharacter.ToCharArray()[0]);
-            }
-
-            //replace string
-            string replacedText = "";
-            if (!CaseSensitive.Get<bool>(executionContext))
-            {
-                if (!String.IsNullOrEmpty(inputText) && !String.IsNullOrEmpty(replaceOldValue))
-                {
-                    replacedText = inputText.Replace(replaceOldValue, replaceNewValue);
-                }
-            }
-            else
-            {
-                replacedText = CompareAndReplace(inputText, replaceOldValue, replaceNewValue, StringComparison.CurrentCultureIgnoreCase);
-            }
-
-            //substring
-            string subStringText = "";
-            if (subStringLength <= 0 || startIndex< 0)
-            {
-                subStringText = String.Empty;
-            }
-            else
-            {
-                if (!fromLefttoRight)
-                {
-                    startIndex = inputText.Length - subStringLength - startIndex;
-                }
-                subStringText = inputText.Substring(startIndex, subStringLength);
-            }
-
-            //regex
-            string regexText = "";
-            bool regexSuccess = false;
-            if (regularExpression != "")
-            {
-                Regex regex = new Regex(regularExpression);
-                Match match = regex.Match(inputText);
-                if (match.Success)
-                {
-                    regexSuccess = true;
-                    regexText= match.Value;
-                }
-
-            }
-
-            string uppercaseText = inputText.ToUpper();
-            string lowercaseText = inputText.ToLower();
+            msdyncrmWorkflowTools_Class commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
+            bool test=commonClass.StringFunctions(capitalizeAllWords, inputText, padCharacter, padontheLeft, finalLengthwithPadding, caseSensitive,
+                replaceOldValue, replaceNewValue, subStringLength, startIndex, fromLefttoRight, regularExpression,
+                ref capitalizedText, ref paddedText, ref replacedText, ref subStringText, ref regexText, 
+                ref uppercaseText, ref lowercaseText, ref regexSuccess);
+                
+            
 
             this.CapitalizedText.Set(executionContext, capitalizedText);
             this.TextLength.Set(executionContext, capitalizedText.Length);
@@ -224,26 +164,7 @@ namespace msdyncrmWorkflowTools
             this.LowercaseText.Set(executionContext, lowercaseText);
 
         }
-        private static string CompareAndReplace(string text, string old, string @new, StringComparison comparison)
-        {
-            if (String.IsNullOrEmpty(text) || String.IsNullOrEmpty(old)) return text;
-
-            var result = new StringBuilder();
-            var oldLength = old.Length;
-            var pos = 0;
-            var next = text.IndexOf(old, comparison);
-
-            while (next > 0)
-            {
-                result.Append(text, pos, next - pos);
-                result.Append(@new);
-                pos = next + oldLength;
-                next = text.IndexOf(old, pos, comparison);
-            }
-
-            result.Append(text, pos, text.Length - pos);
-            return result.ToString();
-        }
+        
 
     }
 }

@@ -17,6 +17,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Xml;
 using Microsoft.Crm.Sdk.Messages;
+using System.Text.RegularExpressions;
 
 namespace msdyncrmWorkflowTools
 {
@@ -39,6 +40,110 @@ namespace msdyncrmWorkflowTools
 
         public void QueryValues()
         {
+        }
+
+        public bool StringFunctions(bool capitalizeAllWords, string inputText, string padCharacter, bool padontheLeft, 
+            int finalLengthwithPadding, bool caseSensitive, string replaceOldValue, string replaceNewValue,
+            int subStringLength, int startIndex, bool fromLefttoRight, string regularExpression,
+            ref string capitalizedText, ref string paddedText, ref string replacedText, ref string subStringText, ref string regexText,
+                ref string uppercaseText, ref string lowercaseText, ref bool regexSuccess)
+        {
+             capitalizedText = "";
+            if (capitalizeAllWords)
+            {
+                // All words
+                capitalizedText = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(inputText);
+            }
+            else
+            {
+                // First Letter only
+                capitalizedText = inputText.Substring(0, 1).ToUpper() + inputText.Substring(1);
+            }
+
+            //padding
+             paddedText = "";
+            if (padCharacter == "")
+                padCharacter = " ";
+            if (padontheLeft)
+            {
+
+                paddedText = inputText.PadLeft(finalLengthwithPadding, padCharacter.ToCharArray()[0]);
+            }
+            else
+            {
+                paddedText = inputText.PadRight(finalLengthwithPadding, padCharacter.ToCharArray()[0]);
+            }
+
+            //replace string
+             replacedText = "";
+            if (!caseSensitive)
+            {
+                if (!String.IsNullOrEmpty(inputText) && !String.IsNullOrEmpty(replaceOldValue))
+                {
+                    replacedText = inputText.Replace(replaceOldValue, replaceNewValue);
+                }
+            }
+            else
+            {
+                replacedText = CompareAndReplace(inputText, replaceOldValue, replaceNewValue, StringComparison.CurrentCultureIgnoreCase);
+            }
+
+            //substring
+             subStringText = "";
+            if (subStringLength <= 0 || startIndex < 0)
+            {
+                subStringText = String.Empty;
+            }
+            else
+            {
+                if (!fromLefttoRight)
+                {
+                    startIndex = inputText.Length - subStringLength - startIndex;
+                }
+                if (inputText.Length < subStringLength) subStringLength = inputText.Length;
+                subStringText = inputText.Substring(startIndex, subStringLength);
+            }
+
+            //regex
+             regexText = "";
+             regexSuccess = false;
+            if (regularExpression != "")
+            {
+                Regex regex = new Regex(regularExpression);
+                Match match = regex.Match(inputText);
+                if (match.Success)
+                {
+                    regexSuccess = true;
+                    regexText = match.Value;
+                }
+
+            }
+
+             uppercaseText = inputText.ToUpper();
+             lowercaseText = inputText.ToLower();
+            return true;
+
+        }
+
+        private static string CompareAndReplace(string text, string old, string @new, StringComparison comparison)
+        {
+            if (String.IsNullOrEmpty(text) || String.IsNullOrEmpty(old)) return text;
+
+            var result = new StringBuilder();
+            var oldLength = old.Length;
+            var pos = 0;
+            var next = text.IndexOf(old, comparison);
+
+            while (next > 0)
+            {
+                result.Append(text, pos, next - pos);
+                result.Append(@new);
+                pos = next + oldLength;
+                next = text.IndexOf(old, pos, comparison);
+            }
+
+            result.Append(text, pos, text.Length - pos);
+            return result.ToString();
         }
 
         public string AzureTranslateText(string subscriptionKey, string text, string sourceLanguage, string destinationLanguage)
