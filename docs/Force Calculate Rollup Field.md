@@ -10,7 +10,7 @@ The to use it, you will have a new Workflow Activity Action:
 Then you have to pass two parameters:
 ![](Force%20Calculate%20Rollup%20Field_workflow5.gif)
 
-* FieldName: The Rollup field schema name of the parent entity.
+* FieldName: The Rollup field Name of the parent entity.
 * Parent RecordURL: You must to select the Parent field called Record URL
 
 Note: The Parent Record URL, is a standard feature of Dynamics CRM, taht contains the full URL of a record. In this URL you have the entity type, and the record GUID. Right now this is the only way we have to pass a "Dynamic" EntityReference (with not hard coding an entity type) to Workflows Activities. If you pass this string URL as a parameter, in the Workflow Activity you can retrieve this entity Reference.

@@ -31,3 +31,8 @@ The Output Parameters are:
 * TrimmedText
 * RegexSuccess
 * RegexText
+* Uppercase Text
+* Lowercase Text
+
+
+![](string%20functions_33.png)
