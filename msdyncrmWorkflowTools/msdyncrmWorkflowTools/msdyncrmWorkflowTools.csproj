@@ -80,6 +80,8 @@
     <Compile Include="Class\SalesLiteratureToEmail.cs" />
     <Compile Include="Class\InsertOptionValue.cs" />
     <Compile Include="Class\DisassociateEntity.cs" />
+    <Compile Include="Class\SendEmailToUsersInRole.cs" />
+    <Compile Include="Class\SendEmailFromTemplateToUsersInRole.cs" />
     <Compile Include="Class\UpdateChildRecords.cs" />
     <Compile Include="Class\AddUserToTeam.cs" />
     <Compile Include="Class\SetState.cs" />

@@ -42,6 +42,114 @@ namespace msdyncrmWorkflowTools
         {
         }
 
+        public bool SendEmailToUsersInRole(EntityReference securityRoleLookup, EntityReference email)
+        {
+            var userList = service.RetrieveMultiple(new FetchExpression(BuildFetchXml(securityRoleLookup.Id)));
+            if (tracing != null) tracing.Trace("Retrieved Data");
+
+
+            Entity emailEnt = new Entity("email", email.Id);
+
+            EntityCollection to = new EntityCollection();
+
+            foreach (Entity user in userList.Entities)
+            {
+                // Id of the user
+                var userId = user.Id;
+
+                Entity to1 = new Entity("activityparty");
+                to1["partyid"] = new EntityReference("systemuser", userId);
+
+                to.Entities.Add(to1);
+
+            }
+            emailEnt["to"] = to;
+
+            service.Update(emailEnt);
+
+            SendEmailRequest req = new SendEmailRequest();
+            req.EmailId = email.Id;
+
+            SendEmailResponse res=(SendEmailResponse)service.Execute(req);
+            return true;
+        }
+
+        public bool SendEmailFromTemplateToUsersInRole(EntityReference securityRoleLookup, EntityReference emailTemplateLookup)
+        {
+            var userList = service.RetrieveMultiple(new FetchExpression(BuildFetchXml(securityRoleLookup.Id)));
+            if (tracing!=null)tracing.Trace("Retrieved Data");
+
+            foreach (var user in userList.Entities)
+            {
+                try
+                {
+                    if (tracing != null) tracing.Trace("user creating email");
+                    bool sent= SendEmailFromTemplate(service, emailTemplateLookup, user.Id);
+
+                
+                }
+                catch (System.Exception ex)
+                {
+                    if (tracing != null) tracing.Trace("error:" + ex.ToString());
+                }
+            }
+            return true;
+        }
+
+   
+
+        public bool SendEmailFromTemplate(IOrganizationService service, EntityReference template, Guid userId)
+        {
+
+            List<Entity> toEntities = new List<Entity>();
+            Entity activityParty = new Entity();
+            activityParty.LogicalName = "activityparty";
+            activityParty.Attributes["partyid"] = new EntityReference("systemuser", userId);
+            toEntities.Add(activityParty);
+
+            Entity email = new Entity("email");
+            email.Attributes["to"] = toEntities.ToArray();
+            
+            SendEmailFromTemplateRequest emailUsingTemplateReq = new SendEmailFromTemplateRequest
+            {
+                Target = email,
+                
+                // Use a built-in Email Template of type "contact".
+                TemplateId = template.Id,
+
+                // The regarding Id is required, and must be of the same type as the Email Template.
+                RegardingId = userId,
+                RegardingType = "systemuser"
+            };
+
+            SendEmailFromTemplateResponse emailUsingTemplateResp = (SendEmailFromTemplateResponse)service.Execute(emailUsingTemplateReq);
+            
+
+            return true;
+        }
+
+        private string BuildFetchXml(Guid roleId)
+        {
+            const string fetchXml =
+                    @"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='true'>
+                      <entity name='systemuser'>
+                        <attribute name='systemuserid' />
+                            <filter type='and'>
+                             <condition attribute='accessmode' operator='eq' value='0' />
+                            </filter>
+                        <link-entity name='systemuserroles' from='systemuserid' to='systemuserid' visible='false' intersect='true'>
+                          <link-entity name='role' from='roleid' to='roleid' alias='aa'>
+                            <filter type='and'>
+                              <condition attribute='roleid' operator='eq' uitype='role' value='{0}' />
+                            </filter>
+                          </link-entity>
+                        </link-entity>
+                      </entity>
+                    </fetch>";
+
+            return string.Format(fetchXml, roleId);
+        }
+
         public bool StringFunctions(bool capitalizeAllWords, string inputText, string padCharacter, bool padontheLeft, 
             int finalLengthwithPadding, bool caseSensitive, string replaceOldValue, string replaceNewValue,
             int subStringLength, int startIndex, bool fromLefttoRight, string regularExpression,

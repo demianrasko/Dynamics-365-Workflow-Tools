@@ -15,6 +15,7 @@ namespace msdyncrmWorkflowTools_ConsoleTest
     {
         static IOrganizationService service = GetCrmService();
 
+       // static ITracingService tracingService;
         static void Main(string[] args)
         {
             var classObj = new msdyncrmWorkflowTools_Class(service);
@@ -33,28 +34,36 @@ namespace msdyncrmWorkflowTools_ConsoleTest
             */ //"https://crmsaturday990f.queue.core.windows.net/crmsaturdaystoragequeue");
 
             // classObj.SalesLiteratureToEmail("*.*", "978CE02B-E72D-E711-80F6-5065F38B5621", "9588F65E-EA2D-E711-80F6-5065F38B5621");
+            /*
 
+                        string capitalizedText = "", paddedText = "", replacedText = "", subStringText = "", regexText = "", uppercaseText = "", lowercaseText = "";
+                        bool regexSuccess = false;
 
-            string capitalizedText = "", paddedText = "", replacedText = "", subStringText = "", regexText = "", uppercaseText = "", lowercaseText = "";
-            bool regexSuccess = false;
-
-            bool test = classObj.StringFunctions(true, "Demian", "w", true, 150, true,
-                "w", "w", 150, 0, true, "w",
-                ref capitalizedText, ref paddedText, ref replacedText, ref subStringText, ref regexText,
-                ref uppercaseText, ref lowercaseText, ref regexSuccess);
+                        bool test = classObj.StringFunctions(true, "Demian", "w", true, 150, true,
+                            "w", "w", 150, 0, true, "w",
+                            ref capitalizedText, ref paddedText, ref replacedText, ref subStringText, ref regexText,
+                            ref uppercaseText, ref lowercaseText, ref regexSuccess);
+                            */
 
 
             //classObj.UpdateChildRecords("SalesOrderDetail_Dynamicpropertyinstance", "salesorderdetail", "3BDA2E2D-6C6A-E711-8106-5065F38A1B01", "", "333", "valuestring");
+            EntityReference securityRoleLookup = new EntityReference("role", new Guid("EC013771-633B-E711-8104-5065F38B2601"));
+            EntityReference emailTemplateLookup = new EntityReference("template", new Guid("e3b8956e-bab0-e711-810f-5065f38bf4a1"));
+
+            classObj.SendEmailFromTemplateToUsersInRole(securityRoleLookup, emailTemplateLookup);
+
+           // classObj.SendEmailToUsersInRole(securityRoleLookup, new EntityReference("email",new Guid("B96825B7-CCB0-E711-810F-5065F38BF4A1")));
 
             //classObj.InsertOptionValue(true, "purchaseprocess", "opportunity", "Tipo22", 22, 3082);
             //classObj.InsertOptionValue(false, "cdi_test", "opportunity", "Tipo4", 1, 3082);
             //classObj.DeleteOptionValue(true,"purchaseprocess", "opportunity", 22);
             //classObj.DeleteOptionValue(false, "cdi_test", "opportunity",  1);
             //classObj.AssociateEntity("list", new Guid("F9F76AF5-91DF-E311-B8E5-6C3BE5A8B200"), "cdi_emailsend_list", "cdi_emailsend_list", "cdi_emailsend", "5D84160C-A31C-E711-80FF-5065F38A9A01");
-            //classObj.UpdateChildRecords("contact_customer_accounts", "account", "D17BAB26-98BF-E611-810A-3863BB350E28","emailaddress1", "", "emailaddress1");
+            //classObj.UpdateChildRecords("contact_customer_accounts", "account", "DE14D636-91AE-E711-8110-5065F38A1B01", "new_date", "", "new_date");
             //classObj.UpdateChildRecords("contact_customer_accounts", "account", "D17BAB26-98BF-E611-810A-3863BB350E28", "new_campaa", "", "new_campaa");
             //classObj.AssociateEntity("opportunity",new Guid("D9AA2BB3-A8F0-E611-80FA-5065F38A4A21"), "opportunitycompetitors_association", "opportunitycompetitors", "competitor", "C53B2A00-57F0-E611-80FA-5065F38A4A21");
             //classObj.InsertOptionValue(true,"purchaseprocess", "opportunity", "Tipo22",22, 3082);
+            //https://demianrasko.crm4.dynamics.com/main.aspx?etc=1&extraqs=formid%3d8448b78f-8f42-454e-8e2a-f8196b0419af&id=%7b
             // classObj.InsertOptionValue(false,"cdi_test", "opportunity", "Tipo4",1, 3082);
         }
         public static IOrganizationService GetCrmService()
