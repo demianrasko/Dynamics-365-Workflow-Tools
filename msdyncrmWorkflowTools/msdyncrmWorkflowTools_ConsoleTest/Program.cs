@@ -21,6 +21,13 @@ namespace msdyncrmWorkflowTools_ConsoleTest
             var classObj = new msdyncrmWorkflowTools_Class(service);
 
 
+
+
+            //var details = JObject.Parse(jsonData);
+
+
+
+
             //string result = classObj.AzureTranslateText("9e244b5792ed4d6792b44603801e93cb", "Hola como te va?", "", "en");
 
             //string jsonresult=classObj.AzureTextAnalyticsSentiment("8c8f3ccfbad44ac4b992901b3df0f797", "Muy malo, desastrozo","en");
