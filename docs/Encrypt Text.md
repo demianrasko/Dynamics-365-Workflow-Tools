@@ -10,7 +10,8 @@ Pass the parameter with the string to be Encrypt:
 
 and then we can use the output parameter with the Hash:
 
-![](Encrypt%20Text_wf4.gif)
+![](EncryptText1.png)
+
 
 If we use this action, the result of the MD5 is like this:
 
