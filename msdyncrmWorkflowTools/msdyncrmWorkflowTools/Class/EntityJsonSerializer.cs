@@ -63,7 +63,8 @@ namespace msdyncrmWorkflowTools
 
             Entity newEntity = new Entity(entityName);
             string PrimaryIdAttribute = "" ;
-            List<string> atts= objCommon.getEntityAttributesToClone(entityName, objCommon.service, ref PrimaryIdAttribute);
+            string PrimaryNameAttribute = "";
+            List<string> atts= objCommon.getEntityAttributesToClone(entityName, objCommon.service, ref PrimaryIdAttribute, ref PrimaryNameAttribute);
 
             StringBuilder sJson = new StringBuilder("{\""+ entityName + "\": {");
             

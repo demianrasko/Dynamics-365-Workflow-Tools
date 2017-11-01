@@ -21,7 +21,19 @@ namespace msdyncrmWorkflowTools
         [ReferenceTarget("")]
         public InArgument<String> ClonningRecordURL { get; set; }
 
+        
+        [Input("Prefix")]
+        [Default("")]
+        public InArgument<String> Prefix { get; set; }
 
+        [Input("Fields to Ignore")]
+        [Default("")]
+        public InArgument<String> FieldstoIgnore { get; set; }
+
+        [Output("Cloned Guid")]
+        public OutArgument<String> ClonedGuid { get; set; }
+
+        
         #endregion
 
         /*private EntityCollection getActivityObject(Entity entNewActivity, string activityFieldName)
@@ -136,7 +148,8 @@ Customer
             string objectId = urlParams[1].Replace("id=", "");
             objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
 
-
+            string prefix = this.Prefix.Get(executionContext);
+            string fieldstoIgnore = this.FieldstoIgnore.Get(executionContext);
             #endregion
 
             #region "Clone Execution"
@@ -146,12 +159,22 @@ Customer
 
             Entity newEntity = new Entity(entityName);
             string PrimaryIdAttribute = "";
-            List<string> atts= objCommon.getEntityAttributesToClone(entityName, objCommon.service, ref PrimaryIdAttribute);
+            string PrimaryNameAttribute = "";
+            List<string> atts= objCommon.getEntityAttributesToClone(entityName, objCommon.service, ref PrimaryIdAttribute, ref PrimaryNameAttribute);
 
-            
+           
+
             foreach (string att in atts)
             {
-               
+                if (fieldstoIgnore != null && fieldstoIgnore != "")
+                {
+                    if (Array.IndexOf(fieldstoIgnore.Split(';'), att) >= 0 || Array.IndexOf(fieldstoIgnore.Split(','), att) >= 0)
+                    {
+                        continue;
+                    }
+                }
+
+                
                 if (retrievedObject.Attributes.Contains(att) && att!="statuscode" && att!="statecode"
                     || att.StartsWith("partylist-"))
                 {
@@ -197,6 +220,10 @@ Customer
                     }
 
                     objCommon.tracingService.Trace("attribute:{0}", att);
+                    if (att == PrimaryNameAttribute && prefix!=null)
+                    {
+                        retrievedObject.Attributes[att] = prefix + retrievedObject.Attributes[att];
+                    }
                     newEntity.Attributes.Add(att, retrievedObject.Attributes[att]);
                 }
             }
@@ -227,6 +254,10 @@ Customer
 
                 objCommon.service.Update(setStatusEnt);
             }
+
+            //EntityReference clonnedEntity = new EntityReference(entityName, createdGUID);
+            this.ClonedGuid.Set(executionContext, createdGUID.ToString());
+            
 
             objCommon.tracingService.Trace("cloned object OK");
 

@@ -80,7 +80,7 @@ namespace msdyncrmWorkflowTools
         }
 
         public List<string> getEntityAttributesToClone(string entityName, IOrganizationService service, 
-            ref string PrimaryIdAttribute)
+            ref string PrimaryIdAttribute, ref string PrimaryNameAttribute)
         {
             
 
@@ -95,6 +95,10 @@ namespace msdyncrmWorkflowTools
 
             foreach (AttributeMetadata attMetadata in res.EntityMetadata.Attributes)
             {
+                if (attMetadata.IsPrimaryName.Value)
+                {
+                    PrimaryNameAttribute = attMetadata.LogicalName;
+                }
                 if ((attMetadata.IsValidForCreate.Value ||attMetadata.IsValidForUpdate.Value) 
                     && !attMetadata.IsPrimaryId.Value)
                 {
