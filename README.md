@@ -63,6 +63,7 @@ To see how to use each of the tools includes in this solution, please access to 
 * [Send Email From Template To Users In Role](/docs/SendEmailFromTemplateToUsersInRole.md)
 * [Send Email To Users In Role](/docs/SendEmailToUsersInRole.md)
 * [Calculate Price](/docs/CalculatePrice.md)
+* [Execute Workflow By ID](/docs/ExecuteWorkflowByID.md)
 
-![](docs/Home_wf1_43.png)
+![](docs/Home_wf1_44.png)
 
