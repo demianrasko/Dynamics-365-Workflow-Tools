@@ -62,6 +62,7 @@ To see how to use each of the tools includes in this solution, please access to 
 * [Sales Literature To Email](/docs/Sales%20Literature%20To%20Email.md)
 * [Send Email From Template To Users In Role](/docs/SendEmailFromTemplateToUsersInRole.md)
 * [Send Email To Users In Role](/docs/SendEmailToUsersInRole.md)
+* [Calculate Price](/docs/CalculatePrice.md)
 
-![](docs/Home_wf1_42.png)
+![](docs/Home_wf1_43.png)
 
