@@ -64,6 +64,7 @@ To see how to use each of the tools includes in this solution, please access to 
 * [Send Email To Users In Role](/docs/SendEmailToUsersInRole.md)
 * [Calculate Price](/docs/CalculatePrice.md)
 * [Execute Workflow By ID](/docs/ExecuteWorkflowByID.md)
+* [JSON Parser](/docs/JSONParser.md)
 
 ![](docs/Home_wf1_45.png)
 
