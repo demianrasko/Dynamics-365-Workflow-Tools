@@ -5,4 +5,4 @@ For using this step, first select the action:
 
 and then, fill the parameter with the Goal you want to recalculate:
 
-![](Goal%20Recalculate_wf2.gif)
+![](goalrecalculate.png)
