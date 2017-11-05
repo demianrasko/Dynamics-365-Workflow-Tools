@@ -18,6 +18,7 @@ using System.Runtime.Serialization;
 using System.Xml;
 using Microsoft.Crm.Sdk.Messages;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json.Linq;
 
 namespace msdyncrmWorkflowTools
 {
@@ -41,6 +42,17 @@ namespace msdyncrmWorkflowTools
         public void QueryValues()
         {
         }
+
+
+        public string JsonParser (string Json, string JsonPath)
+        {
+            JObject o = JObject.Parse(Json);
+            string name = (string)o.SelectToken(JsonPath);
+
+            return name;
+
+        }
+
 
         public bool SendEmailToUsersInRole(EntityReference securityRoleLookup, EntityReference email)
         {

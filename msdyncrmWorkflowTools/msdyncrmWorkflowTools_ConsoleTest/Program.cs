@@ -25,8 +25,9 @@ namespace msdyncrmWorkflowTools_ConsoleTest
 
             //var details = JObject.Parse(jsonData);
 
-
-
+            string json = @"{""deviceid"":""G7BF20DB2060"",""readingtype"":""Status"",""reading"":""Status"",""eventtoken"":null,""description"":""Engine speed"",""parameters"":{""VehicleName"":""Jeep Wrangler"",""VehicleSerialNumber"":""G7BF20DB2060"",""VIN"":""1J4FA69S74P704699"",""Date"":""10 / 2 / 2017 3:35:48 AM"",""DiagnosticName"":""Engine speed"",""DiagnosticCode"":""107"",""SourceName"":"" * *Go"",""Value"":""1363"",""Unit"":""Engine.UnitOfMeasureRevolutionsPerMinute""},""time"":""2017 - 10 - 02T03: 37:18.863Z""}";
+            string jsonpath = "parameters.DiagnosticCode";
+            string res=classObj.JsonParser(json, jsonpath);
 
             //string result = classObj.AzureTranslateText("9e244b5792ed4d6792b44603801e93cb", "Hola como te va?", "", "en");
 
@@ -54,11 +55,11 @@ namespace msdyncrmWorkflowTools_ConsoleTest
 
 
             //classObj.UpdateChildRecords("SalesOrderDetail_Dynamicpropertyinstance", "salesorderdetail", "3BDA2E2D-6C6A-E711-8106-5065F38A1B01", "", "333", "valuestring");
-            EntityReference securityRoleLookup = new EntityReference("role", new Guid("EC013771-633B-E711-8104-5065F38B2601"));
+          /*  EntityReference securityRoleLookup = new EntityReference("role", new Guid("EC013771-633B-E711-8104-5065F38B2601"));
             EntityReference emailTemplateLookup = new EntityReference("template", new Guid("e3b8956e-bab0-e711-810f-5065f38bf4a1"));
 
             classObj.SendEmailFromTemplateToUsersInRole(securityRoleLookup, emailTemplateLookup);
-
+            */
            // classObj.SendEmailToUsersInRole(securityRoleLookup, new EntityReference("email",new Guid("B96825B7-CCB0-E711-810F-5065F38BF4A1")));
 
             //classObj.InsertOptionValue(true, "purchaseprocess", "opportunity", "Tipo22", 22, 3082);

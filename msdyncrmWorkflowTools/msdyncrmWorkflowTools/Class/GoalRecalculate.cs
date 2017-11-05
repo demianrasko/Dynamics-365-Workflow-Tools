@@ -13,12 +13,14 @@ namespace msdyncrmWorkflowTools
     public class GoalRecalculate : CodeActivity
     {
         #region "Parameter Definition"
-        [RequiredArgument]
         [Input("Goal")]
         [ReferenceTarget("goal")]
         public InArgument<EntityReference> Goal { get; set; }
 
-        
+        [Input("Goal Guid")]
+        [Default("")]
+        public InArgument<string> GoalGuid { get; set; }
+
         #endregion
         protected override void Execute(CodeActivityContext executionContext)
         {
@@ -32,21 +34,30 @@ namespace msdyncrmWorkflowTools
 
             #region "Read Parameters"
             EntityReference _goal = this.Goal.Get(executionContext);
+            string _goalguid = this.GoalGuid.Get(executionContext);
             if (_goal == null)
             {
                 return;
             }
-
-           
+            
 
             objCommon.tracingService.Trace("GoalID=" + _goal.Id.ToString());
             #endregion
 
 
             #region "GoalRequest Execution"
+            string id = "";
+            if (_goal != null)
+            {
+                id = _goal.Id.ToString();
+            }
+            else {
+                id = _goalguid;
+            }
+
             RecalculateRequest recalculateRequest = new RecalculateRequest()
             {
-                Target = new EntityReference("goal", _goal.Id)
+                Target = new EntityReference("goal", new Guid (id))
             };
             objCommon.service.Execute(recalculateRequest);
 

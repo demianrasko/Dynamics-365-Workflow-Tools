@@ -20,3 +20,5 @@ C:\Users\DemianRaschkovan\Source\Repos\Dynamics-365-Workflow-Tools\msdyncrmWorkf
 C:\Users\DemianRaschkovan\Source\Repos\Dynamics-365-Workflow-Tools\msdyncrmWorkflowTools\msdyncrmWorkflowTools_ConsoleTest\bin\Debug\Microsoft.IdentityModel.Clients.ActiveDirectory.xml
 C:\Users\DemianRaschkovan\Source\Repos\Dynamics-365-Workflow-Tools\msdyncrmWorkflowTools\msdyncrmWorkflowTools_ConsoleTest\bin\Debug\Microsoft.IdentityModel.Clients.ActiveDirectory.WindowsForms.dll
 C:\Users\DemianRaschkovan\Source\Repos\Dynamics-365-Workflow-Tools\msdyncrmWorkflowTools\msdyncrmWorkflowTools_ConsoleTest\bin\Debug\Microsoft.IdentityModel.dll
+C:\Users\DemianRaschkovan\Source\Repos\Dynamics-365-Workflow-Tools\msdyncrmWorkflowTools\msdyncrmWorkflowTools_ConsoleTest\bin\Debug\Newtonsoft.Json.dll
+C:\Users\DemianRaschkovan\Source\Repos\Dynamics-365-Workflow-Tools\msdyncrmWorkflowTools\msdyncrmWorkflowTools_ConsoleTest\bin\Debug\Newtonsoft.Json.xml
