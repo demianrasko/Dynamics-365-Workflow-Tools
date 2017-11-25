@@ -94,6 +94,7 @@
     <Compile Include="Class\SendEmailFromTemplateToUsersInRole.cs" />
     <Compile Include="Class\ExecuteWorkflowByID.cs" />
     <Compile Include="Class\JsonParser.cs" />
+    <Compile Include="Class\DateFunctions.cs" />
     <Compile Include="Class\UpdateChildRecords.cs" />
     <Compile Include="Class\AddUserToTeam.cs" />
     <Compile Include="Class\SetState.cs" />

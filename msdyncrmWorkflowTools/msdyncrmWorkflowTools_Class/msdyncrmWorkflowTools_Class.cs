@@ -19,6 +19,7 @@ using System.Xml;
 using Microsoft.Crm.Sdk.Messages;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
+using System.Globalization;
 
 namespace msdyncrmWorkflowTools
 {
@@ -160,6 +161,22 @@ namespace msdyncrmWorkflowTools
                     </fetch>";
 
             return string.Format(fetchXml, roleId);
+        }
+
+        public bool DateFunctions(DateTime date1, DateTime date2, ref TimeSpan difference, 
+            ref int DayOfWeek, ref int DayOfYear, ref int Day, ref int Month, ref int Year, ref int WeekOfYear)
+        {
+            difference = date1 - date2;
+            DayOfWeek = (int)date1.DayOfWeek;
+            DayOfYear=date1.DayOfYear;
+            Day = date1.Day;
+            Month = date1.Month;
+            Year = date1.Year;
+            DateTimeFormatInfo dfi = DateTimeFormatInfo.CurrentInfo;
+            Calendar cal = dfi.Calendar;
+            WeekOfYear=cal.GetWeekOfYear(date1, dfi.CalendarWeekRule, dfi.FirstDayOfWeek);
+
+            return true;
         }
 
         public bool StringFunctions(bool capitalizeAllWords, string inputText, string padCharacter, bool padontheLeft, 

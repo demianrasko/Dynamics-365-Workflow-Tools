@@ -11,3 +11,4 @@ C:\Users\DemianRaschkovan\Source\Repos\Dynamics-365-Workflow-Tools\msdyncrmWorkf
 C:\Users\DemianRaschkovan\Source\Repos\Dynamics-365-Workflow-Tools\msdyncrmWorkflowTools\msdyncrmWorkflowTools_Class\obj\Debug\msdyncrmWorkflowTools_Class.pdb
 C:\Users\DemianRaschkovan\Source\Repos\Dynamics-365-Workflow-Tools\msdyncrmWorkflowTools\msdyncrmWorkflowTools_Class\bin\Debug\Newtonsoft.Json.dll
 C:\Users\DemianRaschkovan\Source\Repos\Dynamics-365-Workflow-Tools\msdyncrmWorkflowTools\msdyncrmWorkflowTools_Class\bin\Debug\Newtonsoft.Json.xml
+C:\Users\DemianRaschkovan\Source\Repos\Dynamics-365-Workflow-Tools\msdyncrmWorkflowTools\msdyncrmWorkflowTools_Class\obj\Debug\msdyncrmWorkflowTools_Class.csproj.CoreCompileInputs.cache
