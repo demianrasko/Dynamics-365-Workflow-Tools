@@ -4,8 +4,8 @@ You must import this solution, to use it.
 
 To import the Solution follow these steps:
 
-* Download the ZIP file from the DOWNLOADS tab
- Access to the Dynamics CRM environment and navigate to Settings>Solutions
+* Download the ZIP file from the Releases tab
+ Access to the Dynamics 365 (CRM) environment and navigate to Settings>Solutions
 * Click on Import and select the ZIP file
 * Follow the wizzard steps
 
