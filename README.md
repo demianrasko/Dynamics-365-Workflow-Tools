@@ -65,6 +65,7 @@ To see how to use each of the tools includes in this solution, please access to 
 * [Calculate Price](/docs/CalculatePrice.md)
 * [Execute Workflow By ID](/docs/ExecuteWorkflowByID.md)
 * [JSON Parser](/docs/JSONParser.md)
+* [Date Functions](/docs/DateFunctions.md)
 
-![](docs/Home_wf1_45.png)
+![](docs/Home_wf1_46.png)
 
