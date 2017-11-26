@@ -3,18 +3,11 @@ using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata;
 using Microsoft.Xrm.Sdk.Query;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Data;
-using System.Data.SqlClient;
 using System.Net;
 using System.Net.Http;
-using System.Web;
 using System.Net.Http.Headers;
-using System.IO;
-using System.Runtime.Serialization;
+using System.Text;
+using System.Threading.Tasks;
 using System.Xml;
 
 
@@ -25,6 +18,18 @@ namespace msdyncrmWorkflowTools
     {
         private IOrganizationService service;
         private ITracingService tracing;
+
+        private static HttpClient httpClient;
+
+        static msdyncrmWorkflowTools_Class()
+        {
+            //Setup a commong HttpClient as a best practice to avoid leaving open connections
+            //more details https://docs.microsoft.com/en-us/azure/architecture/antipatterns/improper-instantiation/
+            httpClient = new HttpClient();
+            httpClient.Timeout = new TimeSpan(0, 0, 30); //30 second timeout as recommend by Microsoft Support to prevent TimeOut on Sandbox
+            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));//ACCEPT header
+
+        }
 
         public msdyncrmWorkflowTools_Class(IOrganizationService _service, ITracingService _tracing)
         {
@@ -45,104 +50,52 @@ namespace msdyncrmWorkflowTools
         public string AzureTranslateText(string subscriptionKey, string text, string sourceLanguage, string destinationLanguage)
         {
             string uri;
-            string result = "";
             var authTokenSource = new AzureAuthToken(subscriptionKey.Trim());
             string authToken = authTokenSource.GetAccessToken();
-            HttpWebRequest req;
+            HttpRequestMessage request;
 
             if (sourceLanguage == "")
             {
                 uri = "https://api.microsofttranslator.com/v2/Http.svc/Detect?text=" + text;
-                 req = HttpWebRequest.Create(uri) as HttpWebRequest;
-                req.Headers.Add("Authorization", authToken);
-                using (StreamReader sr = new StreamReader(req.GetResponse().GetResponseStream()))
-                {
-                    XmlDocument xmlDoc = new XmlDocument();
-                    
-                    result = sr.ReadToEnd();
-                    xmlDoc.LoadXml(result);
-                    sourceLanguage = xmlDoc.ChildNodes[0].InnerText;
-                }
+                request = new HttpRequestMessage(HttpMethod.Get, uri);
+
+                request.Headers.Add("Authorization", authToken);
+
+                XmlDocument xmlDoc = new XmlDocument();
+
+                xmlDoc.LoadXml(ExecuteAsyncRequest(request));
+                sourceLanguage = xmlDoc.ChildNodes[0].InnerText;
 
             }
-
-
-
 
             uri = "https://api.microsofttranslator.com/v2/Http.svc/Translate?text=" + text + "&from=" + sourceLanguage + "&to=" + destinationLanguage;
 
-            req =HttpWebRequest.Create(uri) as HttpWebRequest;
-            req.Headers.Add("Authorization", authToken);
-            //req.Accept = "application/json";
-           // req.Method = "POST";
-           // req.ContentType = "application/json";
-            //req.ContentLength = data.Length;
+            request = new HttpRequestMessage(HttpMethod.Get, uri);
+            request.Headers.Add("Authorization", authToken);
 
-           // req.GetRequestStream().Write(data, 0, data.Length);
-
-            using (StreamReader sr = new StreamReader(req.GetResponse().GetResponseStream()))
-            {
-
-                result = sr.ReadToEnd();
-
-            }
-
-
-            return result;
+            return ExecuteAsyncRequest(request);
         }
 
         public string AzureFunctionCall(string jSon, string serviceUrl)
         {
-            string response = "";
-            using (WebClient client = new WebClient())
-            {
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, serviceUrl);
+            request.Content = new StringContent(jSon, Encoding.UTF8, "application/json");
 
-                var webClient = new WebClient();
-                webClient.Headers[HttpRequestHeader.ContentType] = "application/json";
-
-                response = webClient.UploadString(serviceUrl, jSon);
-            }
-            return response;
+            return ExecuteAsyncRequest(request);
         }
-
 
         public string AzureTextAnalyticsSentiment(string subscriptionKey, string text, string language)
         {
-            string result = "";
 
-            byte[] data = Encoding.UTF8.GetBytes("{\"documents\":[" + "{\"language\":\""+language+"\" , \"id\":\"1\",\"text\":\""+ text + "\"}]}");
-            HttpWebRequest req =
-                HttpWebRequest.Create(
-                    "https://westus.api.cognitive.microsoft.com/text/analytics/v2.0/sentiment") as HttpWebRequest;
-            req.Headers.Add("Ocp-Apim-Subscription-Key", subscriptionKey);
-            req.Accept = "application/json";
-            req.Method = "POST";
-            req.ContentType = "application/json";
-            req.ContentLength = data.Length;
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post,
+                    "https://westus.api.cognitive.microsoft.com/text/analytics/v2.0/sentiment");
 
-            req.GetRequestStream().Write(data, 0, data.Length);
+            request.Headers.Add("Ocp-Apim-Subscription-Key", subscriptionKey);
+            request.Content = new StringContent("{\"documents\":[" + "{\"language\":\"" + language + "\" , \"id\":\"1\",\"text\":\"" + text + "\"}]}"
+                , Encoding.UTF8, "application/json");
 
-            using (StreamReader sr = new StreamReader(req.GetResponse().GetResponseStream()))
-            {
-                
-                result = sr.ReadToEnd();
-                
-            }
-            
-
-            return result;
+            return ExecuteAsyncRequest(request);
         }
-
-
-
-
-
-
-
-
-
-
-
 
         public void DeleteOptionValue(bool globalOptionSet, string attributeName, string entityName, int optionValue)
         {
@@ -153,7 +106,7 @@ namespace msdyncrmWorkflowTools
                   new DeleteOptionValueRequest
                   {
                       OptionSetName = attributeName,
-                      Value = optionValue                    
+                      Value = optionValue
                   };
                 service.Execute(deleteOptionValueRequest);
             }
@@ -194,12 +147,12 @@ namespace msdyncrmWorkflowTools
                         </filter>
                       </entity>
                     </fetch>";
-            if (tracing!=null)tracing.Trace(String.Format("FetchXML: {0} ", fetchXML));
+            if (tracing != null) tracing.Trace(String.Format("FetchXML: {0} ", fetchXML));
             EntityCollection attachmentFiles = service.RetrieveMultiple(new FetchExpression(fetchXML));
 
             if (attachmentFiles.Entities.Count == 0)
             {
-                if (tracing!=null) tracing.Trace(String.Format("No Attachment Files found."));
+                if (tracing != null) tracing.Trace(String.Format("No Attachment Files found."));
                 return;
             }
 
@@ -211,7 +164,7 @@ namespace msdyncrmWorkflowTools
             foreach (Entity file in attachmentFiles.Entities)
             {
                 Entity _Attachment = new Entity("activitymimeattachment");
-                _Attachment["objectid"] = new EntityReference("email", new Guid (emailid));
+                _Attachment["objectid"] = new EntityReference("email", new Guid(emailid));
                 _Attachment["objecttypecode"] = "email";
                 _Attachment["attachmentnumber"] = i;
                 i++;
@@ -241,8 +194,6 @@ namespace msdyncrmWorkflowTools
             #endregion
         }
 
-       
-
         public void InsertOptionValue(bool globalOptionSet, string attributeName, string entityName, string optionText, int optionValue, int languageCode)
         {
             if (globalOptionSet)
@@ -250,7 +201,7 @@ namespace msdyncrmWorkflowTools
                 InsertOptionValueRequest insertOptionValueRequest =
                   new InsertOptionValueRequest
                   {
-                      OptionSetName= attributeName,
+                      OptionSetName = attributeName,
                       Value = optionValue,
                       Label = new Label(optionText, languageCode)
                   };
@@ -270,7 +221,7 @@ namespace msdyncrmWorkflowTools
                 int insertOptionValue = ((InsertOptionValueResponse)service.Execute(insertOptionValueRequest)).NewOptionValue;
             }
             // Execute the request.
-            
+
         }
         public void AssociateEntity(string PrimaryEntityName, Guid PrimaryEntityId, string _relationshipName, string _relationshipEntityName, string entityName, string ParentId)
         {
@@ -297,18 +248,17 @@ namespace msdyncrmWorkflowTools
                 // throw ex;
                 //}
             }
-            
-        }
 
+        }
         public EntityCollection getAssociations(string PrimaryEntityName, Guid PrimaryEntityId, string _relationshipName, string _relationshipEntityName, string entityName, string ParentId)
         {
             //
             string fetchXML = @"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='true'>
                                       <entity name='" + PrimaryEntityName + @"'>
                                         <link-entity name='" + _relationshipEntityName + @"' from='" + PrimaryEntityName + @"id' to='" + PrimaryEntityName + @"id' visible='false' intersect='true'>
-                                        <link-entity name='"+ PrimaryEntityName + @"' from='"+ PrimaryEntityName + @"id' to='"+ PrimaryEntityName + @"id' alias='ab'>
+                                        <link-entity name='" + PrimaryEntityName + @"' from='" + PrimaryEntityName + @"id' to='" + PrimaryEntityName + @"id' alias='ab'>
                                             <filter type='and'>
-                                            <condition attribute='"+ PrimaryEntityName + @"id' operator='eq' value='"+ PrimaryEntityId.ToString()+ @"' />
+                                            <condition attribute='" + PrimaryEntityName + @"id' operator='eq' value='" + PrimaryEntityId.ToString() + @"' />
                                             </filter>
                                         </link-entity>
                                         <link-entity name='" + entityName + @"' from='" + entityName + @"id' to='" + entityName + @"id' alias='ac'>
@@ -319,7 +269,7 @@ namespace msdyncrmWorkflowTools
                                         </link-entity>
                                       </entity>
                                     </fetch>";
-            
+
             EntityCollection relations = service.RetrieveMultiple(new FetchExpression(fetchXML));
 
             return relations;
@@ -345,7 +295,7 @@ namespace msdyncrmWorkflowTools
             EntityCollection retrieved = service.RetrieveMultiple(querybyattribute);
 
             //2') retrieve parent fielv value
-            var valueToUpdate=new object();
+            var valueToUpdate = new object();
             if (parentFieldNameToUpdate != null && parentFieldNameToUpdate != "")
             {
                 Entity retrievedEntity = (Entity)service.Retrieve(parentEntityType, new Guid(parentEntityId), new ColumnSet(parentFieldNameToUpdate));
@@ -376,11 +326,58 @@ namespace msdyncrmWorkflowTools
 
         }
 
+        public EntityCollection GetChildRecords(string relationshipName, string parentEntityId)
+        {
+            //1) Get child lookup field name
+            RetrieveRelationshipRequest req = new RetrieveRelationshipRequest()
+            {
+                Name = relationshipName
+            };
+            RetrieveRelationshipResponse res = (RetrieveRelationshipResponse)service.Execute(req);
+            OneToManyRelationshipMetadata rel = (OneToManyRelationshipMetadata)res.RelationshipMetadata;
+            string childEntityType = rel.ReferencingEntity;
+            string childEntityFieldName = rel.ReferencingAttribute;
+
+            //2) retrieve all child records
+            QueryByAttribute querybyattribute = new QueryByAttribute(childEntityType);
+            querybyattribute.ColumnSet = new ColumnSet(childEntityFieldName);
+            querybyattribute.Attributes.AddRange(childEntityFieldName);
+            querybyattribute.Values.AddRange(new Guid(parentEntityId));
+            EntityCollection retrieved = service.RetrieveMultiple(querybyattribute);
+            return retrieved;
+        }
+
+        private string ExecuteAsyncRequest(HttpRequestMessage message)
+        {
+            string result = null;
+            var task = Task.Run(async () =>
+            {
+                var response = await httpClient.SendAsync(message);
+                result = await response.Content.ReadAsStringAsync();
+            });
+
+            while (!task.IsCompleted)
+            {
+                System.Threading.Thread.Yield();
+            }
+            if (task.IsFaulted)
+            {
+                throw task.Exception;
+            }
+            else if (task.IsCanceled)
+            {
+                throw new TimeoutException(string.Format("Timeout waiting for HttpResponse {1}:{0}", message.RequestUri, message.Method));
+            }
+            return result;
+        }
+
     }
 
 
     public class AzureAuthToken
     {
+        private static HttpClient client = new HttpClient(); 
+
         /// URL of the token service
         private static readonly Uri ServiceUrl = new Uri("https://api.cognitive.microsoft.com/sts/v1.0/issueToken");
         /// Name of header used to pass the subscription key to the token service
@@ -436,7 +433,6 @@ namespace msdyncrmWorkflowTools
                 return storedTokenValue;
             }
 
-            using (var client = new HttpClient())
             using (var request = new HttpRequestMessage())
             {
                 request.Method = HttpMethod.Post;

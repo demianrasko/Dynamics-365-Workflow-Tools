@@ -9,3 +9,11 @@ C:\Users\DemianRaschkovan\Source\Repos\Dynamics-365-Workflow-Tools\msdyncrmWorkf
 C:\Users\DemianRaschkovan\Source\Repos\Dynamics-365-Workflow-Tools\msdyncrmWorkflowTools\msdyncrmWorkflowTools\obj\Debug\msdyncrmWorkflowTools.csprojResolveAssemblyReference.cache
 C:\Users\DemianRaschkovan\Source\Repos\Dynamics-365-Workflow-Tools\msdyncrmWorkflowTools\msdyncrmWorkflowTools\obj\Debug\msdyncrmWorkflowTools.dll
 C:\Users\DemianRaschkovan\Source\Repos\Dynamics-365-Workflow-Tools\msdyncrmWorkflowTools\msdyncrmWorkflowTools\obj\Debug\msdyncrmWorkflowTools.pdb
+C:\Users\amoed\Source\Repos\Dynamics-365-Workflow-Tools\msdyncrmWorkflowTools\msdyncrmWorkflowTools\bin\Debug\msdyncrmWorkflowTools.dll
+C:\Users\amoed\Source\Repos\Dynamics-365-Workflow-Tools\msdyncrmWorkflowTools\msdyncrmWorkflowTools\bin\Debug\msdyncrmWorkflowTools.pdb
+C:\Users\amoed\Source\Repos\Dynamics-365-Workflow-Tools\msdyncrmWorkflowTools\msdyncrmWorkflowTools\bin\Debug\Microsoft.Crm.Sdk.Proxy.xml
+C:\Users\amoed\Source\Repos\Dynamics-365-Workflow-Tools\msdyncrmWorkflowTools\msdyncrmWorkflowTools\bin\Debug\Microsoft.Xrm.Sdk.xml
+C:\Users\amoed\Source\Repos\Dynamics-365-Workflow-Tools\msdyncrmWorkflowTools\msdyncrmWorkflowTools\bin\Debug\Microsoft.Xrm.Sdk.Workflow.xml
+C:\Users\amoed\Source\Repos\Dynamics-365-Workflow-Tools\msdyncrmWorkflowTools\msdyncrmWorkflowTools\obj\Debug\msdyncrmWorkflowTools.csprojResolveAssemblyReference.cache
+C:\Users\amoed\Source\Repos\Dynamics-365-Workflow-Tools\msdyncrmWorkflowTools\msdyncrmWorkflowTools\obj\Debug\msdyncrmWorkflowTools.dll
+C:\Users\amoed\Source\Repos\Dynamics-365-Workflow-Tools\msdyncrmWorkflowTools\msdyncrmWorkflowTools\obj\Debug\msdyncrmWorkflowTools.pdb
