@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace msdyncrmWorkflowTools
 {
-    class Common
+    public class Common
     {
         public ITracingService tracingService;
         public IWorkflowContext context;
