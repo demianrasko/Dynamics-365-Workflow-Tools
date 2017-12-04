@@ -99,6 +99,7 @@
     <Compile Include="Class\AzureTextAnalyticsSentiment.cs" />
     <Compile Include="Class\CalculatePrice.cs" />
     <Compile Include="Class\CancelPreviousWorkflowInstances.cs" />
+    <Compile Include="Class\CloneChildren.cs" />
     <Compile Include="Class\DeleteOptionValue.cs" />
     <Compile Include="Class\SalesLiteratureToEmail.cs" />
     <Compile Include="Class\InsertOptionValue.cs" />
