@@ -12,7 +12,7 @@ To import the Solution follow these steps:
 To see how to use each of the tools includes in this solution, please access to the following links:
 * 1: [Force Calculate Rollup Field](/docs/Force%20Calculate%20Rollup%20Field.md)
 * 2: [Apply Routing Rules](/docs/Apply%20Routing%20Rules.md)
-* 3: [Query Values Step](/docs/Query%20Values%20Step.md)
+* 3: [Query Values](/docs/Query%20Values%20Step.md)
 * 4: [Share Record With Team](/docs/Share%20Record%20With%20Team.md)
 * 5: [Share Record With User](/docs/Share%20Record%20With%20User.md)
 * 6: [Unshare Record With Team](/docs/Unshare%20Record%20With%20Team.md)
