@@ -95,10 +95,8 @@
     <Compile Include="..\msdyncrmWorkflowTools_Class\msdyncrmWorkflowTools_Class.cs">
       <Link>msdyncrmWorkflowTools_Class.cs</Link>
     </Compile>
-    <Compile Include="Class\AzureFunctionCall.cs" />
-    <Compile Include="Class\AzureTextAnalyticsSentiment.cs" />
+    <Compile Include="Class\CalculateAgregateDate.cs" />
     <Compile Include="Class\CalculatePrice.cs" />
-    <Compile Include="Class\CancelPreviousWorkflowInstances.cs" />
     <Compile Include="Class\CloneChildren.cs" />
     <Compile Include="Class\DeleteOptionValue.cs" />
     <Compile Include="Class\SalesLiteratureToEmail.cs" />
@@ -109,7 +107,6 @@
     <Compile Include="Class\ExecuteWorkflowByID.cs" />
     <Compile Include="Class\JsonParser.cs" />
     <Compile Include="Class\DateFunctions.cs" />
-    <Compile Include="Class\SharingRecord.cs" />
     <Compile Include="Class\UpdateChildRecords.cs" />
     <Compile Include="Class\AddUserToTeam.cs" />
     <Compile Include="Class\SetState.cs" />
@@ -143,7 +140,6 @@
     <Compile Include="Class\CalculateRollupField.cs" />
     <Compile Include="Class\AddRoleToUser.cs" />
     <Compile Include="Class\CheckUserInTeam.cs" />
-    <Compile Include="Class\FieldLookupCurrentRecord.cs" />
     <Compile Include="Class\QueueItemCount.cs" />
     <Compile Include="Class\PickFromQueue.cs" />
     <Compile Include="Class\QueryValues.cs" />
