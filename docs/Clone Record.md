@@ -11,7 +11,7 @@ Then, you must select the record URL(dynamic) field from the entity you want to 
 The full params description is:
 * **Clonning Record URL (required)** : the URL of the record you want to clone
 * **Prefix (optional)** : the prefix will be addedd at the name attribute of the clonned record 
-* **Fields to Ignore (optional)** : the list of attributes you want to ignore in cloning, separate by ";"
+* **Fields to Ignore (optional)** : the list of attributes you want to ignore in cloning, separate by ";" (in lowercase)
 
 * **Output parameter: Cloned Guid** : the string with the GUID of the new record, you can use it like this:
 ![](CloneRecord44_2.png)
