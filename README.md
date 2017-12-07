@@ -68,5 +68,7 @@ To see how to use each of the tools includes in this solution, please access to 
 * 56: [JSON Parser](/docs/JSONParser.md) - Thanks to Ben Vollmer
 * 57: [Date Functions](/docs/DateFunctions.md)
 * 58: [Calculate Agregate Date](/docs/CalculateAgregateDate.md) Thanks to [Ariel](https://github.com/arilani)
-![](docs/Home_wf1_46.png)
+
+
+![](docs/Home_wf1_47.png)
 
