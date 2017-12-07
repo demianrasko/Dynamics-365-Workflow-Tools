@@ -13,7 +13,7 @@ The full params description is:
 * **Old Parent Field Name (required)** : the schema name for the Lookup field on the child records for the original parent.
 * **New Parent Field Name (optional)** : the schema name for the Lookup field on the child records for the new parent. This optional parameter is used in case the cloned children should be linked to the new parent using a different lookup field. If not specified it will use the same as the Old Parent lookup.
 * **Prefix (optional)** : the prefix will be addedd at the name attribute of the clonned record. 
-* **Fields to Ignore (optional)** : the list of attributes you want to ignore in cloning, separate by ";"
+* **Fields to Ignore (optional)** : the list of attributes you want to ignore in cloning, separate by ";" (in lowercase)
 
 * **Output parameter: Cloned Guid** : the string with the GUID of the new record, you can use it like this:
 ![](Clone%20Children_2.gif)
