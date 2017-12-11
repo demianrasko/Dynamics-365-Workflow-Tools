@@ -21,7 +21,7 @@ To see how to use each of the tools includes in this solution, please access to 
 * 9: [Check If User is in Team](/docs/Check%20If%20User%20is%20in%20Team.md)
 * 10: [Add To Marketing List](/docs/Add%20To%20Marketing%20List.md)
 * 11: [Remove From Marketing List](/docs/Remove%20From%20Marketing%20List.md)
-* 12: [Clone Children](/docs/Clone%20Children.md)
+* 12: [Clone Children](/docs/Clone%20Children.md) - Thanks to [Marco Amoedo](https://github.com/amoedo)
 * 13: [Clone Record](/docs/Clone%20Record.md)
 * 14: [Set Process](/docs/Set%20Process.md)
 * 15: [Rollup Functions](/docs/Rollup%20Functions.md)
@@ -37,16 +37,16 @@ To see how to use each of the tools includes in this solution, please access to 
 * 25: [Delete Record](/docs/Delete%20Record.md)
 * 26: [Entity Json Serializer](/docs/Entity%20Json%20Serializer.md)
 * 27: [Qualify Lead](/docs/Qualify%20Lead.md)
-* 28: [Add Marketing List To Campaign](/docs/Add%20Marketing%20List%20To%20Campaign.md)
-* 29: [Copy Marketing List Members](/docs/Copy%20Marketing%20List%20Members.md)
-* 30: [Copy To Static List](/docs/Copy%20To%20Static%20List.md)
-* 31: [Is Member Of Marketing List](/docs/Is%20Member%20Of%20Marketing%20List.md)
-* 32: [Remove From All Marketing Lists](/docs/Remove%20From%20All%20Marketing%20Lists.md)
+* 28: [Add Marketing List To Campaign](/docs/Add%20Marketing%20List%20To%20Campaign.md) - Thanks to Mitch Milam
+* 29: [Copy Marketing List Members](/docs/Copy%20Marketing%20List%20Members.md) - Thanks to Mitch Milam
+* 30: [Copy To Static List](/docs/Copy%20To%20Static%20List.md) - Thanks to Mitch Milam
+* 31: [Is Member Of Marketing List](/docs/Is%20Member%20Of%20Marketing%20List.md) - Thanks to Mitch Milam
+* 32: [Remove From All Marketing Lists](/docs/Remove%20From%20All%20Marketing%20Lists.md) - Thanks to Mitch Milam
 * 33: [Numeric Functions](/docs/Numeric%20Functions.md)
 * 34: [Email To Team](/docs/Email%20To%20Team.md)
-* 35: [Set Process Stage](/docs/Set%20Process%20Stage.md)
-* 36: [Entity Mobile Deep Link](/docs/Entity%20Mobile%20Deep%20Link.md)
-* 37: [Send Email](/docs/Send%20Email.md)
+* 35: [Set Process Stage](/docs/Set%20Process%20Stage.md) - Thanks to Pablo Peralta
+* 36: [Entity Mobile Deep Link](/docs/Entity%20Mobile%20Deep%20Link.md) - Thanks to Jerry Weinstock
+* 37: [Send Email](/docs/Send%20Email.md) - Thanks to George Doubinski
 * 38: [Geocode Address](/docs/Geocode%20Address.md)
 * 39: [Add User To Team](/docs/Add%20User%20To%20Team.md)
 * 40: [Remove User From Team](/docs/Remove%20User%20From%20Team.md)
@@ -64,9 +64,11 @@ To see how to use each of the tools includes in this solution, please access to 
 * 52: [Send Email From Template To Users In Role](/docs/SendEmailFromTemplateToUsersInRole.md)
 * 53: [Send Email To Users In Role](/docs/SendEmailToUsersInRole.md)
 * 54: [Calculate Price](/docs/CalculatePrice.md)
-* 55: [Execute Workflow By ID](/docs/ExecuteWorkflowByID.md)
-* 56: [JSON Parser](/docs/JSONParser.md)
+* 55: [Execute Workflow By ID](/docs/ExecuteWorkflowByID.md) Thanks to Steve Mordue 
+* 56: [JSON Parser](/docs/JSONParser.md) - Thanks to Ben Vollmer
 * 57: [Date Functions](/docs/DateFunctions.md)
+* 58: [Calculate Agregate Date](/docs/CalculateAgregateDate.md) Thanks to [Ariel](https://github.com/arilani)
 
-![](docs/Home_wf1_46.png)
+
+![](docs/Home_wf1_47.png)
 
