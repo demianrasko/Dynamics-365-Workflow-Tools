@@ -20,6 +20,9 @@ namespace msdyncrmWorkflowTools_ConsoleTest
         {
             var classObj = new msdyncrmWorkflowTools_Class(service);
 
+            
+
+            /*
             TimeSpan difference=new TimeSpan();
             int DayOfWeek = 0;
             int DayOfYear = 0;
@@ -29,7 +32,7 @@ namespace msdyncrmWorkflowTools_ConsoleTest
             int WeekOfYear = 0;
             classObj.DateFunctions(DateTime.Now, new DateTime(2018, 01, 01), ref difference,
                 ref DayOfWeek, ref  DayOfYear, ref  Day, ref  Month, ref  Year, ref  WeekOfYear);
-
+                */
 
             //var details = JObject.Parse(jsonData);
 

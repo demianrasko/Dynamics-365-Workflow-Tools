@@ -200,17 +200,20 @@ namespace msdyncrmWorkflowTools
             Guid createdGUID = service.Create(newEntity);
             tracingService.Trace("created cloned object OK");
 
-            Entity record = service.Retrieve(entityName, createdGUID, new ColumnSet("statuscode", "statecode"));
-
-
-            if (retrievedObject.Attributes["statuscode"] != record.Attributes["statuscode"] ||
-                retrievedObject.Attributes["statecode"] != record.Attributes["statecode"])
+            if (newEntity.Attributes.Contains("statuscode") && newEntity.Attributes.Contains("statecode"))
             {
-                Entity setStatusEnt = new Entity(entityName, createdGUID);
-                setStatusEnt.Attributes.Add("statuscode", retrievedObject.Attributes["statuscode"]);
-                setStatusEnt.Attributes.Add("statecode", retrievedObject.Attributes["statecode"]);
+                Entity record = service.Retrieve(entityName, createdGUID, new ColumnSet("statuscode", "statecode"));
 
-                service.Update(setStatusEnt);
+
+                if (retrievedObject.Attributes["statuscode"] != record.Attributes["statuscode"] ||
+                    retrievedObject.Attributes["statecode"] != record.Attributes["statecode"])
+                {
+                    Entity setStatusEnt = new Entity(entityName, createdGUID);
+                    setStatusEnt.Attributes.Add("statuscode", retrievedObject.Attributes["statuscode"]);
+                    setStatusEnt.Attributes.Add("statecode", retrievedObject.Attributes["statecode"]);
+
+                    service.Update(setStatusEnt);
+                }
             }
 
             tracingService.Trace("cloned object OK");
