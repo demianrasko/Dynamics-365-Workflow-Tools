@@ -196,7 +196,7 @@ namespace msdyncrmWorkflowTools
                 }
             }
 
-            tracingService.Trace("creting cloned object...");
+            tracingService.Trace("creating cloned object...");
             Guid createdGUID = service.Create(newEntity);
             tracingService.Trace("created cloned object OK");
 
