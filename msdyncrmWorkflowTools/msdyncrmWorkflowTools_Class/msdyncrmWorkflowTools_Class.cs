@@ -21,6 +21,9 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 using System.Globalization;
 
+using System.Drawing;
+using System.Drawing.Imaging;
+
 namespace msdyncrmWorkflowTools
 {
     public class msdyncrmWorkflowTools_Class
@@ -70,6 +73,84 @@ namespace msdyncrmWorkflowTools
 
         }
 
+        /*
+        public void QRCode(string entityname, string recordid, string QRInfo, string noteSubject, string noteText, string fileName)
+        {
+            tracing.Trace("1");
+            QRCodeEncoder encoder = new QRCodeEncoder();
+            tracing.Trace("2");
+            Bitmap hi = encoder.Encode(QRInfo);
+            tracing.Trace("3");
+            string base64String = String.Empty;
+            tracing.Trace("4");
+            using (MemoryStream ms = new MemoryStream())
+            {
+                tracing.Trace("read stream");
+                hi.Save(ms, ImageFormat.Jpeg);
+            
+            
+                byte[] imageBytes = ms.ToArray();
+                base64String = Convert.ToBase64String(imageBytes);
+            }
+            Entity Annotation = new Entity("annotation");
+            Annotation.Attributes["objectid"] = new EntityReference(entityname, new Guid(recordid));
+            Annotation.Attributes["objecttypecode"] = entityname;
+            Annotation.Attributes["subject"] = noteSubject;
+            Annotation.Attributes["documentbody"] = base64String;
+            Annotation.Attributes["mimetype"] = @"image/jpeg";
+            Annotation.Attributes["notetext"] = noteText;
+            Annotation.Attributes["filename"] = fileName;
+            service.Create(Annotation);
+            /*
+
+            ------------
+
+
+             QRCodeGenerator qrGenerator = new QRCodeGenerator();
+             QRCodeData qrCodeData = qrGenerator.CreateQrCode(QRInfo, QRCodeGenerator.ECCLevel.Q);
+             QRCode qrCode = new QRCode(qrCodeData);
+             Bitmap qrCodeImage = qrCode.GetGraphic(20);
+             string base64String = String.Empty;
+             using (MemoryStream ms = new MemoryStream())
+             {
+                 switch (imageFormat)
+                 {
+                     case "jpg":
+                     case "jpeg":
+                         qrCodeImage.Save(ms, ImageFormat.Jpeg);
+                         break;
+                     case "bmp":
+                         qrCodeImage.Save(ms, ImageFormat.Bmp);
+                         break;
+                     case "gif":
+                         qrCodeImage.Save(ms, ImageFormat.Gif);
+                         break;
+                     case "png":
+                         qrCodeImage.Save(ms, ImageFormat.Png);
+                         break;
+
+                 }
+                 qrCodeImage.Save(ms, ImageFormat.Jpeg);
+                 byte[] imageBytes = ms.ToArray();
+                 base64String = Convert.ToBase64String(imageBytes);
+             }
+             if (noteSubject == "")
+             {
+                 noteSubject = "QR";
+             }
+             Entity Annotation = new Entity("annotation");
+             Annotation.Attributes["objectid"] = new EntityReference(entityname,new Guid(recordid));
+             Annotation.Attributes["objecttypecode"] = entityname;
+             Annotation.Attributes["subject"] = noteSubject;
+             Annotation.Attributes["documentbody"] = base64String;
+             Annotation.Attributes["mimetype"] = @"image/jpeg";
+             Annotation.Attributes["notetext"] = noteText;
+             Annotation.Attributes["filename"] =fileName;
+             service.Create(Annotation);
+             
+    *
+
+        }*/
 
         public bool SendEmailToUsersInRole(EntityReference securityRoleLookup, EntityReference email)
         {

@@ -20,8 +20,10 @@ namespace msdyncrmWorkflowTools_ConsoleTest
         {
             var classObj = new msdyncrmWorkflowTools_Class(service);
 
-            
-
+            /*classObj.QRCode("account", "7DF24294-9EC4-E711-8116-5065F38A3A01", "www.demianrasko.com", "Demian QR Code", "www.demianrasko.com", "QrDemian.bmp");
+            classObj.QRCode("account", "7DF24294-9EC4-E711-8116-5065F38A3A01", "www.demianrasko.com", "Demian QR Code", "www.demianrasko.com", "QrDemian.gif");
+            classObj.QRCode("account", "7DF24294-9EC4-E711-8116-5065F38A3A01", "www.demianrasko.com", "Demian QR Code", "www.demianrasko.com", "QrDemian.png");
+            */
             /*
             TimeSpan difference=new TimeSpan();
             int DayOfWeek = 0;
@@ -90,7 +92,7 @@ namespace msdyncrmWorkflowTools_ConsoleTest
 
             const string crmServerUrl = "https://demianrasko.crm4.dynamics.com";
             const string userName = "demianrasko@demianrasko.onmicrosoft.com";
-            const string password = "XXX";
+            const string password = "XXXX";
 
              var connectionStringCrmOnline = string.Format("Url={0}; Username={1}; Password={2};authtype=Office365;", crmServerUrl, userName, password);
 
