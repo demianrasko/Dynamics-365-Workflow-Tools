@@ -71,5 +71,5 @@ To see how to use each of the tools includes in this solution, please access to 
 * 59: [OrgDBSetting Update](/docs/OrgDBSettingsUpdate.md) Thanks to Pablo Peralta 
 * 60: [OrgDBSetting Retrieve](/docs/OrgDBSettingsRetrieve.md) Thanks to Pablo Peralta 
 
-![](docs/Home_wf1_48.png)
+![](docs/Home_wf1_48_1.png)
 
