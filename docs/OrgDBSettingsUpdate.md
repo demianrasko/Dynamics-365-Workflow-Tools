@@ -21,7 +21,7 @@ And then, select the values:
 
 This is a great tool to be used in a Dialog (deprecated), or maybe to create a new entity with all the OrgDBSettings, and fire a workflow to upload them in background.
 
-A really good example for using OrgDBSettings Update&Retrieve is here: [OrgDBSettings Example](/Docs/OrgDBSettingsExample.md) 
+A really good example for using OrgDBSettings Update&Retrieve is here: [OrgDBSettings Example](OrgDBSettingsExample.md) 
 
 
 Regards!
