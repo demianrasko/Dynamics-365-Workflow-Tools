@@ -23,5 +23,7 @@ Finally you have three output parameters, depending on the value type (String, N
 
 ![](OrgDBSettingsRetrieve2.png)
 
+A really good example for using OrgDBSettings Update&Retrieve is here: (OrgDBSettings Example)[OrgDBSettings Example.md] 
+
 
 Regards!
