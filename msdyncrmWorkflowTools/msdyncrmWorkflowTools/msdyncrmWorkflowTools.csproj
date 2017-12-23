@@ -102,6 +102,7 @@
     <Compile Include="Class\CalculatePrice.cs" />
     <Compile Include="Class\CloneChildren.cs" />
     <Compile Include="Class\DeleteOptionValue.cs" />
+    <Compile Include="Class\OrgDBSettingsRetrieve.cs" />
     <Compile Include="Class\SalesLiteratureToEmail.cs" />
     <Compile Include="Class\InsertOptionValue.cs" />
     <Compile Include="Class\DisassociateEntity.cs" />

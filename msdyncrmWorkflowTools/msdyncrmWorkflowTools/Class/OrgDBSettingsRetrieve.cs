@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace msdyncrmWorkflowTools
 {
-    public class OrgDBSettingsUpdate : CodeActivity
+    public class OrgDBSettingsRetrieve : CodeActivity
     {
         #region "Parameter Definition"
         [RequiredArgument]
@@ -20,12 +20,16 @@ namespace msdyncrmWorkflowTools
         [Default("")]
         public InArgument<String> orgDBSetting { get; set; }
 
-        [RequiredArgument]
-        [Input("Value")]
-        [Default("")]
-        public InArgument<String> Value { get; set; }
 
-        
+        [Output("String Value")]
+        public OutArgument<string> StringValue { get; set; }
+
+        [Output("Numeric Value")]
+        public OutArgument<decimal> NumericValue { get; set; }
+
+        [Output("Bool Value")]
+        public OutArgument<bool> BoolValue { get; set; }
+
 
         #endregion
 
@@ -40,15 +44,14 @@ namespace msdyncrmWorkflowTools
 
             #region "Read Parameters"
             String _orgDBSetting = this.orgDBSetting.Get(executionContext).ToLower();
-            String _Value = this.Value.Get(executionContext);
             #endregion
 
             #region "OrgDBSettings Update"
-            objCommon.tracingService.Trace("OrgDBSettingsUpdate.Execute - OrgDBSetting = " + _orgDBSetting + ", New Value = " + _Value);
+            objCommon.tracingService.Trace("OrgDBSettingsUpdate.Execute - OrgDBSetting = " + _orgDBSetting );
 
-            int NumericValue = 0;
-            bool BoolValue = false;
-            string StringValue = _Value;
+            int _NumericValue = 0;
+            bool _BoolValue = false;
+            string _StringValue = "";
 
             try
             {
@@ -63,21 +66,18 @@ namespace msdyncrmWorkflowTools
 
                 EntityCollection organizationColl = objCommon.service.RetrieveMultiple(new FetchExpression(fetch));
 
-                if (organizationColl != null && organizationColl.Entities.Count > 0)
-                {
-                    if (int.TryParse(_Value, out NumericValue))
-                        organizationColl.Entities[0].Attributes[_orgDBSetting] = NumericValue;
-                    else if (bool.TryParse(_Value, out BoolValue))
-                        organizationColl.Entities[0].Attributes[_orgDBSetting] = BoolValue;
-                    else
-                        organizationColl.Entities[0].Attributes[_orgDBSetting] = StringValue;
+                _StringValue=organizationColl.Entities[0].Attributes[_orgDBSetting].ToString();
+                if (int.TryParse(_StringValue, out _NumericValue))
+                    objCommon.tracingService.Trace("Numeric Value");
+                else if (bool.TryParse(_StringValue, out _BoolValue))
+                    objCommon.tracingService.Trace("Bool Value");
+                else
+                    objCommon.tracingService.Trace("String Value");
 
-                    objCommon.tracingService.Trace("OrgDBSettingsUpdate.Execute - Previous value orgDBSetting. NumericValue = " + NumericValue.ToString() + ", BoolValue = " + BoolValue.ToString() + ", StringValue = " + StringValue);
+                this.StringValue.Set(executionContext, _StringValue);
+                this.NumericValue.Set(executionContext, _NumericValue);
+                this.BoolValue.Set(executionContext, _BoolValue);
 
-                    objCommon.service.Update(organizationColl.Entities[0]);
-
-                    objCommon.tracingService.Trace("OrgDBSettingsUpdate.Execute -  Update Ok");
-                }
             }
             catch (Exception e)
             {
