@@ -4,14 +4,11 @@ Example settings are:
 - KbPrefix
 - LanguageCode
 - LocaleId
-- MaxActionStepsInBPF
 - MaxAppointmentDurationDays
-- MaxConditionsForMobileOfflineFilters
 - MaxProductsInBundle
 - MaxUploadFileSize
 - QuotePrefix
 - SessionTimeoutEnabled
-- SessionTimeoutInMins
 - and many more...
 
 For using this action, just select it from the list:
