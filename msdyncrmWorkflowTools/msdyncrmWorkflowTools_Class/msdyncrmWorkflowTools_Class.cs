@@ -692,9 +692,34 @@ namespace msdyncrmWorkflowTools
                     break;
                 }
 
+                RetrieveAttributeRequest reqAtt = new RetrieveAttributeRequest();
+                reqAtt.EntityLogicalName = childEntityType;
+                reqAtt.LogicalName = childFieldNameToUpdate;
+                RetrieveAttributeResponse resAtt = (RetrieveAttributeResponse)service.Execute(reqAtt);
+
+                bool valueToUpdateBool = false;
+                AttributeMetadata meta = resAtt.AttributeMetadata;
+                
                 Entity entUpdate = new Entity(childEntityType);
                 entUpdate.Id = child.Id;
-                entUpdate.Attributes.Add(childFieldNameToUpdate, valueToUpdate);
+
+                if (meta.AttributeType.Value.ToString() == "Boolean")
+                {
+                    if (valueToUpdate == "1")
+                    {
+                        entUpdate.Attributes.Add(childFieldNameToUpdate, true);
+                    }
+                    else
+                    {
+                        entUpdate.Attributes.Add(childFieldNameToUpdate, false);
+                    }
+
+                }
+                else {
+                    entUpdate.Attributes.Add(childFieldNameToUpdate, valueToUpdate);
+                }
+
+                
                 service.Update(entUpdate);
             }
 

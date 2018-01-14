@@ -80,7 +80,7 @@ namespace msdyncrmWorkflowTools_ConsoleTest
             //classObj.DeleteOptionValue(true,"purchaseprocess", "opportunity", 22);
             //classObj.DeleteOptionValue(false, "cdi_test", "opportunity",  1);
             //classObj.AssociateEntity("list", new Guid("F9F76AF5-91DF-E311-B8E5-6C3BE5A8B200"), "cdi_emailsend_list", "cdi_emailsend_list", "cdi_emailsend", "5D84160C-A31C-E711-80FF-5065F38A9A01");
-            //classObj.UpdateChildRecords("contact_customer_accounts", "account", "DE14D636-91AE-E711-8110-5065F38A1B01", "new_date", "", "new_date");
+            classObj.UpdateChildRecords("contact_customer_accounts", "account", "7DF24294-9EC4-E711-8116-5065F38A3A01", "", "1", "new_check");
             //classObj.UpdateChildRecords("contact_customer_accounts", "account", "D17BAB26-98BF-E611-810A-3863BB350E28", "new_campaa", "", "new_campaa");
             //classObj.AssociateEntity("opportunity",new Guid("D9AA2BB3-A8F0-E611-80FA-5065F38A4A21"), "opportunitycompetitors_association", "opportunitycompetitors", "competitor", "C53B2A00-57F0-E611-80FA-5065F38A4A21");
             //classObj.InsertOptionValue(true,"purchaseprocess", "opportunity", "Tipo22",22, 3082);
