@@ -1,4 +1,4 @@
-This Action allows you to modify the Organization settings. 
+This Action allows you to retrieve the Organization settings. 
 All the organization settings available to be updated are here: https://docs.microsoft.com/en-us/dynamics365/customer-engagement/developer/entities/organization under "Writable attributes".
 Example settings are: 
 - KbPrefix
@@ -13,13 +13,15 @@ Example settings are:
 
 For using this action, just select it from the list:
 
-![](OrgDBSettingsUpdate1.png)
+![](OrgDBSettingsRetrieve.png)
 
 And then, select the values:
 
-![](OrgDBSettingsUpdate2.png)
+![](OrgDBSettingsRetrieve1.png)
 
-This is a great tool to be used in a Dialog (deprecated), or maybe to create a new entity with all the OrgDBSettings, and fire a workflow to upload them in background.
+Finally you have three output parameters, depending on the value type (String, Number or Bool) and you can use them:
+
+![](OrgDBSettingsRetrieve2.png)
 
 A really good example for using OrgDBSettings Update&Retrieve is here: [OrgDBSettings Example](OrgDBSettingsExample.md) 
 
