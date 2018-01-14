@@ -18,3 +18,4 @@ The parameters are:
 NOTES:
 1) The relationship Name must existe on CRM
 2) The parent and child field types must to be the same 
+3) for Boolean fields please include "1" for true and "0" for false
