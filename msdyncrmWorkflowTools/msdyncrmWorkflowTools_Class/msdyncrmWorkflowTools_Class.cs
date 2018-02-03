@@ -716,7 +716,15 @@ namespace msdyncrmWorkflowTools
 
                 }
                 else {
-                    entUpdate.Attributes.Add(childFieldNameToUpdate, valueToUpdate);
+                    if (meta.AttributeType.Value.ToString() == "Picklist")
+                    {
+                        OptionSetValue opt = new OptionSetValue(Convert.ToInt32(valueToUpdate));
+                        entUpdate.Attributes.Add(childFieldNameToUpdate, opt);
+                    }
+                    else
+                    {
+                        entUpdate.Attributes.Add(childFieldNameToUpdate, valueToUpdate);
+                    }
                 }
 
                 
