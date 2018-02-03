@@ -6,7 +6,7 @@ For using this action you need to select the action:
 
 Then fill all the parameters:
 
-![](Update%20Child%20Records_wf2.png)
+![](updatechild.gif)
 
 The parameters are:
 * **Parent Record URL**: the URL of the parent record (recover dynamic on the workflow)
@@ -14,6 +14,7 @@ The parameters are:
 * **Parent Field Name**: (optional) the schema name of the field in the parent entity 
 * **Value to Set**: (optional) the string value to be set (if the previuos one is empty)
 * **Child Field Name to Update**: The destination field name on the child entity
+* **Update Only Active**: True: updates only active records, False: update all records
 
 NOTES:
 1) The relationship Name must existe on CRM
