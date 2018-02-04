@@ -23,6 +23,7 @@ using System.Globalization;
 
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Xml.Linq;
 
 namespace msdyncrmWorkflowTools
 {
@@ -642,7 +643,45 @@ namespace msdyncrmWorkflowTools
             return retrieved;
         }
 
-        public void UpdateChildRecords(string relationshipName, string parentEntityType, string parentEntityId, string parentFieldNameToUpdate, string setValueToUpdate, string childFieldNameToUpdate)
+        public string TranslateText(string textToTranslate, string language, string key)
+        {
+
+            TranslateTextasync(textToTranslate, language, key).Wait() ;
+            var content = XElement.Parse(result).Value;
+            return content;
+        }
+        string result;
+        async  Task TranslateTextasync(string textToTranslate, string language, string key)
+        {
+             string host = "https://api.microsofttranslator.com";
+             string path = "/V2/Http.svc/Translate";
+
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", key);
+
+            List<KeyValuePair<string, string>> list = new List<KeyValuePair<string, string>>() {
+                new KeyValuePair<string, string> (textToTranslate,language)// "fr-fr"
+
+            };
+            
+            foreach (KeyValuePair<string, string> i in list)
+            {
+                string uri = host + path + "?to=" + i.Value + "&text=" + System.Net.WebUtility.UrlEncode(i.Key);
+
+                HttpResponseMessage response = await client.GetAsync(uri);
+
+                 result = await response.Content.ReadAsStringAsync();
+                // NOTE: A successful response is returned in XML. You can extract the contents of the XML as follows.
+                // var content = XElement.Parse(result).Value;
+                Console.WriteLine(result);
+
+               
+            }
+            
+        }
+
+
+        public void UpdateChildRecords(string relationshipName, string parentEntityType, string parentEntityId, string parentFieldNameToUpdate, string setValueToUpdate, string childFieldNameToUpdate, bool _UpdateonlyActive)
         {
             //1) Get child lookup field name
             RetrieveRelationshipRequest req = new RetrieveRelationshipRequest()
@@ -657,8 +696,17 @@ namespace msdyncrmWorkflowTools
             //2) retrieve all child records
             QueryByAttribute querybyattribute = new QueryByAttribute(childEntityType);
             querybyattribute.ColumnSet = new ColumnSet(childEntityFieldName);
-            querybyattribute.Attributes.AddRange(childEntityFieldName);
-            querybyattribute.Values.AddRange(new Guid(parentEntityId));
+
+            if (!_UpdateonlyActive)
+            {
+                querybyattribute.Attributes.AddRange(childEntityFieldName);
+                querybyattribute.Values.AddRange(new Guid(parentEntityId));
+            }
+            else
+            {
+                querybyattribute.Attributes.AddRange(childEntityFieldName, "statecode");
+                querybyattribute.Values.AddRange(new Guid(parentEntityId), 0);
+            }
             EntityCollection retrieved = service.RetrieveMultiple(querybyattribute);
 
             //2') retrieve parent fielv value

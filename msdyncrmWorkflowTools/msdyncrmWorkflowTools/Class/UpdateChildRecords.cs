@@ -37,6 +37,9 @@ namespace msdyncrmWorkflowTools
         [ReferenceTarget("")]
         public InArgument<String> ChildFieldNameToUpdate { get; set; }
 
+        [RequiredArgument]
+        [Input("Update only Active")]
+        public InArgument<Boolean> UpdateonlyActive { get; set; }
 
         //string relationshipName, string parentFieldNameToUpdate, string setValueToUpdate, string childFieldNameToUpdate
         //string parentEntityId, string parentEntityType, 
@@ -67,13 +70,14 @@ namespace msdyncrmWorkflowTools
             String _ParentFieldNameToUpdate = this.ParentFieldNameToUpdate.Get(executionContext);
             String _ValueToSet = this.ValueToSet.Get(executionContext);
             String _ChildFieldNameToUpdate = this.ChildFieldNameToUpdate.Get(executionContext);
+            bool _UpdateonlyActive = this.UpdateonlyActive.Get(executionContext);
 
             objCommon.tracingService.Trace("RelationshipName=" + _RelationshipName + "--_ParentFieldNameToUpdate=" + _ParentFieldNameToUpdate);
             objCommon.tracingService.Trace("_ValueToSet=" + _ValueToSet + "--_ChildFieldNameToUpdate=" + _ChildFieldNameToUpdate);
             #endregion
 
             msdyncrmWorkflowTools_Class commonClass = new msdyncrmWorkflowTools_Class(objCommon.service);
-            commonClass.UpdateChildRecords(_RelationshipName, parentEntityType, parentEntityId, _ParentFieldNameToUpdate, _ValueToSet, _ChildFieldNameToUpdate);
+            commonClass.UpdateChildRecords(_RelationshipName, parentEntityType, parentEntityId, _ParentFieldNameToUpdate, _ValueToSet, _ChildFieldNameToUpdate, _UpdateonlyActive);
             
         }
     }
