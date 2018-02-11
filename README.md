@@ -72,5 +72,5 @@ To see how to use each of the tools includes in this solution, please access to 
 * 60: [OrgDBSetting Retrieve](/docs/OrgDBSettingsRetrieve.md) Thanks to Pablo Peralta 
 * 61: [Translate Text](/docs/TranslateText.md) 
 
-![](docs/Home_wf1_49.gif)
+![](docs/Home_wf1_50.gif)
 
