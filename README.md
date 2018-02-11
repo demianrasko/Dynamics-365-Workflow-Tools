@@ -71,7 +71,7 @@ To see how to use each of the tools includes in this solution, please access to 
 * 59: [OrgDBSetting Update](/docs/OrgDBSettingsUpdate.md) Thanks to Pablo Peralta 
 * 60: [OrgDBSetting Retrieve](/docs/OrgDBSettingsRetrieve.md) Thanks to Pablo Peralta 
 * 61: [Translate Text](/docs/TranslateText.md) 
-* 62: [CurrencyConvert](/docs/CurrencyConvert.md) 
+* 62: [Currency Convert](/docs/CurrencyConvert.md) 
 
 
 ![](docs/Home_wf1_50.gif)
