@@ -572,6 +572,11 @@ namespace msdyncrmWorkflowTools
                     EntityReferenceCollection relatedEntities = new EntityReferenceCollection();
                     relatedEntities.Add(new EntityReference(entityName, new Guid(ParentId)));
                     Relationship relationship = new Relationship(_relationshipName);
+                    if (PrimaryEntityName == entityName)
+                    {
+                        relationship.PrimaryEntityRole = EntityRole.Referencing;
+                    }
+                    
                     service.Associate(PrimaryEntityName, PrimaryEntityId, relationship, relatedEntities);
                 }
             }
@@ -586,6 +591,98 @@ namespace msdyncrmWorkflowTools
                 //}
             }
 
+        }
+
+        public void EntityAttachmentToEmail(string _FileName, string ParentId, EntityReference email, bool _RetrieveActivityMimeAttachment)
+        {
+
+
+            #region "Query Attachments"
+            string fetchXML = "";
+
+            if ( _RetrieveActivityMimeAttachment == false)
+            {
+                fetchXML = @"
+                    <fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false'>
+                      <entity name='annotation'>
+                        <attribute name='filename' />
+                        <attribute name='annotationid' />
+                        <attribute name='subject' />
+                        <attribute name='documentbody' />
+                        <attribute name='mimetype' />
+
+                        <filter type='and'>
+                          <condition attribute='filename' operator='like' value='%" + _FileName + @"%' />
+                          <condition attribute='isdocument' operator='eq' value='1' />
+                          <condition attribute='objectid' operator='eq' value='" + ParentId + @"' />
+                        </filter>
+                      </entity>
+                    </fetch>";
+            }
+            else
+            {
+                fetchXML = @"
+                    <fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false'>
+                      <entity name='activitymimeattachment'>
+                        <attribute name='filename' />
+                        <attribute name='attachmentid' />
+                        <attribute name='subject' />
+                        <attribute name='body' />
+                        <attribute name='mimetype' />
+
+                        <filter type='and'>
+                          <condition attribute='filename' operator='like' value='%" + _FileName + @"%' />
+                          <condition attribute='activityid' operator='eq' value='" + ParentId + @"' />
+                        </filter>
+                      </entity>
+                    </fetch>";
+            }
+
+            if (tracing != null) tracing.Trace(String.Format("FetchXML: {0} ", fetchXML));
+            EntityCollection attachmentFiles = service.RetrieveMultiple(new FetchExpression(fetchXML));
+
+            if (attachmentFiles.Entities.Count == 0)
+            {
+                if (tracing != null) tracing.Trace(String.Format("No Attachment Files found."));
+                return;
+            }
+            
+
+            #endregion
+
+            #region "Add Attachments to Email"
+            int i = 1;
+            foreach (Entity file in attachmentFiles.Entities)
+            {
+                Entity _Attachment = new Entity("activitymimeattachment");
+                _Attachment["objectid"] = new EntityReference("email", email.Id);
+                _Attachment["objecttypecode"] = "email";
+                _Attachment["attachmentnumber"] = i;
+                i++;
+
+                if (file.Attributes.Contains("subject"))
+                {
+                    _Attachment["subject"] = file.Attributes["subject"].ToString();
+                }
+                if (file.Attributes.Contains("filename"))
+                {
+                    _Attachment["filename"] = file.Attributes["filename"].ToString();
+                }
+                if (file.Attributes.Contains("documentbody"))
+                {
+                    _Attachment["body"] = file.Attributes["documentbody"].ToString();
+                }
+                if (file.Attributes.Contains("mimetype"))
+                {
+                    _Attachment["mimetype"] = file.Attributes["mimetype"].ToString();
+                }
+
+                service.Create(_Attachment);
+
+
+            }
+
+            #endregion
         }
 
         public EntityCollection getAssociations(string PrimaryEntityName, Guid PrimaryEntityId, string _relationshipName, string _relationshipEntityName, string entityName, string ParentId)
@@ -679,6 +776,18 @@ namespace msdyncrmWorkflowTools
             }
             
         }
+        public Decimal CurrencyConvert(decimal amount, string fromCurrency, string toCurrency)
+        {
+            
+             WebClient web = new WebClient();
+            string apiURL = String.Format("http://finance.google.com/finance/converter?a={0}&from={1}&to={2}", amount, fromCurrency.ToUpper(), toCurrency.ToUpper());
+            string response = web.DownloadString(apiURL);
+            var split = response.Split((new string[] { "<span class=bld>" }), StringSplitOptions.None);
+            var value = split[1].Split(' ')[0];
+            Decimal rate = decimal.Parse(value, CultureInfo.InvariantCulture);
+            return rate;
+        }
+
 
 
         public void UpdateChildRecords(string relationshipName, string parentEntityType, string parentEntityId, string parentFieldNameToUpdate, string setValueToUpdate, string childFieldNameToUpdate, bool _UpdateonlyActive)
@@ -764,10 +873,21 @@ namespace msdyncrmWorkflowTools
 
                 }
                 else {
-                    if (meta.AttributeType.Value.ToString() == "Picklist")
+                    if (meta.AttributeType.Value.ToString() == "Picklist" || meta.AttributeType.Value.ToString() == "Status")
                     {
-                        OptionSetValue opt = new OptionSetValue(Convert.ToInt32(valueToUpdate));
-                        entUpdate.Attributes.Add(childFieldNameToUpdate, opt);
+                        if (valueToUpdate == null)
+                        {
+                            entUpdate.Attributes.Add(childFieldNameToUpdate, null);
+                        }
+                        else
+                        {
+                            if (valueToUpdate is OptionSetValue)
+                            {
+                                valueToUpdate = ((OptionSetValue)valueToUpdate).Value;
+                            }
+                            OptionSetValue opt = new OptionSetValue(Convert.ToInt32(valueToUpdate));
+                            entUpdate.Attributes.Add(childFieldNameToUpdate, opt);
+                        }
                     }
                     else
                     {

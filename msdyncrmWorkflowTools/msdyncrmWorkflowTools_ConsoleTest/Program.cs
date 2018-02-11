@@ -65,7 +65,9 @@ namespace msdyncrmWorkflowTools_ConsoleTest
                             ref capitalizedText, ref paddedText, ref replacedText, ref subStringText, ref regexText,
                             ref uppercaseText, ref lowercaseText, ref regexSuccess);
                             */
-
+            EntityReference email = new EntityReference("email", new Guid("CF991F8E-200F-E811-811E-5065F38A1B01"));
+            //classObj.EntityAttachmentToEmail("%.%", "67C72C4F-200F-E811-811E-5065F38A1B01", email, true);
+            //
 
             //classObj.UpdateChildRecords("SalesOrderDetail_Dynamicpropertyinstance", "salesorderdetail", "3BDA2E2D-6C6A-E711-8106-5065F38A1B01", "", "333", "valuestring");
             /*  EntityReference securityRoleLookup = new EntityReference("role", new Guid("EC013771-633B-E711-8104-5065F38B2601"));
@@ -74,13 +76,15 @@ namespace msdyncrmWorkflowTools_ConsoleTest
               classObj.SendEmailFromTemplateToUsersInRole(securityRoleLookup, emailTemplateLookup);
               */
             // classObj.SendEmailToUsersInRole(securityRoleLookup, new EntityReference("email",new Guid("B96825B7-CCB0-E711-810F-5065F38BF4A1")));
-            string traslated=classObj.TranslateText("Hola", "pt", "XXXX");
+            //string traslated=classObj.TranslateText("Hola", "pt", "XXXX");
             //classObj.InsertOptionValue(true, "purchaseprocess", "opportunity", "Tipo22", 22, 3082);
             //classObj.InsertOptionValue(false, "cdi_test", "opportunity", "Tipo4", 1, 3082);
             //classObj.DeleteOptionValue(true,"purchaseprocess", "opportunity", 22);
             //classObj.DeleteOptionValue(false, "cdi_test", "opportunity",  1);
-            //classObj.AssociateEntity("list", new Guid("F9F76AF5-91DF-E311-B8E5-6C3BE5A8B200"), "cdi_emailsend_list", "cdi_emailsend_list", "cdi_emailsend", "5D84160C-A31C-E711-80FF-5065F38A9A01");
-            //classObj.UpdateChildRecords("contact_customer_accounts", "account", "6F1BD95D-DEBE-E711-8114-5065F38A3A01", "", "100000000", "new_quotestatus", true);
+            // classObj.AssociateEntity("new_test", new Guid("612F10EE-32DB-E711-8116-5065F38BF4A1"), "new_new_test_new_test", "new_test", "new_test", "F1F924DC-32DB-E711-8116-5065F38BF4A1");
+            //classObj.UpdateChildRecords("Quote_Tasks", "quote", "D19A670C-5EF1-E711-811B-5065F38A3A01", "", "2", "statecode", true);
+            //classObj.UpdateChildRecords("Quote_Tasks", "quote", "D19A670C-5EF1-E711-811B-5065F38A3A01", "", "6", "statuscode", true);
+            classObj.CurrencyConvert(1,"EUR","USD");
             //classObj.UpdateChildRecords("contact_customer_accounts", "account", "D17BAB26-98BF-E611-810A-3863BB350E28", "new_campaa", "", "new_campaa");
             //classObj.AssociateEntity("opportunity",new Guid("D9AA2BB3-A8F0-E611-80FA-5065F38A4A21"), "opportunitycompetitors_association", "opportunitycompetitors", "competitor", "C53B2A00-57F0-E611-80FA-5065F38A4A21");
             //classObj.InsertOptionValue(true,"purchaseprocess", "opportunity", "Tipo22",22, 3082);
@@ -92,7 +96,7 @@ namespace msdyncrmWorkflowTools_ConsoleTest
 
             const string crmServerUrl = "https://demianrasko.crm4.dynamics.com";
             const string userName = "demianrasko@demianrasko.onmicrosoft.com";
-            const string password = "XXXX<";
+            const string password = "xxxxx";
 
              var connectionStringCrmOnline = string.Format("Url={0}; Username={1}; Password={2};authtype=Office365;", crmServerUrl, userName, password);
 

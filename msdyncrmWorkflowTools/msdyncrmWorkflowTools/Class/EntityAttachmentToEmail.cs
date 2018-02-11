@@ -34,6 +34,11 @@ namespace msdyncrmWorkflowTools.Class
         [ReferenceTarget("email")]
         public InArgument<EntityReference> Email { get; set; }
 
+        [Input("Retrieve ActivityMimeAttachment")]
+        public InArgument<Boolean> RetrieveActivityMimeAttachment { get; set; }
+
+
+
         protected override void Execute(CodeActivityContext executionContext)
         {
             #region "Load CRM Service from context"
@@ -66,72 +71,14 @@ namespace msdyncrmWorkflowTools.Class
             _FileName = _FileName.Replace("*", "%");
 
             EntityReference email = this.Email.Get(executionContext);
+            bool _RetrieveActivityMimeAttachment = this.RetrieveActivityMimeAttachment.Get(executionContext);
 
             #endregion
 
-            #region "Query Attachments"
-            string fetchXML = @"
-                    <fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false'>
-                      <entity name='annotation'>
-                        <attribute name='filename' />
-                        <attribute name='annotationid' />
-                        <attribute name='subject' />
-                        <attribute name='documentbody' />
-                        <attribute name='mimetype' />
-
-                        <filter type='and'>
-                          <condition attribute='filename' operator='like' value='%"+ _FileName + @"%' />
-                          <condition attribute='isdocument' operator='eq' value='1' />
-                          <condition attribute='objectid' operator='eq' value='"+ ParentId + @"' />
-                        </filter>
-                      </entity>
-                    </fetch>";
-            objCommon.tracingService.Trace(String.Format("FetchXML: {0} ", fetchXML));
-            EntityCollection attachmentFiles = objCommon.service.RetrieveMultiple(new FetchExpression(fetchXML));
-
-            if (attachmentFiles.Entities.Count == 0)
-            {
-                objCommon.tracingService.Trace(String.Format("No Attachment Files found."));
-                return;
-            }
-
-
-            #endregion
-
-            #region "Add Attachments to Email"
-            int i= 1;
-            foreach (Entity file in attachmentFiles.Entities)
-            {
-                Entity _Attachment = new Entity("activitymimeattachment");
-                _Attachment["objectid"]= new EntityReference("email",email.Id);
-                _Attachment["objecttypecode"]= "email";
-                _Attachment["attachmentnumber"] = i;
-                i++;
-
-                if (file.Attributes.Contains("subject"))
-                {
-                    _Attachment["subject"]= file.Attributes["subject"].ToString();
-                }
-                if (file.Attributes.Contains("filename"))
-                {
-                    _Attachment["filename"]= file.Attributes["filename"].ToString();
-                }
-                if (file.Attributes.Contains("documentbody"))
-                {
-                    _Attachment["body"]= file.Attributes["documentbody"].ToString();
-                }
-                if (file.Attributes.Contains("mimetype"))
-                {
-                    _Attachment["mimetype"]= file.Attributes["mimetype"].ToString();
-                }
-
-                objCommon.service.Create(_Attachment);
-
-               
-            }
-
-            #endregion
-
+            msdyncrmWorkflowTools_Class commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
+            commonClass.EntityAttachmentToEmail(_FileName, ParentId, email, _RetrieveActivityMimeAttachment);
         }
+
     }
 }
+
