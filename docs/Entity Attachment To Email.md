@@ -7,11 +7,13 @@ For using this activity you mus access here and select Entity Attachment To Emai
 
 Then in the activity you can fill all the parameters:
 
-![](Entity%20Attachment%20To%20Email_wf2.gif)
+![](EntityAttachmentToEmail2.gif)
 
 The Parameters are:
 * Main Record URL: The URL of the Record that contains the source Attachments
 * File Name: Name of the file you want to find (multiple). You can use "*" to search other files. All the finded files will be added to the Email
 * Email: Email record to add all the Attachments. 
+* Retrieve ActivityMimeAttachment: false=retrieve attachments from related notes. true=retrieve attachments from ActivityMimeAttachment (for appointments and emails)
+
 
 Note: The Main Record URL, is a standard feature of Dynamics CRM, taht contains the full URL of a record. In this URL you have the entity type, and the record GUID. Right now this is the only way we have to pass a "Dynamic" EntityReference (with not hard coding an entity type) to Workflows Activities. If you pass this string URL as a parameter, in the Workflow Activity you can retrieve this entity Reference.
