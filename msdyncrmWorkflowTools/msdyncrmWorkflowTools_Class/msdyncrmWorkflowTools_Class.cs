@@ -862,7 +862,19 @@ namespace msdyncrmWorkflowTools
 
                 if (meta.AttributeType.Value.ToString() == "Boolean")
                 {
-                    if (valueToUpdate == "1")
+                    if (valueToUpdate is bool)
+                    {
+
+                        if ((bool)valueToUpdate == true)
+                        {
+                            valueToUpdate = "1";
+                        }
+                        else
+                        {
+                            valueToUpdate = "0";
+                        }
+                    }
+                    if (valueToUpdate == "1" )
                     {
                         entUpdate.Attributes.Add(childFieldNameToUpdate, true);
                     }

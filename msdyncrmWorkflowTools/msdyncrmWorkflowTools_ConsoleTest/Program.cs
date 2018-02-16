@@ -84,8 +84,8 @@ namespace msdyncrmWorkflowTools_ConsoleTest
             // classObj.AssociateEntity("new_test", new Guid("612F10EE-32DB-E711-8116-5065F38BF4A1"), "new_new_test_new_test", "new_test", "new_test", "F1F924DC-32DB-E711-8116-5065F38BF4A1");
             //classObj.UpdateChildRecords("Quote_Tasks", "quote", "D19A670C-5EF1-E711-811B-5065F38A3A01", "", "2", "statecode", true);
             //classObj.UpdateChildRecords("Quote_Tasks", "quote", "D19A670C-5EF1-E711-811B-5065F38A3A01", "", "6", "statuscode", true);
-            classObj.CurrencyConvert(1,"EUR","USD");
-            //classObj.UpdateChildRecords("contact_customer_accounts", "account", "D17BAB26-98BF-E611-810A-3863BB350E28", "new_campaa", "", "new_campaa");
+            //classObj.CurrencyConvert(1,"EUR","USD");
+            classObj.UpdateChildRecords("product_opportunities", "opportunity", "9DF132E1-4FFF-E711-811E-5065F38A3A01", "", "1", "new_taxapplicable",false);
             //classObj.AssociateEntity("opportunity",new Guid("D9AA2BB3-A8F0-E611-80FA-5065F38A4A21"), "opportunitycompetitors_association", "opportunitycompetitors", "competitor", "C53B2A00-57F0-E611-80FA-5065F38A4A21");
             //classObj.InsertOptionValue(true,"purchaseprocess", "opportunity", "Tipo22",22, 3082);
             //https://demianrasko.crm4.dynamics.com/main.aspx?etc=1&extraqs=formid%3d8448b78f-8f42-454e-8e2a-f8196b0419af&id=%7b
@@ -96,7 +96,7 @@ namespace msdyncrmWorkflowTools_ConsoleTest
 
             const string crmServerUrl = "https://demianrasko.crm4.dynamics.com";
             const string userName = "demianrasko@demianrasko.onmicrosoft.com";
-            const string password = "xxxxx";
+            const string password = "XXX";
 
              var connectionStringCrmOnline = string.Format("Url={0}; Username={1}; Password={2};authtype=Office365;", crmServerUrl, userName, password);
 
