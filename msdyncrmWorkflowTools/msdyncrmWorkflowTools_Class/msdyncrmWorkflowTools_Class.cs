@@ -68,7 +68,7 @@ namespace msdyncrmWorkflowTools
         public string JsonParser(string Json, string JsonPath)
         {
             JObject o = JObject.Parse(Json);
-            string name = (string)o.SelectToken(JsonPath);
+            string name = o.SelectToken(JsonPath).ToString();
 
             return name;
 
@@ -259,6 +259,21 @@ namespace msdyncrmWorkflowTools
                     </fetch>";
 
             return string.Format(fetchXml, roleId);
+        }
+
+        public string GetRecordID(string recordURL)
+        {
+            
+            if (recordURL == null || recordURL == "")
+            {
+                return "";
+            }
+            string[] urlParts = recordURL.Split("?".ToArray());
+            string[] urlParams = urlParts[1].Split("&".ToCharArray());
+            string objectTypeCode = urlParams[0].Replace("etc=", "");
+          //  entityName =  sGetEntityNameFromCode(objectTypeCode, service);
+            string objectId = urlParams[1].Replace("id=", "");
+            return objectId;
         }
 
         public bool DateFunctions(DateTime date1, DateTime date2, ref TimeSpan difference,
@@ -531,7 +546,7 @@ namespace msdyncrmWorkflowTools
 
 
 
-        public void InsertOptionValue(bool globalOptionSet, string attributeName, string entityName, string optionText, int optionValue, int languageCode)
+        public bool InsertOptionValue(bool globalOptionSet, string attributeName, string entityName, string optionText, int optionValue, int languageCode)
         {
             if (globalOptionSet)
             {
@@ -557,7 +572,7 @@ namespace msdyncrmWorkflowTools
                    };
                 int insertOptionValue = ((InsertOptionValueResponse)service.Execute(insertOptionValueRequest)).NewOptionValue;
             }
-            // Execute the request.
+            return true;
 
         }
         public void AssociateEntity(string PrimaryEntityName, Guid PrimaryEntityId, string _relationshipName, string _relationshipEntityName, string entityName, string ParentId)

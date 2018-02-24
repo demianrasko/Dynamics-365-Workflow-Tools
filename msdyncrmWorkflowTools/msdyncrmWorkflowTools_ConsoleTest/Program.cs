@@ -24,27 +24,9 @@ namespace msdyncrmWorkflowTools_ConsoleTest
             classObj.QRCode("account", "7DF24294-9EC4-E711-8116-5065F38A3A01", "www.demianrasko.com", "Demian QR Code", "www.demianrasko.com", "QrDemian.gif");
             classObj.QRCode("account", "7DF24294-9EC4-E711-8116-5065F38A3A01", "www.demianrasko.com", "Demian QR Code", "www.demianrasko.com", "QrDemian.png");
             */
-            /*
-            TimeSpan difference=new TimeSpan();
-            int DayOfWeek = 0;
-            int DayOfYear = 0;
-            int Day = 0;
-            int Month = 0;
-            int Year = 0;
-            int WeekOfYear = 0;
-            classObj.DateFunctions(DateTime.Now, new DateTime(2018, 01, 01), ref difference,
-                ref DayOfWeek, ref  DayOfYear, ref  Day, ref  Month, ref  Year, ref  WeekOfYear);
-                */
 
-            //var details = JObject.Parse(jsonData);
 
-            //string json = @"{""deviceid"":""G7BF20DB2060"",""readingtype"":""Status"",""reading"":""Status"",""eventtoken"":null,""description"":""Engine speed"",""parameters"":{""VehicleName"":""Jeep Wrangler"",""VehicleSerialNumber"":""G7BF20DB2060"",""VIN"":""1J4FA69S74P704699"",""Date"":""10 / 2 / 2017 3:35:48 AM"",""DiagnosticName"":""Engine speed"",""DiagnosticCode"":""107"",""SourceName"":"" * *Go"",""Value"":""1363"",""Unit"":""Engine.UnitOfMeasureRevolutionsPerMinute""},""time"":""2017 - 10 - 02T03: 37:18.863Z""}";
-            //string jsonpath = "parameters.DiagnosticCode";
-            //string res=classObj.JsonParser(json, jsonpath);
-
-            //string result = classObj.AzureTranslateText("9e244b5792ed4d6792b44603801e93cb", "Hola como te va?", "", "en");
-
-            //string jsonresult=classObj.AzureTextAnalyticsSentiment("8c8f3ccfbad44ac4b992901b3df0f797", "Muy malo, desastrozo","en");
+             //string jsonresult=classObj.AzureTextAnalyticsSentiment("8c8f3ccfbad44ac4b992901b3df0f797", "Muy malo, desastrozo","en");
 
             /*classObj.AzureFunctionCall(@"{
                      ""topic"": ""asunto"",
@@ -55,17 +37,10 @@ namespace msdyncrmWorkflowTools_ConsoleTest
             */ //"https://crmsaturday990f.queue.core.windows.net/crmsaturdaystoragequeue");
 
             // classObj.SalesLiteratureToEmail("*.*", "978CE02B-E72D-E711-80F6-5065F38B5621", "9588F65E-EA2D-E711-80F6-5065F38B5621");
-            /*
+            
 
-                        string capitalizedText = "", paddedText = "", replacedText = "", subStringText = "", regexText = "", uppercaseText = "", lowercaseText = "";
-                        bool regexSuccess = false;
-
-                        bool test = classObj.StringFunctions(true, "Demian", "w", true, 150, true,
-                            "w", "w", 150, 0, true, "w",
-                            ref capitalizedText, ref paddedText, ref replacedText, ref subStringText, ref regexText,
-                            ref uppercaseText, ref lowercaseText, ref regexSuccess);
-                            */
-            EntityReference email = new EntityReference("email", new Guid("CF991F8E-200F-E811-811E-5065F38A1B01"));
+                       
+            // EntityReference email = new EntityReference("email", new Guid("CF991F8E-200F-E811-811E-5065F38A1B01"));
             //classObj.EntityAttachmentToEmail("%.%", "67C72C4F-200F-E811-811E-5065F38A1B01", email, true);
             //
 
@@ -76,16 +51,16 @@ namespace msdyncrmWorkflowTools_ConsoleTest
               classObj.SendEmailFromTemplateToUsersInRole(securityRoleLookup, emailTemplateLookup);
               */
             // classObj.SendEmailToUsersInRole(securityRoleLookup, new EntityReference("email",new Guid("B96825B7-CCB0-E711-810F-5065F38BF4A1")));
-            //string traslated=classObj.TranslateText("Hola", "pt", "XXXX");
+
             //classObj.InsertOptionValue(true, "purchaseprocess", "opportunity", "Tipo22", 22, 3082);
             //classObj.InsertOptionValue(false, "cdi_test", "opportunity", "Tipo4", 1, 3082);
             //classObj.DeleteOptionValue(true,"purchaseprocess", "opportunity", 22);
             //classObj.DeleteOptionValue(false, "cdi_test", "opportunity",  1);
             // classObj.AssociateEntity("new_test", new Guid("612F10EE-32DB-E711-8116-5065F38BF4A1"), "new_new_test_new_test", "new_test", "new_test", "F1F924DC-32DB-E711-8116-5065F38BF4A1");
-            //classObj.UpdateChildRecords("Quote_Tasks", "quote", "D19A670C-5EF1-E711-811B-5065F38A3A01", "", "2", "statecode", true);
+           // classObj.UpdateChildRecords("Quote_Tasks", "quote", "D19A670C-5EF1-E711-811B-5065F38A3A01", "", "2", "statecode", true);
             //classObj.UpdateChildRecords("Quote_Tasks", "quote", "D19A670C-5EF1-E711-811B-5065F38A3A01", "", "6", "statuscode", true);
-            //classObj.CurrencyConvert(1,"EUR","USD");
-            classObj.UpdateChildRecords("product_opportunities", "opportunity", "9DF132E1-4FFF-E711-811E-5065F38A3A01", "", "1", "new_taxapplicable",false);
+            
+            //classObj.UpdateChildRecords("product_opportunities", "opportunity", "9DF132E1-4FFF-E711-811E-5065F38A3A01", "", "1", "new_taxapplicable",false);
             //classObj.AssociateEntity("opportunity",new Guid("D9AA2BB3-A8F0-E611-80FA-5065F38A4A21"), "opportunitycompetitors_association", "opportunitycompetitors", "competitor", "C53B2A00-57F0-E611-80FA-5065F38A4A21");
             //classObj.InsertOptionValue(true,"purchaseprocess", "opportunity", "Tipo22",22, 3082);
             //https://demianrasko.crm4.dynamics.com/main.aspx?etc=1&extraqs=formid%3d8448b78f-8f42-454e-8e2a-f8196b0419af&id=%7b
@@ -94,9 +69,9 @@ namespace msdyncrmWorkflowTools_ConsoleTest
         public static IOrganizationService GetCrmService()
         {
 
-            const string crmServerUrl = "https://demianrasko.crm4.dynamics.com";
+            const string crmServerUrl = "https://demianraskosandbox.crm4.dynamics.com";
             const string userName = "demianrasko@demianrasko.onmicrosoft.com";
-            const string password = "XXX";
+            const string password = "xxxx";
 
              var connectionStringCrmOnline = string.Format("Url={0}; Username={1}; Password={2};authtype=Office365;", crmServerUrl, userName, password);
 
