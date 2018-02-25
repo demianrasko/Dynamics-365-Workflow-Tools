@@ -6,8 +6,8 @@ For using this action, just select it from the list:
 
 And then, set the parameters:
 
-![](CurrencyConvert2.gif)
+![](GetRecordID2.gif)
 
 Finally, ypu can use the GUID as a text field:
 
-![](CurrencyConvert3.gif)
+![](GetRecordID3.gif)
