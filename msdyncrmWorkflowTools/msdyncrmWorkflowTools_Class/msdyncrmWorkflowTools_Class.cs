@@ -67,6 +67,7 @@ namespace msdyncrmWorkflowTools
 
         public string JsonParser(string Json, string JsonPath)
         {
+            if (JsonPath == null) JsonPath = "";
             JObject o = JObject.Parse(Json);
             string name = o.SelectToken(JsonPath).ToString();
 

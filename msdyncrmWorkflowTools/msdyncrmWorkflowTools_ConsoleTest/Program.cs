@@ -26,7 +26,7 @@ namespace msdyncrmWorkflowTools_ConsoleTest
             */
 
 
-             //string jsonresult=classObj.AzureTextAnalyticsSentiment("8c8f3ccfbad44ac4b992901b3df0f797", "Muy malo, desastrozo","en");
+            //string jsonresult=classObj.AzureTextAnalyticsSentiment("8c8f3ccfbad44ac4b992901b3df0f797", "Muy malo, desastrozo","en");
 
             /*classObj.AzureFunctionCall(@"{
                      ""topic"": ""asunto"",
@@ -37,9 +37,13 @@ namespace msdyncrmWorkflowTools_ConsoleTest
             */ //"https://crmsaturday990f.queue.core.windows.net/crmsaturdaystoragequeue");
 
             // classObj.SalesLiteratureToEmail("*.*", "978CE02B-E72D-E711-80F6-5065F38B5621", "9588F65E-EA2D-E711-80F6-5065F38B5621");
-            
 
-                       
+
+            
+            string json = @"{""values"": [{""Author"": ""Lisa Simpson"",""Response Date"": ""2018-02-21T08:13:34.284Z""}	],	""SurveyId"": ""5114FA48-1DE6-E711-80E3-005056B37A5C""}";
+            string jsonpath = null;
+            string res = classObj.JsonParser(json, jsonpath);
+
             // EntityReference email = new EntityReference("email", new Guid("CF991F8E-200F-E811-811E-5065F38A1B01"));
             //classObj.EntityAttachmentToEmail("%.%", "67C72C4F-200F-E811-811E-5065F38A1B01", email, true);
             //
@@ -57,9 +61,9 @@ namespace msdyncrmWorkflowTools_ConsoleTest
             //classObj.DeleteOptionValue(true,"purchaseprocess", "opportunity", 22);
             //classObj.DeleteOptionValue(false, "cdi_test", "opportunity",  1);
             // classObj.AssociateEntity("new_test", new Guid("612F10EE-32DB-E711-8116-5065F38BF4A1"), "new_new_test_new_test", "new_test", "new_test", "F1F924DC-32DB-E711-8116-5065F38BF4A1");
-           // classObj.UpdateChildRecords("Quote_Tasks", "quote", "D19A670C-5EF1-E711-811B-5065F38A3A01", "", "2", "statecode", true);
+            // classObj.UpdateChildRecords("Quote_Tasks", "quote", "D19A670C-5EF1-E711-811B-5065F38A3A01", "", "2", "statecode", true);
             //classObj.UpdateChildRecords("Quote_Tasks", "quote", "D19A670C-5EF1-E711-811B-5065F38A3A01", "", "6", "statuscode", true);
-            
+
             //classObj.UpdateChildRecords("product_opportunities", "opportunity", "9DF132E1-4FFF-E711-811E-5065F38A3A01", "", "1", "new_taxapplicable",false);
             //classObj.AssociateEntity("opportunity",new Guid("D9AA2BB3-A8F0-E611-80FA-5065F38A4A21"), "opportunitycompetitors_association", "opportunitycompetitors", "competitor", "C53B2A00-57F0-E611-80FA-5065F38A4A21");
             //classObj.InsertOptionValue(true,"purchaseprocess", "opportunity", "Tipo22",22, 3082);

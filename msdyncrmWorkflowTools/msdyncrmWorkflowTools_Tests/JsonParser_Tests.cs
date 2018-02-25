@@ -75,7 +75,28 @@ namespace msdyncrmWorkflowTools_Tests
             Assert.AreEqual(res, "21/02/2018 8:13:34");
         }
 
-        
+        [TestMethod]
+        public void JsonParser7()
+        {
+            var classObj = new msdyncrmWorkflowTools_Class(objService.service);
+            string json = @"{""values"": [{""Author"": ""Lisa Simpson"",""Response Date"": ""2018-02-21T08:13:34.284Z""}	],	""SurveyId"": ""5114FA48-1DE6-E711-80E3-005056B37A5C""}";
+            string jsonpath = "";
+            string res = classObj.JsonParser(json, jsonpath);
+
+            Assert.AreEqual(res, "{\r\n  \"values\": [\r\n    {\r\n      \"Author\": \"Lisa Simpson\",\r\n      \"Response Date\": \"2018-02-21T08:13:34.284Z\"\r\n    }\r\n  ],\r\n  \"SurveyId\": \"5114FA48-1DE6-E711-80E3-005056B37A5C\"\r\n}");
+        }
+        [TestMethod]
+        public void JsonParser8()
+        {
+            var classObj = new msdyncrmWorkflowTools_Class(objService.service);
+            string json = @"{""values"": [{""Author"": ""Lisa Simpson"",""Response Date"": ""2018-02-21T08:13:34.284Z""}	],	""SurveyId"": ""5114FA48-1DE6-E711-80E3-005056B37A5C""}";
+            string jsonpath = null;
+            string res = classObj.JsonParser(json, jsonpath);
+
+            Assert.AreEqual(res, "{\r\n  \"values\": [\r\n    {\r\n      \"Author\": \"Lisa Simpson\",\r\n      \"Response Date\": \"2018-02-21T08:13:34.284Z\"\r\n    }\r\n  ],\r\n  \"SurveyId\": \"5114FA48-1DE6-E711-80E3-005056B37A5C\"\r\n}");
+        }
+
+
     }
 }
 
