@@ -5,7 +5,7 @@ For using this activity you must access here and select Qualify Lead:
 
 
 Then in the activity you can fill the following parameters: 
-![](Qualify%20Lead_wf2.gif)
+![](QualifyLead1.gif)
 
 The Parameters are:
 * Lead: Lead to be Qualified
@@ -13,4 +13,5 @@ The Parameters are:
 * Create Contact: true/false to set if we want to create a new contact
 * Create Opportunity: true/false to set if we want to create a new Opportunity
 * Existing Account: to set an existing account to be set on new created Opportunity
+* Existing Contact: to set an existing contact to be set on new created Opportunity
 * LeadStatus: "3" for example for Qualify Status
