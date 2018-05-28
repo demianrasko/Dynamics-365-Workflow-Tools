@@ -643,7 +643,7 @@ namespace msdyncrmWorkflowTools
 
         }
 
-        public void EntityAttachmentToEmail(string _FileName, string ParentId, EntityReference email, bool _RetrieveActivityMimeAttachment)
+        public void EntityAttachmentToEmail(string _FileName, string ParentId, EntityReference email, bool _RetrieveActivityMimeAttachment, bool _MostRecent)
         {
 
 
@@ -660,8 +660,10 @@ namespace msdyncrmWorkflowTools
                         <attribute name='subject' />
                         <attribute name='documentbody' />
                         <attribute name='mimetype' />
-
-                        <filter type='and'>
+                        <attribute name='createdon' />";
+                if (_MostRecent)
+                    fetchXML = fetchXML + "<order attribute='createdon' descending='true' />";
+                fetchXML = fetchXML + @"<filter type='and'>
                           <condition attribute='filename' operator='like' value='%" + _FileName + @"%' />
                           <condition attribute='isdocument' operator='eq' value='1' />
                           <condition attribute='objectid' operator='eq' value='" + ParentId + @"' />
@@ -679,8 +681,10 @@ namespace msdyncrmWorkflowTools
                         <attribute name='subject' />
                         <attribute name='body' />
                         <attribute name='mimetype' />
-
-                        <filter type='and'>
+                        <attribute name='createdon' />";
+                if (_MostRecent)
+                    fetchXML = fetchXML + "<order attribute='createdon' descending='true' />";
+                fetchXML = fetchXML + @"<filter type='and'>
                           <condition attribute='filename' operator='like' value='%" + _FileName + @"%' />
                           <condition attribute='activityid' operator='eq' value='" + ParentId + @"' />
                         </filter>
@@ -702,8 +706,13 @@ namespace msdyncrmWorkflowTools
 
             #region "Add Attachments to Email"
             int i = 1;
+            List<Entity> attachedFiles = new List<Entity>();
             foreach (Entity file in attachmentFiles.Entities)
             {
+
+                if (tracing != null) tracing.Trace(String.Format("Entities Count: {0} ", i));
+
+
                 Entity _Attachment = new Entity("activitymimeattachment");
                 _Attachment["objectid"] = new EntityReference("email", email.Id);
                 _Attachment["objecttypecode"] = "email";
@@ -730,9 +739,29 @@ namespace msdyncrmWorkflowTools
                 {
                     _Attachment["mimetype"] = file.Attributes["mimetype"].ToString();
                 }
-
-                service.Create(_Attachment);
-
+                if (_MostRecent)
+                {
+                    if (tracing != null) tracing.Trace(String.Format("Is Most Recent"));
+                    Entity alreadyAttached = attachedFiles.Where(f => f["filename"].ToString() == (file.Contains("filename") ? file["filename"].ToString() : "")).FirstOrDefault();
+                    if (alreadyAttached == null)
+                    {
+                        if (tracing != null) tracing.Trace(String.Format("not already attached"));
+                        service.Create(_Attachment);
+                        if(!file.Contains("filename"))
+                        {
+                            file["filename"] = "";
+                        }
+                        attachedFiles.Add(file);
+                    }
+                    else
+                        if (tracing != null) tracing.Trace(String.Format("already attached"));
+                }
+                else
+                {
+                    if (tracing != null) tracing.Trace(String.Format("Is Not Most Recent"));
+                    service.Create(_Attachment);
+                }
+                
 
             }
 
