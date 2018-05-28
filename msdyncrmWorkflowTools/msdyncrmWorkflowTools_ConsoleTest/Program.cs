@@ -78,7 +78,7 @@ namespace msdyncrmWorkflowTools_ConsoleTest
 
             const string crmServerUrl = "https://demianraskosandbox.crm4.dynamics.com";
             const string userName = "demianrasko@demianrasko.onmicrosoft.com";
-            const string password = "Brasil14";
+            const string password = "XXXX";
 
              var connectionStringCrmOnline = string.Format("Url={0}; Username={1}; Password={2};authtype=Office365;", crmServerUrl, userName, password);
 
