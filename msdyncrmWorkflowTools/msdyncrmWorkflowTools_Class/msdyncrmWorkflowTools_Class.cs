@@ -69,12 +69,45 @@ namespace msdyncrmWorkflowTools
         {
             if (JsonPath == null) JsonPath = "";
             JObject o = JObject.Parse(Json);
-            string name = o.SelectToken(JsonPath).ToString();
-
+            string name= "";
+            if (o.SelectToken(JsonPath) != null)
+            {
+                name = o.SelectToken(JsonPath).ToString();
+            }
             return name;
 
         }
+        public EntityReference retrieveUserBUDefaultTeam(string systemuserid)
+        {
+            EntityReference teamres = new EntityReference("team");
 
+            string fetch = @"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='true'>
+                                  <entity name='team'>
+                                    <attribute name='name' />
+                                    <attribute name='businessunitid' />
+                                    <attribute name='teamid' />
+                                    <attribute name='teamtype' />
+                                    <order attribute='name' descending='false' />
+                                    <filter type='and'>
+                                      <condition attribute='teamtype' operator='eq' value='0' />
+                                      <condition attribute='isdefault' operator='eq' value='1' />
+                                    </filter>
+                                    <link-entity name='businessunit' from='businessunitid' to='businessunitid' link-type='inner' alias='ae'>
+                                      <link-entity name='systemuser' from='businessunitid' to='businessunitid' link-type='inner' alias='af'>
+                                        <filter type='and'>
+                                          <condition attribute='systemuserid' operator='eq' value='"+ systemuserid + @"' />
+                                        </filter>
+                                      </link-entity>
+                                    </link-entity>
+                                  </entity>
+                                </fetch> ";
+
+            EntityCollection team = service.RetrieveMultiple(new FetchExpression(fetch));
+
+
+            teamres.Id = team.Entities[0].Id;
+            return teamres;
+        }
         /*
         public void QRCode(string entityname, string recordid, string QRInfo, string noteSubject, string noteText, string fileName)
         {
@@ -352,6 +385,7 @@ namespace msdyncrmWorkflowTools
                     startIndex = inputText.Length - subStringLength - startIndex;
                 }
                 if (inputText.Length < subStringLength) subStringLength = inputText.Length;
+                if (startIndex < 0) startIndex = 0;
                 subStringText = inputText.Substring(startIndex, subStringLength);
             }
 
@@ -688,6 +722,10 @@ namespace msdyncrmWorkflowTools
                 {
                     _Attachment["body"] = file.Attributes["documentbody"].ToString();
                 }
+                else if (file.Attributes.Contains("body"))
+                {
+                    _Attachment["body"] = file.Attributes["body"].ToString();
+                }
                 if (file.Attributes.Contains("mimetype"))
                 {
                     _Attachment["mimetype"] = file.Attributes["mimetype"].ToString();
@@ -919,7 +957,16 @@ namespace msdyncrmWorkflowTools
                     }
                     else
                     {
-                        entUpdate.Attributes.Add(childFieldNameToUpdate, valueToUpdate);
+                        //if (meta.AttributeType.Value.ToString() == "EntityReference")
+                        //{
+                        //    EntityReference valueRef = (EntityReference)valueToUpdate;
+                        //    EntityReference entR = new EntityReference(valueRef.LogicalName,new Guid(valueRef.Id.ToString()));
+                        //    entUpdate.Attributes.Add(childFieldNameToUpdate, entR);
+                        //}
+                        //else
+                        {
+                            entUpdate.Attributes.Add(childFieldNameToUpdate, valueToUpdate);
+                        }
                     }
                 }
 
