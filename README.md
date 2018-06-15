@@ -73,6 +73,7 @@ To see how to use each of the tools includes in this solution, please access to 
 * 61: [Translate Text](/docs/TranslateText.md) 
 * 62: [Currency Convert](/docs/CurrencyConvert.md) 
 * 63: [Get Record ID](/docs/GetRecordID.md) 
+* 64: [Retrieve User's BU Default Team](/docs/RetrieveUserBUDefaultTeam.md) 
 
-![](docs/Home_wf1_51.gif)
+![](docs/Home_wf1_52.gif)
 
