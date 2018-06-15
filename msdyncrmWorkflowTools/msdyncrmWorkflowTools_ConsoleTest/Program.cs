@@ -25,7 +25,7 @@ namespace msdyncrmWorkflowTools_ConsoleTest
             classObj.QRCode("account", "7DF24294-9EC4-E711-8116-5065F38A3A01", "www.demianrasko.com", "Demian QR Code", "www.demianrasko.com", "QrDemian.png");
             */
 
-            EntityReference team=classObj.retrieveUserBUDefaultTeam("A292B22E-C957-4B97-BED1-EA0A504954C7");
+            //EntityReference team=classObj.retrieveUserBUDefaultTeam("A292B22E-C957-4B97-BED1-EA0A504954C7");
             //string jsonresult=classObj.AzureTextAnalyticsSentiment("8c8f3ccfbad44ac4b992901b3df0f797", "Muy malo, desastrozo","en");
 
             /*classObj.AzureFunctionCall(@"{
@@ -47,8 +47,8 @@ namespace msdyncrmWorkflowTools_ConsoleTest
             //string jsonpath = "values[0].Autho";
             //string res = classObj.JsonParser(json, jsonpath);
 
-            //EntityReference email = new EntityReference("email", new Guid("756EB11C-214E-E811-812A-5065F38A1B01"));
-            //classObj.EntityAttachmentToEmail("%.%", "4E6F2D8F-204E-E811-812A-5065F38A1B01", email, true);
+            EntityReference email = new EntityReference("email", new Guid("756EB11C-214E-E811-812A-5065F38A1B01"));
+            classObj.EntityAttachmentToEmail("%.%", "4E6F2D8F-204E-E811-812A-5065F38A1B01", email, true,false);
             //
 
             //classObj.UpdateChildRecords("SalesOrderDetail_Dynamicpropertyinstance", "salesorderdetail", "3BDA2E2D-6C6A-E711-8106-5065F38A1B01", "", "333", "valuestring");
@@ -78,7 +78,7 @@ namespace msdyncrmWorkflowTools_ConsoleTest
 
             const string crmServerUrl = "https://demianraskosandbox.crm4.dynamics.com";
             const string userName = "demianrasko@demianrasko.onmicrosoft.com";
-            const string password = "XXXX";
+            const string password = "XXX";
 
              var connectionStringCrmOnline = string.Format("Url={0}; Username={1}; Password={2};authtype=Office365;", crmServerUrl, userName, password);
 

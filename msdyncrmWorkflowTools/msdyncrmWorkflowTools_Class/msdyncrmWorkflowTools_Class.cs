@@ -659,8 +659,7 @@ namespace msdyncrmWorkflowTools
                         <attribute name='annotationid' />
                         <attribute name='subject' />
                         <attribute name='documentbody' />
-                        <attribute name='mimetype' />
-                        <attribute name='createdon' />";
+                        <attribute name='mimetype' />";
                 if (_MostRecent)
                     fetchXML = fetchXML + "<order attribute='createdon' descending='true' />";
                 fetchXML = fetchXML + @"<filter type='and'>
@@ -680,8 +679,7 @@ namespace msdyncrmWorkflowTools
                         <attribute name='attachmentid' />
                         <attribute name='subject' />
                         <attribute name='body' />
-                        <attribute name='mimetype' />
-                        <attribute name='createdon' />";
+                        <attribute name='mimetype' />";
                 if (_MostRecent)
                     fetchXML = fetchXML + "<order attribute='createdon' descending='true' />";
                 fetchXML = fetchXML + @"<filter type='and'>
@@ -720,7 +718,7 @@ namespace msdyncrmWorkflowTools
                 i++;
 
                 if (file.Attributes.Contains("subject"))
-                {
+                {   
                     _Attachment["subject"] = file.Attributes["subject"].ToString();
                 }
                 if (file.Attributes.Contains("filename"))
