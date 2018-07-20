@@ -37,6 +37,9 @@ namespace msdyncrmWorkflowTools.Class
         [Input("Retrieve ActivityMimeAttachment")]
         public InArgument<Boolean> RetrieveActivityMimeAttachment { get; set; }
 
+        [Input("Select Most Recent Distinct Files")]
+        public InArgument<Boolean> MostRecent { get; set; }
+
 
 
         protected override void Execute(CodeActivityContext executionContext)
@@ -72,11 +75,12 @@ namespace msdyncrmWorkflowTools.Class
 
             EntityReference email = this.Email.Get(executionContext);
             bool _RetrieveActivityMimeAttachment = this.RetrieveActivityMimeAttachment.Get(executionContext);
+            bool _MostRecent = this.MostRecent.Get(executionContext);
 
             #endregion
 
             msdyncrmWorkflowTools_Class commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
-            commonClass.EntityAttachmentToEmail(_FileName, ParentId, email, _RetrieveActivityMimeAttachment);
+            commonClass.EntityAttachmentToEmail(_FileName, ParentId, email, _RetrieveActivityMimeAttachment, _MostRecent);
         }
 
     }

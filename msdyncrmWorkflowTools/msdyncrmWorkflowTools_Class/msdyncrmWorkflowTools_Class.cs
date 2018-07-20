@@ -69,12 +69,45 @@ namespace msdyncrmWorkflowTools
         {
             if (JsonPath == null) JsonPath = "";
             JObject o = JObject.Parse(Json);
-            string name = o.SelectToken(JsonPath).ToString();
-
+            string name= "";
+            if (o.SelectToken(JsonPath) != null)
+            {
+                name = o.SelectToken(JsonPath).ToString();
+            }
             return name;
 
         }
+        public EntityReference retrieveUserBUDefaultTeam(string systemuserid)
+        {
+            EntityReference teamres = new EntityReference("team");
 
+            string fetch = @"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='true'>
+                                  <entity name='team'>
+                                    <attribute name='name' />
+                                    <attribute name='businessunitid' />
+                                    <attribute name='teamid' />
+                                    <attribute name='teamtype' />
+                                    <order attribute='name' descending='false' />
+                                    <filter type='and'>
+                                      <condition attribute='teamtype' operator='eq' value='0' />
+                                      <condition attribute='isdefault' operator='eq' value='1' />
+                                    </filter>
+                                    <link-entity name='businessunit' from='businessunitid' to='businessunitid' link-type='inner' alias='ae'>
+                                      <link-entity name='systemuser' from='businessunitid' to='businessunitid' link-type='inner' alias='af'>
+                                        <filter type='and'>
+                                          <condition attribute='systemuserid' operator='eq' value='"+ systemuserid + @"' />
+                                        </filter>
+                                      </link-entity>
+                                    </link-entity>
+                                  </entity>
+                                </fetch> ";
+
+            EntityCollection team = service.RetrieveMultiple(new FetchExpression(fetch));
+
+
+            teamres.Id = team.Entities[0].Id;
+            return teamres;
+        }
         /*
         public void QRCode(string entityname, string recordid, string QRInfo, string noteSubject, string noteText, string fileName)
         {
@@ -352,6 +385,7 @@ namespace msdyncrmWorkflowTools
                     startIndex = inputText.Length - subStringLength - startIndex;
                 }
                 if (inputText.Length < subStringLength) subStringLength = inputText.Length;
+                if (startIndex < 0) startIndex = 0;
                 subStringText = inputText.Substring(startIndex, subStringLength);
             }
 
@@ -609,7 +643,7 @@ namespace msdyncrmWorkflowTools
 
         }
 
-        public void EntityAttachmentToEmail(string _FileName, string ParentId, EntityReference email, bool _RetrieveActivityMimeAttachment)
+        public void EntityAttachmentToEmail(string _FileName, string ParentId, EntityReference email, bool _RetrieveActivityMimeAttachment, bool _MostRecent)
         {
 
 
@@ -625,9 +659,10 @@ namespace msdyncrmWorkflowTools
                         <attribute name='annotationid' />
                         <attribute name='subject' />
                         <attribute name='documentbody' />
-                        <attribute name='mimetype' />
-
-                        <filter type='and'>
+                        <attribute name='mimetype' />";
+                if (_MostRecent)
+                    fetchXML = fetchXML + "<order attribute='createdon' descending='true' />";
+                fetchXML = fetchXML + @"<filter type='and'>
                           <condition attribute='filename' operator='like' value='%" + _FileName + @"%' />
                           <condition attribute='isdocument' operator='eq' value='1' />
                           <condition attribute='objectid' operator='eq' value='" + ParentId + @"' />
@@ -644,9 +679,10 @@ namespace msdyncrmWorkflowTools
                         <attribute name='attachmentid' />
                         <attribute name='subject' />
                         <attribute name='body' />
-                        <attribute name='mimetype' />
-
-                        <filter type='and'>
+                        <attribute name='mimetype' />";
+                if (_MostRecent)
+                    fetchXML = fetchXML + "<order attribute='createdon' descending='true' />";
+                fetchXML = fetchXML + @"<filter type='and'>
                           <condition attribute='filename' operator='like' value='%" + _FileName + @"%' />
                           <condition attribute='activityid' operator='eq' value='" + ParentId + @"' />
                         </filter>
@@ -668,8 +704,13 @@ namespace msdyncrmWorkflowTools
 
             #region "Add Attachments to Email"
             int i = 1;
+            List<Entity> attachedFiles = new List<Entity>();
             foreach (Entity file in attachmentFiles.Entities)
             {
+
+                if (tracing != null) tracing.Trace(String.Format("Entities Count: {0} ", i));
+
+
                 Entity _Attachment = new Entity("activitymimeattachment");
                 _Attachment["objectid"] = new EntityReference("email", email.Id);
                 _Attachment["objecttypecode"] = "email";
@@ -677,7 +718,7 @@ namespace msdyncrmWorkflowTools
                 i++;
 
                 if (file.Attributes.Contains("subject"))
-                {
+                {   
                     _Attachment["subject"] = file.Attributes["subject"].ToString();
                 }
                 if (file.Attributes.Contains("filename"))
@@ -688,13 +729,37 @@ namespace msdyncrmWorkflowTools
                 {
                     _Attachment["body"] = file.Attributes["documentbody"].ToString();
                 }
+                else if (file.Attributes.Contains("body"))
+                {
+                    _Attachment["body"] = file.Attributes["body"].ToString();
+                }
                 if (file.Attributes.Contains("mimetype"))
                 {
                     _Attachment["mimetype"] = file.Attributes["mimetype"].ToString();
                 }
-
-                service.Create(_Attachment);
-
+                if (_MostRecent)
+                {
+                    if (tracing != null) tracing.Trace(String.Format("Is Most Recent"));
+                    Entity alreadyAttached = attachedFiles.Where(f => f["filename"].ToString() == (file.Contains("filename") ? file["filename"].ToString() : "")).FirstOrDefault();
+                    if (alreadyAttached == null)
+                    {
+                        if (tracing != null) tracing.Trace(String.Format("not already attached"));
+                        service.Create(_Attachment);
+                        if(!file.Contains("filename"))
+                        {
+                            file["filename"] = "";
+                        }
+                        attachedFiles.Add(file);
+                    }
+                    else
+                        if (tracing != null) tracing.Trace(String.Format("already attached"));
+                }
+                else
+                {
+                    if (tracing != null) tracing.Trace(String.Format("Is Not Most Recent"));
+                    service.Create(_Attachment);
+                }
+                
 
             }
 
@@ -919,7 +984,16 @@ namespace msdyncrmWorkflowTools
                     }
                     else
                     {
-                        entUpdate.Attributes.Add(childFieldNameToUpdate, valueToUpdate);
+                        //if (meta.AttributeType.Value.ToString() == "EntityReference")
+                        //{
+                        //    EntityReference valueRef = (EntityReference)valueToUpdate;
+                        //    EntityReference entR = new EntityReference(valueRef.LogicalName,new Guid(valueRef.Id.ToString()));
+                        //    entUpdate.Attributes.Add(childFieldNameToUpdate, entR);
+                        //}
+                        //else
+                        {
+                            entUpdate.Attributes.Add(childFieldNameToUpdate, valueToUpdate);
+                        }
                     }
                 }
 

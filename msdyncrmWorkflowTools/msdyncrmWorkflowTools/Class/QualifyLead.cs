@@ -34,6 +34,10 @@ namespace msdyncrmWorkflowTools
         [ReferenceTarget("account")]
         public InArgument<EntityReference> ExistingAccount { get; set; }
 
+        [Input("Existing Contact")]
+        [ReferenceTarget("contact")]
+        public InArgument<EntityReference> ExistingContact { get; set; }
+
         [RequiredArgument]
         [Input("LeadStatus")]
         public InArgument<int> LeadStatus { get; set; }
@@ -60,6 +64,7 @@ namespace msdyncrmWorkflowTools
             bool createContact = this.CreateContact.Get(executionContext);
             bool createOpportunity = this.CreateOpportunity.Get(executionContext);
             EntityReference existingAccount = this.ExistingAccount.Get(executionContext);
+            EntityReference existingContact = this.ExistingContact.Get(executionContext);
             int leadStatus = this.LeadStatus.Get(executionContext);
 
             objCommon.tracingService.Trace("LeadID=" + lead.Id);
@@ -79,10 +84,16 @@ namespace msdyncrmWorkflowTools
             qualifyIntoOpportunityReq.CreateAccount = createAccount;
             qualifyIntoOpportunityReq.CreateContact = createContact;
             qualifyIntoOpportunityReq.OpportunityCurrencyId = currencyId;
+
             if (existingAccount != null)
             {
                 qualifyIntoOpportunityReq.OpportunityCustomerId = new EntityReference(
                         "account", existingAccount.Id);
+            }
+            else if (existingContact != null)
+            {
+                qualifyIntoOpportunityReq.OpportunityCustomerId = new EntityReference(
+                        "contact", existingContact.Id);
             }
             qualifyIntoOpportunityReq.Status = new OptionSetValue(leadStatus);
             qualifyIntoOpportunityReq.LeadId = new EntityReference("lead", lead.Id);
