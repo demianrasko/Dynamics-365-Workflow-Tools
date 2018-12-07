@@ -336,6 +336,28 @@ namespace msdyncrmWorkflowTools
             return recordUrl + "&appid=" + appModuleId;
         }
 
+        public bool IsMemberOfTeam(Guid teamId, Guid userId)
+        {
+            var query = new QueryExpression
+            {
+                EntityName = "teammembership",
+                ColumnSet = new ColumnSet("systemuserid", "teamid"),
+                Criteria =
+                        {
+                            Conditions =
+                            {
+                                new ConditionExpression ("systemuserid", ConditionOperator.Equal, userId),
+                                new ConditionExpression ("teamid", ConditionOperator.Equal, teamId)
+                            }
+                        }
+            };
+
+            //get the results
+            EntityCollection retrievedUsers = service.RetrieveMultiple(query);
+
+            return retrievedUsers.Entities.Count > 0;
+        }
+
         public bool DateFunctions(DateTime date1, DateTime date2, ref TimeSpan difference,
             ref int DayOfWeek, ref int DayOfYear, ref int Day, ref int Month, ref int Year, ref int WeekOfYear)
         {

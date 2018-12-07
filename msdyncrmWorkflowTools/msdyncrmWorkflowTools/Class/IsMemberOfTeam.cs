@@ -48,31 +48,12 @@ namespace msdyncrmWorkflowTools.Class
             #endregion
 
             #region "Is user member of team"
-            // Id of the specific Team
-            Guid teamId = team.Id;
-            // Id of the specific User
-            Guid userId = user.Id;
 
-            var query = new QueryExpression
-            {
-                EntityName = "teammembership",
-                ColumnSet = new ColumnSet("systemuserid", "teamid"),
-                Criteria =
-                        {
-                            Conditions =
-                            {
-                                new ConditionExpression ("systemuserid", ConditionOperator.Equal, userId),
-                                new ConditionExpression ("teamid", ConditionOperator.Equal, teamId)
-                            }
-                        }
-            };
-            //get the results
-            EntityCollection retrievedUsers = objCommon.service.RetrieveMultiple(query);
+            msdyncrmWorkflowTools_Class commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
 
-            #endregion
-            #region "Check if there are an returned users"
-            
-            this.Result.Set(executionContext, retrievedUsers.Entities.Count > 0);
+            var isMember = commonClass.IsMemberOfTeam(team.Id, user.Id);
+
+            this.Result.Set(executionContext, isMember);
             
             #endregion
 
