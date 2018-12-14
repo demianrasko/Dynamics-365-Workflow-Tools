@@ -310,6 +310,54 @@ namespace msdyncrmWorkflowTools
             return objectId;
         }
 
+        public string GetAppModuleId(string appModuleUniqueName)
+        {
+            var query = new QueryExpression
+            {
+                EntityName = "appmodule",
+                ColumnSet = new ColumnSet("appmoduleid", "uniquename"),
+                Criteria =
+                        {
+                            Conditions =
+                            {
+                                new ConditionExpression ("uniquename", ConditionOperator.Equal, appModuleUniqueName)
+                            }
+                        }
+            };
+
+            var appmodules = service.RetrieveMultiple(query).Entities;
+            return appmodules.First()["appmoduleid"].ToString();
+        }
+
+        public string GetAppRecordUrl(string recordUrl, string appModuleUniqueName)
+        {
+            string appModuleId = GetAppModuleId(appModuleUniqueName);
+
+            return recordUrl + "&appid=" + appModuleId;
+        }
+
+        public bool IsMemberOfTeam(Guid teamId, Guid userId)
+        {
+            var query = new QueryExpression
+            {
+                EntityName = "teammembership",
+                ColumnSet = new ColumnSet("systemuserid", "teamid"),
+                Criteria =
+                        {
+                            Conditions =
+                            {
+                                new ConditionExpression ("systemuserid", ConditionOperator.Equal, userId),
+                                new ConditionExpression ("teamid", ConditionOperator.Equal, teamId)
+                            }
+                        }
+            };
+
+            //get the results
+            EntityCollection retrievedUsers = service.RetrieveMultiple(query);
+
+            return retrievedUsers.Entities.Count > 0;
+        }
+
         public bool DateFunctions(DateTime date1, DateTime date2, ref TimeSpan difference,
             ref int DayOfWeek, ref int DayOfYear, ref int Day, ref int Month, ref int Year, ref int WeekOfYear)
         {
