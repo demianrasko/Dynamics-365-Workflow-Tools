@@ -100,6 +100,7 @@
     </Compile>
     <Compile Include="Class\CalculateAgregateDate.cs" />
     <Compile Include="Class\CalculatePrice.cs" />
+    <Compile Include="Class\CountChildEntityRecords.cs" />
     <Compile Include="Class\CloneChildren.cs" />
     <Compile Include="Class\DeleteOptionValue.cs" />
     <Compile Include="Class\CurrencyConvert.cs" />
