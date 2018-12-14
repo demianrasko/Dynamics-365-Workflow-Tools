@@ -100,10 +100,12 @@
     </Compile>
     <Compile Include="Class\CalculateAgregateDate.cs" />
     <Compile Include="Class\CalculatePrice.cs" />
-    <Compile Include="Class\CountChildEntityRecords.cs" />
     <Compile Include="Class\CloneChildren.cs" />
     <Compile Include="Class\DeleteOptionValue.cs" />
     <Compile Include="Class\CurrencyConvert.cs" />
+    <Compile Include="Class\IsMemberOfTeam.cs" />
+    <Compile Include="Class\GetAppRecordUrl.cs" />
+    <Compile Include="Class\GetAppModuleID.cs" />
     <Compile Include="Class\GetRecordID.cs" />
     <Compile Include="Class\RetrieveUserBUDefaultTeam.cs" />
     <Compile Include="Class\TranslateText.cs" />
