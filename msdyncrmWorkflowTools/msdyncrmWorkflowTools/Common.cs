@@ -121,7 +121,10 @@ namespace msdyncrmWorkflowTools
 
         public Guid CloneRecord(string entityName, string objectId, string fieldstoIgnore, string prefix)
         {
+            tracingService.Trace("entering CloneRecord");
+            if (fieldstoIgnore == null) fieldstoIgnore = "";
             fieldstoIgnore = fieldstoIgnore.ToLower();
+            tracingService.Trace("fieldstoIgnore="+ fieldstoIgnore);
             Entity retrievedObject = service.Retrieve(entityName, new Guid(objectId), new ColumnSet(allColumns: true));
             tracingService.Trace("retrieved object OK");
 

@@ -77,6 +77,13 @@ namespace msdyncrmWorkflowTools
             return name;
 
         }
+
+        public void DeleteAudit(string entityname, string entityid)
+        {
+            
+             
+        }
+
         public EntityReference retrieveUserBUDefaultTeam(string systemuserid)
         {
             EntityReference teamres = new EntityReference("team");
@@ -729,7 +736,6 @@ namespace msdyncrmWorkflowTools
                         <attribute name='body' />
                         <attribute name='mimetype' />";
                 if (_MostRecent)
-                    fetchXML = fetchXML + "<order attribute='createdon' descending='true' />";
                 fetchXML = fetchXML + @"<filter type='and'>
                           <condition attribute='filename' operator='like' value='%" + _FileName + @"%' />
                           <condition attribute='activityid' operator='eq' value='" + ParentId + @"' />

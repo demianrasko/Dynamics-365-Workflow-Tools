@@ -122,6 +122,7 @@ namespace msdyncrmWorkflowTools
 
             #region "Read Parameters"
             String inputText = this.InputText.Get(executionContext);
+            if (inputText == null) inputText = "";
             bool capitalizeAllWords = this.CapitalizeAllWords.Get(executionContext);
 
             string padCharacter = this.PadCharacter.Get(executionContext);

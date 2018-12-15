@@ -42,14 +42,17 @@ namespace msdyncrmWorkflowTools.Class
 
             #region "Read Parameters"
             String _deleteRecordURL = this.DeleteRecordURL.Get(executionContext);
-            
-            string[] urlParts = _deleteRecordURL.Split("?".ToArray());
-            string[] urlParams = urlParts[1].Split("&".ToCharArray());
-            string objectTypeCode = urlParams[0].Replace("etc=", "");
-            string entityName = objCommon.sGetEntityNameFromCode(objectTypeCode, objCommon.service);
-            string objectId = urlParams[1].Replace("id=", "");
-            objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
-
+            string entityName = "";
+            string objectId = "";
+            if (_deleteRecordURL != null)
+            {
+                string[] urlParts = _deleteRecordURL.Split("?".ToArray());
+                string[] urlParams = urlParts[1].Split("&".ToCharArray());
+                string objectTypeCode = urlParams[0].Replace("etc=", "");
+                entityName = objCommon.sGetEntityNameFromCode(objectTypeCode, objCommon.service);
+                objectId = urlParams[1].Replace("id=", "");
+                objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
+            }
             bool _deleteUsingRecordURL = this.DeleteUsingRecordURL.Get(executionContext);
             String _entityTypeName = this.EntityTypeName.Get(executionContext);
             String _entityGuid = this.EntityGuid.Get(executionContext);
@@ -70,6 +73,7 @@ namespace msdyncrmWorkflowTools.Class
             }
             else
             {
+                objCommon.tracingService.Trace("Record type to be deleted: "+ _entityTypeName+" and ID:"+ _entityGuid);
                 if (_entityTypeName == null || _entityTypeName == "" || _entityGuid == null || _entityGuid == "")
                 {
                     throw new InvalidOperationException("ERROR: Entity Type name or GUID to be deleted missing.");

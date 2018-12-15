@@ -97,6 +97,41 @@ namespace msdyncrmWorkflowTools.Class
                     ". Exception message: " + e.Message + ". Inner Exception: " + e.ToString());
                 }
             }
+
+            //*************************
+            RetrieveProcessInstancesRequest procOpp1Req = new RetrieveProcessInstancesRequest
+            {
+                EntityId = new Guid(objectId),
+                EntityLogicalName = entityName
+            };
+            RetrieveProcessInstancesResponse procOpp1Resp = (RetrieveProcessInstancesResponse)objCommon.service.Execute(procOpp1Req);
+
+            // Declare variables to store values returned in response
+            Entity activeProcessInstance = null;
+            Guid _processOpp1Id = Guid.Empty;
+            string _procInstanceLogicalName = "";
+            if (procOpp1Resp.Processes.Entities.Count > 0)
+            {
+                activeProcessInstance = procOpp1Resp.Processes.Entities[0]; // First record is the active process instance
+                _processOpp1Id = activeProcessInstance.Id; // Id of the active process instance, which will be used
+                                                           // later to retrieve the active path of the process instance
+
+                Console.WriteLine("Current active process instance for the Opportunity record: '{0}'", activeProcessInstance["name"].ToString());
+                _procInstanceLogicalName = activeProcessInstance["name"].ToString().Replace(" ", string.Empty).ToLower();
+            }
+            else
+            {
+                Console.WriteLine("No process instances found for the opportunity record; aborting the sample.");
+                Environment.Exit(1);
+            }
+            objCommon.tracingService.Trace("Starting the update");
+           Entity processInstanceToUpdate= new Entity(_procInstanceLogicalName, _processOpp1Id);
+            processInstanceToUpdate.Attributes.Add("activestageid", new EntityReference("processstage", stageId.Value));
+            objCommon.tracingService.Trace("Starting the update2");
+            objCommon.service.Update(processInstanceToUpdate);
+            objCommon.tracingService.Trace("Starting the update3");
+            //*************************
+            /*
             // Set the active process and the phase if defined
             EntityReference objectReference = new EntityReference(entityName,new Guid(objectId));
 
@@ -141,7 +176,7 @@ namespace msdyncrmWorkflowTools.Class
                     " Inner exception: " + e.ToString());
             }
             objCommon.tracingService.Trace("[Dynamics.ChangeBPFandPhase.Execute] End.");
-
+            */
             #endregion
 
         }

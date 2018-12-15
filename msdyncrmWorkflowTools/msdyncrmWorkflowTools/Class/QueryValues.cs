@@ -125,12 +125,43 @@ namespace msdyncrmWorkflowTools
                     if (results.Entities[0].Attributes[_Attribute1] != null)
                     {
                         objCommon.tracingService.Trace(String.Format("Setting result1: {0}", results.Entities[0].Attributes[_Attribute1]));
-                        this.ResultValue1.Set(executionContext, results.Entities[0].Attributes[_Attribute1].ToString());
+                        if (results.Entities[0].Attributes[_Attribute1] is Microsoft.Xrm.Sdk.OptionSetValue)
+                        {
+                            objCommon.tracingService.Trace("Value1 Is an OptionSetValue");
+                            OptionSetValue val = (OptionSetValue)results.Entities[0].Attributes[_Attribute1];
+                            this.ResultValue1.Set(executionContext, val.Value.ToString());
+                        }
+                        else if (results.Entities[0].Attributes[_Attribute1] is EntityReference)
+                        {
+                            objCommon.tracingService.Trace("Value1 Is an EntityReference");
+                            EntityReference val = (EntityReference)results.Entities[0].Attributes[_Attribute1];
+                            this.ResultValue1.Set(executionContext, val.Id.ToString());
+                        }
+                        else
+                        {
+                            this.ResultValue1.Set(executionContext, results.Entities[0].Attributes[_Attribute1].ToString());
+                        }
                     }
                     if (results.Entities[0].Attributes[_Attribute2] != null)
                     {
                         objCommon.tracingService.Trace(String.Format("Setting result2: {0}", results.Entities[0].Attributes[_Attribute2]));
-                        this.ResultValue2.Set(executionContext, results.Entities[0].Attributes[_Attribute2].ToString());
+                        if (results.Entities[0].Attributes[_Attribute2] is Microsoft.Xrm.Sdk.OptionSetValue)
+                        {
+                            objCommon.tracingService.Trace("Value2 Is an OptionSetValue");
+
+                            OptionSetValue val = (OptionSetValue)results.Entities[0].Attributes[_Attribute2];
+                            this.ResultValue2.Set(executionContext, val.Value.ToString());
+                        }
+                        else if (results.Entities[0].Attributes[_Attribute2] is EntityReference)
+                        {
+                            objCommon.tracingService.Trace("Value2 Is an EntityReference");
+                            EntityReference val = (EntityReference)results.Entities[0].Attributes[_Attribute2];
+                            this.ResultValue2.Set(executionContext, val.Id.ToString());
+                        }
+                        else
+                        {
+                            this.ResultValue2.Set(executionContext, results.Entities[0].Attributes[_Attribute2].ToString());
+                        }
                     }
                     objCommon.tracingService.Trace(String.Format("End setting results"));
                 }
