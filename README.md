@@ -75,5 +75,5 @@ To see how to use each of the tools includes in this solution, please access to 
 * 63: [Get Record ID](/docs/GetRecordID.md) 
 * 64: [Retrieve User's BU Default Team](/docs/RetrieveUserBUDefaultTeam.md) 
 
-![](docs/Home_wf1_52.gif)
+![](docs/Home_wf1_53.gif)
 
