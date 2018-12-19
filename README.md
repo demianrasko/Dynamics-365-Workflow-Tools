@@ -81,6 +81,7 @@ To see how to use each of the tools includes in this solution, please access to 
 * 69 [Get Multi Select OptionSet](/docs/GetMultiSelectOptionSet.md) Thanks to [Ramon Tebar](https://github.com/rtebar)
 * 70 [Map Multi Select OptionSet](/docs/MapMultiSelectOptionSet.md) Thanks to [Ramon Tebar](https://github.com/rtebar)
 * 71 [Set Multi Select Option Set](/docs/SetMultiSelectOptionSet.md) Thanks to [Ramon Tebar](https://github.com/rtebar)
+* 72 [Delete Record Audit History](/docs/DeleteRecordAuditHistory.md) 
 
-![](docs/Home_wf1_53.gif)
+![](docs/Home_wf1_54.gif)
 
