@@ -1,2 +1,2 @@
 Share Record With Team
-![](ShareRecordWithTeam.gif)
+![](ShareRecordWithTeam1.gif)
