@@ -83,5 +83,16 @@ To see how to use each of the tools includes in this solution, please access to 
 * 71 [Set Multi Select Option Set](/docs/SetMultiSelectOptionSet.md) Thanks to [Ramon Tebar](https://github.com/rtebar)
 * 72 [Delete Record Audit History](/docs/DeleteRecordAuditHistory.md) 
 
+NOTE ABOUT CDS: The CDS Version not include all the actions, because it requires the entities "lead, salesliterature, list" not included in CDS. The Actions not included in the CDS Version are:
+
+- QualifyLead
+- RemoveFromMarketingList
+- AddToMarketingList
+- IsMemberOfMarketingList
+- CopyToStaticList
+- CopyMarketingListMembers
+- AddMarketingListToCampaign
+- SalesLiteratureToEmail
+
 ![](docs/Home_wf1_54.gif)
 
