@@ -1,4 +1,5 @@
-﻿using Microsoft.Xrm.Sdk;
+﻿using System;
+using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
@@ -70,12 +71,16 @@ namespace msdyncrmWorkflowTools
 
             #region "Concatenation Execution"
             string pagingCookie = null;
-            int pageNumber = 1;
-            int fetchCount = 250;
+            
             bool hasMoreRecords = false;
+            bool canPerformPaging = fetchXml.IndexOf("top=", StringComparison.CurrentCultureIgnoreCase) < 0;
+            int pageNumber = canPerformPaging ? 1 : 0;
+            int fetchCount = canPerformPaging ? 250 : 0;
             List<string> stringValues = new List<string>();
             do
             {
+                objCommon.tracingService.Trace($"Fetch PageNumber={pageNumber}");
+
                 fetchXml = fetchXml.Replace("{PARENT_GUID}", context.PrimaryEntityId.ToString());
 
                 string xml = CreateXml(fetchXml, pagingCookie, pageNumber, fetchCount);
@@ -111,7 +116,7 @@ namespace msdyncrmWorkflowTools
                     }
                     else
                     {
-                        attribute = entity.Attributes.First();
+                        attribute = entity.Attributes.First().Value;
                     }
 
                     if (attribute == null)
@@ -145,7 +150,7 @@ namespace msdyncrmWorkflowTools
                     stringValues.Add(attributeValueAsString);
                 }
 
-                if (returnCollection.MoreRecords)
+                if (canPerformPaging && returnCollection.MoreRecords)
                 {
                     pageNumber++;
                     pagingCookie = returnCollection.PagingCookie;
@@ -197,13 +202,19 @@ namespace msdyncrmWorkflowTools
                 attrs.Append(pagingAttr);
             }
 
-            XmlAttribute pageAttr = doc.CreateAttribute("page");
-            pageAttr.Value = System.Convert.ToString(page);
-            attrs.Append(pageAttr);
+            if (page > 0)
+            {
+                XmlAttribute pageAttr = doc.CreateAttribute("page");
+                pageAttr.Value = System.Convert.ToString(page);
+                attrs.Append(pageAttr);
+            }
 
-            XmlAttribute countAttr = doc.CreateAttribute("count");
-            countAttr.Value = System.Convert.ToString(count);
-            attrs.Append(countAttr);
+            if (count > 0)
+            {
+                XmlAttribute countAttr = doc.CreateAttribute("count");
+                countAttr.Value = System.Convert.ToString(count);
+                attrs.Append(countAttr);
+            }
 
             StringBuilder sb = new StringBuilder(1024);
             StringWriter stringWriter = new StringWriter(sb);
