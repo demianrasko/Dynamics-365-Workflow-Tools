@@ -6,7 +6,7 @@ To use this activity, you just need to select the **MapMultiSelectOptionSet** op
 
 Then, you need to specify the following parameters:
 
-![](MapMultiSelectOptionSetInputProperties.png)
+![](SetMultiSelectOptionSetInputParameters.png)
 
 * **Source Record URL (required)** : Dynamics URL of the record whose multi-select option set attributes will be copied from. Notice the Dynamics workflow designer allows you to create this URL easily for the accessible entities in the workflow context.
 * **Source Attributes: (required)** : list of attributes separated by comma to be copied.
