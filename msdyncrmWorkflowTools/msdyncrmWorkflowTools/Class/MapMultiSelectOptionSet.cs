@@ -26,6 +26,14 @@ namespace msdyncrmWorkflowTools
         [Input("Target Attributes")]
         public InArgument<string> TargetAttributes { get; set; }
 
+        /// <summary>
+        /// Indicate if the existing selected values in the target multi-select optionset attributes will be maintained.
+        /// By default, it will remove the existing values and assign the new ones given by the argument "AttributesValues"
+        /// </summary>
+        [Input("Keep Existing Values")]
+        [Default("false")]
+        public InArgument<Boolean> KeepExistingValues { get; set; }
+
         protected override void Execute(CodeActivityContext executionContext)
         {
             Common objCommon = new Common(executionContext);
@@ -35,7 +43,7 @@ namespace msdyncrmWorkflowTools
             string[] targetAttributes = GetTargetAttributes(executionContext, objCommon.tracingService);
             EntityReference sourceEntityReference = GetSourceEntityReference(executionContext, objCommon.service);
             EntityReference targetEntityReference = GetTargetEntityReference(executionContext, objCommon.service);
-            Entity targetEntity = BuildTargetEntity(sourceEntityReference, targetEntityReference, sourceAttributes, targetAttributes,objCommon.tracingService,objCommon.service);
+            Entity targetEntity = BuildTargetEntity(sourceEntityReference, targetEntityReference, sourceAttributes, targetAttributes,objCommon.tracingService,objCommon.service, executionContext);
 
             if (targetEntity != null)
             {
@@ -88,7 +96,7 @@ namespace msdyncrmWorkflowTools
                 return targetAttributesArray;
         }
 
-        private Entity BuildTargetEntity(EntityReference sourceEntityReference, EntityReference targetEntityReference, string[] sourceAttributes, string[] targetAttributes, ITracingService tracingService, IOrganizationService organizationService)
+        private Entity BuildTargetEntity(EntityReference sourceEntityReference, EntityReference targetEntityReference, string[] sourceAttributes, string[] targetAttributes, ITracingService tracingService, IOrganizationService organizationService, CodeActivityContext executionContext)
         {
             if (sourceEntityReference == null || targetEntityReference == null || sourceAttributes == null || targetAttributes == null)
                 return null;
@@ -107,17 +115,22 @@ namespace msdyncrmWorkflowTools
             Entity targetEntity = new Entity(targetEntityReference.LogicalName, targetEntityReference.Id);
             string targetAttribute = null;
             int attributeMappedCounter = 0;
+
+            OptionSetValueCollection sourceNewValues = null;
+            OptionSetValueCollection targetExistingValues = null;
+
+
             for (int i = 0; i < numberSourceAttribute; i++)
             {
                 string sourceAttribute = sourceAttributes[i];
                 if (sourceEntity.Contains(sourceAttribute))
                 {
-                    var optionSetValueCollection = sourceEntity[sourceAttribute] as OptionSetValueCollection;
-                    if (typeof(OptionSetValueCollection).Equals(optionSetValueCollection.GetType()))
+                    sourceNewValues = sourceEntity[sourceAttribute] as OptionSetValueCollection;
+                    if (typeof(OptionSetValueCollection).Equals(sourceNewValues.GetType()))
                     {
                         targetAttribute = targetAttributes[i];
-                        targetEntity.Attributes.Add(targetAttribute, optionSetValueCollection);
-                        tracingService.Trace("Source attribute '{0}' has been mapped to target attribute {1}. ", sourceAttribute, targetAttribute);
+                        targetExistingValues = GetExistingAttributeValues(targetEntity.ToEntityReference(), targetAttribute, tracingService, organizationService, executionContext);
+                        targetEntity.Attributes.Add(targetAttribute, MergeOptionSetCollections(sourceNewValues, targetExistingValues,tracingService));
                         attributeMappedCounter++;
                     }
                     else
@@ -132,5 +145,47 @@ namespace msdyncrmWorkflowTools
 
             return targetEntity;
         }
+        private OptionSetValueCollection GetExistingAttributeValues(EntityReference targetEntityReference, string attributeName, ITracingService tracingService, IOrganizationService organizationService, CodeActivityContext executionContext)
+        {
+            tracingService.Trace("Retrieving existing values");
+
+            Boolean attributeValues = KeepExistingValues.Get<Boolean>(executionContext);
+
+            if (attributeValues == false)
+                return null;
+
+            Entity record = organizationService.Retrieve(targetEntityReference.LogicalName, targetEntityReference.Id, new ColumnSet(new string[] { attributeName }));
+
+            tracingService.Trace("Existing values have been retrieved correctly");
+
+            if (record.Contains(attributeName))
+                return record[attributeName] as OptionSetValueCollection;
+            else
+                return null;
+        }
+
+        private OptionSetValueCollection MergeOptionSetCollections(OptionSetValueCollection newValues, OptionSetValueCollection existingValues, ITracingService tracingService)
+        {
+            tracingService.Trace("Merging new and exiting multi-select optionset values");
+
+            if (existingValues == null && newValues == null)
+                return new OptionSetValueCollection();
+
+            if (existingValues == null)
+                return newValues;
+
+            if (newValues == null)
+                return existingValues;
+
+            foreach (OptionSetValue newValue in newValues)
+            {
+                if (!existingValues.Contains(newValue))
+                    existingValues.Add(newValue);
+            }
+
+            tracingService.Trace("New and exiting multi-select optionset values have been merged correctly. Total options: {0} ", existingValues.Count);
+            return existingValues;
+        }
+
     }
 }
