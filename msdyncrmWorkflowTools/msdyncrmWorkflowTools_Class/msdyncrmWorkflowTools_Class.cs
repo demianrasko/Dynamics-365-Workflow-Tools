@@ -1,28 +1,21 @@
-﻿using Microsoft.Xrm.Sdk;
+﻿using Microsoft.Crm.Sdk.Messages;
+using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata;
 using Microsoft.Xrm.Sdk.Query;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Data;
-using System.Data.SqlClient;
+using System.Globalization;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Web;
 using System.Net.Http.Headers;
-using System.IO;
-using System.Runtime.Serialization;
-using System.Xml;
-using Microsoft.Crm.Sdk.Messages;
+using System.Text;
 using System.Text.RegularExpressions;
-using Newtonsoft.Json.Linq;
-using System.Globalization;
-
-using System.Drawing;
-using System.Drawing.Imaging;
+using System.Threading.Tasks;
+using System.Xml;
 using System.Xml.Linq;
 
 namespace msdyncrmWorkflowTools
@@ -69,7 +62,7 @@ namespace msdyncrmWorkflowTools
         {
             if (JsonPath == null) JsonPath = "";
             JObject o = JObject.Parse(Json);
-            string name= "";
+            string name = "";
             if (o.SelectToken(JsonPath) != null)
             {
                 name = o.SelectToken(JsonPath).ToString();
@@ -77,6 +70,21 @@ namespace msdyncrmWorkflowTools
             return name;
 
         }
+
+        public void DeleteAudit(string entityname, string entityid)
+        {
+
+
+        }
+
+        public void DeleteRecordAuditHistory(string logicalName, string id)
+        {
+            DeleteRecordChangeHistoryRequest delRequest = new DeleteRecordChangeHistoryRequest();
+            EntityReference objt = new EntityReference(logicalName, new Guid(id));
+            delRequest.Target = objt;
+            service.Execute(delRequest);
+        }
+
         public EntityReference retrieveUserBUDefaultTeam(string systemuserid)
         {
             EntityReference teamres = new EntityReference("team");
@@ -95,7 +103,7 @@ namespace msdyncrmWorkflowTools
                                     <link-entity name='businessunit' from='businessunitid' to='businessunitid' link-type='inner' alias='ae'>
                                       <link-entity name='systemuser' from='businessunitid' to='businessunitid' link-type='inner' alias='af'>
                                         <filter type='and'>
-                                          <condition attribute='systemuserid' operator='eq' value='"+ systemuserid + @"' />
+                                          <condition attribute='systemuserid' operator='eq' value='" + systemuserid + @"' />
                                         </filter>
                                       </link-entity>
                                     </link-entity>
@@ -297,7 +305,7 @@ namespace msdyncrmWorkflowTools
 
         public string GetRecordID(string recordURL)
         {
-            
+
             if (recordURL == null || recordURL == "")
             {
                 return "";
@@ -305,9 +313,57 @@ namespace msdyncrmWorkflowTools
             string[] urlParts = recordURL.Split("?".ToArray());
             string[] urlParams = urlParts[1].Split("&".ToCharArray());
             string objectTypeCode = urlParams[0].Replace("etc=", "");
-          //  entityName =  sGetEntityNameFromCode(objectTypeCode, service);
+            //  entityName =  sGetEntityNameFromCode(objectTypeCode, service);
             string objectId = urlParams[1].Replace("id=", "");
             return objectId;
+        }
+
+        public string GetAppModuleId(string appModuleUniqueName)
+        {
+            var query = new QueryExpression
+            {
+                EntityName = "appmodule",
+                ColumnSet = new ColumnSet("appmoduleid", "uniquename"),
+                Criteria =
+                        {
+                            Conditions =
+                            {
+                                new ConditionExpression ("uniquename", ConditionOperator.Equal, appModuleUniqueName)
+                            }
+                        }
+            };
+
+            var appmodules = service.RetrieveMultiple(query).Entities;
+            return appmodules.First()["appmoduleid"].ToString();
+        }
+
+        public string GetAppRecordUrl(string recordUrl, string appModuleUniqueName)
+        {
+            string appModuleId = GetAppModuleId(appModuleUniqueName);
+
+            return recordUrl + "&appid=" + appModuleId;
+        }
+
+        public bool IsMemberOfTeam(Guid teamId, Guid userId)
+        {
+            var query = new QueryExpression
+            {
+                EntityName = "teammembership",
+                ColumnSet = new ColumnSet("systemuserid", "teamid"),
+                Criteria =
+                        {
+                            Conditions =
+                            {
+                                new ConditionExpression ("systemuserid", ConditionOperator.Equal, userId),
+                                new ConditionExpression ("teamid", ConditionOperator.Equal, teamId)
+                            }
+                        }
+            };
+
+            //get the results
+            EntityCollection retrievedUsers = service.RetrieveMultiple(query);
+
+            return retrievedUsers.Entities.Count > 0;
         }
 
         public bool DateFunctions(DateTime date1, DateTime date2, ref TimeSpan difference,
@@ -626,7 +682,7 @@ namespace msdyncrmWorkflowTools
                     {
                         relationship.PrimaryEntityRole = EntityRole.Referencing;
                     }
-                    
+
                     service.Associate(PrimaryEntityName, PrimaryEntityId, relationship, relatedEntities);
                 }
             }
@@ -643,73 +699,68 @@ namespace msdyncrmWorkflowTools
 
         }
 
-        public void EntityAttachmentToEmail(string _FileName, string ParentId, EntityReference email, bool _RetrieveActivityMimeAttachment, bool _MostRecent)
+        public void EntityAttachmentToEmail(string fileName, string parentId, EntityReference email, bool retrieveActivityMimeAttachment, bool mostRecent, int? topRecords = 0)
         {
-
-
             #region "Query Attachments"
-            string fetchXML = "";
 
-            if ( _RetrieveActivityMimeAttachment == false)
+            string fileNameCondition = string.IsNullOrEmpty(fileName) ? string.Empty : $"<condition attribute='filename' operator='like' value='{fileName}' />";
+            string fetchXML = $@"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false'
+                                 {(topRecords > 0 ? $"top='{topRecords}'" : string.Empty)}>";
+
+            if (!retrieveActivityMimeAttachment)
             {
-                fetchXML = @"
-                    <fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false'>
+                fetchXML = $@"{fetchXML}
                       <entity name='annotation'>
                         <attribute name='filename' />
                         <attribute name='annotationid' />
                         <attribute name='subject' />
                         <attribute name='documentbody' />
-                        <attribute name='mimetype' />";
-                if (_MostRecent)
-                    fetchXML = fetchXML + "<order attribute='createdon' descending='true' />";
-                fetchXML = fetchXML + @"<filter type='and'>
-                          <condition attribute='filename' operator='like' value='%" + _FileName + @"%' />
+                        <attribute name='mimetype' />
+                        <order attribute='createdon' descending='true' />
+                        <filter type='and'>
+                          {fileNameCondition}
                           <condition attribute='isdocument' operator='eq' value='1' />
-                          <condition attribute='objectid' operator='eq' value='" + ParentId + @"' />
+                          <condition attribute='objectid' operator='eq' value='{parentId} ' />
                         </filter>
                       </entity>
                     </fetch>";
             }
             else
             {
-                fetchXML = @"
-                    <fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false'>
+                fetchXML = $@"{fetchXML}
                       <entity name='activitymimeattachment'>
                         <attribute name='filename' />
                         <attribute name='attachmentid' />
                         <attribute name='subject' />
                         <attribute name='body' />
-                        <attribute name='mimetype' />";
-                if (_MostRecent)
-                    fetchXML = fetchXML + "<order attribute='createdon' descending='true' />";
-                fetchXML = fetchXML + @"<filter type='and'>
-                          <condition attribute='filename' operator='like' value='%" + _FileName + @"%' />
-                          <condition attribute='activityid' operator='eq' value='" + ParentId + @"' />
+                        <attribute name='mimetype' />
+                        <filter type='and'>
+                          {fileNameCondition}
+                          <condition attribute='activityid' operator='eq' value='{parentId}' />
                         </filter>
                       </entity>
                     </fetch>";
             }
 
-            if (tracing != null) tracing.Trace(String.Format("FetchXML: {0} ", fetchXML));
+            tracing?.Trace("FetchXML: {0} ", fetchXML);
             EntityCollection attachmentFiles = service.RetrieveMultiple(new FetchExpression(fetchXML));
 
             if (attachmentFiles.Entities.Count == 0)
             {
-                if (tracing != null) tracing.Trace(String.Format("No Attachment Files found."));
+                tracing?.Trace("No Attachment Files found.");
                 return;
             }
-            
 
             #endregion
 
             #region "Add Attachments to Email"
+
             int i = 1;
             List<Entity> attachedFiles = new List<Entity>();
+
             foreach (Entity file in attachmentFiles.Entities)
             {
-
-                if (tracing != null) tracing.Trace(String.Format("Entities Count: {0} ", i));
-
+                tracing?.Trace("Entities Count: {0} ", i);
 
                 Entity _Attachment = new Entity("activitymimeattachment");
                 _Attachment["objectid"] = new EntityReference("email", email.Id);
@@ -718,7 +769,7 @@ namespace msdyncrmWorkflowTools
                 i++;
 
                 if (file.Attributes.Contains("subject"))
-                {   
+                {
                     _Attachment["subject"] = file.Attributes["subject"].ToString();
                 }
                 if (file.Attributes.Contains("filename"))
@@ -737,30 +788,36 @@ namespace msdyncrmWorkflowTools
                 {
                     _Attachment["mimetype"] = file.Attributes["mimetype"].ToString();
                 }
-                if (_MostRecent)
+
+                if (mostRecent)
                 {
-                    if (tracing != null) tracing.Trace(String.Format("Is Most Recent"));
-                    Entity alreadyAttached = attachedFiles.Where(f => f["filename"].ToString() == (file.Contains("filename") ? file["filename"].ToString() : "")).FirstOrDefault();
+                    tracing?.Trace("Is Most Recent");
+
+                    Entity alreadyAttached = attachedFiles.Where(f => f["filename"].ToString() == file.GetAttributeValue<string>("filename")).FirstOrDefault();
+
                     if (alreadyAttached == null)
                     {
-                        if (tracing != null) tracing.Trace(String.Format("not already attached"));
+                        tracing?.Trace("not already attached");
+
                         service.Create(_Attachment);
-                        if(!file.Contains("filename"))
+
+                        if (!file.Contains("filename"))
                         {
                             file["filename"] = "";
                         }
+
                         attachedFiles.Add(file);
                     }
                     else
-                        if (tracing != null) tracing.Trace(String.Format("already attached"));
+                    {
+                        tracing?.Trace("already attached");
+                    }
                 }
                 else
                 {
-                    if (tracing != null) tracing.Trace(String.Format("Is Not Most Recent"));
+                    tracing?.Trace("Is Not Most Recent");
                     service.Create(_Attachment);
                 }
-                
-
             }
 
             #endregion
@@ -824,15 +881,15 @@ namespace msdyncrmWorkflowTools
         public string TranslateText(string textToTranslate, string language, string key)
         {
 
-            TranslateTextasync(textToTranslate, language, key).Wait() ;
+            TranslateTextasync(textToTranslate, language, key).Wait();
             var content = XElement.Parse(result).Value;
             return content;
         }
         string result;
-        async  Task TranslateTextasync(string textToTranslate, string language, string key)
+        async Task TranslateTextasync(string textToTranslate, string language, string key)
         {
-             string host = "https://api.microsofttranslator.com";
-             string path = "/V2/Http.svc/Translate";
+            string host = "https://api.microsofttranslator.com";
+            string path = "/V2/Http.svc/Translate";
 
             HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", key);
@@ -841,26 +898,26 @@ namespace msdyncrmWorkflowTools
                 new KeyValuePair<string, string> (textToTranslate,language)// "fr-fr"
 
             };
-            
+
             foreach (KeyValuePair<string, string> i in list)
             {
                 string uri = host + path + "?to=" + i.Value + "&text=" + System.Net.WebUtility.UrlEncode(i.Key);
 
                 HttpResponseMessage response = await client.GetAsync(uri);
 
-                 result = await response.Content.ReadAsStringAsync();
+                result = await response.Content.ReadAsStringAsync();
                 // NOTE: A successful response is returned in XML. You can extract the contents of the XML as follows.
                 // var content = XElement.Parse(result).Value;
                 Console.WriteLine(result);
 
-               
+
             }
-            
+
         }
         public Decimal CurrencyConvert(decimal amount, string fromCurrency, string toCurrency)
         {
-            
-             WebClient web = new WebClient();
+
+            WebClient web = new WebClient();
             string apiURL = String.Format("http://finance.google.com/finance/converter?a={0}&from={1}&to={2}", amount, fromCurrency.ToUpper(), toCurrency.ToUpper());
             string response = web.DownloadString(apiURL);
             var split = response.Split((new string[] { "<span class=bld>" }), StringSplitOptions.None);
@@ -937,7 +994,7 @@ namespace msdyncrmWorkflowTools
 
                 bool valueToUpdateBool = false;
                 AttributeMetadata meta = resAtt.AttributeMetadata;
-                
+
                 Entity entUpdate = new Entity(childEntityType);
                 entUpdate.Id = child.Id;
 
@@ -955,7 +1012,7 @@ namespace msdyncrmWorkflowTools
                             valueToUpdate = "0";
                         }
                     }
-                    if (valueToUpdate == "1" )
+                    if (valueToUpdate == "1")
                     {
                         entUpdate.Attributes.Add(childFieldNameToUpdate, true);
                     }
@@ -965,7 +1022,8 @@ namespace msdyncrmWorkflowTools
                     }
 
                 }
-                else {
+                else
+                {
                     if (meta.AttributeType.Value.ToString() == "Picklist" || meta.AttributeType.Value.ToString() == "Status")
                     {
                         if (valueToUpdate == null)
@@ -997,7 +1055,7 @@ namespace msdyncrmWorkflowTools
                     }
                 }
 
-                
+
                 service.Update(entUpdate);
             }
 
@@ -1151,7 +1209,5 @@ namespace msdyncrmWorkflowTools
             }
             return accessToken;
         }
-
     }
-
 }
