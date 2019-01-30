@@ -8,6 +8,8 @@ using Microsoft.Xrm.Sdk.Client;
 using Microsoft.Xrm.Tooling.Connector;
 using Microsoft.Xrm.Sdk;
 using msdyncrmWorkflowTools;
+using System.Security;
+using System.Net;
 
 namespace msdyncrmWorkflowTools_ConsoleTest
 {
@@ -20,6 +22,8 @@ namespace msdyncrmWorkflowTools_ConsoleTest
         {
             var classObj = new msdyncrmWorkflowTools_Class(service);
 
+
+            classObj.DeleteRecordAuditHistory("account", "475B158C-541C-E511-80D3-3863BB347BA8");
             /*classObj.QRCode("account", "7DF24294-9EC4-E711-8116-5065F38A3A01", "www.demianrasko.com", "Demian QR Code", "www.demianrasko.com", "QrDemian.bmp");
             classObj.QRCode("account", "7DF24294-9EC4-E711-8116-5065F38A3A01", "www.demianrasko.com", "Demian QR Code", "www.demianrasko.com", "QrDemian.gif");
             classObj.QRCode("account", "7DF24294-9EC4-E711-8116-5065F38A3A01", "www.demianrasko.com", "Demian QR Code", "www.demianrasko.com", "QrDemian.png");
@@ -47,8 +51,8 @@ namespace msdyncrmWorkflowTools_ConsoleTest
             //string jsonpath = "values[0].Autho";
             //string res = classObj.JsonParser(json, jsonpath);
 
-            EntityReference email = new EntityReference("email", new Guid("756EB11C-214E-E811-812A-5065F38A1B01"));
-            classObj.EntityAttachmentToEmail("%.%", "4E6F2D8F-204E-E811-812A-5065F38A1B01", email, true,false);
+            //EntityReference email = new EntityReference("email", new Guid("756EB11C-214E-E811-812A-5065F38A1B01"));
+            //classObj.EntityAttachmentToEmail("%.%", "4E6F2D8F-204E-E811-812A-5065F38A1B01", email, true,false);
             //
 
             //classObj.UpdateChildRecords("SalesOrderDetail_Dynamicpropertyinstance", "salesorderdetail", "3BDA2E2D-6C6A-E711-8106-5065F38A1B01", "", "333", "valuestring");
@@ -76,13 +80,19 @@ namespace msdyncrmWorkflowTools_ConsoleTest
         public static IOrganizationService GetCrmService()
         {
 
-            const string crmServerUrl = "https://demianraskosandbox.crm4.dynamics.com";
-            const string userName = "demianrasko@demianrasko.onmicrosoft.com";
-            const string password = "XXX";
+            const string crmServerUrl = "https://demianrasko222.crm4.dynamics.com";
+            const string userName = "demianrasko222@demianrasko222.onmicrosoft.com";
+            const string password = "XXXX";
+            SecureString theSecureString = new NetworkCredential("", password).SecurePassword;
 
-             var connectionStringCrmOnline = string.Format("Url={0}; Username={1}; Password={2};authtype=Office365;", crmServerUrl, userName, password);
 
-            CrmServiceClient conn = new Microsoft.Xrm.Tooling.Connector.CrmServiceClient(connectionStringCrmOnline);
+            var connectionStringCrmOnline = string.Format("Url={0}; Username={1}; Password={2};AuthType=Office365;", crmServerUrl, userName, password);
+
+
+            CrmServiceClient crmSvc = new CrmServiceClient(userName, theSecureString, "EMEA", "org1c3835c3");
+
+            CrmServiceClient conn = new CrmServiceClient(connectionStringCrmOnline);
+            
             
             IOrganizationService _service = (IOrganizationService)conn.OrganizationWebProxyClient != null ? (IOrganizationService)conn.OrganizationWebProxyClient : (IOrganizationService)conn.OrganizationServiceProxy;
 

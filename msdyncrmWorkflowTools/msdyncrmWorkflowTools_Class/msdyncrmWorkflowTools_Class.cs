@@ -73,14 +73,14 @@ namespace msdyncrmWorkflowTools
 
         public void DeleteAudit(string entityname, string entityid)
         {
-
-
         }
 
         public void DeleteRecordAuditHistory(string logicalName, string id)
         {
             DeleteRecordChangeHistoryRequest delRequest = new DeleteRecordChangeHistoryRequest();
+
             EntityReference objt = new EntityReference(logicalName, new Guid(id));
+
             delRequest.Target = objt;
             service.Execute(delRequest);
         }

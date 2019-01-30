@@ -74,6 +74,25 @@ To see how to use each of the tools includes in this solution, please access to 
 * 62: [Currency Convert](/docs/CurrencyConvert.md) 
 * 63: [Get Record ID](/docs/GetRecordID.md) 
 * 64: [Retrieve User's BU Default Team](/docs/RetrieveUserBUDefaultTeam.md) 
+* 65 [Get App Module ID](/docs/GetAppModuleID.md) Thanks to [Brent Howard](https://github.com/schwoi)
+* 66 [Get App Record Url](/docs/GetAppRecordUrl.md) Thanks to [Brent Howard](https://github.com/schwoi)
+* 67 [Is Member Of Team](/docs/IsMemberOfTeam.md) Thanks to [Brent Howard](https://github.com/schwoi)
+* 68 [Count Child Entity Record](/docs/CountChildEntityRecord.md) Thanks to [Ravi Kashyap](https://github.com/RaviKKashyap)
+* 69 [Get Multi Select OptionSet](/docs/GetMultiSelectOptionSet.md) Thanks to [Ramon Tebar](https://github.com/rtebar)
+* 70 [Map Multi Select OptionSet](/docs/MapMultiSelectOptionSet.md) Thanks to [Ramon Tebar](https://github.com/rtebar)
+* 71 [Set Multi Select Option Set](/docs/SetMultiSelectOptionSet.md) Thanks to [Ramon Tebar](https://github.com/rtebar)
+* 72 [Delete Record Audit History](/docs/DeleteRecordAuditHistory.md) 
 
-![](docs/Home_wf1_52.gif)
+NOTE ABOUT CDS: The CDS Version not include all the actions, because it requires the entities "lead, salesliterature, list" not included in CDS. The Actions not included in the CDS Version are:
+
+- QualifyLead
+- RemoveFromMarketingList
+- AddToMarketingList
+- IsMemberOfMarketingList
+- CopyToStaticList
+- CopyMarketingListMembers
+- AddMarketingListToCampaign
+- SalesLiteratureToEmail
+
+![](docs/Home_wf1_54.gif)
 
