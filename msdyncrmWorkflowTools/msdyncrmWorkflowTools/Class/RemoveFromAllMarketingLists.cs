@@ -47,7 +47,7 @@ namespace msdyncrmWorkflowTools.Class
             var query = new QueryExpression
             {
                 EntityName = "listmember",
-                ColumnSet = new ColumnSet(true),
+                ColumnSet = new ColumnSet("entityid", "listid"),
 
                 Criteria =
                     {
