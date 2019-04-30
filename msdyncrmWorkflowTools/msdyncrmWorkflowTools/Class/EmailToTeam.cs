@@ -51,7 +51,7 @@ namespace msdyncrmWorkflowTools.Class
             // main query returing users
             QueryExpression userQuery = new QueryExpression("systemuser");
             // take all columns
-            userQuery.ColumnSet = new ColumnSet(true);
+            userQuery.ColumnSet = new ColumnSet("systemuserid");
             // this is the intersect condition
             LinkEntity teamLink = new LinkEntity("systemuser", "teammembership", "systemuserid", "systemuserid", JoinOperator.Inner);
             // this is the condition to use the specific Team

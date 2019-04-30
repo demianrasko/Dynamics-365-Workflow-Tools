@@ -25,6 +25,13 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("Attribute Values")]
         public InArgument<string> AttributeValues { get; set; }
+        /// <summary>
+        /// Indicate if the existing selected values in the target multi-select optionset attribute will be maintained.
+        /// By default, it will remove the existing values and assign the new ones given by the argument "AttributesValues"
+        /// </summary>
+        [Input("Keep Existing Values")]
+        [Default("false")]
+        public InArgument<Boolean> KeepExistingValues { get; set; } 
 
         protected override void Execute(CodeActivityContext executionContext)
         {
@@ -33,9 +40,13 @@ namespace msdyncrmWorkflowTools
 
             EntityReference sourceEntityReference = GetTargeteEntityReference(executionContext,objCommon.tracingService, objCommon.service);
             string attributeName = GetAttributeName(executionContext,objCommon.tracingService);
-            OptionSetValueCollection values = GetAttributeValues(executionContext,objCommon.tracingService);
+            OptionSetValueCollection newValues = GetNewAttributeValues(executionContext, objCommon.tracingService);
+            OptionSetValueCollection existingValues = GetExistingAttributeValues(sourceEntityReference, attributeName,executionContext, objCommon.tracingService, objCommon.service);
 
-            UpdateRecord(sourceEntityReference, attributeName, values,objCommon.service,objCommon.tracingService);
+
+            //UpdateRecord(sourceEntityReference, attributeName, values,objCommon.service,objCommon.tracingService);
+            UpdateRecord(sourceEntityReference, attributeName, newValues, existingValues, objCommon.service, objCommon.tracingService);
+
         }
 
         private EntityReference GetTargeteEntityReference(CodeActivityContext executionContext, ITracingService tracingService, IOrganizationService organizationService)
@@ -53,7 +64,9 @@ namespace msdyncrmWorkflowTools
             return attributeName;
         }
 
-        private OptionSetValueCollection GetAttributeValues(CodeActivityContext executionContext, ITracingService tracingService)
+        //private OptionSetValueCollection GetAttributeValues(CodeActivityContext executionContext, ITracingService tracingService)
+        private OptionSetValueCollection GetNewAttributeValues(CodeActivityContext executionContext, ITracingService tracingService)
+
         {
             string attributeValues = AttributeValues.Get<string>(executionContext) ?? throw new ArgumentNullException("Attribute Values is empty");
             tracingService.Trace("Attribute Values:'{0}'", attributeValues);
@@ -90,18 +103,63 @@ namespace msdyncrmWorkflowTools
 
             return optionSetValueCollection;
         }
-
-        private void UpdateRecord(EntityReference targetEntityReference, string attributeName, OptionSetValueCollection values, IOrganizationService organizationService, ITracingService tracingService)
+        private OptionSetValueCollection GetExistingAttributeValues(EntityReference targetEntityReference, string attributeName, CodeActivityContext executionContext, ITracingService tracingService, IOrganizationService organizationService)
         {
-            if (targetEntityReference == null || attributeName == null || values == null)
-                throw new ArgumentNullException(string.Format("Unexpected null parameters when trying to update record. Record reference '{0}' - attibute name '{1}' - values '{2}'", targetEntityReference, attributeName, values));
+            tracingService.Trace("Retrieving existing values");
+
+            Boolean attributeValues = KeepExistingValues.Get<Boolean>(executionContext);
+
+            if (attributeValues == false)
+                return null;
+
+            Entity record = organizationService.Retrieve(targetEntityReference.LogicalName, targetEntityReference.Id, new ColumnSet(new string[] { attributeName }));
+
+            tracingService.Trace("Existing values have been retrieved correctly");
+
+            if (record.Contains(attributeName))
+                return record[attributeName] as OptionSetValueCollection;
+            else
+                return null;
+        }
+
+
+        //private void UpdateRecord(EntityReference targetEntityReference, string attributeName, OptionSetValueCollection values, IOrganizationService organizationService, ITracingService tracingService)
+        private void UpdateRecord(EntityReference targetEntityReference, string attributeName, OptionSetValueCollection newValues, OptionSetValueCollection existingValues, IOrganizationService organizationService, ITracingService tracingService)
+
+        {
+            if (targetEntityReference == null || attributeName == null || newValues == null)
+                throw new ArgumentNullException(string.Format("Unexpected null parameters when trying to update record. Record reference '{0}' - attibute name '{1}' - values '{2}'", targetEntityReference, attributeName, newValues));
+
 
             Entity targetEntity = new Entity(targetEntityReference.LogicalName, targetEntityReference.Id);
-            targetEntity[attributeName] = values;
+            targetEntity[attributeName] = MergeOptionSetCollections(newValues, existingValues, tracingService);
 
             organizationService.Update(targetEntity);
 
             tracingService.Trace("Multi-select option set attribute '{0}' has been updated correctly for the record type '{1}' with id '{2}'", attributeName, targetEntityReference.LogicalName, targetEntityReference.Id);
         }
+        private OptionSetValueCollection MergeOptionSetCollections(OptionSetValueCollection newValues, OptionSetValueCollection existingValues, ITracingService tracingService)
+        {
+            tracingService.Trace("Merging new and exiting multi-select optionset values");
+
+            if (existingValues == null && newValues == null)
+                return new OptionSetValueCollection();
+
+            if (existingValues == null)
+                return newValues;
+
+            if (newValues == null)
+                return existingValues;
+
+            foreach (OptionSetValue newValue in newValues)
+            {
+                if (!existingValues.Contains(newValue))
+                    existingValues.Add(newValue);
+            }
+
+            tracingService.Trace("New and exiting multi-select optionset values have been merged correctly. Total options: {0} ", existingValues.Count);
+            return existingValues;
+        }
+
     }
 }
