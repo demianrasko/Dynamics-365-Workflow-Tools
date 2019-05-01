@@ -122,7 +122,7 @@ namespace msdyncrmWorkflowTools
                 if (results.Entities.Count > 0)
                 {
                     objCommon.tracingService.Trace(String.Format("Setting results"));
-                    if (results.Entities[0].Attributes[_Attribute1] != null)
+                    if (results.Entities[0].Attributes.Contains(_Attribute1))
                     {
                         objCommon.tracingService.Trace(String.Format("Setting result1: {0}", results.Entities[0].Attributes[_Attribute1]));
                         if (results.Entities[0].Attributes[_Attribute1] is Microsoft.Xrm.Sdk.OptionSetValue)
@@ -142,7 +142,7 @@ namespace msdyncrmWorkflowTools
                             this.ResultValue1.Set(executionContext, results.Entities[0].Attributes[_Attribute1].ToString());
                         }
                     }
-                    if (results.Entities[0].Attributes[_Attribute2] != null)
+                    if (results.Entities[0].Attributes.Contains(_Attribute2))
                     {
                         objCommon.tracingService.Trace(String.Format("Setting result2: {0}", results.Entities[0].Attributes[_Attribute2]));
                         if (results.Entities[0].Attributes[_Attribute2] is Microsoft.Xrm.Sdk.OptionSetValue)

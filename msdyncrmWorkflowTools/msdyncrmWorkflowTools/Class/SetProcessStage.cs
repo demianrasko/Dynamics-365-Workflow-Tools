@@ -106,6 +106,9 @@ namespace msdyncrmWorkflowTools.Class
             };
             RetrieveProcessInstancesResponse procOpp1Resp = (RetrieveProcessInstancesResponse)objCommon.service.Execute(procOpp1Req);
 
+          
+
+
             // Declare variables to store values returned in response
             Entity activeProcessInstance = null;
             Guid _processOpp1Id = Guid.Empty;
@@ -117,13 +120,20 @@ namespace msdyncrmWorkflowTools.Class
                                                            // later to retrieve the active path of the process instance
 
                 Console.WriteLine("Current active process instance for the Opportunity record: '{0}'", activeProcessInstance["name"].ToString());
-                _procInstanceLogicalName = activeProcessInstance["name"].ToString().Replace(" ", string.Empty).ToLower();
+
+                // Get the BPF underlying entity logical name
+                var uniqueProcessNameAttribute = "uniquename";
+                var processEntity = objCommon.service.Retrieve("workflow", process.Id, new ColumnSet(uniqueProcessNameAttribute));
+                _procInstanceLogicalName = processEntity.Attributes[uniqueProcessNameAttribute].ToString();
+
+                //_procInstanceLogicalName = activeProcessInstance["name"].ToString().Replace(" ", string.Empty).ToLower(); // TO BE REMOVED: Incorrect as it only gets the display name.
             }
             else
             {
                 Console.WriteLine("No process instances found for the opportunity record; aborting the sample.");
                 Environment.Exit(1);
             }
+
             objCommon.tracingService.Trace("Starting the update");
            Entity processInstanceToUpdate= new Entity(_procInstanceLogicalName, _processOpp1Id);
             processInstanceToUpdate.Attributes.Add("activestageid", new EntityReference("processstage", stageId.Value));

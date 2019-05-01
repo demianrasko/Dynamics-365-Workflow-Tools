@@ -386,7 +386,7 @@ namespace msdyncrmWorkflowTools
             int finalLengthwithPadding, bool caseSensitive, string replaceOldValue, string replaceNewValue,
             int subStringLength, int startIndex, bool fromLefttoRight, string regularExpression,
             ref string capitalizedText, ref string paddedText, ref string replacedText, ref string subStringText, ref string regexText,
-                ref string uppercaseText, ref string lowercaseText, ref bool regexSuccess)
+                ref string uppercaseText, ref string lowercaseText, ref bool regexSuccess, ref string withoutSpaces)
         {
             capitalizedText = "";
             if (capitalizeAllWords)
@@ -462,6 +462,8 @@ namespace msdyncrmWorkflowTools
 
             uppercaseText = inputText.ToUpper();
             lowercaseText = inputText.ToLower();
+
+            withoutSpaces = inputText.Replace(" ", "");
             return true;
 
         }

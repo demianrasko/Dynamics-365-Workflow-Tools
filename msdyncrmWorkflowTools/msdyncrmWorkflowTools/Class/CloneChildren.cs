@@ -120,7 +120,7 @@ namespace msdyncrmWorkflowTools
             var tools = new msdyncrmWorkflowTools_Class(objCommon.service);
 
             var children = tools.GetChildRecords(_relationshipName, parentId);
-
+             
             foreach (var item in children.Entities)
             {
                 var newRecordId = objCommon.CloneRecord(item.LogicalName, item.Id.ToString(),fieldstoIgnore, prefix );
@@ -136,6 +136,7 @@ namespace msdyncrmWorkflowTools
                 objCommon.service.Update(update);
 
             }
+            
 
         }
 

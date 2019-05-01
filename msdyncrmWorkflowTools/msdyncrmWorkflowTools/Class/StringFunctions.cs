@@ -109,6 +109,9 @@ namespace msdyncrmWorkflowTools
         [Output("Lowercase Text")]
         public OutArgument<string> LowercaseText { get; set; }
 
+        [Output("Without Spaces")]
+        public OutArgument<string> WithoutSpaces { get; set; }
+
         #endregion
 
         protected override void Execute(CodeActivityContext executionContext)
@@ -143,12 +146,12 @@ namespace msdyncrmWorkflowTools
 
             string capitalizedText="", paddedText = "", replacedText = "", subStringText = "", regexText = "", uppercaseText = "", lowercaseText="";
             bool regexSuccess=false;
-
+            string withoutSpaces = "";
             msdyncrmWorkflowTools_Class commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
             bool test=commonClass.StringFunctions(capitalizeAllWords, inputText, padCharacter, padontheLeft, finalLengthwithPadding, caseSensitive,
                 replaceOldValue, replaceNewValue, subStringLength, startIndex, fromLefttoRight, regularExpression,
                 ref capitalizedText, ref paddedText, ref replacedText, ref subStringText, ref regexText, 
-                ref uppercaseText, ref lowercaseText, ref regexSuccess);
+                ref uppercaseText, ref lowercaseText, ref regexSuccess, ref withoutSpaces);
                 
             
 
@@ -163,6 +166,8 @@ namespace msdyncrmWorkflowTools
 
             this.UppercaseText.Set(executionContext, uppercaseText);
             this.LowercaseText.Set(executionContext, lowercaseText);
+
+            this.WithoutSpaces.Set(executionContext, withoutSpaces);
 
         }
         
