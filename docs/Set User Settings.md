@@ -6,7 +6,7 @@ For using this activity you must access here and select Set User Settings:
 
 Then in the activity you can fill all the parameters:
 
-![](Set%20User%20Settings_wf2.gif)
+![](Set%20User%20Settings_wf2.png)
 
 The Parameters are:
 * User: Select the User to be updated
@@ -16,3 +16,4 @@ The Parameters are:
 * HelpLanguageId: Specify Unique identifier of the Help language. 0 for ignore
 * UILanguageId: Specify Unique identifier of the language in which to view the user interface (UI). 0 for ignore
 * DefaultCalendarView: specify the default calendar view values:  0 to Show the day by default. 2 to Show the month by default.  1 to Show the week by default
+* IsSendAsAllowed
