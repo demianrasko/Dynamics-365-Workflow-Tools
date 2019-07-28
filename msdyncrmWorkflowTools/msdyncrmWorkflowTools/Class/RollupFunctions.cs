@@ -107,7 +107,7 @@ namespace msdyncrmWorkflowTools
             decimal _sum = 0;
             decimal _min = 0;
             decimal _max = 0;
-            
+            decimal _average = 0;
             if (objNumbers.Count <= 0)
             {
                 foreach (object obj in objNumbers)
@@ -120,7 +120,7 @@ namespace msdyncrmWorkflowTools
                     if (number > _max || _count == 1) _max = number;
                 }
 
-                decimal _average = 0;
+                
                 if (_count > 0)
                 {
                     _average = _sum / _count;
