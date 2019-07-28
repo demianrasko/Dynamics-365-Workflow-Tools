@@ -6,7 +6,7 @@ For using this activity you must access here and select Set User Settings:
 
 Then in the activity you can fill all the parameters:
 
-![](Set%20User%20Settings_wf2.gif)
+![](Set%20User%20Settings_wf2.png)
 
 The Parameters are:
 * User: Select the User to be updated
