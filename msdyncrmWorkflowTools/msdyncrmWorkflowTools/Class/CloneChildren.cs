@@ -1,5 +1,4 @@
-﻿using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk;
+﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
@@ -41,13 +40,14 @@ namespace msdyncrmWorkflowTools
         [ReferenceTarget("")]
         public InArgument<String> RelationshipName { get; set; }
 
-        [Input("Old Parent Field Name")]
-        [ReferenceTarget("")]
-        public InArgument<String> OldParentFieldNameToUpdate { get; set; }
-
+        [RequiredArgument]
         [Input("New Parent Field Name")]
         [ReferenceTarget("")]
         public InArgument<String> NewParentFieldNameToUpdate { get; set; }
+
+        [Input("Old Parent Field Name")]
+        [ReferenceTarget("")]
+        public InArgument<String> OldParentFieldNameToUpdate { get; set; }
 
         [Input("Prefix")]
         [Default("")]
@@ -83,13 +83,12 @@ namespace msdyncrmWorkflowTools
                 return;
             }
 
-
-
             String _source = this.SourceRecordUrl.Get(executionContext);
             if (_source == null || _source == "")
             {
                 return;
             }
+
             string[] urlParts = _source.Split("?".ToArray());
             string[] urlParams = urlParts[1].Split("&".ToCharArray());
             string parentObjectTypeCode = urlParams[0].Replace("etc=", "");
@@ -123,7 +122,7 @@ namespace msdyncrmWorkflowTools
              
             foreach (var item in children.Entities)
             {
-                var newRecordId = objCommon.CloneRecord(item.LogicalName, item.Id.ToString(),fieldstoIgnore, prefix );
+                var newRecordId = objCommon.CloneRecord(item.LogicalName, item.Id.ToString(), fieldstoIgnore, prefix);
 
                 Entity update = new Entity(item.LogicalName);
                 update.Id = newRecordId;
