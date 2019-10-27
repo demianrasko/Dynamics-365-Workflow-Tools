@@ -10,8 +10,8 @@ The full params description is:
 * **Source Record URL (required)** : the URL of the parent record that contains the child records you want to clone.
 * **Target Record URL (required)** : the URL of the parent record that will the cloned child.
 * **Relationship Name (required)** : the schema name for the relationship to use to find the child records.
-* **Old Parent Field Name (required)** : the schema name for the Lookup field on the child records for the original parent.
-* **New Parent Field Name (optional)** : the schema name for the Lookup field on the child records for the new parent. This optional parameter is used in case the cloned children should be linked to the new parent using a different lookup field. If not specified it will use the same as the Old Parent lookup.
+* **New Parent Field Name (required)** : the schema name for the Lookup field on the child records for the new parent.
+* **Old Parent Field Name (optional)** : the schema name for the Lookup field on the child records for the original parent. This optional parameter is used in case the cloned children should be linked to the new parent using a different lookup field. If not specified it will use the same as the New Parent lookup.
 * **Prefix (optional)** : the prefix will be addedd at the name attribute of the clonned record. 
 * **Fields to Ignore (optional)** : the list of attributes you want to ignore in cloning, separate by ";" (in lowercase)
 
