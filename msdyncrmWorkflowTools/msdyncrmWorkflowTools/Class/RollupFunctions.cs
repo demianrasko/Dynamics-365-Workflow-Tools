@@ -108,7 +108,7 @@ namespace msdyncrmWorkflowTools
             decimal _min = 0;
             decimal _max = 0;
             decimal _average = 0;
-            if (objNumbers.Count <= 0)
+            if (objNumbers.Count > 0)
             {
                 foreach (object obj in objNumbers)
                 {
