@@ -1,4 +1,4 @@
-﻿using Microsoft.Crm.Sdk.Messages;
+using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Query;
@@ -23,7 +23,6 @@ namespace msdyncrmWorkflowTools
         [Default("")]
         public InArgument<String> FetchXML { get; set; }
 
-
         [Output("Count")]
         public OutArgument<decimal> Count { get; set; }
 
@@ -38,10 +37,8 @@ namespace msdyncrmWorkflowTools
 
         [Output("Min")]
         public OutArgument<decimal> Min { get; set; }
-
         
         #endregion
-
 
         protected override void Execute(CodeActivityContext executionContext)
         {
@@ -102,39 +99,34 @@ namespace msdyncrmWorkflowTools
                 {
                     break;
                 }
-
             }
+            
             objCommon.tracingService.Trace("Query Data --- Done");
+            
             decimal _count = 0;
             decimal _sum = 0;
             decimal _min = 0;
             decimal _max = 0;
-            foreach (object obj in objNumbers)
-            {
-                _count++;
-                decimal number = 0;
-                if (obj is Money)
-                {
-                    number = ((Money)obj).Value;
-                }
-                else if (obj is Guid)
-                {
-                    continue;
-                }
-                else
-                { 
-                    number = Convert.ToDecimal(obj);
-                 }
-                _sum += number;
-                if (number < _min) _min = number;
-                if (number > _max) _max = number;
-            }
-
             decimal _average = 0;
-            if (_count > 0)
+            if (objNumbers.Count > 0)
             {
-                _average = _sum / _count;
+                foreach (object obj in objNumbers)
+                {
+                    _count++;
+                    decimal number = this.GetValue(obj);
+
+                    _sum += number;
+                    if (number < _min || _count == 1) _min = number;
+                    if (number > _max || _count == 1) _max = number;
+                }
+
+                
+                if (_count > 0)
+                {
+                    _average = _sum / _count;
+                }
             }
+            
             this.Count.Set(executionContext, _count);
             this.Sum.Set(executionContext, _sum);
             this.Average.Set(executionContext, _average);
@@ -144,6 +136,7 @@ namespace msdyncrmWorkflowTools
             #endregion
 
         }
+               
         public string ExtractNodeValue(XmlNode parentNode, string name)
         {
             XmlNode childNode = parentNode.SelectSingleNode(name);
@@ -207,7 +200,18 @@ namespace msdyncrmWorkflowTools
             return sb.ToString();
         }
 
-
+        private decimal GetValue(object obj)
+        {
+            if (obj is Money)
+            {
+                return ((Money)obj).Value;
+            }
+            else if (obj is decimal)
+            { 
+                return Convert.ToDecimal(obj);
+            }
+            
+            throw new Exception("Invalid field type provided.");
+        }
     }
-
 }

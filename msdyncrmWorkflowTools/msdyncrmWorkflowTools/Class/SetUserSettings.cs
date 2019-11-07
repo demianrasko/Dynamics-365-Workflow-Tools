@@ -13,7 +13,7 @@ namespace msdyncrmWorkflowTools
 {
     public class SetUserSettings : CodeActivity
     {
-        
+
 
         [RequiredArgument]
         [Input("User")]
@@ -55,12 +55,20 @@ namespace msdyncrmWorkflowTools
         [Input("DefaultCalendarView")]
         [Default("0")]
         public InArgument<int> DefaultCalendarView { get; set; }
-        //specify the default calendar view values: Day
+ //specify the default calendar view values: Day
         /*
 0: Show the day by default.
 2: Show the month by default.
 1: Show the week by default
             */
+
+
+        [RequiredArgument]
+        [Input("IsSendAsAllowed")]
+        [Default("false")]
+        public InArgument<bool> IsSendAsAllowed { get; set; }
+        
+       
 
 
         protected override void Execute(CodeActivityContext executionContext)
@@ -73,7 +81,7 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-           
+
             EntityReference userReference = this.User.Get(executionContext);
             int pagingLimit = this.PagingLimit.Get(executionContext);
             int advancedFindStartupMode = this.AdvancedFindStartupMode.Get(executionContext);
@@ -81,8 +89,10 @@ namespace msdyncrmWorkflowTools
             int helpLanguageId = this.HelpLanguageId.Get(executionContext);
             int uiLanguageId = this.UILanguageId.Get(executionContext);
             int defaultCalendarView = this.DefaultCalendarView.Get(executionContext);
+            bool isSendAsAllowed = this.IsSendAsAllowed.Get(executionContext);
+            
 
-            objCommon.tracingService.Trace(String.Format("UserID: {0} ",  userReference.Id.ToString()));
+            objCommon.tracingService.Trace(String.Format("UserID: {0} ", userReference.Id.ToString()));
             #endregion
 
             Entity newSettings = new Entity("usersettings");
@@ -111,6 +121,8 @@ namespace msdyncrmWorkflowTools
             {
                 newSettings.Attributes.Add("defaultcalendarview", defaultCalendarView);
             }
+            newSettings.Attributes.Add("issendasallowed", isSendAsAllowed);
+            
 
             objCommon.service.Update(newSettings);
 

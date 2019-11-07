@@ -60,11 +60,11 @@ namespace msdyncrmWorkflowTools
             string fetchXML = @"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='true'>
                                       <entity name='" + PrimaryEntityName + @"'>
                                         <link-entity name='" + _relationshipName + @"' from='" + PrimaryEntityName + @"id' to='" + PrimaryEntityName + @"id' visible='false' intersect='true'>
-                                        <link-entity name='opportunity' from='opportunityid' to='opportunityid' alias='ab'>
+                                        
                                             <filter type='and'>
-                                            <condition attribute='opportunityid' operator='eq' value='" + PrimaryEntityId.ToString() + @"' />
+                                            <condition attribute='" + PrimaryEntityName + @"id' operator='eq' value='" + PrimaryEntityId.ToString() + @"' />
                                             </filter>
-                                        </link-entity> 
+                                       
                                         <link-entity name='" + entityName + @"' from='" + entityName + @"id' to='" + entityName + @"id' alias='ac'>
                                                 <filter type='and'>
                                                   <condition attribute='" + entityName + @"id' operator='eq' value='" + ParentId + @"' />
