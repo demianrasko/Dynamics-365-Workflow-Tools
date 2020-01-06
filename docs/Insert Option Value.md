@@ -14,3 +14,6 @@ The parameters are:
 * **Option Text**: Text of the new option to be added (label)
 * **Option Value**: Value of the new option to be added
 * **Language Code**: Language Code of the label
+
+
+NOTE: This action only works for Async Workflows.
