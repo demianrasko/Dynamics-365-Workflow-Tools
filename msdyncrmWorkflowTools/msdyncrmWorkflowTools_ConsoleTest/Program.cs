@@ -23,7 +23,7 @@ namespace msdyncrmWorkflowTools_ConsoleTest
             var classObj = new msdyncrmWorkflowTools_Class(service);
 
 
-            classObj.DeleteRecordAuditHistory("account", "475B158C-541C-E511-80D3-3863BB347BA8");
+            //classObj.DeleteRecordAuditHistory("account", "475B158C-541C-E511-80D3-3863BB347BA8");
             /*classObj.QRCode("account", "7DF24294-9EC4-E711-8116-5065F38A3A01", "www.demianrasko.com", "Demian QR Code", "www.demianrasko.com", "QrDemian.bmp");
             classObj.QRCode("account", "7DF24294-9EC4-E711-8116-5065F38A3A01", "www.demianrasko.com", "Demian QR Code", "www.demianrasko.com", "QrDemian.gif");
             classObj.QRCode("account", "7DF24294-9EC4-E711-8116-5065F38A3A01", "www.demianrasko.com", "Demian QR Code", "www.demianrasko.com", "QrDemian.png");
@@ -48,7 +48,7 @@ namespace msdyncrmWorkflowTools_ConsoleTest
 
 
             //string json = @"{""values"": [{""Author"": ""Lisa Simpson"",""Response Date"": ""2018-02-21T08:13:34.284Z""}	],	""SurveyId"": ""5114FA48-1DE6-E711-80E3-005056B37A5C""}";
-            //string jsonpath = "values[0].Autho";
+            //string jsonpath = "values[0].Author";
             //string res = classObj.JsonParser(json, jsonpath);
 
             //EntityReference email = new EntityReference("email", new Guid("756EB11C-214E-E811-812A-5065F38A1B01"));
@@ -64,7 +64,7 @@ namespace msdyncrmWorkflowTools_ConsoleTest
             // classObj.SendEmailToUsersInRole(securityRoleLookup, new EntityReference("email",new Guid("B96825B7-CCB0-E711-810F-5065F38BF4A1")));
 
             //classObj.InsertOptionValue(true, "purchaseprocess", "opportunity", "Tipo22", 22, 3082);
-            //classObj.InsertOptionValue(false, "cdi_test", "opportunity", "Tipo4", 1, 3082);
+            classObj.InsertOptionValue(false, "cre36_test", "account", "3", 3, 3082);
             //classObj.DeleteOptionValue(true,"purchaseprocess", "opportunity", 22);
             //classObj.DeleteOptionValue(false, "cdi_test", "opportunity",  1);
             // classObj.AssociateEntity("new_test", new Guid("612F10EE-32DB-E711-8116-5065F38BF4A1"), "new_new_test_new_test", "new_test", "new_test", "F1F924DC-32DB-E711-8116-5065F38BF4A1");
@@ -80,16 +80,16 @@ namespace msdyncrmWorkflowTools_ConsoleTest
         public static IOrganizationService GetCrmService()
         {
 
-            const string crmServerUrl = "https://demianrasko222.crm4.dynamics.com";
-            const string userName = "demianrasko222@demianrasko222.onmicrosoft.com";
-            const string password = "XXXX";
-            SecureString theSecureString = new NetworkCredential("", password).SecurePassword;
+            const string crmServerUrl = "https://xxxx.crm4.dynamics.com";
+            const string userName = "xxxx@xxxx.com";
+            const string password = "";
+            //SecureString theSecureString = new NetworkCredential("", password).SecurePassword;
 
 
-            var connectionStringCrmOnline = string.Format("Url={0}; Username={1}; Password={2};AuthType=Office365;", crmServerUrl, userName, password);
+            var connectionStringCrmOnline = string.Format("Url={0}; Username={1}; Password={2};AuthType=Office365", crmServerUrl, userName, password);
 
 
-            CrmServiceClient crmSvc = new CrmServiceClient(userName, theSecureString, "EMEA", "org1c3835c3");
+            //CrmServiceClient crmSvc = new CrmServiceClient(userName, theSecureString, "EMEA", "org1c3835c3");
 
             CrmServiceClient conn = new CrmServiceClient(connectionStringCrmOnline);
             

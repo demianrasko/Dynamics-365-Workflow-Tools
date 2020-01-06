@@ -210,8 +210,8 @@ namespace msdyncrmWorkflowTools
             { 
                 return Convert.ToDecimal(obj);
             }
-            
-            throw new Exception("Invalid field type provided.");
+            return 0;
+            //throw new Exception("Invalid field type provided.");
         }
     }
 }

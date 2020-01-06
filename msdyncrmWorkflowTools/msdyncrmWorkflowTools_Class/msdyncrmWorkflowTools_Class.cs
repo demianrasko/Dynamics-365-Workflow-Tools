@@ -77,6 +77,7 @@ namespace msdyncrmWorkflowTools
 
         public void DeleteRecordAuditHistory(string logicalName, string id)
         {
+            
             DeleteRecordChangeHistoryRequest delRequest = new DeleteRecordChangeHistoryRequest();
 
             EntityReference objt = new EntityReference(logicalName, new Guid(id));
@@ -641,8 +642,10 @@ namespace msdyncrmWorkflowTools
 
         public bool InsertOptionValue(bool globalOptionSet, string attributeName, string entityName, string optionText, int optionValue, int languageCode)
         {
+            
             if (globalOptionSet)
             {
+                
                 InsertOptionValueRequest insertOptionValueRequest =
                   new InsertOptionValueRequest
                   {
