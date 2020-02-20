@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace msdyncrmWorkflowTools
 {
-    class GetSharepointLocationURL : CodeActivity
+   public class GetSharepointLocationURL : CodeActivity
     {
         [RequiredArgument]
         [Input("Record URL")]
