@@ -671,6 +671,19 @@ namespace msdyncrmWorkflowTools
             return true;
 
         }
+
+        public Guid CreateTeam(string teamName, int teamType, EntityReference administrator, EntityReference businessUnit)
+        {
+            Entity team = new Entity("team");
+            team.Attributes.Add("administratorid", administrator);
+            team.Attributes.Add("name", teamName);
+            team.Attributes.Add("teamtype", new OptionSetValue(teamType));
+            team.Attributes.Add("businessunitid",  businessUnit);
+              
+            Guid _teamId = service.Create(team);
+
+            return _teamId;
+        }
         public void AssociateEntity(string PrimaryEntityName, Guid PrimaryEntityId, string _relationshipName, string _relationshipEntityName, string entityName, string ParentId)
         {
             try

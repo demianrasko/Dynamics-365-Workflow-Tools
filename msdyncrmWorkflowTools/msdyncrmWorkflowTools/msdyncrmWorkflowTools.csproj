@@ -96,10 +96,12 @@
     <Compile Include="Class\CloneChildren.cs" />
     <Compile Include="Class\ConcatenateFromQuery.cs" />
     <Compile Include="Class\CountChildEntityRecords.cs" />
+    <Compile Include="Class\CreateTeam.cs" />
     <Compile Include="Class\DeleteOptionValue.cs" />
     <Compile Include="Class\CurrencyConvert.cs" />
     <Compile Include="Class\DeleteRecordAuditHistory.cs" />
     <Compile Include="Class\DynamicUrlParser.cs" />
+    <Compile Include="Class\GetOptionSetValue.cs" />
     <Compile Include="Class\GetMultiSelectOptionSet.cs" />
     <Compile Include="Class\GetSharepointLocationURL.cs" />
     <Compile Include="Class\IsMemberOfTeam.cs" />

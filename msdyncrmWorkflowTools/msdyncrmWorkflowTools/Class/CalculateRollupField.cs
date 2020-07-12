@@ -42,13 +42,17 @@ namespace msdyncrmWorkflowTools
 
             #region "Read Parameters"
             String _FieldName = this.FieldName.Get(executionContext);
+            objCommon.tracingService.Trace("_FieldName=" + _FieldName);
             String _ParentRecordURL = this.ParentRecordURL.Get(executionContext);
+
             if (_ParentRecordURL == null || _ParentRecordURL == "")
             {
                 return;
             }
+            objCommon.tracingService.Trace("_ParentRecordURL=" + _ParentRecordURL);
             string[] urlParts = _ParentRecordURL.Split("?".ToArray());
             string[] urlParams=urlParts[1].Split("&".ToCharArray());
+            
             string ParentObjectTypeCode=urlParams[0].Replace("etc=","");
             string ParentId = urlParams[1].Replace("id=", "");
             objCommon.tracingService.Trace("ParentObjectTypeCode=" + ParentObjectTypeCode + "--ParentId=" + ParentId);

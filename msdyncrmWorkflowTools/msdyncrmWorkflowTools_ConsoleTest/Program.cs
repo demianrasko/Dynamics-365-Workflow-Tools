@@ -46,7 +46,7 @@ namespace msdyncrmWorkflowTools_ConsoleTest
             //bool regexSuccess = false;
             //classObj.StringFunctions(false, "Lead subject", "", false, 0, false, "", "", 50, 0, false, "", ref capitalizedText, ref paddedText, ref replacedText, ref subStringText, ref regexText, ref uppercaseText, ref lowercaseText, ref regexSuccess);
 
-
+            Guid createdTeam=classObj.CreateTeam("PruebaTeam2", 1, new EntityReference("systemuser", new Guid("8fe5fd89-f447-4a38-90f1-1180617fcbc5")), new EntityReference("businessunit", new Guid("6025BC19-2E34-EA11-A812-000D3ABAAFE7")));
             //string json = @"{""values"": [{""Author"": ""Lisa Simpson"",""Response Date"": ""2018-02-21T08:13:34.284Z""}	],	""SurveyId"": ""5114FA48-1DE6-E711-80E3-005056B37A5C""}";
             //string jsonpath = "values[0].Author";
             //string res = classObj.JsonParser(json, jsonpath);
@@ -64,7 +64,7 @@ namespace msdyncrmWorkflowTools_ConsoleTest
             // classObj.SendEmailToUsersInRole(securityRoleLookup, new EntityReference("email",new Guid("B96825B7-CCB0-E711-810F-5065F38BF4A1")));
 
             //classObj.InsertOptionValue(true, "purchaseprocess", "opportunity", "Tipo22", 22, 3082);
-            classObj.InsertOptionValue(false, "cre36_test", "account", "3", 3, 3082);
+            //classObj.InsertOptionValue(false, "cre36_test", "account", "3", 3, 3082);
             //classObj.DeleteOptionValue(true,"purchaseprocess", "opportunity", 22);
             //classObj.DeleteOptionValue(false, "cdi_test", "opportunity",  1);
             // classObj.AssociateEntity("new_test", new Guid("612F10EE-32DB-E711-8116-5065F38BF4A1"), "new_new_test_new_test", "new_test", "new_test", "F1F924DC-32DB-E711-8116-5065F38BF4A1");
@@ -80,9 +80,9 @@ namespace msdyncrmWorkflowTools_ConsoleTest
         public static IOrganizationService GetCrmService()
         {
 
-            const string crmServerUrl = "https://xxxx.crm4.dynamics.com";
-            const string userName = "xxxx@xxxx.com";
-            const string password = "";
+            const string crmServerUrl = "https://XXX.crm4.dynamics.com";
+            const string userName = "XXX@XXX.com";
+            const string password = "XXX";
             //SecureString theSecureString = new NetworkCredential("", password).SecurePassword;
 
 
