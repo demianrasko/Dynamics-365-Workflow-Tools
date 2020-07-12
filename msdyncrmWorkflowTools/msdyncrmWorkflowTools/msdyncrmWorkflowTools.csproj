@@ -101,6 +101,7 @@
     <Compile Include="Class\DeleteRecordAuditHistory.cs" />
     <Compile Include="Class\DynamicUrlParser.cs" />
     <Compile Include="Class\GetMultiSelectOptionSet.cs" />
+    <Compile Include="Class\GetSharepointLocationURL.cs" />
     <Compile Include="Class\IsMemberOfTeam.cs" />
     <Compile Include="Class\GetAppRecordUrl.cs" />
     <Compile Include="Class\GetAppModuleID.cs" />
