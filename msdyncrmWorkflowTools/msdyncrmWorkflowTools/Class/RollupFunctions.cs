@@ -206,7 +206,7 @@ namespace msdyncrmWorkflowTools
             {
                 return ((Money)obj).Value;
             }
-            else if (obj is decimal)
+            else if (obj is decimal || obj is int || obj is long || obj is short || obj is float || obj is double)
             { 
                 return Convert.ToDecimal(obj);
             }
