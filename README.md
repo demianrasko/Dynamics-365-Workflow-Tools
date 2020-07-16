@@ -83,6 +83,11 @@ To see how to use each of the tools includes in this solution, please access to 
 * 71 [Set Multi Select Option Set](/docs/SetMultiSelectOptionSet.md) Thanks to [Ramon Tebar](https://github.com/rtebar)
 * 72 [Delete Record Audit History](/docs/DeleteRecordAuditHistory.md) 
 * 73 [Concatenate from Query](/docs/ConcatenateFromQuery.md) Thanks To [Raj](https://github.com/rajrao)
+* 74 [Get Sharepoint Location URL](/docs/GetSharepointLocationURL.md) Thanks To [TarogStar](https://github.com/TarogStar)
+* 75 [Create Team](/docs/CreateTeam.md) 
+* 76 [Get Option Set Value](/docs/GetOptionSetValue.md) 
+
+
 
 NOTE ABOUT CDS: The CDS Version not include all the actions, because it requires the entities "lead, salesliterature, list" not included in CDS. The Actions not included in the CDS Version are:
 
