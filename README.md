@@ -86,7 +86,7 @@ To see how to use each of the tools includes in this solution, please access to 
 * 74 [Get Sharepoint Location URL](/docs/GetSharepointLocationURL.md) Thanks To [TarogStar](https://github.com/TarogStar)
 * 75 [Create Team](/docs/CreateTeam.md) 
 * 76 [Get Option Set Value](/docs/GetOptionSetValue.md) 
-
+* 77 [Share Secured Field](/docs/ShareSecuredField.md) Thanks to [zhongchen zhou](https://github.com/zzc000)
 
 
 NOTE ABOUT CDS: The CDS Version not include all the actions, because it requires the entities "lead, salesliterature, list" not included in CDS. The Actions not included in the CDS Version are:
