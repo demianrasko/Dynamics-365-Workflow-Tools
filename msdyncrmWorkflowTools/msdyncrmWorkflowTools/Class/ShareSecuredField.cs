@@ -16,6 +16,12 @@ namespace msdyncrmWorkflowTools
     {
         #region "Parameter Definition"
 
+
+        [RequiredArgument]
+        [Input("Record URL")]
+        [ReferenceTarget("")]
+        public InArgument<String> RecordURL { get; set; }
+
         [RequiredArgument]
         [Input("Attribute Name")]
         public InArgument<String> AttributeName { get; set; }
@@ -53,13 +59,24 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            
+            String _RecordURL = this.RecordURL.Get(executionContext);
+            if (_RecordURL == null || _RecordURL == "")
+            {
+                return;
+            }
+            string[] urlParts = _RecordURL.Split("?".ToArray());
+            string[] urlParams = urlParts[1].Split("&".ToCharArray());
+            string objectTypeCode = urlParams[0].Replace("etc=", "");
+            string entityName = objCommon.sGetEntityNameFromCode(objectTypeCode, objCommon.service);
+            string objectId = urlParams[1].Replace("id=", "");
+            objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
+
             #endregion
 
             #region "Clone Execution"
 
-            
-            ExecuteCore(executionContext, objCommon.context, objCommon.service);
+
+            ExecuteCore(executionContext, objCommon.context, objCommon.service, entityName, new Guid (objectId));
 
 
             objCommon.tracingService.Trace("OK");
@@ -68,10 +85,12 @@ namespace msdyncrmWorkflowTools
 
         }
 
-        private void ExecuteCore(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service)
+        private void ExecuteCore(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service, string entityName, Guid entityId)
         {
-            string entityName = context.PrimaryEntityName;
-            Guid entityId = context.PrimaryEntityId;
+            
+
+            //string entityName = context.PrimaryEntityName;
+            //Guid entityId = context.PrimaryEntityId;
             string attributeName = this.AttributeName.Get(executionContext);
             EntityReference userToShare = this.UserToShare.Get(executionContext);
             EntityReference teamToShare = this.TeamToShare.Get(executionContext);
