@@ -1,7 +1,7 @@
 This step allows you to get any string value from a JSON. this method uses JSON.NET library (https://www.newtonsoft.com) and this method:
 https://www.newtonsoft.com/json/help/html/SelectToken.htm
 
-For using this activity you mus access here and select JSON Parser action:
+For using this activity you must access here and select JSON Parser action:
 
 ![](JSONParser1.png)
 

@@ -1,7 +1,7 @@
 This step allows you execute some basic numeric funcions with two decimal numbers.
 
 
-For using this activity you mus access here and select Numeric Functions.
+For using this activity you must access here and select Numeric Functions.
 Then in the activity you can fill all the parameters:
 
 ![](Numeric%20Functions_wf1.gif)

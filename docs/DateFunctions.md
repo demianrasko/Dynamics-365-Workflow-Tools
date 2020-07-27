@@ -1,6 +1,6 @@
 This step allows you to execute operations for DateTime valus.
 
-For using this activity you mus access here and select Date Function action:
+For using this activity you must access here and select Date Function action:
 
 ![](DateFunctions1.png)
 

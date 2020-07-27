@@ -1,7 +1,7 @@
 This step allows you to pick a defined number of items from a Queue, and also to set of you want to remove from the source. 
 With this solution you can automate the Queue Picking with workflows just by dates, avoiding the "Cherry Picking" issue.
 
-For using this activity you mus access here and select Pick From Queue:
+For using this activity you must access here and select Pick From Queue:
 
 ![](Pick%20From%20Queue_wf1.gif)
 
