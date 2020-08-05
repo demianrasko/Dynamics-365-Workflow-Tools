@@ -1,11 +1,11 @@
 
 **Resolve Case**
 
-This step allows you to specify the Resolution (subject) and Remarks (description) fields on the Incident Resolution entity, when resolving an Incident via workflow.
+This step allows you to specify the Resolution (subject) and Remarks (description) fields on the Case Resolution entity, when resolving an Case via workflow.
 
-Normally, when resolving an Incident with a workflow, you are unable to specify these fields and they will created with blank values.
+Normally, when resolving an Case with a workflow, you are unable to specify these fields and they will created with blank values.
 
-This is especially useful when importing Incident records and wanting to resolve them immediately.
+This is especially useful when importing Case records and wanting to resolve them immediately.
 
 **Parameters** 
 
