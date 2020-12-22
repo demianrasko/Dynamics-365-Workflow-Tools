@@ -6,7 +6,7 @@ To use this activity, you just need to select the **GetMultiSelectOptionSet** op
 
 Then you specify the following input parameters:
 
-![](GetMultiSelectOptionSetInputParameters.png)
+![](GetMultiSelectOptionSet_with_options_names.jpg)
 
 * **Source Record URL (required)**: the URL of the record where the corresponding attribute is located.
 * **Attribute Name (required)**: logical name of the attribute whose values are going to be retrieved.
