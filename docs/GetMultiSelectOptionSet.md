@@ -20,5 +20,5 @@ Once they activity has been executed, there will be two output parameters:
 
 You can also find two examples in these articles:
 
-[https://ramontebar.net/2018/12/12/getting-multi-select-option-set-values-in-workflows/](https://ramontebar.net/2018/12/12/getting-multi-select-option-set-values-in-workflows/)
-[https://ramontebar.net/2020/12/22/get-choices-names-in-workflows/](https://ramontebar.net/2020/12/22/get-choices-names-in-workflows/)
+* [https://ramontebar.net/2018/12/12/getting-multi-select-option-set-values-in-workflows/](https://ramontebar.net/2018/12/12/getting-multi-select-option-set-values-in-workflows/)
+* [https://ramontebar.net/2020/12/22/get-choices-names-in-workflows/](https://ramontebar.net/2020/12/22/get-choices-names-in-workflows/)
