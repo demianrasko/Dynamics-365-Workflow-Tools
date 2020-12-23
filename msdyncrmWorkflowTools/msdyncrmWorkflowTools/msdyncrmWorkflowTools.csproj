@@ -94,6 +94,7 @@
     <Compile Include="Class\CalculateAgregateDate.cs" />
     <Compile Include="Class\CalculatePrice.cs" />
     <Compile Include="Class\CloneChildren.cs" />
+    <Compile Include="Class\SetLookupFieldFromRecordUrl.cs" />
     <Compile Include="Class\ShareSecuredField.cs" />
     <Compile Include="Class\ConcatenateFromQuery.cs" />
     <Compile Include="Class\CountChildEntityRecords.cs" />
