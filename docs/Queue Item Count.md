@@ -1,7 +1,7 @@
 This step allows you to get the "count" of Items on one Queue, and filter them to retrieve them all, or only the unassigned ones.
 
 
-For using this activity you mus access here and select Queue Item Count:
+For using this activity you must access here and select Queue Item Count:
 
 ![](Queue%20Item%20Count_wf1.gif)
 

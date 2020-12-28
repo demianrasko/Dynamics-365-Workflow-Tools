@@ -1,6 +1,6 @@
 This step is very usefull to remove members from a Marketing Lists (accounts, contacts and leads)
 
-For using this activity you mus access here and select RemoveFromMarketingList:
+For using this activity you must access here and select RemoveFromMarketingList:
 
 ![](Remove%20From%20Marketing%20List_wf2.gif)
 

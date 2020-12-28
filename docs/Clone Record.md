@@ -1,6 +1,6 @@
 This step is very usefull to Clone some record. You pass the URL of one record, and it will create a new record, with the same values.
 
-For using this activity you mus access here and select Clone Record:
+For using this activity you must access here and select Clone Record:
 
 ![](Clone%20Record_wfclone.gif)
 

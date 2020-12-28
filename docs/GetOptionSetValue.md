@@ -1,6 +1,6 @@
 This step allows you to retrieve the int value of the selected value of the optionset in the record.
 
-For using this activity you mus access here and select Get Option Set Value action:
+For using this activity you must access here and select Get Option Set Value action:
 
 ![](GetOptionSetValue1.png)
 

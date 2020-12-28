@@ -1,5 +1,7 @@
 ﻿using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Messages;
+using Microsoft.Xrm.Sdk.Metadata;
 using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
 using System;
@@ -23,83 +25,145 @@ namespace msdyncrmWorkflowTools
         [Input("Attribute Name")]
         public InArgument<string> AttributeName { get; set; }
 
+        [Input("Retrieve Options Names")]
+        [Default("False")]
+        public InArgument<bool> RetrieveOptionsNames { get; set; }
+
         [Output("Selected Values")]
         public OutArgument<string> SelectedValues { get; set; }
 
+        [Output("Selected Names")]
+        public OutArgument<string> SelectedNames { get; set; }
+
         protected override void Execute(CodeActivityContext executionContext)
         {
-            Common objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
+            Common context = new Common(executionContext);
+            context.tracingService.Trace("Context has been loaded correctly");
 
-            EntityReference sourceEntityReference = GetSourceEntityReference(objCommon.tracingService, executionContext, objCommon.service);
-            string attributeName = GetAttributeName(objCommon.tracingService, executionContext);
+            EntityReference sourceEntityReference = GetSourceEntityReference(context);
+            string attributeName = GetAttributeName(context);
+            bool retrieveOptionNames = GetRetrieveOptionsNames(context);
 
-            string selectedValues = GetSelectedValues(sourceEntityReference, attributeName, objCommon.tracingService, objCommon.service);
-
-            this.SelectedValues.Set(executionContext, selectedValues);
+            GetSelectedItems(sourceEntityReference, attributeName, retrieveOptionNames, context);
         }
 
-        private EntityReference GetSourceEntityReference(ITracingService tracingService, CodeActivityContext executionContext, IOrganizationService organizationService)
+        private EntityReference GetSourceEntityReference(Common context)
         {
-            string sourceRecordUrl = SourceRecordUrl.Get<string>(executionContext) ?? throw new ArgumentNullException("Source URL is empty");
-            tracingService.Trace("Source Record URL:'{0}'", sourceRecordUrl);
-            return new DynamicUrlParser(sourceRecordUrl).ToEntityReference(organizationService);
+            string sourceRecordUrl = SourceRecordUrl.Get<string>(context.codeActivityContext) ?? throw new ArgumentNullException("Source URL is empty");
+            context.tracingService.Trace("Source Record URL:'{0}'", sourceRecordUrl);
+            return new DynamicUrlParser(sourceRecordUrl).ToEntityReference(context.service);
         }
 
 
-        private string GetAttributeName(ITracingService tracingService, CodeActivityContext executionContext)
+        private string GetAttributeName(Common context)
         {
-            string attributeName = AttributeName.Get<string>(executionContext) ?? throw new ArgumentNullException("Attribute Name is empty");
-            tracingService.Trace("Attribute name:'{0}'", attributeName);
+            string attributeName = AttributeName.Get<string>(context.codeActivityContext) ?? throw new ArgumentNullException("Attribute Name is empty");
+            context.tracingService.Trace("Attribute name:'{0}'", attributeName);
             return attributeName;
         }
 
-
-        private string GetSelectedValues(EntityReference sourceEntityReference, string attributeName, ITracingService tracingService, IOrganizationService organizationService)
+        private bool GetRetrieveOptionsNames(Common context)
         {
-            if (sourceEntityReference == null || attributeName == null)
+            bool retrieveOptionsNames = RetrieveOptionsNames.Get<bool>(context.codeActivityContext);
+            context.tracingService.Trace($"Retrieve Item Name:'{retrieveOptionsNames}'");
+            return retrieveOptionsNames;
+        }
+
+        private Dictionary<int, string> GetOptionsNames(EntityReference sourceEntityReference, string attributeName, Common context)
+        {
+            RetrieveAttributeRequest attributeRequest = new RetrieveAttributeRequest
             {
-                tracingService.Trace("Null parameters have been passed, so string will be empty");
-                return string.Empty;
+                EntityLogicalName = sourceEntityReference.LogicalName,
+                LogicalName = attributeName,
+                RetrieveAsIfPublished = false
+            };
+
+            RetrieveAttributeResponse response = context.service.Execute(attributeRequest) as RetrieveAttributeResponse;
+
+            MultiSelectPicklistAttributeMetadata attributeMetadata = response.AttributeMetadata as MultiSelectPicklistAttributeMetadata;
+            if (attributeMetadata == null)
+                throw new InvalidPluginExecutionException($"Attribute {attributeName} is not an expected multi-select optionset / choices type");
+
+            OptionMetadataCollection options = attributeMetadata.OptionSet.Options;
+            Dictionary<int, string> optionsTable = new Dictionary<int, string>(options.Count);
+            foreach (OptionMetadata optionMetadata in options)
+            {
+                optionsTable.Add(optionMetadata.Value.Value, optionMetadata.Label.UserLocalizedLabel.Label);
             }
 
-            Entity sourceEntity = organizationService.Retrieve(sourceEntityReference.LogicalName, sourceEntityReference.Id, new ColumnSet(attributeName));
-            tracingService.Trace("Source record has been retrieved correctly. Id:{0}", sourceEntity.Id);
+            return optionsTable;
+        }
+
+
+        private void GetSelectedItems(EntityReference sourceEntityReference, string attributeName, bool retrieveOptionNames, Common context)
+        {
+            if (sourceEntityReference == null || attributeName == null)
+            { 
+                context.tracingService.Trace("Null parameters have been passed, so string will be empty");
+                return;
+            }
+
+            Entity sourceEntity = context.service.Retrieve(sourceEntityReference.LogicalName, sourceEntityReference.Id, new ColumnSet(attributeName));
+            context.tracingService.Trace("Source record has been retrieved correctly. Id:{0}", sourceEntity.Id);
 
             if (!sourceEntity.Contains(attributeName))
             {
-                tracingService.Trace("Attribues {0} was not found", attributeName);
-                return string.Empty;
+                context.tracingService.Trace("Attribues {0} was not found", attributeName);
+                return;
             }
 
             OptionSetValueCollection optionSetValues = sourceEntity[attributeName] as OptionSetValueCollection;
             if (optionSetValues == null)
-                return string.Empty;
+                return;
 
             int numberOptions = optionSetValues.Count;
 
             if (numberOptions == 0)
             {
-                tracingService.Trace("No selected options");
-                return string.Empty;
+                context.tracingService.Trace("No selected options");
+                return;
             }
 
-            tracingService.Trace("Number of selected options: ", numberOptions);
+            context.tracingService.Trace("Number of selected options: ", numberOptions);
 
-            StringBuilder stringBuilder = new StringBuilder();
+            Dictionary<int, string> optionsNames = null;
+            StringBuilder stringNamesBuilder = null;
+            if (retrieveOptionNames)
+            {
+                optionsNames = GetOptionsNames(sourceEntityReference, attributeName, context);
+                stringNamesBuilder = new StringBuilder();
+            }
+
+            StringBuilder stringValuesBuilder = new StringBuilder();             
+
             OptionSetValue value = null;
             for (int i = 0; i < numberOptions; i++)
             {
                 value = optionSetValues[i];
-                stringBuilder.Append(value.Value);
+                stringValuesBuilder.Append(value.Value);
+
+                if (retrieveOptionNames)
+                    stringNamesBuilder.Append(optionsNames[value.Value]);
+
                 if ((i + 1) < numberOptions)
-                    stringBuilder.Append(",");
+                {
+                    stringValuesBuilder.Append(",");
+                    if(retrieveOptionNames)
+                        stringNamesBuilder.Append(",");
+                }
             }
 
-            string values = stringBuilder.ToString();
-            tracingService.Trace("Values have been retrieved correctly. Values: ", values);
+            string values = stringValuesBuilder.ToString();
+            this.SelectedValues.Set(context.codeActivityContext, values);
+            context.tracingService.Trace($"Values have been retrieved correctly. Values: {values}");
 
-            return values;
+            if (retrieveOptionNames)
+            {
+                string names = stringNamesBuilder.ToString();
+                this.SelectedNames.Set(context.codeActivityContext, names);
+                context.tracingService.Trace($"Names have been retrieved correctly. Names: {values}");
+            }
+
         }
     }
 }
