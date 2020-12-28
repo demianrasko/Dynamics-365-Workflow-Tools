@@ -35,6 +35,10 @@ namespace msdyncrmWorkflowTools
         [ReferenceTarget("")]
         public InArgument<String> RecordURL { get; set; }
 
+        [Input("FetchXML Filter (Child)")]
+        [ReferenceTarget("")]
+        public InArgument<String> FilterExpressionXml { get; set; }
+
 
         [Output("Result")]
         public OutArgument<int> Result { get; set; }
@@ -53,7 +57,8 @@ namespace msdyncrmWorkflowTools
             String _childEntityName = this.ChildEntityName.Get(executionContext);
             String _parentLookupName = this.ParentLookupName.Get(executionContext);
             String _recordURL = this.RecordURL.Get(executionContext);
-            objCommon.tracingService.Trace("ChildEntityName=" + _childEntityName + "--ParentLookupName=" + _parentLookupName + "--RecordURL=" + _recordURL);
+            String _filterExpressionXml = this.FilterExpressionXml.Get(executionContext);
+            objCommon.tracingService.Trace("ChildEntityName=" + _childEntityName + "--ParentLookupName=" + _parentLookupName + "--RecordURL=" + _recordURL + "--FilterExpressionXml=" + _filterExpressionXml);
             if (_recordURL == null || _recordURL == "")
             {
                 return;
@@ -72,13 +77,14 @@ namespace msdyncrmWorkflowTools
             try
             {
                 var fetchXml = @"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='true'>
-                                    <entity name='{0}'>                                                                           
+                                    <entity name='{0}'>
                                     <filter type='and'>
-                                        <condition attribute='{1}' operator='eq' value='{2}' />                                                                                 
+                                        <condition attribute='{1}' operator='eq' value='{2}' />
+                                        {3}
                                         </filter>
                                     </entity>
                                 </fetch>";
-                fetchXml = string.Format(fetchXml, _childEntityName, _parentLookupName, ParentEntityId);
+                fetchXml = string.Format(fetchXml, _childEntityName, _parentLookupName, ParentEntityId, _filterExpressionXml);
                 objCommon.tracingService.Trace(String.Format("FetchXML: {0} ", fetchXml));
                 var results = objCommon.service.RetrieveMultiple(new FetchExpression(fetchXml));
 
