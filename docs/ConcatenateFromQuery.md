@@ -6,7 +6,7 @@ For using this activity you must access here and select Concatenate from Query:
 
 
 Parameters
-![](ConcatenateFromQuery_4.png)
+![](ConcatenateFromQuery_4.gif)
 
 The full params description is:
 * **FetchXML (required)** : The FetchXML Query. Specify the parent record ID in the fetch using the following template: {PARENT_GUID}. **{PARENT_GUID}** will be replaced at run time with the ID of the entity that triggered the workflow.
