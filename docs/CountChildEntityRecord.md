@@ -6,7 +6,7 @@ For using this activity you must access here and select the action:
 
 An fill the parameters:
 
-![](CountChildEntityRecord2.gif)
+![](CountChildEntityRecord4.gif)
 
 Finally, you can use the int Result of the app as you need:
 
