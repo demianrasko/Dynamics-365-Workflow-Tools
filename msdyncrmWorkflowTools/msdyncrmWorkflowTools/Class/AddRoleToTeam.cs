@@ -6,8 +6,10 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    
     public class AddRoleToTeam : CodeActivity
     {
+       
         [RequiredArgument]
         [Input("Role")]
         [ReferenceTarget("role")]
@@ -18,10 +20,15 @@ namespace msdyncrmWorkflowTools
         [ReferenceTarget("team")]
         public InArgument<EntityReference> Team { get; set; }
 
+        
+        public void CodeActivity()
+        {
+            DisplayName = "Add Role To Team";
+        }
 
         protected override void Execute(CodeActivityContext executionContext)
         {
-
+            
             #region "Load CRM Service from context"
 
             Common objCommon = new Common(executionContext);

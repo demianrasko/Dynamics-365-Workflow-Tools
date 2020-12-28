@@ -33,6 +33,9 @@ namespace msdyncrmWorkflowTools
         [Default("")]
         public InArgument<string> FormatString { get; set; }
 
+        [Input("TopRecordCount")]
+        public InArgument<int> TopRecordCount { get; set; }
+
 
         [Output("ConcatenatedString")]
         public OutArgument<string> ConcatenatedString { get; set; }
@@ -65,6 +68,9 @@ namespace msdyncrmWorkflowTools
             var format = FormatString.Get(executionContext);
             objCommon.tracingService.Trace($"FormatString={format}");
 
+            var topRecordCount = TopRecordCount.Get(executionContext);
+            objCommon.tracingService.Trace($"topRecordCount={topRecordCount}");
+
             IWorkflowContext context = executionContext.GetExtension<IWorkflowContext>();
 
             #endregion
@@ -77,6 +83,8 @@ namespace msdyncrmWorkflowTools
             int pageNumber = canPerformPaging ? 1 : 0;
             int fetchCount = canPerformPaging ? 250 : 0;
             List<string> stringValues = new List<string>();
+            int recordCount = 0;
+            
             do
             {
                 objCommon.tracingService.Trace($"Fetch PageNumber={pageNumber}");
@@ -148,6 +156,15 @@ namespace msdyncrmWorkflowTools
 
                     var attributeValueAsString = string.Format($"{{0:{format}}}", attribute);
                     stringValues.Add(attributeValueAsString);
+                    recordCount++;
+                    if (topRecordCount != null && topRecordCount != 0 && topRecordCount <= recordCount)
+                    {
+                        break;
+                    }
+                }
+                if (topRecordCount != null && topRecordCount != 0 && topRecordCount <= recordCount)
+                {
+                    break;
                 }
 
                 if (canPerformPaging && returnCollection.MoreRecords)
