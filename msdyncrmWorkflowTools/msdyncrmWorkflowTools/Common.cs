@@ -19,9 +19,11 @@ namespace msdyncrmWorkflowTools
         public IWorkflowContext context;
         public IOrganizationServiceFactory serviceFactory;
         public IOrganizationService service;
+        public CodeActivityContext codeActivityContext;
 
         public Common(CodeActivityContext executionContext)
         {
+            codeActivityContext = executionContext;
             tracingService = executionContext.GetExtension<ITracingService>();
             context = executionContext.GetExtension<IWorkflowContext>();
             serviceFactory = executionContext.GetExtension<IOrganizationServiceFactory>();

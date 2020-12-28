@@ -78,16 +78,18 @@ To see how to use each of the tools includes in this solution, please access to 
 * 66 [Get App Record Url](/docs/GetAppRecordUrl.md) Thanks to [Brent Howard](https://github.com/schwoi)
 * 67 [Is Member Of Team](/docs/IsMemberOfTeam.md) Thanks to [Brent Howard](https://github.com/schwoi)
 * 68 [Count Child Entity Record](/docs/CountChildEntityRecord.md) Thanks to [Ravi Kashyap](https://github.com/RaviKKashyap)
-* 69 [Get Multi Select OptionSet](/docs/GetMultiSelectOptionSet.md) Thanks to [Ramon Tebar](https://github.com/rtebar)
-* 70 [Map Multi Select OptionSet](/docs/MapMultiSelectOptionSet.md) Thanks to [Ramon Tebar](https://github.com/rtebar)
-* 71 [Set Multi Select Option Set](/docs/SetMultiSelectOptionSet.md) Thanks to [Ramon Tebar](https://github.com/rtebar)
+* 69 [Get Multi Select OptionSet](/docs/GetMultiSelectOptionSet.md) Thanks to [Ramon Tebar](https://github.com/ramontebar)
+* 70 [Map Multi Select OptionSet](/docs/MapMultiSelectOptionSet.md) Thanks to [Ramon Tebar](https://github.com/ramontebar)
+* 71 [Set Multi Select Option Set](/docs/SetMultiSelectOptionSet.md) Thanks to [Ramon Tebar](https://github.com/ramontebar)
 * 72 [Delete Record Audit History](/docs/DeleteRecordAuditHistory.md) 
 * 73 [Concatenate from Query](/docs/ConcatenateFromQuery.md) Thanks To [Raj](https://github.com/rajrao)
 * 74 [Get Sharepoint Location URL](/docs/GetSharepointLocationURL.md) Thanks To [TarogStar](https://github.com/TarogStar)
 * 75 [Create Team](/docs/CreateTeam.md) 
 * 76 [Get Option Set Value](/docs/GetOptionSetValue.md) 
 * 77 [Share Secured Field](/docs/ShareSecuredField.md) Thanks to [zhongchen zhou](https://github.com/zzc000)
-* 78 [Resolve Case](/docs/ResolveCase.md) 
+* 78 [Set Lookup Field from Record URL](/docs/SetLookupFieldFromRecordUrl.md)
+* 79 [Resolve Case](/docs/ResolveCase.md) 
+
 
 
 NOTE ABOUT CDS: The CDS Version not include all the actions, because it requires the entities "lead, salesliterature, list" not included in CDS. The Actions not included in the CDS Version are:
