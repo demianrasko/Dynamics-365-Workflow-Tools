@@ -6,7 +6,7 @@ For using this activity you must access here and select Concatenate from Query:
 
 
 Parameters
-![](ConcatenateFromQuery_2.png)
+![](ConcatenateFromQuery_4.png)
 
 The full params description is:
 * **FetchXML (required)** : The FetchXML Query. Specify the parent record ID in the fetch using the following template: {PARENT_GUID}. **{PARENT_GUID}** will be replaced at run time with the ID of the entity that triggered the workflow.
@@ -32,5 +32,7 @@ Example FetchXML (this is just an example to show how one can pull data from chi
 * **Format (Optional)** : The format only if you need a special format. Used for numbers or dates. It uses the C# string format specification. As examples:
 dd-MM-yyyy for dates or
 $#,##0.00 for money.
+
+* **TopRecordCount (Optional)** : When not defined, it takes all records. If you want to limit the number of records, just put the number here
 
 * **Output parameter: ConcatenatedString** : the concatenated string that can be used in steps that follow this workflow step.
