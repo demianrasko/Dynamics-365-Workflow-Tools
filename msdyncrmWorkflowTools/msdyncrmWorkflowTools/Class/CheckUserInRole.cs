@@ -18,6 +18,10 @@ namespace msdyncrmWorkflowTools
         [ReferenceTarget("role")]
         public InArgument<EntityReference> Role { get; set; }
 
+        [Input("User")]
+        [ReferenceTarget("systemuser")]
+        public InArgument<EntityReference> User { get; set; }
+
         [Output("isUserInRole")]
         public OutArgument<bool> isUserInRole { get; set; }
 
@@ -33,12 +37,15 @@ namespace msdyncrmWorkflowTools
             #region "Read Parameters"
             EntityReference roleReference = this.Role.Get(executionContext);
 
+            var userReference = this.User.Get(executionContext);
+
             objCommon.tracingService.Trace(String.Format("RoleId: {0} ", roleReference.Id.ToString()));
             #endregion
 
-           
+            Guid userId = userReference?.Id
+                ?? objCommon.context.InitiatingUserId;
 
-            Console.WriteLine("Checking association between user and role.");
+            Console.WriteLine($"Checking association between user {userId} and role.");
             // Establish a SystemUser link for a query.
             LinkEntity systemUserLink = new LinkEntity()
             {
@@ -51,7 +58,7 @@ namespace msdyncrmWorkflowTools
                 Conditions =
                 {
                     new ConditionExpression(
-                        "systemuserid", ConditionOperator.Equal, objCommon.context.InitiatingUserId)
+                        "systemuserid", ConditionOperator.Equal, userId)
                 }
             }
             };
