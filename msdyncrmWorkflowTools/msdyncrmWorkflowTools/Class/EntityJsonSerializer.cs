@@ -81,7 +81,7 @@ namespace msdyncrmWorkflowTools
 
                     if  (t.Equals(typeof(string)))
                     {
-                        sJson.Append("\"" + att + "\" : \"" + retrievedObject.Attributes[att].ToString().Replace("\\","\\\\") + "\"");   
+                        sJson.Append("\"" + att + "\" : \"" + retrievedObject.Attributes[att].ToString().Replace("\\","\\\\").Replace(@"""",@"""""") + "\"");   
                     }
                     else if (t.Equals(typeof(bool)))
                     {
