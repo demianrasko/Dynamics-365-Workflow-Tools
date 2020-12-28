@@ -1,6 +1,6 @@
 This step is very usefull to check if the user that initialized the Workflow execution, is a mamber of a specified Team.
 
-For using this activity you mus access here and select CheckUserInTeam:
+For using this activity you must access here and select CheckUserInTeam:
 
 ![](Check%20If%20User%20is%20in%20Team_wf2.gif)
 

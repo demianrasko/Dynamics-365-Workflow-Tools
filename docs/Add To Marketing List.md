@@ -1,6 +1,6 @@
 This step is very usefull to add members to a Marketing Lists (accounts, contacts and leads)
 
-For using this activity you mus access here and select AddToMarketingList:
+For using this activity you must access here and select AddToMarketingList:
 
 ![](Add%20To%20Marketing%20List_w2.gif)
 

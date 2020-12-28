@@ -1,6 +1,6 @@
 This step is very usefull to check if the user that initialized the Workflow execution, has one specified security role
 
-For using this activity you mus access here and select CheckUserInRole:
+For using this activity you must access here and select CheckUserInRole:
 
 ![](Check%20If%20User%20is%20in%20Role_userinrole1.gif)
 
