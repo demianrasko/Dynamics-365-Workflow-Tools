@@ -87,8 +87,8 @@ To see how to use each of the tools includes in this solution, please access to 
 * 75 [Create Team](/docs/CreateTeam.md) 
 * 76 [Get Option Set Value](/docs/GetOptionSetValue.md) 
 * 77 [Share Secured Field](/docs/ShareSecuredField.md) Thanks to [zhongchen zhou](https://github.com/zzc000)
-* 78 [Set Lookup Field from Record URL](/docs/SetLookupFieldFromRecordUrl.md)
-* 79 [Resolve Case](/docs/ResolveCase.md) 
+* 78 [Set Lookup Field from Record URL](/docs/SetLookupFieldFromRecordUrl.md) thanks to [beyro](https://github.com/beyro)
+* 79 [Resolve Case](/docs/ResolveCase.md) thanks to [Chris Milton](https://github.com/ChrisMilton)
 
 
 
@@ -103,5 +103,5 @@ NOTE ABOUT CDS: The CDS Version not include all the actions, because it requires
 - AddMarketingListToCampaign
 - SalesLiteratureToEmail
 
-![](docs/Home_wf1_54.gif)
+![](docs/Home_wf1_61.gif)
 
