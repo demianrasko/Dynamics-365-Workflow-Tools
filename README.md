@@ -1,6 +1,8 @@
 # Dynamics-365-Workflow-Tools
 This Solution includes one Assembly that contains Tools based on Workflow Activities.
-You must import this solution, to use it. It only contains the Workflow Assembly and the activities to be used in Workflows, so the import of this solution it will not affect any form, entity, view or navigation item. In any case, you should allways follow your ALM steps, installing it in Non-production environments, test everything and then move to Production environment when you are sure.
+You must import this solution, to use it. It only contains the Workflow Assembly and the activities to be used in Workflows, so the import of this solution it will not affect any form, entity, view or navigation item. 
+
+NOTE: You should allways follow your ALM procedure,downloading the source Code, installing it in Non-production environments, test everything and then move to Production environment when you are sure that everything works as you need.
 
 To import the Solution follow these steps:
 
