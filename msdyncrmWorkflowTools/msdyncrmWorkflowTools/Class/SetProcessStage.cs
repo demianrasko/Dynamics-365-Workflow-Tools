@@ -119,7 +119,7 @@ namespace msdyncrmWorkflowTools.Class
                 _processOpp1Id = activeProcessInstance.Id; // Id of the active process instance, which will be used
                                                            // later to retrieve the active path of the process instance
 
-                Console.WriteLine("Current active process instance for the Opportunity record: '{0}'", activeProcessInstance["name"].ToString());
+                objCommon.tracingService.Trace("Current active process instance for the Opportunity record: '{0}'", activeProcessInstance["name"].ToString());
 
                 // Get the BPF underlying entity logical name
                 var uniqueProcessNameAttribute = "uniquename";
@@ -130,8 +130,8 @@ namespace msdyncrmWorkflowTools.Class
             }
             else
             {
-                Console.WriteLine("No process instances found for the opportunity record; aborting the sample.");
-                Environment.Exit(1);
+                objCommon.tracingService.Trace("No process instances found for the opportunity record; aborting the sample.");
+                
             }
 
             objCommon.tracingService.Trace("Starting the update");
