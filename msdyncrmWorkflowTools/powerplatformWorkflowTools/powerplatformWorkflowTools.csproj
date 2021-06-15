@@ -1,0 +1,386 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{98EC024C-6439-44B1-8B1E-29E457B2201F}</ProjectGuid>
+    <ProjectTypeGuids>{32f31d43-81cc-4c15-9de6-3fc5453562b6};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>msdyncrmWorkflowTools</RootNamespace>
+    <AssemblyName>powerplatformWorkflowTools</AssemblyName>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>codes.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Crm.Sdk.Proxy, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CrmSdk.CoreAssemblies.9.0.2.21\lib\net462\Microsoft.Crm.Sdk.Proxy.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.IdentityModel, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.6.1.7600.16394\lib\net35\Microsoft.IdentityModel.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CrmSdk.CoreAssemblies.9.0.2.21\lib\net462\Microsoft.Xrm.Sdk.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Xrm.Sdk.Workflow, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CrmSdk.Workflow.9.0.2.21\lib\net462\Microsoft.Xrm.Sdk.Workflow.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Activities" />
+    <Reference Include="System.Activities.Presentation" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.DirectoryServices.AccountManagement" />
+    <Reference Include="System.Drawing">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.IdentityModel" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Activities" />
+    <Reference Include="System.ServiceModel.Web" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Workflow.Activities" />
+    <Reference Include="System.Workflow.ComponentModel" />
+    <Reference Include="System.Workflow.Runtime" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\msdyncrmWorkflowTools_Class\msdyncrmWorkflowTools_Class.cs">
+      <Link>msdyncrmWorkflowTools_Class.cs</Link>
+    </Compile>
+    <Compile Include="..\msdyncrmWorkflowTools\Class\CalculateAgregateDate.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\CalculatePrice.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\CloneChildren.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\SetLookupFieldFromRecordUrl.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\ShareSecuredField.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\ConcatenateFromQuery.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\CountChildEntityRecords.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\CreateTeam.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\DeleteOptionValue.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\CurrencyConvert.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\DeleteRecordAuditHistory.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\DynamicUrlParser.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\GetOptionSetValue.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\GetMultiSelectOptionSet.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\GetSharepointLocationURL.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\IsMemberOfTeam.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\GetAppRecordUrl.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\GetAppModuleID.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\GetRecordID.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\MapMultiSelectOptionSet.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\RetrieveUserBUDefaultTeam.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\SetMultiSelectOptionSet.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\TranslateText.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\OrgDBSettingsRetrieve.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\InsertOptionValue.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\DisassociateEntity.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\SendEmailToUsersInRole.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\SendEmailFromTemplateToUsersInRole.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\ExecuteWorkflowByID.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\JsonParser.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\DateFunctions.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\OrgDBSettingsUpdate.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\UpdateChildRecords.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\AddUserToTeam.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\SetState.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\CheckAssociateEntity.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\AssociateEntity.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\GoalRecalculate.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\GetInitiatingUser.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\EncryptText.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\RemoveUserFromTeam.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\EntityMobileDeepLink.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\EmailToTeam.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\NumericFunctions.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\EntityJsonSerializer.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\DeleteRecord.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\SendEmail.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\SetProcessStage.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\GeoCodeAddress.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\StringFunctions.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\SetUserSettings.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\RemoveRoleFromTeam.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\AddRoleToTeam.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\RemoveRoleFromUser.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\ApplyRoutingRule.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\CalculateRollupField.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\AddRoleToUser.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\CheckUserInTeam.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\QueueItemCount.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\PickFromQueue.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\QueryValues.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\CloneRecord.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\EntityAttachmentToEmail.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\SetProcess.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\RollupFunctions.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\ShareRecordWithTeam.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\ShareRecordWithUser.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\UnshareRecordWithTeam.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\UnshareRecordWithUser.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Common.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Bson\BsonBinaryType.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Bson\BsonBinaryWriter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Bson\BsonObjectId.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Bson\BsonReader.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Bson\BsonToken.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Bson\BsonType.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Bson\BsonWriter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\ConstructorHandling.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Converters\BinaryConverter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Converters\BsonObjectIdConverter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Converters\CustomCreationConverter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Converters\DataSetConverter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Converters\DataTableConverter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Converters\DateTimeConverterBase.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Converters\DiscriminatedUnionConverter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Converters\EntityKeyMemberConverter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Converters\ExpandoObjectConverter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Converters\IsoDateTimeConverter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Converters\JavaScriptDateTimeConverter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Converters\JsonValueConverter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Converters\KeyValuePairConverter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Converters\RegexConverter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Converters\StringEnumConverter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Converters\VersionConverter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Converters\XmlNodeConverter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\DateFormatHandling.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\DateParseHandling.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\DateTimeZoneHandling.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\DefaultValueHandling.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\FloatFormatHandling.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\FloatParseHandling.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\FormatterAssemblyStyle.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Formatting.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\IArrayPool.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\IJsonLineInfo.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\JsonArrayAttribute.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\JsonConstructorAttribute.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\JsonContainerAttribute.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\JsonConvert.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\JsonConverter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\JsonConverterAttribute.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\JsonConverterCollection.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\JsonDictionaryAttribute.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\JsonException.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\JsonExtensionDataAttribute.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\JsonIgnoreAttribute.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\JsonObjectAttribute.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\JsonPosition.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\JsonPropertyAttribute.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\JsonReader.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\JsonReaderException.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\JsonRequiredAttribute.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\JsonSerializationException.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\JsonSerializer.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\JsonSerializerSettings.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\JsonTextReader.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\JsonTextWriter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\JsonToken.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\JsonValidatingReader.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\JsonWriter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\JsonWriterException.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Linq\CommentHandling.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Linq\Extensions.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Linq\IJEnumerable.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Linq\JArray.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Linq\JConstructor.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Linq\JContainer.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Linq\JEnumerable.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Linq\JObject.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Linq\JProperty.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Linq\JPropertyDescriptor.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Linq\JPropertyKeyedCollection.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Linq\JRaw.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Linq\JsonLoadSettings.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Linq\JsonMergeSettings.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Linq\JsonPath\ArrayIndexFilter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Linq\JsonPath\ArrayMultipleIndexFilter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Linq\JsonPath\ArraySliceFilter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Linq\JsonPath\FieldFilter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Linq\JsonPath\FieldMultipleFilter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Linq\JsonPath\JPath.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Linq\JsonPath\PathFilter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Linq\JsonPath\QueryExpression.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Linq\JsonPath\QueryFilter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Linq\JsonPath\ScanFilter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Linq\JToken.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Linq\JTokenEqualityComparer.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Linq\JTokenReader.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Linq\JTokenType.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Linq\JTokenWriter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Linq\JValue.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Linq\MergeArrayHandling.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Linq\MergeNullValueHandling.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\MemberSerialization.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\MetadataPropertyHandling.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\MissingMemberHandling.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\NullValueHandling.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\ObjectCreationHandling.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\PreserveReferencesHandling.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\ReferenceLoopHandling.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Required.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Schema\Extensions.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Schema\JsonSchema.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Schema\JsonSchemaBuilder.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Schema\JsonSchemaConstants.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Schema\JsonSchemaException.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Schema\JsonSchemaGenerator.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Schema\JsonSchemaModel.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Schema\JsonSchemaModelBuilder.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Schema\JsonSchemaNode.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Schema\JsonSchemaNodeCollection.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Schema\JsonSchemaResolver.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Schema\JsonSchemaType.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Schema\JsonSchemaWriter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Schema\UndefinedSchemaIdHandling.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Schema\ValidationEventArgs.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Schema\ValidationEventHandler.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\SerializationBinder.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\CachedAttributeGetter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\CamelCaseNamingStrategy.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\CamelCasePropertyNamesContractResolver.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\DefaultContractResolver.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\DefaultNamingStrategy.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\DefaultReferenceResolver.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\DefaultSerializationBinder.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\DiagnosticsTraceWriter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\DynamicValueProvider.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\ErrorContext.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\ErrorEventArgs.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\ExpressionValueProvider.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\IAttributeProvider.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\IContractResolver.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\IReferenceResolver.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\ITraceWriter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\IValueProvider.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\JsonArrayContract.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\JsonContainerContract.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\JsonContract.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\JsonDictionaryContract.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\JsonDynamicContract.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\JsonFormatterConverter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\JsonISerializableContract.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\JsonLinqContract.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\JsonObjectContract.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\JsonPrimitiveContract.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\JsonProperty.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\JsonPropertyCollection.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\JsonSerializerInternalBase.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\JsonSerializerInternalReader.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\JsonSerializerInternalWriter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\JsonSerializerProxy.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\JsonStringContract.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\JsonTypeReflector.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\MemoryTraceWriter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\NamingStrategy.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\ObjectConstructor.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\OnErrorAttribute.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\ReflectionAttributeProvider.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\ReflectionValueProvider.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\SnakeCaseNamingStrategy.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\TraceJsonReader.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Serialization\TraceJsonWriter.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\StringEscapeHandling.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\TraceLevel.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\TypeNameHandling.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Utilities\Base64Encoder.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Utilities\BidirectionalDictionary.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Utilities\CollectionUtils.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Utilities\CollectionWrapper.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Utilities\ConvertUtils.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Utilities\DateTimeParser.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Utilities\DateTimeUtils.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Utilities\DictionaryWrapper.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Utilities\DynamicProxy.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Utilities\DynamicProxyMetaObject.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Utilities\DynamicReflectionDelegateFactory.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Utilities\DynamicUtils.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Utilities\EnumUtils.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Utilities\EnumValue.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Utilities\ExpressionReflectionDelegateFactory.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Utilities\FSharpUtils.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Utilities\ILGeneratorExtensions.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Utilities\ImmutableCollectionsUtils.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Utilities\JavaScriptUtils.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Utilities\JsonTokenUtils.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Utilities\LateBoundReflectionDelegateFactory.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Utilities\LinqBridge.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Utilities\MathUtils.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Utilities\MethodCall.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Utilities\MiscellaneousUtils.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Utilities\PropertyNameTable.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Utilities\ReflectionDelegateFactory.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Utilities\ReflectionObject.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Utilities\ReflectionUtils.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Utilities\StringBuffer.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Utilities\StringReference.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Utilities\StringUtils.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Utilities\ThreadSafeStore.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Utilities\TypeExtensions.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\Utilities\ValidationUtils.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Newtonsoft\WriteState.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\CheckUserInRole.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="codes.snk" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Este proyecto hace referencia a los paquetes NuGet que faltan en este equipo. Use la restauración de paquetes NuGet para descargarlos. Para obtener más información, consulte http://go.microsoft.com/fwlink/?LinkID=322105. El archivo que falta es {0}.</ErrorText>
+    </PropertyGroup>
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
