@@ -81,7 +81,7 @@ namespace msdyncrmWorkflowTools
 
                     if  (t.Equals(typeof(string)))
                     {
-                        sJson.Append("\"" + att + "\" : \"" + retrievedObject.Attributes[att].ToString().Replace("\\","\\\\").Replace(@"""",@"""""") + "\"");   
+                        sJson.Append("\"" + att + "\" : \"" + retrievedObject.Attributes[att].ToString().Replace("\\","\\\\").Replace(@"""",@"\""") + "\"");   
                     }
                     else if (t.Equals(typeof(bool)))
                     {
@@ -102,7 +102,12 @@ namespace msdyncrmWorkflowTools
                         EntityReference obj=(EntityReference)retrievedObject.Attributes[att];
                         sJson.Append("\"" + att + "\" : { \"typename\" : \"" + obj.LogicalName.ToLower() + "\", \"id\" :\""+ obj.Id.ToString()+"\", \"name\":\""+obj.Name+"\" }");
                     }
-                    else 
+                    else if (t.Equals(typeof(DateTime)))
+                    {
+                        DateTime obj = (DateTime)retrievedObject.Attributes[att];
+                        sJson.Append("\"" + att + "\" : \"" + obj + "\"");
+                    }
+                    else
                     {
                         sJson.Append("\"" + att + "\" : " + retrievedObject.Attributes[att]);
                     }
