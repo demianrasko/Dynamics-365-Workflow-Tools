@@ -95,6 +95,7 @@
     <Compile Include="Class\CalculatePrice.cs" />
     <Compile Include="Class\CloneChildren.cs" />
     <Compile Include="Class\CreateOpportunityProduct.cs" />
+    <Compile Include="Class\CreateQuoteFromOpportunity.cs" />
     <Compile Include="Class\DistributeWFActivityManyToMany.cs" />
     <Compile Include="Class\DistributeWFActivityOneToMany.cs" />
     <Compile Include="Class\ExecuteWorkflowForRecordsinQuery.cs" />
@@ -176,6 +177,7 @@
     <Compile Include="Class\UnshareRecordWithUser.cs" />
     <Compile Include="Class\UpdateProductQuoteValue.cs" />
     <Compile Include="Class\UpdateQuoteValue.cs" />
+    <Compile Include="Class\WinQuote.cs" />
     <Compile Include="Common.cs" />
     <Compile Include="Newtonsoft\Bson\BsonBinaryType.cs" />
     <Compile Include="Newtonsoft\Bson\BsonBinaryWriter.cs" />
