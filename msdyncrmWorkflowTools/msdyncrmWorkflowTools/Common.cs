@@ -121,7 +121,7 @@ namespace msdyncrmWorkflowTools
             return (atts);
         }
 
-        public Guid CloneRecord(string entityName, string objectId, string fieldstoIgnore, string prefix)
+        public Guid CloneRecord(string entityName, string objectId, string fieldstoIgnore, string prefix, Dictionary<string, object> fieldsToReplace = null)
         {
             tracingService.Trace("entering CloneRecord");
             if (fieldstoIgnore == null) fieldstoIgnore = "";
@@ -198,6 +198,22 @@ namespace msdyncrmWorkflowTools
                         retrievedObject.Attributes[att] = prefix + retrievedObject.Attributes[att];
                     }
                     newEntity.Attributes.Add(att, retrievedObject.Attributes[att]);
+                }
+            }
+
+            if (fieldsToReplace != null)
+            {
+                foreach (KeyValuePair<string, object> replaceField in fieldsToReplace)
+                {
+                    tracingService.Trace("attribute:{0}", replaceField.Key);
+                    if (newEntity.Attributes.ContainsKey(replaceField.Key))
+                    {
+                        newEntity[replaceField.Key] = replaceField.Value;
+                    }
+                    else
+                    {
+                        newEntity.Attributes.Add(replaceField.Key, replaceField.Value);
+                    }
                 }
             }
 
