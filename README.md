@@ -1,4 +1,4 @@
-# Dynamics-365-Workflow-Tools
+# Workflow Tools for Dynamics 365
 This Solution includes one Assembly that contains Tools based on Workflow Activities.
 You must import this solution, to use it. It only contains the Workflow Assembly and the activities to be used in Workflows, so the import of this solution it will not affect any form, entity, view or navigation item. 
 
