@@ -99,6 +99,7 @@
     <Compile Include="Class\DistributeWFActivityManyToMany.cs" />
     <Compile Include="Class\DistributeWFActivityOneToMany.cs" />
     <Compile Include="Class\ExecuteWorkflowForRecordsinQuery.cs" />
+    <Compile Include="Class\GetRecordUrl.cs" />
     <Compile Include="Class\SetLookupFieldFromRecordUrl.cs" />
     <Compile Include="Class\ResolveCase.cs" />
     <Compile Include="Class\ShareSecuredField.cs" />

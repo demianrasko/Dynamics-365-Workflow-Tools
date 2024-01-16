@@ -319,6 +319,14 @@ namespace msdyncrmWorkflowTools
             return objectId;
         }
 
+        public string GetRecordUrl(string referenceRecordUrl, string entityCode, Guid recordId)
+        {
+            string[] urlParts = referenceRecordUrl.Split("?".ToArray());
+            string dynamicsUrl = urlParts[0];
+            return $"{dynamicsUrl}?etc={entityCode}&id={recordId}";
+        }
+
+
         public string GetAppModuleId(string appModuleUniqueName)
         {
             var query = new QueryExpression
