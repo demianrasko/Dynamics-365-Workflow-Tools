@@ -119,21 +119,19 @@ namespace msdyncrmWorkflowTools
             var tools = new msdyncrmWorkflowTools_Class(objCommon.service);
 
             var children = tools.GetChildRecords(_relationshipName, parentId);
-             
+
+            var fieldsToReplace = new Dictionary<string, object>
+            {
+                { _newParentFieldName, new EntityReference(destinationEntityName, new Guid(destinationId)) }
+            };
+            if (!string.IsNullOrEmpty(_oldParentFieldName) && _oldParentFieldName != _newParentFieldName)
+            {
+                fieldsToReplace.Add(_oldParentFieldName, null);
+            }
+
             foreach (var item in children.Entities)
             {
-                var newRecordId = objCommon.CloneRecord(item.LogicalName, item.Id.ToString(), fieldstoIgnore, prefix);
-
-                Entity update = new Entity(item.LogicalName);
-                update.Id = newRecordId;
-                update.Attributes.Add(_newParentFieldName, new EntityReference(destinationEntityName, new Guid(destinationId)));
-                if (!string.IsNullOrEmpty(_oldParentFieldName) && _oldParentFieldName != _newParentFieldName)
-                {
-                    update.Attributes.Add(_oldParentFieldName, null);
-                }
-
-                objCommon.service.Update(update);
-
+                _ = objCommon.CloneRecord(item.LogicalName, item.Id.ToString(), fieldstoIgnore, prefix, fieldsToReplace);
             }
             
 
