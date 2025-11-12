@@ -92,12 +92,12 @@
       <Link>msdyncrmWorkflowTools_Class.cs</Link>
     </Compile>
     <Compile Include="..\msdyncrmWorkflowTools\Class\CalculateAgregateDate.cs" />
-  <Compile Include="..\msdyncrmWorkflowTools\Class\AIClassifyText.cs" />
-  <Compile Include="..\msdyncrmWorkflowTools\Class\AIDraftReply.cs" />
-  <Compile Include="..\msdyncrmWorkflowTools\Class\AISentimentDetect.cs" />
-  <Compile Include="..\msdyncrmWorkflowTools\Class\AISummarizeRecord.cs" />
-  <Compile Include="..\msdyncrmWorkflowTools\Class\AISummarizeText.cs" />
-  <Compile Include="..\msdyncrmWorkflowTools\Class\AITranslateText.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\AIClassifyText.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\AIDraftReply.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\AISentimentDetect.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\AISummarizeRecord.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\AISummarizeText.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\AITranslateText.cs" />
     <Compile Include="..\msdyncrmWorkflowTools\Class\CalculatePrice.cs" />
     <Compile Include="..\msdyncrmWorkflowTools\Class\CloneChildren.cs" />
     <Compile Include="..\msdyncrmWorkflowTools\Class\SetLookupFieldFromRecordUrl.cs" />

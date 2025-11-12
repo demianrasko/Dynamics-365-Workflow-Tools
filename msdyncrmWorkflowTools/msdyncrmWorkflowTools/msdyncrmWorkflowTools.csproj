@@ -99,6 +99,12 @@
     <Compile Include="Class\DistributeWFActivityManyToMany.cs" />
     <Compile Include="Class\DistributeWFActivityOneToMany.cs" />
     <Compile Include="Class\ExecuteWorkflowForRecordsinQuery.cs" />
+    <Compile Include="Class\AIClassifyText.cs" />
+    <Compile Include="Class\AIDraftReply.cs" />
+    <Compile Include="Class\AISentimentDetect.cs" />
+    <Compile Include="Class\AISummarizeRecord.cs" />
+    <Compile Include="Class\AISummarizeText.cs" />
+    <Compile Include="Class\AITranslateText.cs" />
     <Compile Include="Class\SetLookupFieldFromRecordUrl.cs" />
     <Compile Include="Class\ResolveCase.cs" />
     <Compile Include="Class\ShareSecuredField.cs" />

@@ -110,12 +110,6 @@ NOTE ABOUT CDS: The CDS Version not include all the actions, because it requires
 - CopyMarketingListMembers
 - AddMarketingListToCampaign
 - SalesLiteratureToEmail
-- AIClassifyText
-- AIDraftReply
-- AISentimentDetect
-- AISummarizeText
-- AISummarizeRecord
-- AITranslateText
 
 ![](docs/Home_wf1_61.gif)
 
