@@ -91,6 +91,12 @@ To see how to use each of the tools includes in this solution, please access to 
 * 77 [Share Secured Field](/docs/ShareSecuredField.md) Thanks to [zhongchen zhou](https://github.com/zzc000)
 * 78 [Set Lookup Field from Record URL](/docs/SetLookupFieldFromRecordUrl.md) thanks to [beyro](https://github.com/beyro)
 * 79 [Resolve Case](/docs/ResolveCase.md) thanks to [Chris Milton](https://github.com/ChrisMilton)
+* 80 [AI Classify Text](/docs/AI%20Classify%20Text.md) Thanks to [Rick Wilson](https://github.com/rwilson504)
+* 81 [AI Draft Reply](/docs/AI%20Draft%20Reply.md) Thanks to [Rick Wilson](https://github.com/rwilson504)
+* 82 [AI Sentiment Detect](/docs/AI%20Sentiment%20Detect.md) Thanks to [Rick Wilson](https://github.com/rwilson504)
+* 83 [AI Summarize Text](/docs/AI%20Summarize%20Text.md) Thanks to [Rick Wilson](https://github.com/rwilson504)
+* 84 [AI Summarize Record](/docs/AI%20Summarize%20Record.md) Thanks to [Rick Wilson](https://github.com/rwilson504)
+* 85 [AI Translate Text](/docs/AI%20Translate%20Text.md) Thanks to [Rick Wilson](https://github.com/rwilson504)
 
 
 
@@ -104,6 +110,12 @@ NOTE ABOUT CDS: The CDS Version not include all the actions, because it requires
 - CopyMarketingListMembers
 - AddMarketingListToCampaign
 - SalesLiteratureToEmail
+- AIClassifyText
+- AIDraftReply
+- AISentimentDetect
+- AISummarizeText
+- AISummarizeRecord
+- AITranslateText
 
 ![](docs/Home_wf1_61.gif)
 

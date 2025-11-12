@@ -2,6 +2,8 @@
 
 **Assembly:** `powerplatformWorkflowTools`
 
+**Dataverse Reference:** [AITranslate](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/webapi/reference/aitranslate?view=dataverse-latest)
+
 ## Purpose
 - Translate text into a target language using Dataverse Copilot translation capabilities within a workflow.
 

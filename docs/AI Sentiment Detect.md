@@ -2,6 +2,8 @@
 
 **Assembly:** `powerplatformWorkflowTools`
 
+**Dataverse Reference:** [AISentiment](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/webapi/reference/aisentiment?view=dataverse-latest)
+
 ## Purpose
 - Determine the sentiment (positive, negative, neutral, or mixed) of customer-facing content inside a workflow.
 

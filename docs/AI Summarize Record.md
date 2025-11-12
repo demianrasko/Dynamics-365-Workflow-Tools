@@ -2,6 +2,8 @@
 
 **Assembly:** `powerplatformWorkflowTools`
 
+**Dataverse Reference:** [AISummarizeRecord](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/webapi/reference/aisummarizerecord?view=dataverse-latest)
+
 ## Purpose
 - Generate a Copilot summary of a Dataverse record (lead, opportunity, or other supported entities) using the standard Dynamics record URL.
 

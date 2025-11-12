@@ -2,6 +2,8 @@
 
 **Assembly:** `powerplatformWorkflowTools`
 
+**Dataverse Reference:** [AISummarize](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/webapi/reference/aisummarize?view=dataverse-latest)
+
 ## Purpose
 - Produce a concise summary of long-form text so agents can quickly understand the key points.
 

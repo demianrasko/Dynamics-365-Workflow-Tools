@@ -2,6 +2,8 @@
 
 **Assembly:** `powerplatformWorkflowTools`
 
+**Dataverse Reference:** [AIReply](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/webapi/reference/aireply?view=dataverse-latest)
+
 ## Purpose
 - Generate a suggested response for customer communications using Dataverse Copilot reply capabilities.
 

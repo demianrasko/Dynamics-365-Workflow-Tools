@@ -2,6 +2,8 @@
 
 **Assembly:** `powerplatformWorkflowTools`
 
+**Dataverse Reference:** [AIClassify](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/webapi/reference/aiclassify?view=dataverse-latest)
+
 ## Purpose
 - Route inbound messages or cases by comparing free-form text against a list of categories and returning the highest-confidence match.
 
