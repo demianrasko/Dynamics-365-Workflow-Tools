@@ -117,11 +117,7 @@
     <ProjectReference Include="..\msdyncrmWorkflowTools_Class\msdyncrmWorkflowTools_Class.csproj">
       <Project>{55dedf5e-4ba2-498c-ab7a-b7ef2e41f79a}</Project>
       <Name>msdyncrmWorkflowTools_Class</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\powerplatformWorkflowTools\powerplatformWorkflowTools.csproj">
-      <Project>{98ec024c-6439-44b1-8b1e-29e457b2201f}</Project>
-      <Name>powerplatformWorkflowTools</Name>
-    </ProjectReference>
+    </ProjectReference>    
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
