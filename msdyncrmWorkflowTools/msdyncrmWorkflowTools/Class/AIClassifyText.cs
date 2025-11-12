@@ -12,21 +12,21 @@ namespace msdyncrmWorkflowTools
         #region "Parameter Definition"
         [RequiredArgument]
         [Input("Text To Classify")]
-    public InArgument<String> TextToClassify { get; set; }
+        public InArgument<String> TextToClassify { get; set; }
 
         [RequiredArgument]
         [Input("Categories (Comma Separated)")]
-    public InArgument<String> CategoriesCsv { get; set; }
+        public InArgument<String> CategoriesCsv { get; set; }
 
         [Output("Classification")]
-    public OutArgument<String> TopCategory { get; set; }
+        public OutArgument<String> TopCategory { get; set; }
 
         [Output("Failed")]
         [Default("false")]
         public OutArgument<bool> Failed { get; set; }
 
         [Output("Failure Message")]
-    public OutArgument<String> FailureMessage { get; set; }
+        public OutArgument<String> FailureMessage { get; set; }
         #endregion
 
         protected override void Execute(CodeActivityContext executionContext)

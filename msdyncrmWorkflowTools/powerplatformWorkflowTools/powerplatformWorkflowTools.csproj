@@ -93,6 +93,7 @@
     </Compile>
     <Compile Include="..\msdyncrmWorkflowTools\Class\CalculateAgregateDate.cs" />
     <Compile Include="..\msdyncrmWorkflowTools\Class\AIClassifyText.cs" />
+    <Compile Include="..\msdyncrmWorkflowTools\Class\AIDraftReply.cs" />
     <Compile Include="..\msdyncrmWorkflowTools\Class\CalculatePrice.cs" />
     <Compile Include="..\msdyncrmWorkflowTools\Class\CloneChildren.cs" />
     <Compile Include="..\msdyncrmWorkflowTools\Class\SetLookupFieldFromRecordUrl.cs" />
