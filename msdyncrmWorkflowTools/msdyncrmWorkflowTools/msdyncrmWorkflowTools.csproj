@@ -95,6 +95,7 @@
   <Compile Include="Class\AIClassifyText.cs" />
   <Compile Include="Class\AIDraftReply.cs" />
   <Compile Include="Class\AISentimentDetect.cs" />
+  <Compile Include="Class\AISummarizeRecord.cs" />
   <Compile Include="Class\AISummarizeText.cs" />
   <Compile Include="Class\ParseRecordUrl.cs" />
     <Compile Include="Class\CalculatePrice.cs" />
