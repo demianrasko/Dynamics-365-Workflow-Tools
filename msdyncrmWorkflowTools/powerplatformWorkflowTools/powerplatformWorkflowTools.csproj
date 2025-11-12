@@ -97,6 +97,7 @@
   <Compile Include="..\msdyncrmWorkflowTools\Class\AISentimentDetect.cs" />
   <Compile Include="..\msdyncrmWorkflowTools\Class\AISummarizeRecord.cs" />
   <Compile Include="..\msdyncrmWorkflowTools\Class\AISummarizeText.cs" />
+  <Compile Include="..\msdyncrmWorkflowTools\Class\AITranslateText.cs" />
   <Compile Include="..\msdyncrmWorkflowTools\Class\ParseRecordUrl.cs" />
     <Compile Include="..\msdyncrmWorkflowTools\Class\CalculatePrice.cs" />
     <Compile Include="..\msdyncrmWorkflowTools\Class\CloneChildren.cs" />
