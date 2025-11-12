@@ -92,6 +92,7 @@
       <Link>msdyncrmWorkflowTools_Class.cs</Link>
     </Compile>
     <Compile Include="Class\CalculateAgregateDate.cs" />
+    <Compile Include="Class\AIClassifyText.cs" />
     <Compile Include="Class\CalculatePrice.cs" />
     <Compile Include="Class\CloneChildren.cs" />
     <Compile Include="Class\CreateOpportunityProduct.cs" />
