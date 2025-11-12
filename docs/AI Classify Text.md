@@ -1,11 +1,6 @@
-# AI Classify Text
+This action classifies free-form text against a list of categories using Dataverse AI so workflows can branch on the best match.
 
-**Assembly:** `powerplatformWorkflowTools`
-
-**Dataverse Reference:** [AIClassify](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/webapi/reference/aiclassify?view=dataverse-latest)
-
-## Purpose
-- Route inbound messages or cases by comparing free-form text against a list of categories and returning the highest-confidence match.
+**Workflow Step Name:** AI Classify Text
 
 ## Inputs
 | Name | Type | Required | Description |
@@ -21,7 +16,6 @@
 | Failure Message | String | Additional error details when `Failed` is `true`. |
 
 ## Usage Notes
-- Only available in Power Platform (Dataverse online) deployments; the action is excluded from the on-premises build.
 - Provide descriptive, mutually-exclusive categories. When fewer than two unique categories are supplied the activity exits with an error.
 - Combine with a workflow `Switch` or conditional steps to branch on the returned `Classification` value.
 
@@ -34,3 +28,6 @@
 ## Error Handling
 - Empty text or category inputs cause the activity to set **Failed = true** with a descriptive **Failure Message**.
 - If Dataverse does not return a classification result, the activity flags failure and includes the original service error for troubleshooting.
+
+## Dataverse Reference
+- [AIClassify](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/webapi/reference/aiclassify?view=dataverse-latest)

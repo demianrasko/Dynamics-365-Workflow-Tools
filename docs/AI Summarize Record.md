@@ -1,11 +1,6 @@
-# AI Summarize Record
+This action summarizes a Dataverse record via Copilot using the record URL and optional context so agents stay informed.
 
-**Assembly:** `powerplatformWorkflowTools`
-
-**Dataverse Reference:** [AISummarizeRecord](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/webapi/reference/aisummarizerecord?view=dataverse-latest)
-
-## Purpose
-- Generate a Copilot summary of a Dataverse record (lead, opportunity, or other supported entities) using the standard Dynamics record URL.
+**Workflow Step Name:** AI Summarize Record
 
 ## Inputs
 | Name | Type | Required | Description |
@@ -22,7 +17,6 @@
 | Failure Message | String | Detailed error information when `Failed` is `true`. |
 
 ## Usage Notes
-- Available only in Dataverse online environments; removed from the on-premises build.
 - The activity parses the provided record URL to determine entity logical name and ID. Ensure the URL has both `etc` and `id` parameters.
 - When **Include Catchup Changes** is enabled, Dataverse merges recent timeline insights with the summary for leads and opportunities.
 - Use **Additional Record Context JSON** to pass optional metadata required by your Copilot configuration.
@@ -37,3 +31,6 @@
 - Missing or malformed URLs cause **Failed = true** with the message `Record URL is required.` or a parsing failure message.
 - If metadata lookup cannot resolve the logical name (for example, unsupported entity), the activity fails with `Unable to resolve entity logical name from Record URL.`
 - Service errors from Dataverse (including missing `SummarizedText`) propagate to **Failure Message** for easier troubleshooting.
+
+## Dataverse Reference
+- [AISummarizeRecord](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/webapi/reference/aisummarizerecord?view=dataverse-latest)

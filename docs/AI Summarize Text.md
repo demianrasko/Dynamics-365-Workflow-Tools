@@ -1,11 +1,6 @@
-# AI Summarize Text
+This action summarizes long-form text with Dataverse Copilot so agents can review the highlights quickly.
 
-**Assembly:** `powerplatformWorkflowTools`
-
-**Dataverse Reference:** [AISummarize](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/webapi/reference/aisummarize?view=dataverse-latest)
-
-## Purpose
-- Produce a concise summary of long-form text so agents can quickly understand the key points.
+**Workflow Step Name:** AI Summarize Text
 
 ## Inputs
 | Name | Type | Required | Description |
@@ -20,7 +15,6 @@
 | Failure Message | String | Details about the failure when `Failed` is `true`. |
 
 ## Usage Notes
-- Supported in Dataverse online scenarios; excluded from the on-premises project.
 - Store the **Summary Text** output in a note, description, or custom field to aid agents.
 - You can combine this action with `AI Translate Text` to present summaries in the customer’s preferred language.
 
@@ -32,3 +26,6 @@
 ## Error Handling
 - When the input text is blank the activity sets **Failed = true** with `Text is empty.`
 - If the Dataverse service omits the `SummarizedText` field, the activity marks failure and records the service error in **Failure Message**.
+
+## Dataverse Reference
+- [AISummarize](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/webapi/reference/aisummarize?view=dataverse-latest)

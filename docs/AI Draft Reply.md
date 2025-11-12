@@ -1,11 +1,6 @@
-# AI Draft Reply
+This action generates a draft reply for customer communications through Dataverse Copilot so agents can respond faster.
 
-**Assembly:** `powerplatformWorkflowTools`
-
-**Dataverse Reference:** [AIReply](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/webapi/reference/aireply?view=dataverse-latest)
-
-## Purpose
-- Generate a suggested response for customer communications using Dataverse Copilot reply capabilities.
+**Workflow Step Name:** AI Draft Reply
 
 ## Inputs
 | Name | Type | Required | Description |
@@ -20,9 +15,6 @@
 | Failure Message | String | Explanation of the failure condition when `Failed` is `true`. |
 
 ## Usage Notes
-- Available only in Dataverse online environments; the action does not ship with the on-premises build.
-- Combine the **Reply Text** output with a workflow step that creates an email activity or note so users can review the generated response before sending.
-- The input should already be language-detected by Dataverse; provide localized text for the best results.
 
 ## Example Workflow
 1. Add **AI Draft Reply** to a cloud workflow triggered from emails or timeline notes.
@@ -32,3 +24,6 @@
 ## Error Handling
 - Empty input text causes the activity to return **Failed = true** with the message `Text is empty.`
 - When Dataverse does not return a `PreparedResponse`, the activity flags failure and surfaces the service error in **Failure Message** to aid troubleshooting.
+
+## Dataverse Reference
+- [AIReply](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/webapi/reference/aireply?view=dataverse-latest)

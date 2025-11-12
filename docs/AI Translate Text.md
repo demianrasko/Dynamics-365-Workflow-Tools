@@ -1,11 +1,6 @@
-# AI Translate Text
+This action translates text into a target language through Dataverse Copilot so workflows can deliver multilingual content automatically.
 
-**Assembly:** `powerplatformWorkflowTools`
-
-**Dataverse Reference:** [AITranslate](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/webapi/reference/aitranslate?view=dataverse-latest)
-
-## Purpose
-- Translate text into a target language using Dataverse Copilot translation capabilities within a workflow.
+**Workflow Step Name:** AI Translate Text
 
 ## Inputs
 | Name | Type | Required | Description |
@@ -21,7 +16,6 @@
 | Failure Message | String | Error details when `Failed` is `true`. |
 
 ## Usage Notes
-- Supported only in Dataverse online environments; the on-premises solution excludes this activity.
 - Provide ISO language codes such as `en`, `fr`, or `es` in **Target Language** for deterministic results.
 - Chain with **AI Summarize Text** or other workflow activities to present multilingual summaries or responses.
 
@@ -33,3 +27,6 @@
 ## Error Handling
 - Blank input text sets **Failed = true** with the message `Text is empty.`
 - When Dataverse returns no `TranslatedText` value, the activity flags failure and records the service error in **Failure Message**.
+
+## Dataverse Reference
+- [AITranslate](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/webapi/reference/aitranslate?view=dataverse-latest)

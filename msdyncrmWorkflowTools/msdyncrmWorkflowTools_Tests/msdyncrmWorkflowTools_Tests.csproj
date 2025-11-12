@@ -99,7 +99,6 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AIActivities_Tests.cs" />
     <Compile Include="CrmService.cs" />
     <Compile Include="JsonParser_Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

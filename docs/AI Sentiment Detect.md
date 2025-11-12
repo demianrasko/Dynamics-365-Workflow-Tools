@@ -1,11 +1,6 @@
-# AI Sentiment Detect
+This action detects the sentiment of customer-facing text with Dataverse AI so workflows can react to tone automatically.
 
-**Assembly:** `powerplatformWorkflowTools`
-
-**Dataverse Reference:** [AISentiment](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/webapi/reference/aisentiment?view=dataverse-latest)
-
-## Purpose
-- Determine the sentiment (positive, negative, neutral, or mixed) of customer-facing content inside a workflow.
+**Workflow Step Name:** AI Sentiment Detect
 
 ## Inputs
 | Name | Type | Required | Description |
@@ -20,7 +15,6 @@
 | Failure Message | String | Diagnostic details when `Failed` is `true`. |
 
 ## Usage Notes
-- Only available in Power Platform online environments; not compiled into the on-premises solution.
 - Use the **Sentiment** output with your workflow branching logic to escalate negative interactions or acknowledge positive ones.
 - For longer messages, consider trimming irrelevant content before calling the activity to reduce noise.
 
@@ -32,3 +26,6 @@
 ## Error Handling
 - Empty input text results in **Failed = true** with the message `Text is empty.`
 - Missing `AnalyzedSentiment` values from the service response also set **Failed = true** and expose the issue through **Failure Message**.
+
+## Dataverse Reference
+- [AISentiment](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/webapi/reference/aisentiment?view=dataverse-latest)
