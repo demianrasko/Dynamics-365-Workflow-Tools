@@ -37,12 +37,12 @@ namespace msdyncrmWorkflowTools
 
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
-            String _TexttoEncrypt = this.TexttoEncrypt.Get(executionContext);
+            var _TexttoEncrypt = this.TexttoEncrypt.Get(executionContext);
            
 
             objCommon.tracingService.Trace(String.Format("_TexttoEncrypt: {0} ",_TexttoEncrypt));
@@ -50,8 +50,8 @@ namespace msdyncrmWorkflowTools
 
 
             #region "Encryption Execution"
-            string _MD5HashValue = MD5Hash(_TexttoEncrypt);
-            string _SHA512HashValue = SHA512Hash(_TexttoEncrypt);
+            var _MD5HashValue = MD5Hash(_TexttoEncrypt);
+            var _SHA512HashValue = SHA512Hash(_TexttoEncrypt);
 
 
             this.MD5HashValue.Set(executionContext, _MD5HashValue);
@@ -72,8 +72,8 @@ namespace msdyncrmWorkflowTools
             result = shaM.Hash;
 
 
-            StringBuilder strBuilder = new StringBuilder();
-            for (int i = 0; i < result.Length; i++)
+            var strBuilder = new StringBuilder();
+            for (var i = 0; i < result.Length; i++)
             {
                 //change it into 2 hexadecimal digits
                 //for each byte
@@ -92,10 +92,10 @@ namespace msdyncrmWorkflowTools
             md5.ComputeHash(ASCIIEncoding.ASCII.GetBytes(text));
 
             //get hash result after compute it
-            byte[] result = md5.Hash;
+            var result = md5.Hash;
 
-            StringBuilder strBuilder = new StringBuilder();
-            for (int i = 0; i < result.Length; i++)
+            var strBuilder = new StringBuilder();
+            for (var i = 0; i < result.Length; i++)
             {
                 //change it into 2 hexadecimal digits
                 //for each byte

@@ -44,12 +44,12 @@ namespace msdyncrmWorkflowTools
         {
             #region "Load CRM Service from context"
             
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
-            String _FetchXML = this.FetchXML.Get(executionContext);
+            var _FetchXML = this.FetchXML.Get(executionContext);
             if (_FetchXML == null || _FetchXML == "")
             {
                 return;
@@ -57,31 +57,31 @@ namespace msdyncrmWorkflowTools
             
             objCommon.tracingService.Trace("_FetchXML=" + _FetchXML);
 
-            IWorkflowContext context = executionContext.GetExtension<IWorkflowContext>();
+            var context = executionContext.GetExtension<IWorkflowContext>();
 
             #endregion
 
             #region "RollupFunctions Execution"
             string pagingCookie = null;
-            int recordCount = 0;
-            int pageNumber = 1;
-            int fetchCount = 250;
-            List<object> objNumbers = new List<object>();
+            var recordCount = 0;
+            var pageNumber = 1;
+            var fetchCount = 250;
+            var objNumbers = new List<object>();
 
             while (true)
             {
                 _FetchXML = _FetchXML.Replace("{PARENT_GUID}", context.PrimaryEntityId.ToString());
 
-                string xml = CreateXml(_FetchXML, pagingCookie, pageNumber, fetchCount);
-                RetrieveMultipleRequest fetchRequest1 = new RetrieveMultipleRequest
+                var xml = CreateXml(_FetchXML, pagingCookie, pageNumber, fetchCount);
+                var fetchRequest1 = new RetrieveMultipleRequest
                 {
                     Query = new FetchExpression(xml)
                 };
-                EntityCollection returnCollection = ((RetrieveMultipleResponse)objCommon.service.Execute(fetchRequest1)).EntityCollection;
+                var returnCollection = ((RetrieveMultipleResponse)objCommon.service.Execute(fetchRequest1)).EntityCollection;
                 foreach (var c in returnCollection.Entities)
                 {
-                    KeyValuePair<string, object> attribute=new KeyValuePair<string, object>();
-                    foreach (KeyValuePair<string,object> att in c.Attributes)
+                    var attribute=new KeyValuePair<string, object>();
+                    foreach (var att in c.Attributes)
                     {
                         attribute = att;
                         break;
@@ -110,10 +110,10 @@ namespace msdyncrmWorkflowTools
             decimal _average = 0;
             if (objNumbers.Count > 0)
             {
-                foreach (object obj in objNumbers)
+                foreach (var obj in objNumbers)
                 {
                     _count++;
-                    decimal number = this.GetValue(obj);
+                    var number = this.GetValue(obj);
 
                     _sum += number;
                     if (number < _min || _count == 1) _min = number;
@@ -139,7 +139,7 @@ namespace msdyncrmWorkflowTools
                
         public string ExtractNodeValue(XmlNode parentNode, string name)
         {
-            XmlNode childNode = parentNode.SelectSingleNode(name);
+            var childNode = parentNode.SelectSingleNode(name);
 
             if (null == childNode)
             {
@@ -150,8 +150,8 @@ namespace msdyncrmWorkflowTools
 
         public string ExtractAttribute(XmlDocument doc, string name)
         {
-            XmlAttributeCollection attrs = doc.DocumentElement.Attributes;
-            XmlAttribute attr = (XmlAttribute)attrs.GetNamedItem(name);
+            var attrs = doc.DocumentElement.Attributes;
+            var attr = (XmlAttribute)attrs.GetNamedItem(name);
             if (null == attr)
             {
                 return null;
@@ -161,11 +161,11 @@ namespace msdyncrmWorkflowTools
 
         public string CreateXml(string xml, string cookie, int page, int count)
         {
-            StringReader stringReader = new StringReader(xml);
-            XmlTextReader reader = new XmlTextReader(stringReader);
+            var stringReader = new StringReader(xml);
+            var reader = new XmlTextReader(stringReader);
 
             // Load document
-            XmlDocument doc = new XmlDocument();
+            var doc = new XmlDocument();
             doc.Load(reader);
 
             return CreateXml(doc, cookie, page, count);
@@ -173,27 +173,27 @@ namespace msdyncrmWorkflowTools
 
         public string CreateXml(XmlDocument doc, string cookie, int page, int count)
         {
-            XmlAttributeCollection attrs = doc.DocumentElement.Attributes;
+            var attrs = doc.DocumentElement.Attributes;
 
             if (cookie != null)
             {
-                XmlAttribute pagingAttr = doc.CreateAttribute("paging-cookie");
+                var pagingAttr = doc.CreateAttribute("paging-cookie");
                 pagingAttr.Value = cookie;
                 attrs.Append(pagingAttr);
             }
 
-            XmlAttribute pageAttr = doc.CreateAttribute("page");
+            var pageAttr = doc.CreateAttribute("page");
             pageAttr.Value = System.Convert.ToString(page);
             attrs.Append(pageAttr);
 
-            XmlAttribute countAttr = doc.CreateAttribute("count");
+            var countAttr = doc.CreateAttribute("count");
             countAttr.Value = System.Convert.ToString(count);
             attrs.Append(countAttr);
 
-            StringBuilder sb = new StringBuilder(1024);
-            StringWriter stringWriter = new StringWriter(sb);
+            var sb = new StringBuilder(1024);
+            var stringWriter = new StringWriter(sb);
 
-            XmlTextWriter writer = new XmlTextWriter(stringWriter);
+            var writer = new XmlTextWriter(stringWriter);
             doc.WriteTo(writer);
             writer.Close();
 

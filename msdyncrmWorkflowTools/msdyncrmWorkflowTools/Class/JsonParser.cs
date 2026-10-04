@@ -37,19 +37,19 @@ namespace msdyncrmWorkflowTools
 
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
-            String json = this.JSON.Get(executionContext);
-            String jsonPath = this.JSONPath.Get(executionContext);
+            var json = this.JSON.Get(executionContext);
+            var jsonPath = this.JSONPath.Get(executionContext);
 
             #endregion
 
            
-            msdyncrmWorkflowTools_Class commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
-            string res=commonClass.JsonParser(json, jsonPath);
+            var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
+            var res=commonClass.JsonParser(json, jsonPath);
 
             if (res == null) res = "";
 

@@ -58,26 +58,26 @@ namespace msdyncrmWorkflowTools
 
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
-            DateTime date1 = this.Date1.Get(executionContext);
-            DateTime date2 = this.Date2.Get(executionContext);
+            var date1 = this.Date1.Get(executionContext);
+            var date2 = this.Date2.Get(executionContext);
             
             #endregion
 
            
 
-            msdyncrmWorkflowTools_Class commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
-            TimeSpan difference = new TimeSpan();
-            int DayOfWeek = 0;
-            int DayOfYear = 0;
-            int Day = 0;
-            int Month = 0;
-            int Year = 0;
-            int WeekOfYear = 0;
+            var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
+            var difference = new TimeSpan();
+            var DayOfWeek = 0;
+            var DayOfYear = 0;
+            var Day = 0;
+            var Month = 0;
+            var Year = 0;
+            var WeekOfYear = 0;
             commonClass.DateFunctions(date1, date2, ref difference,
                 ref DayOfWeek, ref DayOfYear, ref Day, ref Month, ref Year, ref WeekOfYear);
 

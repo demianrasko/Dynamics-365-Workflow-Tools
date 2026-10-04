@@ -29,21 +29,21 @@ namespace msdyncrmWorkflowTools
 
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
-            EntityReference userReference = this.User.Get(executionContext);
-            EntityReference teamReference = this.Team.Get(executionContext);
+            var userReference = this.User.Get(executionContext);
+            var teamReference = this.Team.Get(executionContext);
 
             objCommon.tracingService.Trace(String.Format("UserID: {0} - TeamID: {1} ", userReference.Id.ToString(), teamReference.Id.ToString()));
             #endregion
 
-            AddMembersTeamRequest req = new AddMembersTeamRequest();
+            var req = new AddMembersTeamRequest();
             req.TeamId = teamReference.Id;
             req.MemberIds = new[] { userReference.Id};
-            AddMembersTeamResponse res = (AddMembersTeamResponse)objCommon.service.Execute(req);
+            var res = (AddMembersTeamResponse)objCommon.service.Execute(req);
 
         }
     }

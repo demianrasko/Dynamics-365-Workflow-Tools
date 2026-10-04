@@ -14,13 +14,13 @@ namespace msdyncrmWorkflowTools_Tests
         {
             var classObj = new msdyncrmWorkflowTools_Class(objService.service);
 
-            TimeSpan difference = new TimeSpan();
-            int DayOfWeek = 0;
-            int DayOfYear = 0;
-            int Day = 0;
-            int Month = 0;
-            int Year = 0;
-            int WeekOfYear = 0;
+            var difference = new TimeSpan();
+            var DayOfWeek = 0;
+            var DayOfYear = 0;
+            var Day = 0;
+            var Month = 0;
+            var Year = 0;
+            var WeekOfYear = 0;
             classObj.DateFunctions(new DateTime(2017, 05, 05), new DateTime(2018, 01, 01), ref difference,
                 ref DayOfWeek, ref DayOfYear, ref Day, ref Month, ref Year, ref WeekOfYear);
 
@@ -42,13 +42,13 @@ namespace msdyncrmWorkflowTools_Tests
         {
             var classObj = new msdyncrmWorkflowTools_Class(objService.service);
 
-            TimeSpan difference = new TimeSpan();
-            int DayOfWeek = 0;
-            int DayOfYear = 0;
-            int Day = 0;
-            int Month = 0;
-            int Year = 0;
-            int WeekOfYear = 0;
+            var difference = new TimeSpan();
+            var DayOfWeek = 0;
+            var DayOfYear = 0;
+            var Day = 0;
+            var Month = 0;
+            var Year = 0;
+            var WeekOfYear = 0;
             classObj.DateFunctions(new DateTime(2019, 05, 05), new DateTime(2018, 01, 01), ref difference,
                 ref DayOfWeek, ref DayOfYear, ref Day, ref Month, ref Year, ref WeekOfYear);
 

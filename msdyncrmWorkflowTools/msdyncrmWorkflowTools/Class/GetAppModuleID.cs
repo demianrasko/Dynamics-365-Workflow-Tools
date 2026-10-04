@@ -29,17 +29,17 @@ namespace msdyncrmWorkflowTools
         {
 
             #region "Load CRM Service from context"
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
-            String appModuleUniqueName = this.AppModuleUniqueName.Get(executionContext);
+            var appModuleUniqueName = this.AppModuleUniqueName.Get(executionContext);
             #endregion
 
-            msdyncrmWorkflowTools_Class commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
+            var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
             
-            string appModuleId = commonClass.GetAppModuleId(appModuleUniqueName);
+            var appModuleId = commonClass.GetAppModuleId(appModuleUniqueName);
                 
             this.AppModuleId.Set(executionContext, appModuleId);
 

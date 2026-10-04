@@ -29,12 +29,12 @@ namespace msdyncrmWorkflowTools
 
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
-            EntityReference teamReference = this.Team.Get(executionContext);
+            var teamReference = this.Team.Get(executionContext);
             EntityReference userReference = null;
             
             userReference = this.User.Get(executionContext);
@@ -42,10 +42,10 @@ namespace msdyncrmWorkflowTools
             objCommon.tracingService.Trace(String.Format("TeamId: {0} ", teamReference.Id.ToString()));
             #endregion
 
-            string userId = objCommon.context.InitiatingUserId.ToString();
+            var userId = objCommon.context.InitiatingUserId.ToString();
             if (userReference != null) userId = userReference.Id.ToString();
 
-            string fetchXML = @"<fetch version=""1.0"" output-format=""xml - platform"" mapping=""logical"" distinct=""true""><entity name=""team"">
+            var fetchXML = @"<fetch version=""1.0"" output-format=""xml - platform"" mapping=""logical"" distinct=""true""><entity name=""team"">
                          <attribute name=""teamid""/>
                          <filter type=""and"">
                           <condition attribute=""teamid"" operator=""eq"" value="""+ teamReference.Id.ToString() + @"""/>
@@ -60,9 +60,9 @@ namespace msdyncrmWorkflowTools
                                                            </entity></fetch> ";
 
             objCommon.tracingService.Trace(String.Format("FetchXML: {0} ", fetchXML));
-            EntityCollection givenTeams = objCommon.service.RetrieveMultiple(new FetchExpression (fetchXML));
+            var givenTeams = objCommon.service.RetrieveMultiple(new FetchExpression (fetchXML));
 
-            Boolean UserInTeam = (givenTeams.Entities.Count > 0);
+            var UserInTeam = (givenTeams.Entities.Count > 0);
 
             if (UserInTeam)
                 Console.WriteLine("User do not belong to the team.");

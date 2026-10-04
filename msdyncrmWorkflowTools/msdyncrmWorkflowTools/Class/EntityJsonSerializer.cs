@@ -36,21 +36,21 @@ namespace msdyncrmWorkflowTools
         {
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
-            String _SerializingRecordURL = this.SerializingRecordURL.Get(executionContext);
+            var _SerializingRecordURL = this.SerializingRecordURL.Get(executionContext);
             if (_SerializingRecordURL == null || _SerializingRecordURL == "")
             {
                 return;
             }
-            string[] urlParts = _SerializingRecordURL.Split("?".ToArray());
-            string[] urlParams = urlParts[1].Split("&".ToCharArray());
-            string objectTypeCode = urlParams[0].Replace("etc=", "");
-            string entityName = objCommon.sGetEntityNameFromCode(objectTypeCode, objCommon.service);
-            string objectId = urlParams[1].Replace("id=", "");
+            var urlParts = _SerializingRecordURL.Split("?".ToArray());
+            var urlParams = urlParts[1].Split("&".ToCharArray());
+            var objectTypeCode = urlParams[0].Replace("etc=", "");
+            var entityName = objCommon.sGetEntityNameFromCode(objectTypeCode, objCommon.service);
+            var objectId = urlParams[1].Replace("id=", "");
             objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
 
 
@@ -58,18 +58,18 @@ namespace msdyncrmWorkflowTools
 
             #region "Clone Execution"
 
-            Entity retrievedObject=objCommon.service.Retrieve(entityName, new Guid(objectId), new ColumnSet(allColumns: true));
+            var retrievedObject=objCommon.service.Retrieve(entityName, new Guid(objectId), new ColumnSet(allColumns: true));
             objCommon.tracingService.Trace("retrieved object OK");
 
-            Entity newEntity = new Entity(entityName);
-            string PrimaryIdAttribute = "" ;
-            string PrimaryNameAttribute = "";
-            List<string> atts= objCommon.getEntityAttributesToClone(entityName, objCommon.service, ref PrimaryIdAttribute, ref PrimaryNameAttribute);
+            var newEntity = new Entity(entityName);
+            var PrimaryIdAttribute = "" ;
+            var PrimaryNameAttribute = "";
+            var atts= objCommon.getEntityAttributesToClone(entityName, objCommon.service, ref PrimaryIdAttribute, ref PrimaryNameAttribute);
 
-            StringBuilder sJson = new StringBuilder("{\""+ entityName + "\": {");
+            var sJson = new StringBuilder("{\""+ entityName + "\": {");
             
             sJson.Append("\""+ PrimaryIdAttribute + "\": \""+ objectId + "\"");
-            foreach (string att in atts)
+            foreach (var att in atts)
             {
                 if (retrievedObject.Attributes.Contains(att))
                 {
@@ -77,7 +77,7 @@ namespace msdyncrmWorkflowTools
                     sJson.Append(",");
                     
                     
-                    Type t = retrievedObject.Attributes[att].GetType();
+                    var t = retrievedObject.Attributes[att].GetType();
 
                     if  (t.Equals(typeof(string)))
                     {
@@ -89,17 +89,17 @@ namespace msdyncrmWorkflowTools
                     }
                     else if (t.Equals(typeof(OptionSetValue)))
                     {
-                        OptionSetValue obj = (OptionSetValue)retrievedObject.Attributes[att];
+                        var obj = (OptionSetValue)retrievedObject.Attributes[att];
                         sJson.Append("\"" + att + "\" : " + obj.Value);
                     }
                     else if (t.Equals(typeof(Money)))
                     {
-                        Money obj=(Money)retrievedObject.Attributes[att];
+                        var obj=(Money)retrievedObject.Attributes[att];
                         sJson.Append("\"" + att + "\" : " + obj.Value);
                     }
                     else if (t.Equals(typeof(EntityReference)))
                     {
-                        EntityReference obj=(EntityReference)retrievedObject.Attributes[att];
+                        var obj=(EntityReference)retrievedObject.Attributes[att];
                         sJson.Append("\"" + att + "\" : { \"typename\" : \"" + obj.LogicalName.ToLower() + "\", \"id\" :\""+ obj.Id.ToString()+"\", \"name\":\""+obj.Name+"\" }");
                     }
                     else 

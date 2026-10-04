@@ -33,23 +33,23 @@ namespace msdyncrmWorkflowTools.Class
         {
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
-            EntityReference marketingList = this.MarketingList.Get(executionContext);
+            var marketingList = this.MarketingList.Get(executionContext);
             objCommon.tracingService.Trace(String.Format("marketingList: {0} ", marketingList.Id.ToString()));
 
-            EntityReference account = this.account.Get(executionContext);
+            var account = this.account.Get(executionContext);
             
-            EntityReference contact = this.contact.Get(executionContext);
+            var contact = this.contact.Get(executionContext);
            
-            EntityReference lead = this.lead.Get(executionContext);
+            var lead = this.lead.Get(executionContext);
 
             #endregion
 
-            Guid idToAdd = Guid.Empty;
+            var idToAdd = Guid.Empty;
 
             if (account != null)
             {
@@ -65,10 +65,10 @@ namespace msdyncrmWorkflowTools.Class
             }
             objCommon.tracingService.Trace(String.Format("idToAdd: {0} ", idToAdd.ToString()));
 
-            AddMemberListRequest addRequest = new AddMemberListRequest();
+            var addRequest = new AddMemberListRequest();
             addRequest.ListId = marketingList.Id;
             addRequest.EntityId = idToAdd;
-            AddMemberListResponse addResponse = (AddMemberListResponse)objCommon.service.Execute(addRequest);
+            var addResponse = (AddMemberListResponse)objCommon.service.Execute(addRequest);
             
         }
         

@@ -49,23 +49,23 @@ namespace msdyncrmWorkflowTools
 
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
-            EntityReference lead = this.Lead.Get(executionContext);
+            var lead = this.Lead.Get(executionContext);
             if (lead == null)
             {
                 return;
             }
 
-            bool createAccount = this.CreateAccount.Get(executionContext);
-            bool createContact = this.CreateContact.Get(executionContext);
-            bool createOpportunity = this.CreateOpportunity.Get(executionContext);
-            EntityReference existingAccount = this.ExistingAccount.Get(executionContext);
-            EntityReference existingContact = this.ExistingContact.Get(executionContext);
-            int leadStatus = this.LeadStatus.Get(executionContext);
+            var createAccount = this.CreateAccount.Get(executionContext);
+            var createContact = this.CreateContact.Get(executionContext);
+            var createOpportunity = this.CreateOpportunity.Get(executionContext);
+            var existingAccount = this.ExistingAccount.Get(executionContext);
+            var existingContact = this.ExistingContact.Get(executionContext);
+            var leadStatus = this.LeadStatus.Get(executionContext);
 
             objCommon.tracingService.Trace("LeadID=" + lead.Id);
             #endregion

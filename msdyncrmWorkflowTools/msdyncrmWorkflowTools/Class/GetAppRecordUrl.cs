@@ -34,18 +34,18 @@ namespace msdyncrmWorkflowTools
         {
 
             #region "Load CRM Service from context"
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
-            String recordURL = this.RecordURL.Get(executionContext);
-            String appModuleUniqueName = this.AppModuleUniqueName.Get(executionContext);
+            var recordURL = this.RecordURL.Get(executionContext);
+            var appModuleUniqueName = this.AppModuleUniqueName.Get(executionContext);
             #endregion
 
-            msdyncrmWorkflowTools_Class commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
+            var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
             
-            string appRecordUrl = commonClass.GetAppRecordUrl(recordURL, appModuleUniqueName);
+            var appRecordUrl = commonClass.GetAppRecordUrl(recordURL, appModuleUniqueName);
 
             this.AppRecordUrl.Set(executionContext, appRecordUrl);
 

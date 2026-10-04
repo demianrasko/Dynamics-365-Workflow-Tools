@@ -39,21 +39,21 @@ namespace msdyncrmWorkflowTools
         {
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
-            String _recordURL = this.RecordURL.Get(executionContext);
+            var _recordURL = this.RecordURL.Get(executionContext);
             if (_recordURL == null || _recordURL == "")
             {
                 return;
             }
-            string[] urlParts = _recordURL.Split("?".ToArray());
-            string[] urlParams = urlParts[1].Split("&".ToCharArray());
-            string objectTypeCode = urlParams[0].Replace("etc=", "");
-            string entityName = objCommon.sGetEntityNameFromCode(objectTypeCode, objCommon.service);
-            string objectId = urlParams[1].Replace("id=", "");
+            var urlParts = _recordURL.Split("?".ToArray());
+            var urlParams = urlParts[1].Split("&".ToCharArray());
+            var objectTypeCode = urlParams[0].Replace("etc=", "");
+            var entityName = objCommon.sGetEntityNameFromCode(objectTypeCode, objCommon.service);
+            var objectId = urlParams[1].Replace("id=", "");
             objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
 
 
@@ -61,9 +61,9 @@ namespace msdyncrmWorkflowTools
 
             #region "Generating Mobile Deep Links Execution"
 
-            string recordURLEdit = String.Format("ms-dynamicsxrm://?pagetype=entity&etn={0}&id={1}", entityName, objectId);
-            string recordURLNew = String.Format("ms-dynamicsxrm://?pagetype=create&etn={0}", entityName);
-            string recordURLDefaultView = String.Format("ms-dynamicsxrm://?pagetype=view&etn={0}", entityName);
+            var recordURLEdit = String.Format("ms-dynamicsxrm://?pagetype=entity&etn={0}&id={1}", entityName, objectId);
+            var recordURLNew = String.Format("ms-dynamicsxrm://?pagetype=create&etn={0}", entityName);
+            var recordURLDefaultView = String.Format("ms-dynamicsxrm://?pagetype=view&etn={0}", entityName);
 
             objCommon.tracingService.Trace("MobileDeepLinkEdit: "+ recordURLEdit);
             objCommon.tracingService.Trace("MobileDeepLinkNew: "+ recordURLNew);

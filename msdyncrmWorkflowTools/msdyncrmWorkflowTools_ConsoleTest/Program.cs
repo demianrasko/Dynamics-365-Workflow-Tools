@@ -46,7 +46,7 @@ namespace msdyncrmWorkflowTools_ConsoleTest
             //bool regexSuccess = false;
             //classObj.StringFunctions(false, "Lead subject", "", false, 0, false, "", "", 50, 0, false, "", ref capitalizedText, ref paddedText, ref replacedText, ref subStringText, ref regexText, ref uppercaseText, ref lowercaseText, ref regexSuccess);
 
-            Guid createdTeam=classObj.CreateTeam("PruebaTeam2", 1, new EntityReference("systemuser", new Guid("8fe5fd89-f447-4a38-90f1-1180617fcbc5")), new EntityReference("businessunit", new Guid("6025BC19-2E34-EA11-A812-000D3ABAAFE7")));
+            var createdTeam=classObj.CreateTeam("PruebaTeam2", 1, new EntityReference("systemuser", new Guid("8fe5fd89-f447-4a38-90f1-1180617fcbc5")), new EntityReference("businessunit", new Guid("6025BC19-2E34-EA11-A812-000D3ABAAFE7")));
             //string json = @"{""values"": [{""Author"": ""Lisa Simpson"",""Response Date"": ""2018-02-21T08:13:34.284Z""}	],	""SurveyId"": ""5114FA48-1DE6-E711-80E3-005056B37A5C""}";
             //string jsonpath = "values[0].Author";
             //string res = classObj.JsonParser(json, jsonpath);
@@ -91,10 +91,10 @@ namespace msdyncrmWorkflowTools_ConsoleTest
 
             //CrmServiceClient crmSvc = new CrmServiceClient(userName, theSecureString, "EMEA", "org1c3835c3");
 
-            CrmServiceClient conn = new CrmServiceClient(connectionStringCrmOnline);
+            var conn = new CrmServiceClient(connectionStringCrmOnline);
             
             
-            IOrganizationService _service = (IOrganizationService)conn.OrganizationWebProxyClient != null ? (IOrganizationService)conn.OrganizationWebProxyClient : (IOrganizationService)conn.OrganizationServiceProxy;
+            var _service = (IOrganizationService)conn.OrganizationWebProxyClient != null ? (IOrganizationService)conn.OrganizationWebProxyClient : (IOrganizationService)conn.OrganizationServiceProxy;
 
 
            

@@ -37,12 +37,12 @@ namespace msdyncrmWorkflowTools
         {
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
-            String _FetchXML = this.FetchXML.Get(executionContext);
+            var _FetchXML = this.FetchXML.Get(executionContext);
             if (_FetchXML == null || _FetchXML == "")
             {
                 return;
@@ -50,26 +50,26 @@ namespace msdyncrmWorkflowTools
 
             objCommon.tracingService.Trace("_FetchXML=" + _FetchXML);
 
-            IWorkflowContext context = executionContext.GetExtension<IWorkflowContext>();
+            var context = executionContext.GetExtension<IWorkflowContext>();
 
             #endregion
 
             #region "CalculateAgregateDate Execution"
 
             string pagingCookie = null;
-            int pageNumber = 1;
-            int fetchCount = 1;
-            DateTime date = new DateTime(1753, 1, 1);
+            var pageNumber = 1;
+            var fetchCount = 1;
+            var date = new DateTime(1753, 1, 1);
             Ok.Set(executionContext, false);
             _FetchXML = _FetchXML.Replace("{PARENT_GUID}", context.PrimaryEntityId.ToString());
 
             objCommon.tracingService.Trace(_FetchXML);
-            string xml = CreateXml(_FetchXML, pagingCookie, pageNumber, fetchCount);
-            RetrieveMultipleRequest fetchRequest1 = new RetrieveMultipleRequest
+            var xml = CreateXml(_FetchXML, pagingCookie, pageNumber, fetchCount);
+            var fetchRequest1 = new RetrieveMultipleRequest
             {
                 Query = new FetchExpression(xml)
             };
-            EntityCollection returnCollection = ((RetrieveMultipleResponse)objCommon.service.Execute(fetchRequest1)).EntityCollection;
+            var returnCollection = ((RetrieveMultipleResponse)objCommon.service.Execute(fetchRequest1)).EntityCollection;
             objCommon.tracingService.Trace(string.Format("Count {0}", returnCollection.Entities.Count));
             if (returnCollection.Entities.Count > 0)
             {
@@ -77,7 +77,7 @@ namespace msdyncrmWorkflowTools
                 {
                     try
                     {
-                        object value = returnCollection.Entities[0].Attributes.First().Value;
+                        var value = returnCollection.Entities[0].Attributes.First().Value;
                         objCommon.tracingService.Trace(string.Format("Attribute {0} - {1}", returnCollection.Entities[0].Attributes.First().Key, value));
                         if (value is DateTime)
                             date = (DateTime)value;
@@ -100,11 +100,11 @@ namespace msdyncrmWorkflowTools
         }
         public string CreateXml(string xml, string cookie, int page, int count)
         {
-            StringReader stringReader = new StringReader(xml);
-            XmlTextReader reader = new XmlTextReader(stringReader);
+            var stringReader = new StringReader(xml);
+            var reader = new XmlTextReader(stringReader);
 
             // Load document
-            XmlDocument doc = new XmlDocument();
+            var doc = new XmlDocument();
             doc.Load(reader);
 
             return CreateXml(doc, cookie, page, count);
@@ -112,27 +112,27 @@ namespace msdyncrmWorkflowTools
 
         public string CreateXml(XmlDocument doc, string cookie, int page, int count)
         {
-            XmlAttributeCollection attrs = doc.DocumentElement.Attributes;
+            var attrs = doc.DocumentElement.Attributes;
 
             if (cookie != null)
             {
-                XmlAttribute pagingAttr = doc.CreateAttribute("paging-cookie");
+                var pagingAttr = doc.CreateAttribute("paging-cookie");
                 pagingAttr.Value = cookie;
                 attrs.Append(pagingAttr);
             }
 
-            XmlAttribute pageAttr = doc.CreateAttribute("page");
+            var pageAttr = doc.CreateAttribute("page");
             pageAttr.Value = System.Convert.ToString(page);
             attrs.Append(pageAttr);
 
-            XmlAttribute countAttr = doc.CreateAttribute("count");
+            var countAttr = doc.CreateAttribute("count");
             countAttr.Value = System.Convert.ToString(count);
             attrs.Append(countAttr);
 
-            StringBuilder sb = new StringBuilder(1024);
-            StringWriter stringWriter = new StringWriter(sb);
+            var sb = new StringBuilder(1024);
+            var stringWriter = new StringWriter(sb);
 
-            XmlTextWriter writer = new XmlTextWriter(stringWriter);
+            var writer = new XmlTextWriter(stringWriter);
             doc.WriteTo(writer);
             writer.Close();
 

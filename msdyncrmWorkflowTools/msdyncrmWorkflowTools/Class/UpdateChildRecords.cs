@@ -49,34 +49,34 @@ namespace msdyncrmWorkflowTools
 
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
-            String _ParentRecordURL = this.ParentRecordURL.Get(executionContext);
+            var _ParentRecordURL = this.ParentRecordURL.Get(executionContext);
             if (_ParentRecordURL == null || _ParentRecordURL == "")
             {
                 return;
             }
-            string[] urlParts = _ParentRecordURL.Split("?".ToArray());
-            string[] urlParams = urlParts[1].Split("&".ToCharArray());
-            string objectTypeCode = urlParams[0].Replace("etc=", "");
-            string parentEntityType = objCommon.sGetEntityNameFromCode(objectTypeCode, objCommon.service);
-            string parentEntityId = urlParams[1].Replace("id=", "");
+            var urlParts = _ParentRecordURL.Split("?".ToArray());
+            var urlParams = urlParts[1].Split("&".ToCharArray());
+            var objectTypeCode = urlParams[0].Replace("etc=", "");
+            var parentEntityType = objCommon.sGetEntityNameFromCode(objectTypeCode, objCommon.service);
+            var parentEntityId = urlParams[1].Replace("id=", "");
             objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + parentEntityId);
 
-            String _RelationshipName = this.RelationshipName.Get(executionContext);
-            String _ParentFieldNameToUpdate = this.ParentFieldNameToUpdate.Get(executionContext);
-            String _ValueToSet = this.ValueToSet.Get(executionContext);
-            String _ChildFieldNameToUpdate = this.ChildFieldNameToUpdate.Get(executionContext);
-            bool _UpdateonlyActive = this.UpdateonlyActive.Get(executionContext);
+            var _RelationshipName = this.RelationshipName.Get(executionContext);
+            var _ParentFieldNameToUpdate = this.ParentFieldNameToUpdate.Get(executionContext);
+            var _ValueToSet = this.ValueToSet.Get(executionContext);
+            var _ChildFieldNameToUpdate = this.ChildFieldNameToUpdate.Get(executionContext);
+            var _UpdateonlyActive = this.UpdateonlyActive.Get(executionContext);
 
             objCommon.tracingService.Trace("RelationshipName=" + _RelationshipName + "--_ParentFieldNameToUpdate=" + _ParentFieldNameToUpdate);
             objCommon.tracingService.Trace("_ValueToSet=" + _ValueToSet + "--_ChildFieldNameToUpdate=" + _ChildFieldNameToUpdate);
             #endregion
 
-            msdyncrmWorkflowTools_Class commonClass = new msdyncrmWorkflowTools_Class(objCommon.service);
+            var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service);
             commonClass.UpdateChildRecords(_RelationshipName, parentEntityType, parentEntityId, _ParentFieldNameToUpdate, _ValueToSet, _ChildFieldNameToUpdate, _UpdateonlyActive);
             
         }

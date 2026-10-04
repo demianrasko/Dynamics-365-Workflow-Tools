@@ -57,17 +57,17 @@ namespace msdyncrmWorkflowTools
 
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
-            bool _GlobalOptionSet = this.GlobalOptionSet.Get(executionContext);
-            String _AttributeName = this.AttributeName.Get(executionContext);
-            String _EntityName = this.EntityName.Get(executionContext);
-            String _OptionText = this.OptionText.Get(executionContext);
-            int _OptionValue = this.OptionValue.Get(executionContext);
-            int _LanguageCode = this.LanguageCode.Get(executionContext);
+            var _GlobalOptionSet = this.GlobalOptionSet.Get(executionContext);
+            var _AttributeName = this.AttributeName.Get(executionContext);
+            var _EntityName = this.EntityName.Get(executionContext);
+            var _OptionText = this.OptionText.Get(executionContext);
+            var _OptionValue = this.OptionValue.Get(executionContext);
+            var _LanguageCode = this.LanguageCode.Get(executionContext);
 
             objCommon.tracingService.Trace("_AttributeName=" + _AttributeName + "--_EntityName=" + _EntityName+ "--_OptionText="+ _OptionText+ "--_LanguageCode="+ _LanguageCode.ToString());
             #endregion
@@ -77,7 +77,7 @@ namespace msdyncrmWorkflowTools
 
             try
             {
-                msdyncrmWorkflowTools_Class commonClass = new msdyncrmWorkflowTools_Class(objCommon.service);
+                var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service);
                 commonClass.InsertOptionValue(_GlobalOptionSet,_AttributeName, _EntityName, _OptionText, _OptionValue, _LanguageCode);
 
                 

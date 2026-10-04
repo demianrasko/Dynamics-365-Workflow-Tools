@@ -76,26 +76,26 @@ namespace msdyncrmWorkflowTools
 
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
 
-            EntityReference userReference = this.User.Get(executionContext);
-            int pagingLimit = this.PagingLimit.Get(executionContext);
-            int advancedFindStartupMode = this.AdvancedFindStartupMode.Get(executionContext);
-            int timeZoneCode = this.TimeZoneCode.Get(executionContext);
-            int helpLanguageId = this.HelpLanguageId.Get(executionContext);
-            int uiLanguageId = this.UILanguageId.Get(executionContext);
-            int defaultCalendarView = this.DefaultCalendarView.Get(executionContext);
-            bool isSendAsAllowed = this.IsSendAsAllowed.Get(executionContext);
+            var userReference = this.User.Get(executionContext);
+            var pagingLimit = this.PagingLimit.Get(executionContext);
+            var advancedFindStartupMode = this.AdvancedFindStartupMode.Get(executionContext);
+            var timeZoneCode = this.TimeZoneCode.Get(executionContext);
+            var helpLanguageId = this.HelpLanguageId.Get(executionContext);
+            var uiLanguageId = this.UILanguageId.Get(executionContext);
+            var defaultCalendarView = this.DefaultCalendarView.Get(executionContext);
+            var isSendAsAllowed = this.IsSendAsAllowed.Get(executionContext);
             
 
             objCommon.tracingService.Trace(String.Format("UserID: {0} ", userReference.Id.ToString()));
             #endregion
 
-            Entity newSettings = new Entity("usersettings");
+            var newSettings = new Entity("usersettings");
             newSettings.Attributes.Add("systemuserid", userReference.Id);
             if (pagingLimit != 0)
             {

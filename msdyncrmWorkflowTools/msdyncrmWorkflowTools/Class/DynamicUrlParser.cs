@@ -26,10 +26,10 @@ namespace msdyncrmWorkflowTools
             {
                 Url = url;
                 var uri = new Uri(url);
-                int found = 0;
+                var found = 0;
 
-                string[] parameters = uri.Query.TrimStart('?').Split('&');
-                foreach (string param in parameters)
+                var parameters = uri.Query.TrimStart('?').Split('&');
+                foreach (var param in parameters)
                 {
                     var nameValue = param.Split('=');
                     switch (nameValue[0])

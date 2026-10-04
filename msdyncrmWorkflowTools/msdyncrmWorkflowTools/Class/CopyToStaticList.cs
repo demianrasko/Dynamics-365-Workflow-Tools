@@ -26,12 +26,12 @@ namespace msdyncrmWorkflowTools.Class
         {
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
-            EntityReference marketingList = this.MarketingList.Get(executionContext);
+            var marketingList = this.MarketingList.Get(executionContext);
             objCommon.tracingService.Trace(String.Format("marketingList: {0} ", marketingList.Id.ToString()));
 
             

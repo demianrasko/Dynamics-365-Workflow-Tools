@@ -32,39 +32,39 @@ namespace msdyncrmWorkflowTools.Class
         {
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
-            String _ClonningRecordURL = this.ClonningRecordURL.Get(executionContext);
+            var _ClonningRecordURL = this.ClonningRecordURL.Get(executionContext);
             if (_ClonningRecordURL == null || _ClonningRecordURL == "")
             {
                 return;
             }
-            string[] urlParts = _ClonningRecordURL.Split("?".ToArray());
-            string[] urlParams = urlParts[1].Split("&".ToCharArray());
-            string objectTypeCode = urlParams[0].Replace("etc=", "");
-            string entityName = objCommon.sGetEntityNameFromCode(objectTypeCode, objCommon.service);
-            string objectId = urlParams[1].Replace("id=", "");
+            var urlParts = _ClonningRecordURL.Split("?".ToArray());
+            var urlParams = urlParts[1].Split("&".ToCharArray());
+            var objectTypeCode = urlParams[0].Replace("etc=", "");
+            var entityName = objCommon.sGetEntityNameFromCode(objectTypeCode, objCommon.service);
+            var objectId = urlParams[1].Replace("id=", "");
             objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
 
-            EntityReference process = this.Process.Get(executionContext);
-            string processStage = this.ProcessStage.Get(executionContext);
+            var process = this.Process.Get(executionContext);
+            var processStage = this.ProcessStage.Get(executionContext);
 
             #endregion
 
             #region "SetProcessStage Execution"
 
-            string stageName = processStage;
+            var stageName = processStage;
 
             Guid? stageId = null;
             if (processStage != null)
             {
                 objCommon.tracingService.Trace("[Dynamics.ChangeBPFandPhase.Execute] Process stage: " + stageName);
-                Entity stageReference = new Entity("processstage");
+                var stageReference = new Entity("processstage");
 
-                QueryExpression queryStage = new QueryExpression("processstage");
+                var queryStage = new QueryExpression("processstage");
                 queryStage.ColumnSet = new ColumnSet();
                 queryStage.Criteria.AddCondition(new ConditionExpression(
                         "stagename",
@@ -99,20 +99,20 @@ namespace msdyncrmWorkflowTools.Class
             }
 
             //*************************
-            RetrieveProcessInstancesRequest procOpp1Req = new RetrieveProcessInstancesRequest
+            var procOpp1Req = new RetrieveProcessInstancesRequest
             {
                 EntityId = new Guid(objectId),
                 EntityLogicalName = entityName
             };
-            RetrieveProcessInstancesResponse procOpp1Resp = (RetrieveProcessInstancesResponse)objCommon.service.Execute(procOpp1Req);
+            var procOpp1Resp = (RetrieveProcessInstancesResponse)objCommon.service.Execute(procOpp1Req);
 
           
 
 
             // Declare variables to store values returned in response
             Entity activeProcessInstance = null;
-            Guid _processOpp1Id = Guid.Empty;
-            string _procInstanceLogicalName = "";
+            var _processOpp1Id = Guid.Empty;
+            var _procInstanceLogicalName = "";
             if (procOpp1Resp.Processes.Entities.Count > 0)
             {
                 activeProcessInstance = procOpp1Resp.Processes.Entities[0]; // First record is the active process instance
@@ -135,7 +135,7 @@ namespace msdyncrmWorkflowTools.Class
             }
 
             objCommon.tracingService.Trace("Starting the update");
-           Entity processInstanceToUpdate= new Entity(_procInstanceLogicalName, _processOpp1Id);
+           var processInstanceToUpdate= new Entity(_procInstanceLogicalName, _processOpp1Id);
             processInstanceToUpdate.Attributes.Add("activestageid", new EntityReference("processstage", stageId.Value));
             objCommon.tracingService.Trace("Starting the update2");
             objCommon.service.Update(processInstanceToUpdate);

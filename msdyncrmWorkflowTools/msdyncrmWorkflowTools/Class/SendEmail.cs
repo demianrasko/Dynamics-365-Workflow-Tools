@@ -29,19 +29,19 @@ namespace msdyncrmWorkflowTools.Class
         {
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
-            EntityReference email = SourceEmail.Get(executionContext);
+            var email = SourceEmail.Get(executionContext);
 
             #endregion
 
             #region "SendEmail Execution"
 
             
-            SendEmailResponse ser = objCommon.service.Execute(
+            var ser = objCommon.service.Execute(
                 new SendEmailRequest()
                 {
                     EmailId = email.Id,

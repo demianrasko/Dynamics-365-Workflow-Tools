@@ -34,23 +34,23 @@ namespace msdyncrmWorkflowTools
 
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
-            String _SharingRecordURL = this.SharingRecordURL.Get(executionContext);
+            var _SharingRecordURL = this.SharingRecordURL.Get(executionContext);
             if (_SharingRecordURL == null || _SharingRecordURL == "")
             {
                 return;
             }
-            string[] urlParts = _SharingRecordURL.Split("?".ToArray());
-            string[] urlParams = urlParts[1].Split("&".ToCharArray());
-            string objectTypeCode = urlParams[0].Replace("etc=", "");
-            string objectId = urlParams[1].Replace("id=", "");
+            var urlParts = _SharingRecordURL.Split("?".ToArray());
+            var urlParams = urlParts[1].Split("&".ToCharArray());
+            var objectTypeCode = urlParams[0].Replace("etc=", "");
+            var objectId = urlParams[1].Replace("id=", "");
             objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
 
-            EntityReference systemuserReference = this.User.Get(executionContext);
+            var systemuserReference = this.User.Get(executionContext);
 
             if (systemuserReference != null) principals.Add(systemuserReference);
 
@@ -58,17 +58,17 @@ namespace msdyncrmWorkflowTools
 
 
             #region "ApplyRoutingRuteamReferenceleRequest Execution"
-            string EntityName = objCommon.sGetEntityNameFromCode(objectTypeCode, objCommon.service);
+            var EntityName = objCommon.sGetEntityNameFromCode(objectTypeCode, objCommon.service);
 
-            EntityReference refObject = new EntityReference(EntityName, new Guid(objectId));
+            var refObject = new EntityReference(EntityName, new Guid(objectId));
 
-            RevokeAccessRequest revoqueRequest = new RevokeAccessRequest();
+            var revoqueRequest = new RevokeAccessRequest();
             revoqueRequest.Target = refObject;
 
-            foreach (EntityReference principalObject in principals)
+            foreach (var principalObject in principals)
             {
                 revoqueRequest.Revokee = principalObject;
-                RevokeAccessResponse revoqueResponse = (RevokeAccessResponse)objCommon.service.Execute(revoqueRequest);
+                var revoqueResponse = (RevokeAccessResponse)objCommon.service.Execute(revoqueRequest);
             }
 
             objCommon.tracingService.Trace("Revoqued Permissions--- OK");

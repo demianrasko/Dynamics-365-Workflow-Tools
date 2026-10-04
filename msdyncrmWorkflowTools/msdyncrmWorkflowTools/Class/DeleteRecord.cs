@@ -36,26 +36,26 @@ namespace msdyncrmWorkflowTools.Class
         {
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
-            String _deleteRecordURL = this.DeleteRecordURL.Get(executionContext);
-            string entityName = "";
-            string objectId = "";
+            var _deleteRecordURL = this.DeleteRecordURL.Get(executionContext);
+            var entityName = "";
+            var objectId = "";
             if (_deleteRecordURL != null)
             {
-                string[] urlParts = _deleteRecordURL.Split("?".ToArray());
-                string[] urlParams = urlParts[1].Split("&".ToCharArray());
-                string objectTypeCode = urlParams[0].Replace("etc=", "");
+                var urlParts = _deleteRecordURL.Split("?".ToArray());
+                var urlParams = urlParts[1].Split("&".ToCharArray());
+                var objectTypeCode = urlParams[0].Replace("etc=", "");
                 entityName = objCommon.sGetEntityNameFromCode(objectTypeCode, objCommon.service);
                 objectId = urlParams[1].Replace("id=", "");
                 objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
             }
-            bool _deleteUsingRecordURL = this.DeleteUsingRecordURL.Get(executionContext);
-            String _entityTypeName = this.EntityTypeName.Get(executionContext);
-            String _entityGuid = this.EntityGuid.Get(executionContext);
+            var _deleteUsingRecordURL = this.DeleteUsingRecordURL.Get(executionContext);
+            var _entityTypeName = this.EntityTypeName.Get(executionContext);
+            var _entityGuid = this.EntityGuid.Get(executionContext);
 
             #endregion
 

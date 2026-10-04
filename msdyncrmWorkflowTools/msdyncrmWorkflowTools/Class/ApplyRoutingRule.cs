@@ -23,29 +23,29 @@ namespace msdyncrmWorkflowTools
 
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
-            String _IncidentRecordURL= this.IncidentRecordURL.Get(executionContext);
+            var _IncidentRecordURL= this.IncidentRecordURL.Get(executionContext);
             if (_IncidentRecordURL == null || _IncidentRecordURL == "")
             {
                 return;
             }
-            string[] urlParts = _IncidentRecordURL.Split("?".ToArray());
-            string[] urlParams = urlParts[1].Split("&".ToCharArray());
-            string ParentObjectTypeCode = urlParams[0].Replace("etc=", "");
-            string ParentId = urlParams[1].Replace("id=", "");
+            var urlParts = _IncidentRecordURL.Split("?".ToArray());
+            var urlParams = urlParts[1].Split("&".ToCharArray());
+            var ParentObjectTypeCode = urlParams[0].Replace("etc=", "");
+            var ParentId = urlParams[1].Replace("id=", "");
             objCommon.tracingService.Trace("ParentObjectTypeCode=" + ParentObjectTypeCode + "--ParentId=" + ParentId);
             #endregion
 
 
             #region "ApplyRoutingRuleRequest Execution"
-            string EntityName = objCommon.sGetEntityNameFromCode(ParentObjectTypeCode, objCommon.service);
-            ApplyRoutingRuleRequest routeRequest = new ApplyRoutingRuleRequest();
+            var EntityName = objCommon.sGetEntityNameFromCode(ParentObjectTypeCode, objCommon.service);
+            var routeRequest = new ApplyRoutingRuleRequest();
             routeRequest.Target = new EntityReference(EntityName, new Guid(ParentId));
-            ApplyRoutingRuleResponse routeResponse = (ApplyRoutingRuleResponse)objCommon.service.Execute(routeRequest);
+            var routeResponse = (ApplyRoutingRuleResponse)objCommon.service.Execute(routeRequest);
             
             #endregion
 

@@ -61,8 +61,8 @@ namespace msdyncrmWorkflowTools
         public string JsonParser(string Json, string JsonPath)
         {
             if (JsonPath == null) JsonPath = "";
-            JObject o = JObject.Parse(Json);
-            string name = "";
+            var o = JObject.Parse(Json);
+            var name = "";
             if (o.SelectToken(JsonPath) != null)
             {
                 name = o.SelectToken(JsonPath).ToString();
@@ -78,9 +78,9 @@ namespace msdyncrmWorkflowTools
         public void DeleteRecordAuditHistory(string logicalName, string id)
         {
             
-            DeleteRecordChangeHistoryRequest delRequest = new DeleteRecordChangeHistoryRequest();
+            var delRequest = new DeleteRecordChangeHistoryRequest();
 
-            EntityReference objt = new EntityReference(logicalName, new Guid(id));
+            var objt = new EntityReference(logicalName, new Guid(id));
 
             delRequest.Target = objt;
             service.Execute(delRequest);
@@ -88,9 +88,9 @@ namespace msdyncrmWorkflowTools
 
         public EntityReference retrieveUserBUDefaultTeam(string systemuserid)
         {
-            EntityReference teamres = new EntityReference("team");
+            var teamres = new EntityReference("team");
 
-            string fetch = @"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='true'>
+            var fetch = @"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='true'>
                                   <entity name='team'>
                                     <attribute name='name' />
                                     <attribute name='businessunitid' />
@@ -111,7 +111,7 @@ namespace msdyncrmWorkflowTools
                                   </entity>
                                 </fetch> ";
 
-            EntityCollection team = service.RetrieveMultiple(new FetchExpression(fetch));
+            var team = service.RetrieveMultiple(new FetchExpression(fetch));
 
 
             teamres.Id = team.Entities[0].Id;
@@ -202,16 +202,16 @@ namespace msdyncrmWorkflowTools
             if (tracing != null) tracing.Trace("Retrieved Data");
 
 
-            Entity emailEnt = new Entity("email", email.Id);
+            var emailEnt = new Entity("email", email.Id);
 
-            EntityCollection to = new EntityCollection();
+            var to = new EntityCollection();
 
-            foreach (Entity user in userList.Entities)
+            foreach (var user in userList.Entities)
             {
                 // Id of the user
                 var userId = user.Id;
 
-                Entity to1 = new Entity("activityparty");
+                var to1 = new Entity("activityparty");
                 to1["partyid"] = new EntityReference("systemuser", userId);
 
                 to.Entities.Add(to1);
@@ -221,10 +221,10 @@ namespace msdyncrmWorkflowTools
 
             service.Update(emailEnt);
 
-            SendEmailRequest req = new SendEmailRequest();
+            var req = new SendEmailRequest();
             req.EmailId = email.Id;
 
-            SendEmailResponse res = (SendEmailResponse)service.Execute(req);
+            var res = (SendEmailResponse)service.Execute(req);
             return true;
         }
 
@@ -238,7 +238,7 @@ namespace msdyncrmWorkflowTools
                 try
                 {
                     if (tracing != null) tracing.Trace("user creating email");
-                    bool sent = SendEmailFromTemplate(service, emailTemplateLookup, user.Id);
+                    var sent = SendEmailFromTemplate(service, emailTemplateLookup, user.Id);
 
 
                 }
@@ -255,16 +255,16 @@ namespace msdyncrmWorkflowTools
         public bool SendEmailFromTemplate(IOrganizationService service, EntityReference template, Guid userId)
         {
 
-            List<Entity> toEntities = new List<Entity>();
-            Entity activityParty = new Entity();
+            var toEntities = new List<Entity>();
+            var activityParty = new Entity();
             activityParty.LogicalName = "activityparty";
             activityParty.Attributes["partyid"] = new EntityReference("systemuser", userId);
             toEntities.Add(activityParty);
 
-            Entity email = new Entity("email");
+            var email = new Entity("email");
             email.Attributes["to"] = toEntities.ToArray();
 
-            SendEmailFromTemplateRequest emailUsingTemplateReq = new SendEmailFromTemplateRequest
+            var emailUsingTemplateReq = new SendEmailFromTemplateRequest
             {
                 Target = email,
 
@@ -276,7 +276,7 @@ namespace msdyncrmWorkflowTools
                 RegardingType = "systemuser"
             };
 
-            SendEmailFromTemplateResponse emailUsingTemplateResp = (SendEmailFromTemplateResponse)service.Execute(emailUsingTemplateReq);
+            var emailUsingTemplateResp = (SendEmailFromTemplateResponse)service.Execute(emailUsingTemplateReq);
 
 
             return true;
@@ -311,11 +311,11 @@ namespace msdyncrmWorkflowTools
             {
                 return "";
             }
-            string[] urlParts = recordURL.Split("?".ToArray());
-            string[] urlParams = urlParts[1].Split("&".ToCharArray());
-            string objectTypeCode = urlParams[0].Replace("etc=", "");
+            var urlParts = recordURL.Split("?".ToArray());
+            var urlParams = urlParts[1].Split("&".ToCharArray());
+            var objectTypeCode = urlParams[0].Replace("etc=", "");
             //  entityName =  sGetEntityNameFromCode(objectTypeCode, service);
-            string objectId = urlParams[1].Replace("id=", "");
+            var objectId = urlParams[1].Replace("id=", "");
             return objectId;
         }
 
@@ -340,7 +340,7 @@ namespace msdyncrmWorkflowTools
 
         public string GetAppRecordUrl(string recordUrl, string appModuleUniqueName)
         {
-            string appModuleId = GetAppModuleId(appModuleUniqueName);
+            var appModuleId = GetAppModuleId(appModuleUniqueName);
 
             return recordUrl + "&appid=" + appModuleId;
         }
@@ -362,7 +362,7 @@ namespace msdyncrmWorkflowTools
             };
 
             //get the results
-            EntityCollection retrievedUsers = service.RetrieveMultiple(query);
+            var retrievedUsers = service.RetrieveMultiple(query);
 
             return retrievedUsers.Entities.Count > 0;
         }
@@ -376,8 +376,8 @@ namespace msdyncrmWorkflowTools
             Day = date1.Day;
             Month = date1.Month;
             Year = date1.Year;
-            DateTimeFormatInfo dfi = DateTimeFormatInfo.CurrentInfo;
-            Calendar cal = dfi.Calendar;
+            var dfi = DateTimeFormatInfo.CurrentInfo;
+            var cal = dfi.Calendar;
             WeekOfYear = cal.GetWeekOfYear(date1, dfi.CalendarWeekRule, dfi.FirstDayOfWeek);
 
             return true;
@@ -451,8 +451,8 @@ namespace msdyncrmWorkflowTools
             regexSuccess = false;
             if (regularExpression != "")
             {
-                Regex regex = new Regex(regularExpression);
-                Match match = regex.Match(inputText);
+                var regex = new Regex(regularExpression);
+                var match = regex.Match(inputText);
                 if (match.Success)
                 {
                     regexSuccess = true;
@@ -494,7 +494,7 @@ namespace msdyncrmWorkflowTools
         {
             string uri;
             var authTokenSource = new AzureAuthToken(subscriptionKey.Trim());
-            string authToken = authTokenSource.GetAccessToken();
+            var authToken = authTokenSource.GetAccessToken();
             HttpRequestMessage request;
 
             if (sourceLanguage == "")
@@ -504,7 +504,7 @@ namespace msdyncrmWorkflowTools
 
                 request.Headers.Add("Authorization", authToken);
 
-                XmlDocument xmlDoc = new XmlDocument();
+                var xmlDoc = new XmlDocument();
 
                 xmlDoc.LoadXml(ExecuteAsyncRequest(request));
                 sourceLanguage = xmlDoc.ChildNodes[0].InnerText;
@@ -521,7 +521,7 @@ namespace msdyncrmWorkflowTools
 
         public string AzureFunctionCall(string jSon, string serviceUrl)
         {
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, serviceUrl);
+            var request = new HttpRequestMessage(HttpMethod.Post, serviceUrl);
             request.Content = new StringContent(jSon, Encoding.UTF8, "application/json");
 
             return ExecuteAsyncRequest(request);
@@ -530,7 +530,7 @@ namespace msdyncrmWorkflowTools
 
         public string AzureTextAnalyticsSentiment(string subscriptionKey, string text, string language)
         {
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post,
+            var request = new HttpRequestMessage(HttpMethod.Post,
                     "https://westus.api.cognitive.microsoft.com/text/analytics/v2.0/sentiment");
 
             request.Headers.Add("Ocp-Apim-Subscription-Key", subscriptionKey);
@@ -546,7 +546,7 @@ namespace msdyncrmWorkflowTools
             if (globalOptionSet)
             {
 
-                DeleteOptionValueRequest deleteOptionValueRequest =
+                var deleteOptionValueRequest =
                   new DeleteOptionValueRequest
                   {
                       OptionSetName = attributeName,
@@ -557,7 +557,7 @@ namespace msdyncrmWorkflowTools
             else
             {
                 // Create a request.
-                DeleteOptionValueRequest insertOptionValueRequest =
+                var insertOptionValueRequest =
                    new DeleteOptionValueRequest
                    {
                        AttributeLogicalName = attributeName,
@@ -576,7 +576,7 @@ namespace msdyncrmWorkflowTools
             _FileName = _FileName.Replace("*", "%");
 
             #region "Query Attachments"
-            string fetchXML = @"
+            var fetchXML = @"
                     <fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false'>
                       <entity name='salesliteratureitem'>
                         <attribute name='filename' />
@@ -592,7 +592,7 @@ namespace msdyncrmWorkflowTools
                       </entity>
                     </fetch>";
             if (tracing != null) tracing.Trace(String.Format("FetchXML: {0} ", fetchXML));
-            EntityCollection attachmentFiles = service.RetrieveMultiple(new FetchExpression(fetchXML));
+            var attachmentFiles = service.RetrieveMultiple(new FetchExpression(fetchXML));
 
             if (attachmentFiles.Entities.Count == 0)
             {
@@ -604,10 +604,10 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Add Attachments to Email"
-            int i = 1;
-            foreach (Entity file in attachmentFiles.Entities)
+            var i = 1;
+            foreach (var file in attachmentFiles.Entities)
             {
-                Entity _Attachment = new Entity("activitymimeattachment");
+                var _Attachment = new Entity("activitymimeattachment");
                 _Attachment["objectid"] = new EntityReference("email", new Guid(emailid));
                 _Attachment["objecttypecode"] = "email";
                 _Attachment["attachmentnumber"] = i;
@@ -646,19 +646,19 @@ namespace msdyncrmWorkflowTools
             if (globalOptionSet)
             {
                 
-                InsertOptionValueRequest insertOptionValueRequest =
+                var insertOptionValueRequest =
                   new InsertOptionValueRequest
                   {
                       OptionSetName = attributeName,
                       Value = optionValue,
                       Label = new Label(optionText, languageCode)
                   };
-                int insertOptionValue = ((InsertOptionValueResponse)service.Execute(insertOptionValueRequest)).NewOptionValue;
+                var insertOptionValue = ((InsertOptionValueResponse)service.Execute(insertOptionValueRequest)).NewOptionValue;
             }
             else
             {
                 // Create a request.
-                InsertOptionValueRequest insertOptionValueRequest =
+                var insertOptionValueRequest =
                    new InsertOptionValueRequest
                    {
                        AttributeLogicalName = attributeName,
@@ -666,7 +666,7 @@ namespace msdyncrmWorkflowTools
                        Value = optionValue,
                        Label = new Label(optionText, languageCode)
                    };
-                int insertOptionValue = ((InsertOptionValueResponse)service.Execute(insertOptionValueRequest)).NewOptionValue;
+                var insertOptionValue = ((InsertOptionValueResponse)service.Execute(insertOptionValueRequest)).NewOptionValue;
             }
             return true;
 
@@ -674,13 +674,13 @@ namespace msdyncrmWorkflowTools
 
         public Guid CreateTeam(string teamName, int teamType, EntityReference administrator, EntityReference businessUnit)
         {
-            Entity team = new Entity("team");
+            var team = new Entity("team");
             team.Attributes.Add("administratorid", administrator);
             team.Attributes.Add("name", teamName);
             team.Attributes.Add("teamtype", new OptionSetValue(teamType));
             team.Attributes.Add("businessunitid",  businessUnit);
               
-            Guid _teamId = service.Create(team);
+            var _teamId = service.Create(team);
 
             return _teamId;
         }
@@ -688,14 +688,14 @@ namespace msdyncrmWorkflowTools
         {
             try
             {
-                EntityCollection relations = getAssociations(PrimaryEntityName, PrimaryEntityId, _relationshipName, _relationshipEntityName, entityName, ParentId);
+                var relations = getAssociations(PrimaryEntityName, PrimaryEntityId, _relationshipName, _relationshipEntityName, entityName, ParentId);
 
 
                 if (relations.Entities.Count == 0)
                 {
-                    EntityReferenceCollection relatedEntities = new EntityReferenceCollection();
+                    var relatedEntities = new EntityReferenceCollection();
                     relatedEntities.Add(new EntityReference(entityName, new Guid(ParentId)));
-                    Relationship relationship = new Relationship(_relationshipName);
+                    var relationship = new Relationship(_relationshipName);
                     if (PrimaryEntityName == entityName)
                     {
                         relationship.PrimaryEntityRole = EntityRole.Referencing;
@@ -721,8 +721,8 @@ namespace msdyncrmWorkflowTools
         {
             #region "Query Attachments"
 
-            string fileNameCondition = string.IsNullOrEmpty(fileName) ? string.Empty : $"<condition attribute='filename' operator='like' value='{fileName}' />";
-            string fetchXML = $@"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false'
+            var fileNameCondition = string.IsNullOrEmpty(fileName) ? string.Empty : $"<condition attribute='filename' operator='like' value='{fileName}' />";
+            var fetchXML = $@"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false'
                                  {(topRecords > 0 ? $"top='{topRecords}'" : string.Empty)}>";
 
             if (!retrieveActivityMimeAttachment)
@@ -761,7 +761,7 @@ namespace msdyncrmWorkflowTools
             }
 
             tracing?.Trace("FetchXML: {0} ", fetchXML);
-            EntityCollection attachmentFiles = service.RetrieveMultiple(new FetchExpression(fetchXML));
+            var attachmentFiles = service.RetrieveMultiple(new FetchExpression(fetchXML));
 
             if (attachmentFiles.Entities.Count == 0)
             {
@@ -773,14 +773,14 @@ namespace msdyncrmWorkflowTools
 
             #region "Add Attachments to Email"
 
-            int i = 1;
-            List<Entity> attachedFiles = new List<Entity>();
+            var i = 1;
+            var attachedFiles = new List<Entity>();
 
-            foreach (Entity file in attachmentFiles.Entities)
+            foreach (var file in attachmentFiles.Entities)
             {
                 tracing?.Trace("Entities Count: {0} ", i);
 
-                Entity _Attachment = new Entity("activitymimeattachment");
+                var _Attachment = new Entity("activitymimeattachment");
                 _Attachment["objectid"] = new EntityReference("email", email.Id);
                 _Attachment["objecttypecode"] = "email";
                 _Attachment["attachmentnumber"] = i;
@@ -811,7 +811,7 @@ namespace msdyncrmWorkflowTools
                 {
                     tracing?.Trace("Is Most Recent");
 
-                    Entity alreadyAttached = attachedFiles.Where(f => f["filename"].ToString() == file.GetAttributeValue<string>("filename")).FirstOrDefault();
+                    var alreadyAttached = attachedFiles.Where(f => f["filename"].ToString() == file.GetAttributeValue<string>("filename")).FirstOrDefault();
 
                     if (alreadyAttached == null)
                     {
@@ -844,7 +844,7 @@ namespace msdyncrmWorkflowTools
         public EntityCollection getAssociations(string PrimaryEntityName, Guid PrimaryEntityId, string _relationshipName, string _relationshipEntityName, string entityName, string ParentId)
         {
             //
-            string fetchXML = @"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='true'>
+            var fetchXML = @"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='true'>
                                       <entity name='" + PrimaryEntityName + @"'>
                                         <link-entity name='" + _relationshipEntityName + @"' from='" + PrimaryEntityName + @"id' to='" + PrimaryEntityName + @"id' visible='false' intersect='true'>
                                         <link-entity name='" + PrimaryEntityName + @"' from='" + PrimaryEntityName + @"id' to='" + PrimaryEntityName + @"id' alias='ab'>
@@ -861,7 +861,7 @@ namespace msdyncrmWorkflowTools
                                       </entity>
                                     </fetch>";
 
-            EntityCollection relations = service.RetrieveMultiple(new FetchExpression(fetchXML));
+            var relations = service.RetrieveMultiple(new FetchExpression(fetchXML));
 
             return relations;
         }
@@ -875,23 +875,23 @@ namespace msdyncrmWorkflowTools
         public EntityCollection GetChildRecords(string relationshipName, string parentEntityId)
         {
             //1) Get child lookup field name
-            RetrieveRelationshipRequest req = new RetrieveRelationshipRequest()
+            var req = new RetrieveRelationshipRequest()
             {
                 Name = relationshipName
             };
-            RetrieveRelationshipResponse res = (RetrieveRelationshipResponse)service.Execute(req);
-            OneToManyRelationshipMetadata rel = (OneToManyRelationshipMetadata)res.RelationshipMetadata;
-            string childEntityType = rel.ReferencingEntity;
-            string childEntityFieldName = rel.ReferencingAttribute;
+            var res = (RetrieveRelationshipResponse)service.Execute(req);
+            var rel = (OneToManyRelationshipMetadata)res.RelationshipMetadata;
+            var childEntityType = rel.ReferencingEntity;
+            var childEntityFieldName = rel.ReferencingAttribute;
 
 
 
             //2) retrieve all child records
-            QueryByAttribute querybyattribute = new QueryByAttribute(childEntityType);
+            var querybyattribute = new QueryByAttribute(childEntityType);
             querybyattribute.ColumnSet = new ColumnSet(childEntityFieldName);
             querybyattribute.Attributes.AddRange(childEntityFieldName);
             querybyattribute.Values.AddRange(new Guid(parentEntityId));
-            EntityCollection retrieved = service.RetrieveMultiple(querybyattribute);
+            var retrieved = service.RetrieveMultiple(querybyattribute);
 
             return retrieved;
         }
@@ -906,22 +906,22 @@ namespace msdyncrmWorkflowTools
         string result;
         async Task TranslateTextasync(string textToTranslate, string language, string key)
         {
-            string host = "https://api.microsofttranslator.com";
-            string path = "/V2/Http.svc/Translate";
+            var host = "https://api.microsofttranslator.com";
+            var path = "/V2/Http.svc/Translate";
 
-            HttpClient client = new HttpClient();
+            var client = new HttpClient();
             client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", key);
 
-            List<KeyValuePair<string, string>> list = new List<KeyValuePair<string, string>>() {
+            var list = new List<KeyValuePair<string, string>>() {
                 new KeyValuePair<string, string> (textToTranslate,language)// "fr-fr"
 
             };
 
-            foreach (KeyValuePair<string, string> i in list)
+            foreach (var i in list)
             {
-                string uri = host + path + "?to=" + i.Value + "&text=" + System.Net.WebUtility.UrlEncode(i.Key);
+                var uri = host + path + "?to=" + i.Value + "&text=" + System.Net.WebUtility.UrlEncode(i.Key);
 
-                HttpResponseMessage response = await client.GetAsync(uri);
+                var response = await client.GetAsync(uri);
 
                 result = await response.Content.ReadAsStringAsync();
                 // NOTE: A successful response is returned in XML. You can extract the contents of the XML as follows.
@@ -935,12 +935,12 @@ namespace msdyncrmWorkflowTools
         public Decimal CurrencyConvert(decimal amount, string fromCurrency, string toCurrency)
         {
 
-            WebClient web = new WebClient();
-            string apiURL = String.Format("http://finance.google.com/finance/converter?a={0}&from={1}&to={2}", amount, fromCurrency.ToUpper(), toCurrency.ToUpper());
-            string response = web.DownloadString(apiURL);
+            var web = new WebClient();
+            var apiURL = String.Format("http://finance.google.com/finance/converter?a={0}&from={1}&to={2}", amount, fromCurrency.ToUpper(), toCurrency.ToUpper());
+            var response = web.DownloadString(apiURL);
             var split = response.Split((new string[] { "<span class=bld>" }), StringSplitOptions.None);
             var value = split[1].Split(' ')[0];
-            Decimal rate = decimal.Parse(value, CultureInfo.InvariantCulture);
+            var rate = decimal.Parse(value, CultureInfo.InvariantCulture);
             return rate;
         }
 
@@ -949,17 +949,17 @@ namespace msdyncrmWorkflowTools
         public void UpdateChildRecords(string relationshipName, string parentEntityType, string parentEntityId, string parentFieldNameToUpdate, string setValueToUpdate, string childFieldNameToUpdate, bool _UpdateonlyActive)
         {
             //1) Get child lookup field name
-            RetrieveRelationshipRequest req = new RetrieveRelationshipRequest()
+            var req = new RetrieveRelationshipRequest()
             {
                 Name = relationshipName
             };
-            RetrieveRelationshipResponse res = (RetrieveRelationshipResponse)service.Execute(req);
-            OneToManyRelationshipMetadata rel = (OneToManyRelationshipMetadata)res.RelationshipMetadata;
-            string childEntityType = rel.ReferencingEntity;
-            string childEntityFieldName = rel.ReferencingAttribute;
+            var res = (RetrieveRelationshipResponse)service.Execute(req);
+            var rel = (OneToManyRelationshipMetadata)res.RelationshipMetadata;
+            var childEntityType = rel.ReferencingEntity;
+            var childEntityFieldName = rel.ReferencingAttribute;
 
             //2) retrieve all child records
-            QueryByAttribute querybyattribute = new QueryByAttribute(childEntityType);
+            var querybyattribute = new QueryByAttribute(childEntityType);
             querybyattribute.ColumnSet = new ColumnSet(childEntityFieldName);
 
             if (!_UpdateonlyActive)
@@ -972,13 +972,13 @@ namespace msdyncrmWorkflowTools
                 querybyattribute.Attributes.AddRange(childEntityFieldName, "statecode");
                 querybyattribute.Values.AddRange(new Guid(parentEntityId), 0);
             }
-            EntityCollection retrieved = service.RetrieveMultiple(querybyattribute);
+            var retrieved = service.RetrieveMultiple(querybyattribute);
 
             //2') retrieve parent fielv value
             var valueToUpdate = new object();
             if (parentFieldNameToUpdate != null && parentFieldNameToUpdate != "")
             {
-                Entity retrievedEntity = (Entity)service.Retrieve(parentEntityType, new Guid(parentEntityId), new ColumnSet(parentFieldNameToUpdate));
+                var retrievedEntity = (Entity)service.Retrieve(parentEntityType, new Guid(parentEntityId), new ColumnSet(parentFieldNameToUpdate));
                 if (retrievedEntity.Attributes.Contains(parentFieldNameToUpdate))
                 {
                     valueToUpdate = retrievedEntity.Attributes[parentFieldNameToUpdate];
@@ -995,25 +995,25 @@ namespace msdyncrmWorkflowTools
 
             //3) update each child record
 
-            foreach (Entity child in retrieved.Entities)
+            foreach (var child in retrieved.Entities)
             {
                 if (childEntityType.ToLower() == "dynamicpropertyinstance")
                 {
                     //pending...
-                    UpdateProductPropertiesRequest req2 = new UpdateProductPropertiesRequest();
+                    var req2 = new UpdateProductPropertiesRequest();
                     // req2.
                     break;
                 }
 
-                RetrieveAttributeRequest reqAtt = new RetrieveAttributeRequest();
+                var reqAtt = new RetrieveAttributeRequest();
                 reqAtt.EntityLogicalName = childEntityType;
                 reqAtt.LogicalName = childFieldNameToUpdate;
-                RetrieveAttributeResponse resAtt = (RetrieveAttributeResponse)service.Execute(reqAtt);
+                var resAtt = (RetrieveAttributeResponse)service.Execute(reqAtt);
 
-                bool valueToUpdateBool = false;
-                AttributeMetadata meta = resAtt.AttributeMetadata;
+                var valueToUpdateBool = false;
+                var meta = resAtt.AttributeMetadata;
 
-                Entity entUpdate = new Entity(childEntityType);
+                var entUpdate = new Entity(childEntityType);
                 entUpdate.Id = child.Id;
 
                 if (meta.AttributeType.Value.ToString() == "Boolean")
@@ -1054,7 +1054,7 @@ namespace msdyncrmWorkflowTools
                             {
                                 valueToUpdate = ((OptionSetValue)valueToUpdate).Value;
                             }
-                            OptionSetValue opt = new OptionSetValue(Convert.ToInt32(valueToUpdate));
+                            var opt = new OptionSetValue(Convert.ToInt32(valueToUpdate));
                             entUpdate.Attributes.Add(childFieldNameToUpdate, opt);
                         }
                     }

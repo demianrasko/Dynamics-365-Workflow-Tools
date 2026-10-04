@@ -28,20 +28,20 @@ namespace msdyncrmWorkflowTools
 
         protected override void Execute(CodeActivityContext executionContext)
         {
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
 
-            EntityReference sourceEntityReference = GetSourceEntityReference(objCommon.tracingService, executionContext, objCommon.service);
-            string attributeName = GetAttributeName(objCommon.tracingService, executionContext);
+            var sourceEntityReference = GetSourceEntityReference(objCommon.tracingService, executionContext, objCommon.service);
+            var attributeName = GetAttributeName(objCommon.tracingService, executionContext);
 
-            string selectedValues = GetSelectedValues(sourceEntityReference, attributeName, objCommon.tracingService, objCommon.service);
+            var selectedValues = GetSelectedValues(sourceEntityReference, attributeName, objCommon.tracingService, objCommon.service);
 
             this.SelectedValues.Set(executionContext, selectedValues);
         }
 
         private EntityReference GetSourceEntityReference(ITracingService tracingService, CodeActivityContext executionContext, IOrganizationService organizationService)
         {
-            string sourceRecordUrl = SourceRecordUrl.Get<string>(executionContext) ?? throw new ArgumentNullException("Source URL is empty");
+            var sourceRecordUrl = SourceRecordUrl.Get<string>(executionContext) ?? throw new ArgumentNullException("Source URL is empty");
             tracingService.Trace("Source Record URL:'{0}'", sourceRecordUrl);
             return new DynamicUrlParser(sourceRecordUrl).ToEntityReference(organizationService);
         }
@@ -49,7 +49,7 @@ namespace msdyncrmWorkflowTools
 
         private string GetAttributeName(ITracingService tracingService, CodeActivityContext executionContext)
         {
-            string attributeName = AttributeName.Get<string>(executionContext) ?? throw new ArgumentNullException("Attribute Name is empty");
+            var attributeName = AttributeName.Get<string>(executionContext) ?? throw new ArgumentNullException("Attribute Name is empty");
             tracingService.Trace("Attribute name:'{0}'", attributeName);
             return attributeName;
         }
@@ -63,7 +63,7 @@ namespace msdyncrmWorkflowTools
                 return string.Empty;
             }
 
-            Entity sourceEntity = organizationService.Retrieve(sourceEntityReference.LogicalName, sourceEntityReference.Id, new ColumnSet(attributeName));
+            var sourceEntity = organizationService.Retrieve(sourceEntityReference.LogicalName, sourceEntityReference.Id, new ColumnSet(attributeName));
             tracingService.Trace("Source record has been retrieved correctly. Id:{0}", sourceEntity.Id);
 
             if (!sourceEntity.Contains(attributeName))
@@ -72,11 +72,11 @@ namespace msdyncrmWorkflowTools
                 return string.Empty;
             }
 
-            OptionSetValueCollection optionSetValues = sourceEntity[attributeName] as OptionSetValueCollection;
+            var optionSetValues = sourceEntity[attributeName] as OptionSetValueCollection;
             if (optionSetValues == null)
                 return string.Empty;
 
-            int numberOptions = optionSetValues.Count;
+            var numberOptions = optionSetValues.Count;
 
             if (numberOptions == 0)
             {
@@ -86,9 +86,9 @@ namespace msdyncrmWorkflowTools
 
             tracingService.Trace("Number of selected options: ", numberOptions);
 
-            StringBuilder stringBuilder = new StringBuilder();
+            var stringBuilder = new StringBuilder();
             OptionSetValue value = null;
-            for (int i = 0; i < numberOptions; i++)
+            for (var i = 0; i < numberOptions; i++)
             {
                 value = optionSetValues[i];
                 stringBuilder.Append(value.Value);
@@ -96,7 +96,7 @@ namespace msdyncrmWorkflowTools
                     stringBuilder.Append(",");
             }
 
-            string values = stringBuilder.ToString();
+            var values = stringBuilder.ToString();
             tracingService.Trace("Values have been retrieved correctly. Values: ", values);
 
             return values;

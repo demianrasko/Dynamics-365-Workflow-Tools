@@ -65,54 +65,54 @@ namespace msdyncrmWorkflowTools
         {
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
 
-            String _relationshipName = this.RelationshipName.Get(executionContext);
+            var _relationshipName = this.RelationshipName.Get(executionContext);
             if (_relationshipName == null || _relationshipName == "")
             {
                 return;
             }
 
-            String _newParentFieldName = this.NewParentFieldNameToUpdate.Get(executionContext);
+            var _newParentFieldName = this.NewParentFieldNameToUpdate.Get(executionContext);
             if (_newParentFieldName == null || _newParentFieldName == "")
             {
                 return;
             }
 
-            String _source = this.SourceRecordUrl.Get(executionContext);
+            var _source = this.SourceRecordUrl.Get(executionContext);
             if (_source == null || _source == "")
             {
                 return;
             }
 
-            string[] urlParts = _source.Split("?".ToArray());
-            string[] urlParams = urlParts[1].Split("&".ToCharArray());
-            string parentObjectTypeCode = urlParams[0].Replace("etc=", "");
-            string parentEntityName = objCommon.sGetEntityNameFromCode(parentObjectTypeCode, objCommon.service);
-            string parentId = urlParams[1].Replace("id=", "");
+            var urlParts = _source.Split("?".ToArray());
+            var urlParams = urlParts[1].Split("&".ToCharArray());
+            var parentObjectTypeCode = urlParams[0].Replace("etc=", "");
+            var parentEntityName = objCommon.sGetEntityNameFromCode(parentObjectTypeCode, objCommon.service);
+            var parentId = urlParams[1].Replace("id=", "");
             objCommon.tracingService.Trace("ObjectTypeCode=" + parentObjectTypeCode + "--ParentId=" + parentId);
 
-            String _destination = this.TargetRecordUrl.Get(executionContext);
+            var _destination = this.TargetRecordUrl.Get(executionContext);
             if (_destination == null || _destination == "")
             {
                 return;
             }
-            string[] destinationUrlParts = _destination.Split("?".ToArray());
-            string[] destinationUrlParams = destinationUrlParts[1].Split("&".ToCharArray());
-            string destinationObjectTypeCode = destinationUrlParams[0].Replace("etc=", "");
-            string destinationEntityName = objCommon.sGetEntityNameFromCode(destinationObjectTypeCode, objCommon.service);
-            string destinationId = destinationUrlParams[1].Replace("id=", "");
+            var destinationUrlParts = _destination.Split("?".ToArray());
+            var destinationUrlParams = destinationUrlParts[1].Split("&".ToCharArray());
+            var destinationObjectTypeCode = destinationUrlParams[0].Replace("etc=", "");
+            var destinationEntityName = objCommon.sGetEntityNameFromCode(destinationObjectTypeCode, objCommon.service);
+            var destinationId = destinationUrlParams[1].Replace("id=", "");
             objCommon.tracingService.Trace("ObjectTypeCode=" + destinationObjectTypeCode + "--ParentId=" + destinationId);
 
 
             //Optional
-            String _oldParentFieldName = this.OldParentFieldNameToUpdate.Get(executionContext);
-            string prefix = this.Prefix.Get(executionContext);
-            string fieldstoIgnore = this.FieldstoIgnore.Get(executionContext);
+            var _oldParentFieldName = this.OldParentFieldNameToUpdate.Get(executionContext);
+            var prefix = this.Prefix.Get(executionContext);
+            var fieldstoIgnore = this.FieldstoIgnore.Get(executionContext);
 
             #endregion
 
@@ -124,7 +124,7 @@ namespace msdyncrmWorkflowTools
             {
                 var newRecordId = objCommon.CloneRecord(item.LogicalName, item.Id.ToString(), fieldstoIgnore, prefix);
 
-                Entity update = new Entity(item.LogicalName);
+                var update = new Entity(item.LogicalName);
                 update.Id = newRecordId;
                 update.Attributes.Add(_newParentFieldName, new EntityReference(destinationEntityName, new Guid(destinationId)));
                 if (!string.IsNullOrEmpty(_oldParentFieldName) && _oldParentFieldName != _newParentFieldName)

@@ -13,7 +13,7 @@ namespace msdyncrmWorkflowTools_Tests
         public void TranslateText1()
         {
             var classObj = new msdyncrmWorkflowTools_Class(objService.service);
-            string traslated = classObj.TranslateText("Hola", "pt", "a60244d696fc421f85e2adcd386bdf9e");
+            var traslated = classObj.TranslateText("Hola", "pt", "a60244d696fc421f85e2adcd386bdf9e");
 
             Assert.AreEqual(traslated, "Olá");
         }
@@ -22,7 +22,7 @@ namespace msdyncrmWorkflowTools_Tests
         public void TranslateText2()
         {
             var classObj = new msdyncrmWorkflowTools_Class(objService.service);
-            string traslated = classObj.TranslateText("Hola", "en", "a60244d696fc421f85e2adcd386bdf9e");
+            var traslated = classObj.TranslateText("Hola", "en", "a60244d696fc421f85e2adcd386bdf9e");
 
             Assert.AreEqual(traslated, "Hello");
         }
@@ -31,7 +31,7 @@ namespace msdyncrmWorkflowTools_Tests
         public void TranslateText3()
         {
             var classObj = new msdyncrmWorkflowTools_Class(objService.service);
-            string traslated = classObj.TranslateText("Hello", "es", "a60244d696fc421f85e2adcd386bdf9e");
+            var traslated = classObj.TranslateText("Hello", "es", "a60244d696fc421f85e2adcd386bdf9e");
 
             Assert.AreEqual(traslated, "Hola");
         }

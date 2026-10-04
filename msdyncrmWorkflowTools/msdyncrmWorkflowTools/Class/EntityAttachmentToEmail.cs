@@ -39,7 +39,7 @@ namespace msdyncrmWorkflowTools.Class
         {
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
 
             #endregion
@@ -47,19 +47,19 @@ namespace msdyncrmWorkflowTools.Class
             #region "Read Parameters"
 
             // Get parameters
-            string mainRecordURL = MainRecordURL.Get(executionContext);
-            string fileName = FileName.Get(executionContext);
-            EntityReference email = Email.Get(executionContext);
-            bool retrieveActivityMimeAttachment = RetrieveActivityMimeAttachment.Get(executionContext);
-            bool mostRecent = MostRecent.Get(executionContext);
+            var mainRecordURL = MainRecordURL.Get(executionContext);
+            var fileName = FileName.Get(executionContext);
+            var email = Email.Get(executionContext);
+            var retrieveActivityMimeAttachment = RetrieveActivityMimeAttachment.Get(executionContext);
+            var mostRecent = MostRecent.Get(executionContext);
             int? topRecords = TopRecords.Get(executionContext);
 
 
             // Extract values from URL
-            string[] urlParts = mainRecordURL.Split("?".ToArray());
-            string[] urlParams = urlParts[1].Split("&".ToCharArray());
-            string ParentObjectTypeCode = urlParams[0].Replace("etc=", "");
-            string ParentId = urlParams[1].Replace("id=", "");
+            var urlParts = mainRecordURL.Split("?".ToArray());
+            var urlParams = urlParts[1].Split("&".ToCharArray());
+            var ParentObjectTypeCode = urlParams[0].Replace("etc=", "");
+            var ParentId = urlParams[1].Replace("id=", "");
             objCommon.tracingService.Trace("ParentObjectTypeCode=" + ParentObjectTypeCode + "--ParentId=" + ParentId);
 
             // Treat file name
@@ -68,7 +68,7 @@ namespace msdyncrmWorkflowTools.Class
 
             #endregion
 
-            msdyncrmWorkflowTools_Class commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
+            var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
             commonClass.EntityAttachmentToEmail(fileName, ParentId, email, retrieveActivityMimeAttachment, mostRecent, topRecords);
         }
     }

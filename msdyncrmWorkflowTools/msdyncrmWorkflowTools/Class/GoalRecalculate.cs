@@ -28,13 +28,13 @@ namespace msdyncrmWorkflowTools
 
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
-            EntityReference _goal = this.Goal.Get(executionContext);
-            string _goalguid = this.GoalGuid.Get(executionContext);
+            var _goal = this.Goal.Get(executionContext);
+            var _goalguid = this.GoalGuid.Get(executionContext);
             if (_goal == null)
             {
                 return;
@@ -46,7 +46,7 @@ namespace msdyncrmWorkflowTools
 
 
             #region "GoalRequest Execution"
-            string id = "";
+            var id = "";
             if (_goal != null)
             {
                 id = _goal.Id.ToString();
@@ -55,7 +55,7 @@ namespace msdyncrmWorkflowTools
                 id = _goalguid;
             }
 
-            RecalculateRequest recalculateRequest = new RecalculateRequest()
+            var recalculateRequest = new RecalculateRequest()
             {
                 Target = new EntityReference("goal", new Guid (id))
             };

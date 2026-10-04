@@ -27,23 +27,23 @@ namespace msdyncrmWorkflowTools.Class
         {
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
 
 
-            String _RecordURL = this.RecordURL.Get(executionContext);
+            var _RecordURL = this.RecordURL.Get(executionContext);
             if (_RecordURL == null || _RecordURL == "")
             {
                 return;
             }
-            string[] urlParts = _RecordURL.Split("?".ToArray());
-            string[] urlParams = urlParts[1].Split("&".ToCharArray());
-            string objectTypeCode = urlParams[0].Replace("etc=", "");
-            string entityName = objCommon.sGetEntityNameFromCode(objectTypeCode, objCommon.service);
-            string objectId = urlParams[1].Replace("id=", "");
+            var urlParts = _RecordURL.Split("?".ToArray());
+            var urlParams = urlParts[1].Split("&".ToCharArray());
+            var objectTypeCode = urlParams[0].Replace("etc=", "");
+            var entityName = objCommon.sGetEntityNameFromCode(objectTypeCode, objCommon.service);
+            var objectId = urlParams[1].Replace("id=", "");
             objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
 
 
@@ -51,7 +51,7 @@ namespace msdyncrmWorkflowTools.Class
 
             #region "DeleteRecordAuditHistory"
 
-            msdyncrmWorkflowTools_Class commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
+            var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
 
             commonClass.DeleteRecordAuditHistory(entityName,objectId);
             

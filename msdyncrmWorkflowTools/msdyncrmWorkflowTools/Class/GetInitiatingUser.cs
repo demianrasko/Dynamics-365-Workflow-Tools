@@ -29,7 +29,7 @@ namespace msdyncrmWorkflowTools.Class
         {
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             var context = executionContext.GetExtension<IWorkflowContext>();
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion

@@ -37,22 +37,22 @@ namespace msdyncrmWorkflowTools.Class
         {
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
-            EntityReference securityRoleLookup = this.SecurityRoleLookup.Get(executionContext);
+            var securityRoleLookup = this.SecurityRoleLookup.Get(executionContext);
             objCommon.tracingService.Trace(String.Format("marketingList: {0} ", securityRoleLookup.Id.ToString()));
 
-            EntityReference emailTemplateLookup = this.EmailTemplateLookup.Get(executionContext);
+            var emailTemplateLookup = this.EmailTemplateLookup.Get(executionContext);
             objCommon.tracingService.Trace(String.Format("campaign: {0} ", emailTemplateLookup.Id.ToString()));
 
 
             #endregion
             objCommon.tracingService.Trace("Init");
 
-            msdyncrmWorkflowTools_Class commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
+            var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
             commonClass.SendEmailFromTemplateToUsersInRole(securityRoleLookup,emailTemplateLookup);
 
 

@@ -30,25 +30,25 @@ namespace msdyncrmWorkflowTools.Class
         {
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
-            String _RecordID = this.RecordID.Get(executionContext);
+            var _RecordID = this.RecordID.Get(executionContext);
           
             
-            EntityReference process = this.Process.Get(executionContext);
+            var process = this.Process.Get(executionContext);
 
 
             #endregion
 
             #region "SetProcess Execution"
 
-            ExecuteWorkflowRequest wfRequest = new ExecuteWorkflowRequest();
+            var wfRequest = new ExecuteWorkflowRequest();
             wfRequest.EntityId = new Guid(_RecordID);
             wfRequest.WorkflowId = process.Id;
-            ExecuteWorkflowResponse wfResponse=(ExecuteWorkflowResponse)objCommon.service.Execute(wfRequest);
+            var wfResponse=(ExecuteWorkflowResponse)objCommon.service.Execute(wfRequest);
 
             #endregion
 

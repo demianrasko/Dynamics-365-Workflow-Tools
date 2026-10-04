@@ -46,21 +46,21 @@ namespace msdyncrmWorkflowTools
 
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
             
 
-            string address = this.Address.Get(executionContext);
-            string bingMapsKey = this.BingMapsKey.Get(executionContext);
+            var address = this.Address.Get(executionContext);
+            var bingMapsKey = this.BingMapsKey.Get(executionContext);
             
             #endregion
             
 
-            string locationsRequest = CreateRequest(address, bingMapsKey);
-            Response locationsResponse = MakeRequest(locationsRequest);
+            var locationsRequest = CreateRequest(address, bingMapsKey);
+            var locationsResponse = MakeRequest(locationsRequest);
 
             if (locationsResponse != null)
             {
@@ -71,7 +71,7 @@ namespace msdyncrmWorkflowTools
         }
         public  string CreateRequest(string queryString, string bingMapsKey)
         {
-            string UrlRequest = "http://dev.virtualearth.net/REST/v1/Locations/" +
+            var UrlRequest = "http://dev.virtualearth.net/REST/v1/Locations/" +
                                  queryString +
                                  "?output=json" +
                                  " &key=" + bingMapsKey;
@@ -82,8 +82,8 @@ namespace msdyncrmWorkflowTools
         {
             try
             {
-                HttpWebRequest request = WebRequest.Create(requestUrl) as HttpWebRequest;
-                using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
+                var request = WebRequest.Create(requestUrl) as HttpWebRequest;
+                using (var response = request.GetResponse() as HttpWebResponse)
                 {
                     if (response.StatusCode != HttpStatusCode.OK)
                         throw new Exception(String.Format(
@@ -91,9 +91,9 @@ namespace msdyncrmWorkflowTools
                         response.StatusCode,
                         response.StatusDescription));
 
-                    DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(Response));
-                    object objResponse = jsonSerializer.ReadObject(response.GetResponseStream());
-                    Response jsonResponse
+                    var jsonSerializer = new DataContractJsonSerializer(typeof(Response));
+                    var objResponse = jsonSerializer.ReadObject(response.GetResponseStream());
+                    var jsonResponse
                     = objResponse as Response;
                     return jsonResponse;
                 }

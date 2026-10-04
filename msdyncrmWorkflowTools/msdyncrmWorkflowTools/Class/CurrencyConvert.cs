@@ -45,20 +45,20 @@ namespace msdyncrmWorkflowTools
 
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
             
 
-            Decimal amount = this.Amount.Get(executionContext);
-            string fromCurrency= this.FromCurrency.Get(executionContext);
-            string toCurrency = this.ToCurrency.Get(executionContext);
+            var amount = this.Amount.Get(executionContext);
+            var fromCurrency= this.FromCurrency.Get(executionContext);
+            var toCurrency = this.ToCurrency.Get(executionContext);
 
             #endregion
-            msdyncrmWorkflowTools_Class commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
-            Decimal result=commonClass.CurrencyConvert(amount,fromCurrency, toCurrency);
+            var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
+            var result=commonClass.CurrencyConvert(amount,fromCurrency, toCurrency);
 
 
             this.Result.Set(executionContext, result);

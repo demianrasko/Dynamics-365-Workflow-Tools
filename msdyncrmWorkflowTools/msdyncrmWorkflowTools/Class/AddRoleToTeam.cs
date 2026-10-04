@@ -24,26 +24,26 @@ namespace msdyncrmWorkflowTools
 
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
-            EntityReference roleReference = Role.Get(executionContext);
-            EntityReference teamReference = Team.Get(executionContext);
+            var roleReference = Role.Get(executionContext);
+            var teamReference = Team.Get(executionContext);
 
             objCommon.tracingService.Trace("RoleId: {0} - TeamID: {1} ", roleReference.Id, teamReference.Id);
             #endregion
 
             try
             {
-                Entity systemUser = objCommon.service.Retrieve(
+                var systemUser = objCommon.service.Retrieve(
                             "team",
                             teamReference.Id,
                             new ColumnSet("businessunitid"));
-                EntityReference businessUnit = (EntityReference)systemUser.Attributes["businessunitid"];
+                var businessUnit = (EntityReference)systemUser.Attributes["businessunitid"];
 
-                QueryExpression query = new QueryExpression
+                var query = new QueryExpression
                 {
                     EntityName = "role",
                     ColumnSet = new ColumnSet("parentrootroleid"),
@@ -61,19 +61,19 @@ namespace msdyncrmWorkflowTools
                         }
                     }
                 };
-                EntityCollection givenRoles = objCommon.service.RetrieveMultiple(query);
+                var givenRoles = objCommon.service.RetrieveMultiple(query);
 
 
 
                 if (givenRoles.Entities.Count > 0)
                 {
-                    Entity givenRole = givenRoles.Entities[0].ToEntity<Entity>();
-                    EntityReference entRootRole = (EntityReference)givenRole.Attributes["parentrootroleid"];
+                    var givenRole = givenRoles.Entities[0].ToEntity<Entity>();
+                    var entRootRole = (EntityReference)givenRole.Attributes["parentrootroleid"];
 
                     objCommon.tracingService.Trace("Role {0} is retrieved.", givenRole.Id);
 
 
-                    QueryExpression query2 = new QueryExpression
+                    var query2 = new QueryExpression
                     {
                         EntityName = "role",
                         ColumnSet = new ColumnSet("roleid"),
@@ -97,10 +97,10 @@ namespace msdyncrmWorkflowTools
                         }
                         }
                     };
-                    EntityCollection givenRoles2 = objCommon.service.RetrieveMultiple(query2);
+                    var givenRoles2 = objCommon.service.RetrieveMultiple(query2);
 
-                    Entity givenRole2 = givenRoles2.Entities[0].ToEntity<Entity>();
-                    Guid entRoleId = (Guid)givenRole2.Attributes["roleid"];
+                    var givenRole2 = givenRoles2.Entities[0].ToEntity<Entity>();
+                    var entRoleId = (Guid)givenRole2.Attributes["roleid"];
 
                     if (!IsAssociate(objCommon.service, teamReference.Id, entRoleId))
                     {

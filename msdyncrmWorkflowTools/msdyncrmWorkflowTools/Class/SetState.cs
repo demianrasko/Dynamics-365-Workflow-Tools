@@ -34,13 +34,13 @@ namespace msdyncrmWorkflowTools
 
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
-            int _state= this.State.Get(executionContext);
-            int _status = this.Status.Get(executionContext);
+            var _state= this.State.Get(executionContext);
+            var _status = this.Status.Get(executionContext);
 
                     
             #endregion
@@ -50,15 +50,15 @@ namespace msdyncrmWorkflowTools
 
             try
             {
-                EntityReference moniker = new EntityReference();
+                var moniker = new EntityReference();
                 moniker.LogicalName = objCommon.context.PrimaryEntityName;
                 moniker.Id = objCommon.context.PrimaryEntityId;
 
-                Microsoft.Xrm.Sdk.OrganizationRequest request
+                var request
                   = new Microsoft.Xrm.Sdk.OrganizationRequest() { RequestName = "SetState" };
                 request["EntityMoniker"] = moniker;
-                OptionSetValue state = new OptionSetValue(_state);
-                OptionSetValue status = new OptionSetValue(_status);
+                var state = new OptionSetValue(_state);
+                var status = new OptionSetValue(_status);
                 request["State"] = state;
                 request["Status"] = status;
 

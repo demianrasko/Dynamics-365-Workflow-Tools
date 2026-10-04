@@ -49,7 +49,7 @@ namespace msdyncrmWorkflowTools
 
         protected string getParticipation(string attributeName)
         {
-            string sReturn = "";
+            var sReturn = "";
             switch (attributeName)
             {
                 case "from":
@@ -131,25 +131,25 @@ Customer
         {
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
-            String _ClonningRecordURL = this.ClonningRecordURL.Get(executionContext);
+            var _ClonningRecordURL = this.ClonningRecordURL.Get(executionContext);
             if (_ClonningRecordURL == null || _ClonningRecordURL == "")
             {
                 return;
             }
-            string[] urlParts = _ClonningRecordURL.Split("?".ToArray());
-            string[] urlParams = urlParts[1].Split("&".ToCharArray());
-            string objectTypeCode = urlParams[0].Replace("etc=", "");
-            string entityName = objCommon.sGetEntityNameFromCode(objectTypeCode, objCommon.service);
-            string objectId = urlParams[1].Replace("id=", "");
+            var urlParts = _ClonningRecordURL.Split("?".ToArray());
+            var urlParams = urlParts[1].Split("&".ToCharArray());
+            var objectTypeCode = urlParams[0].Replace("etc=", "");
+            var entityName = objCommon.sGetEntityNameFromCode(objectTypeCode, objCommon.service);
+            var objectId = urlParams[1].Replace("id=", "");
             objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
 
-            string prefix = this.Prefix.Get(executionContext);
-            string fieldstoIgnore = this.FieldstoIgnore.Get(executionContext);
+            var prefix = this.Prefix.Get(executionContext);
+            var fieldstoIgnore = this.FieldstoIgnore.Get(executionContext);
             #endregion
 
             #region "Clone Execution"

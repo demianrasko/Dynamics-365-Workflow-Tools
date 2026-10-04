@@ -36,14 +36,14 @@ namespace msdyncrmWorkflowTools
 
         protected override void Execute(CodeActivityContext executionContext)
         {
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
 
-            string[] sourceAttributes = GetSourceAttributes(executionContext, objCommon.tracingService);
-            string[] targetAttributes = GetTargetAttributes(executionContext, objCommon.tracingService);
-            EntityReference sourceEntityReference = GetSourceEntityReference(executionContext, objCommon.service);
-            EntityReference targetEntityReference = GetTargetEntityReference(executionContext, objCommon.service);
-            Entity targetEntity = BuildTargetEntity(sourceEntityReference, targetEntityReference, sourceAttributes, targetAttributes,objCommon.tracingService,objCommon.service, executionContext);
+            var sourceAttributes = GetSourceAttributes(executionContext, objCommon.tracingService);
+            var targetAttributes = GetTargetAttributes(executionContext, objCommon.tracingService);
+            var sourceEntityReference = GetSourceEntityReference(executionContext, objCommon.service);
+            var targetEntityReference = GetTargetEntityReference(executionContext, objCommon.service);
+            var targetEntity = BuildTargetEntity(sourceEntityReference, targetEntityReference, sourceAttributes, targetAttributes,objCommon.tracingService,objCommon.service, executionContext);
 
             if (targetEntity != null)
             {
@@ -58,20 +58,20 @@ namespace msdyncrmWorkflowTools
 
         private EntityReference GetSourceEntityReference(CodeActivityContext executionContext, IOrganizationService organizationService)
         {
-            string sourceRecordUrl = SourceRecordUrl.Get<string>(executionContext) ?? throw new ArgumentNullException("Source URL is empty");
+            var sourceRecordUrl = SourceRecordUrl.Get<string>(executionContext) ?? throw new ArgumentNullException("Source URL is empty");
             return new DynamicUrlParser(sourceRecordUrl).ToEntityReference(organizationService);
         }
 
         private EntityReference GetTargetEntityReference(CodeActivityContext executionContext, IOrganizationService organizationService)
         {
-            string targetRecordUrl = TargetRecordUrl.Get<string>(executionContext) ?? throw new ArgumentNullException("Target URL is empty");
+            var targetRecordUrl = TargetRecordUrl.Get<string>(executionContext) ?? throw new ArgumentNullException("Target URL is empty");
             return new DynamicUrlParser(targetRecordUrl).ToEntityReference(organizationService);
         }
 
         private string[] GetSourceAttributes(CodeActivityContext executionContext, ITracingService tracingService)
         {
-            string sourceAttributes = SourceAttributes.Get<string>(executionContext) ?? throw new ArgumentNullException("Source Attributes is empty");
-            string[] sourceAttributesArray = sourceAttributes.Split(',');
+            var sourceAttributes = SourceAttributes.Get<string>(executionContext) ?? throw new ArgumentNullException("Source Attributes is empty");
+            var sourceAttributesArray = sourceAttributes.Split(',');
 
             if (sourceAttributesArray == null || sourceAttributesArray.Length == 0)
             {
@@ -84,8 +84,8 @@ namespace msdyncrmWorkflowTools
 
         private string[] GetTargetAttributes(CodeActivityContext executionContext, ITracingService tracingService)
         {
-            string targetAttributes = TargetAttributes.Get<string>(executionContext) ?? throw new ArgumentNullException("Target Attributes is empty");
-            string[] targetAttributesArray = targetAttributes.Split(',');
+            var targetAttributes = TargetAttributes.Get<string>(executionContext) ?? throw new ArgumentNullException("Target Attributes is empty");
+            var targetAttributesArray = targetAttributes.Split(',');
 
             if (targetAttributesArray == null || targetAttributesArray.Length == 0)
             {
@@ -101,28 +101,28 @@ namespace msdyncrmWorkflowTools
             if (sourceEntityReference == null || targetEntityReference == null || sourceAttributes == null || targetAttributes == null)
                 return null;
 
-            int numberSourceAttribute = sourceAttributes.Length;
-            int numberTargetAttribute = targetAttributes.Length;
+            var numberSourceAttribute = sourceAttributes.Length;
+            var numberTargetAttribute = targetAttributes.Length;
             if (numberSourceAttribute != numberTargetAttribute)
             {
                 tracingService.Trace("Number of source attributes ({0}) doesn't match the number of target attributes ({1}).", numberSourceAttribute, numberTargetAttribute);
                 return null;
             }
 
-            Entity sourceEntity = organizationService.Retrieve(sourceEntityReference.LogicalName, sourceEntityReference.Id, new ColumnSet(sourceAttributes));
+            var sourceEntity = organizationService.Retrieve(sourceEntityReference.LogicalName, sourceEntityReference.Id, new ColumnSet(sourceAttributes));
             tracingService.Trace("Source record has been retrieved correctly. Id:{0}", sourceEntity.Id);
 
-            Entity targetEntity = new Entity(targetEntityReference.LogicalName, targetEntityReference.Id);
+            var targetEntity = new Entity(targetEntityReference.LogicalName, targetEntityReference.Id);
             string targetAttribute = null;
-            int attributeMappedCounter = 0;
+            var attributeMappedCounter = 0;
 
             OptionSetValueCollection sourceNewValues = null;
             OptionSetValueCollection targetExistingValues = null;
 
 
-            for (int i = 0; i < numberSourceAttribute; i++)
+            for (var i = 0; i < numberSourceAttribute; i++)
             {
-                string sourceAttribute = sourceAttributes[i];
+                var sourceAttribute = sourceAttributes[i];
                 if (sourceEntity.Contains(sourceAttribute))
                 {
                     sourceNewValues = sourceEntity[sourceAttribute] as OptionSetValueCollection;
@@ -149,12 +149,12 @@ namespace msdyncrmWorkflowTools
         {
             tracingService.Trace("Retrieving existing values");
 
-            Boolean attributeValues = KeepExistingValues.Get<Boolean>(executionContext);
+            var attributeValues = KeepExistingValues.Get<Boolean>(executionContext);
 
             if (attributeValues == false)
                 return null;
 
-            Entity record = organizationService.Retrieve(targetEntityReference.LogicalName, targetEntityReference.Id, new ColumnSet(new string[] { attributeName }));
+            var record = organizationService.Retrieve(targetEntityReference.LogicalName, targetEntityReference.Id, new ColumnSet(new string[] { attributeName }));
 
             tracingService.Trace("Existing values have been retrieved correctly");
 
@@ -177,7 +177,7 @@ namespace msdyncrmWorkflowTools
             if (newValues == null)
                 return existingValues;
 
-            foreach (OptionSetValue newValue in newValues)
+            foreach (var newValue in newValues)
             {
                 if (!existingValues.Contains(newValue))
                     existingValues.Add(newValue);

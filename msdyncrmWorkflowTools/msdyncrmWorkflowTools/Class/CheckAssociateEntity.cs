@@ -40,22 +40,22 @@ namespace msdyncrmWorkflowTools
 
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
-            String _relationshipName = this.RelationshipName.Get(executionContext);
-            String _recordURL = this.RecordURL.Get(executionContext);
+            var _relationshipName = this.RelationshipName.Get(executionContext);
+            var _recordURL = this.RecordURL.Get(executionContext);
             if (_recordURL == null || _recordURL == "")
             {
                 return;
             }
-            string[] urlParts = _recordURL.Split("?".ToArray());
-            string[] urlParams=urlParts[1].Split("&".ToCharArray());
-            string ParentObjectTypeCode=urlParams[0].Replace("etc=","");
-            string entityName = objCommon.sGetEntityNameFromCode(ParentObjectTypeCode, objCommon.service);
-            string ParentId = urlParams[1].Replace("id=", "");
+            var urlParts = _recordURL.Split("?".ToArray());
+            var urlParams=urlParts[1].Split("&".ToCharArray());
+            var ParentObjectTypeCode=urlParams[0].Replace("etc=","");
+            var entityName = objCommon.sGetEntityNameFromCode(ParentObjectTypeCode, objCommon.service);
+            var ParentId = urlParams[1].Replace("id=", "");
             objCommon.tracingService.Trace("ParentObjectTypeCode=" + ParentObjectTypeCode + "--ParentId=" + ParentId);
             #endregion
 
@@ -64,7 +64,7 @@ namespace msdyncrmWorkflowTools
 
             try
             {
-                EntityCollection relations = objCommon.getAssociations(objCommon.context.PrimaryEntityName, objCommon.context.PrimaryEntityId,_relationshipName, entityName, ParentId);
+                var relations = objCommon.getAssociations(objCommon.context.PrimaryEntityName, objCommon.context.PrimaryEntityId,_relationshipName, entityName, ParentId);
 
                 if (relations.Entities.Count > 0)
                 {

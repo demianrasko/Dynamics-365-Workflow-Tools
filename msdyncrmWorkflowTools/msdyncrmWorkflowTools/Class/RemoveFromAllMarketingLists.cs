@@ -20,7 +20,7 @@ namespace msdyncrmWorkflowTools.Class
         {
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             var context = executionContext.GetExtension<IWorkflowContext>();
 
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
@@ -32,7 +32,7 @@ namespace msdyncrmWorkflowTools.Class
             #endregion
 
 
-            string entityName=(context.PrimaryEntityName);
+            var entityName=(context.PrimaryEntityName);
             if (entityName != "account" && entityName != "contact" && entityName != "lead")
             {
                 throw new Exception("MSG_UNSUPPORTED_MARKETING_LIST_MEMBER_TYPE");
@@ -66,10 +66,10 @@ namespace msdyncrmWorkflowTools.Class
 
             var listMembers = objCommon.service.RetrieveMultiple(query).Entities;
 
-            foreach (Entity member in listMembers)
+            foreach (var member in listMembers)
             {
-                EntityReference ent= (EntityReference)member.Attributes["entityid"];
-                EntityReference list = (EntityReference)member.Attributes["listid"];
+                var ent= (EntityReference)member.Attributes["entityid"];
+                var list = (EntityReference)member.Attributes["listid"];
                 var request = new RemoveMemberListRequest
                 {
                     EntityId = ent.Id,

@@ -38,26 +38,26 @@ namespace msdyncrmWorkflowTools.Class
         {
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
 
-            EntityReference salesLiterature = this.SalesLiterature.Get(executionContext);
+            var salesLiterature = this.SalesLiterature.Get(executionContext);
 
-            String _FileName = this.FileName.Get(executionContext);
+            var _FileName = this.FileName.Get(executionContext);
             if (_FileName == null || _FileName == "")
             {
                 return;
             }
             
 
-            EntityReference email = this.Email.Get(executionContext);
+            var email = this.Email.Get(executionContext);
 
             #endregion
 
-            msdyncrmWorkflowTools_Class commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
+            var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
             commonClass.SalesLiteratureToEmail(_FileName, salesLiterature.Id.ToString(), email.Id.ToString());
 
 

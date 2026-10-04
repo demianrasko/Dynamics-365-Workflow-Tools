@@ -34,25 +34,25 @@ namespace msdyncrmWorkflowTools
 
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
-            String _orgDBSetting = this.orgDBSetting.Get(executionContext).ToLower();
-            String _Value = this.Value.Get(executionContext);
+            var _orgDBSetting = this.orgDBSetting.Get(executionContext).ToLower();
+            var _Value = this.Value.Get(executionContext);
             #endregion
 
             #region "OrgDBSettings Update"
             objCommon.tracingService.Trace("OrgDBSettingsUpdate.Execute - OrgDBSetting = " + _orgDBSetting + ", New Value = " + _Value);
 
-            int NumericValue = 0;
-            bool BoolValue = false;
-            string StringValue = _Value;
+            var NumericValue = 0;
+            var BoolValue = false;
+            var StringValue = _Value;
 
             try
             {
-                string fetch = @"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false'>" +
+                var fetch = @"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false'>" +
                                  "   <entity name='organization'>" +
                                  "         <attribute name='" + _orgDBSetting + "' />" +
                                  "                   <order attribute='name' descending='false' />" +
@@ -61,7 +61,7 @@ namespace msdyncrmWorkflowTools
 
                 objCommon.tracingService.Trace("OrgDBSettingsUpdate.Execute - Fetch = " + fetch);
 
-                EntityCollection organizationColl = objCommon.service.RetrieveMultiple(new FetchExpression(fetch));
+                var organizationColl = objCommon.service.RetrieveMultiple(new FetchExpression(fetch));
 
                 if (organizationColl != null && organizationColl.Entities.Count > 0)
                 {

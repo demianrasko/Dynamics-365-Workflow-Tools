@@ -41,20 +41,20 @@ namespace msdyncrmWorkflowTools
 
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
-            String _TextToTranslate = this.TextToTranslate.Get(executionContext);
-            String _Language = this.Language.Get(executionContext);
-            String _Authenticationkey = this.Authenticationkey.Get(executionContext);
+            var _TextToTranslate = this.TextToTranslate.Get(executionContext);
+            var _Language = this.Language.Get(executionContext);
+            var _Authenticationkey = this.Authenticationkey.Get(executionContext);
 
             #endregion
 
 
-            msdyncrmWorkflowTools_Class commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
-            string res=commonClass.TranslateText(_TextToTranslate, _Language, _Authenticationkey);
+            var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
+            var res=commonClass.TranslateText(_TextToTranslate, _Language, _Authenticationkey);
 
             if (res == null) res = "";
 

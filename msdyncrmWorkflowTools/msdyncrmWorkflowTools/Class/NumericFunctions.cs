@@ -39,13 +39,13 @@ namespace msdyncrmWorkflowTools.Class
         {
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
-            decimal number1= this.Number1.Get(executionContext);
-            decimal number2 = this.Number2.Get(executionContext);
+            var number1= this.Number1.Get(executionContext);
+            var number2 = this.Number2.Get(executionContext);
             objCommon.tracingService.Trace(String.Format("number 1 / number 2: {0} / {1}", number1.ToString(), number2.ToString()));
 
             #endregion

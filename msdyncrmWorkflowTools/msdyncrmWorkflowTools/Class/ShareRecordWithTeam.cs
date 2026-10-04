@@ -82,23 +82,23 @@ namespace msdyncrmWorkflowTools
         {
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
-            String _SharingRecordURL = this.SharingRecordURL.Get(executionContext);
+            var _SharingRecordURL = this.SharingRecordURL.Get(executionContext);
             if (_SharingRecordURL == null || _SharingRecordURL == "")
             {
                 return;
             }
-            string[] urlParts = _SharingRecordURL.Split("?".ToArray());
-            string[] urlParams = urlParts[1].Split("&".ToCharArray());
-            string objectTypeCode = urlParams[0].Replace("etc=", "");
-            string objectId = urlParams[1].Replace("id=", "");
+            var urlParts = _SharingRecordURL.Split("?".ToArray());
+            var urlParams = urlParts[1].Split("&".ToCharArray());
+            var objectTypeCode = urlParams[0].Replace("etc=", "");
+            var objectId = urlParams[1].Replace("id=", "");
             objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
 
-            EntityReference teamReference = this.Team.Get(executionContext);
+            var teamReference = this.Team.Get(executionContext);
             principals.Clear();
 
             if (teamReference != null) principals.Add(teamReference);
@@ -106,20 +106,20 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "ApplyRoutingRuteamReferenceleRequest Execution"
-            string EntityName = objCommon.sGetEntityNameFromCode(objectTypeCode, objCommon.service);
+            var EntityName = objCommon.sGetEntityNameFromCode(objectTypeCode, objCommon.service);
 
-            EntityReference refObject = new EntityReference(EntityName, new Guid(objectId));
+            var refObject = new EntityReference(EntityName, new Guid(objectId));
 
             objCommon.tracingService.Trace("Grant Request--- Start");
 
-            GrantAccessRequest grantRequest = new GrantAccessRequest();
+            var grantRequest = new GrantAccessRequest();
             grantRequest.Target = refObject;
             grantRequest.PrincipalAccess = new PrincipalAccess();
             grantRequest.PrincipalAccess.AccessMask = (AccessRights)getMask(executionContext);
-            foreach (EntityReference principalObject2 in principals)
+            foreach (var principalObject2 in principals)
             {
                 grantRequest.PrincipalAccess.Principal = principalObject2;
-                GrantAccessResponse grantResponse = (GrantAccessResponse)objCommon.service.Execute(grantRequest);
+                var grantResponse = (GrantAccessResponse)objCommon.service.Execute(grantRequest);
             }
 
             objCommon.tracingService.Trace("Grant Request--- end");
@@ -130,13 +130,13 @@ namespace msdyncrmWorkflowTools
 
         UInt32 getMask(CodeActivityContext executionContext)
         {
-            bool ShareAppend = this.ShareAppend.Get(executionContext);
-            bool ShareAppendTo = this.ShareAppendTo.Get(executionContext);
-            bool ShareAssign = this.ShareAssign.Get(executionContext);
-            bool ShareDelete = this.ShareDelete.Get(executionContext);
-            bool ShareRead = this.ShareRead.Get(executionContext);
-            bool ShareShare = this.ShareShare.Get(executionContext);
-            bool ShareWrite = this.ShareWrite.Get(executionContext);
+            var ShareAppend = this.ShareAppend.Get(executionContext);
+            var ShareAppendTo = this.ShareAppendTo.Get(executionContext);
+            var ShareAssign = this.ShareAssign.Get(executionContext);
+            var ShareDelete = this.ShareDelete.Get(executionContext);
+            var ShareRead = this.ShareRead.Get(executionContext);
+            var ShareShare = this.ShareShare.Get(executionContext);
+            var ShareWrite = this.ShareWrite.Get(executionContext);
 
             UInt32 mask = 0;
             if (ShareAppend)

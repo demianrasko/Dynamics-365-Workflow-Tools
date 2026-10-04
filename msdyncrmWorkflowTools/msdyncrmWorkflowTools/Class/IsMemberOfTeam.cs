@@ -35,21 +35,21 @@ namespace msdyncrmWorkflowTools.Class
         {
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
 
            
-            EntityReference user = this.User.Get(executionContext);
-            EntityReference team = this.Team.Get(executionContext);
+            var user = this.User.Get(executionContext);
+            var team = this.Team.Get(executionContext);
 
             #endregion
 
             #region "Is user member of team"
 
-            msdyncrmWorkflowTools_Class commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
+            var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
 
             var isMember = commonClass.IsMemberOfTeam(team.Id, user.Id);
 

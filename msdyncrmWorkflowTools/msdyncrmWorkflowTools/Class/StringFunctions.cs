@@ -119,36 +119,36 @@ namespace msdyncrmWorkflowTools
 
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
-            String inputText = this.InputText.Get(executionContext);
+            var inputText = this.InputText.Get(executionContext);
             if (inputText == null) inputText = "";
-            bool capitalizeAllWords = this.CapitalizeAllWords.Get(executionContext);
+            var capitalizeAllWords = this.CapitalizeAllWords.Get(executionContext);
 
-            string padCharacter = this.PadCharacter.Get(executionContext);
-            bool padontheLeft = this.PadontheLeft.Get(executionContext);
-            int finalLengthwithPadding = this.FinalLengthwithPadding.Get(executionContext);
+            var padCharacter = this.PadCharacter.Get(executionContext);
+            var padontheLeft = this.PadontheLeft.Get(executionContext);
+            var finalLengthwithPadding = this.FinalLengthwithPadding.Get(executionContext);
 
-            string replaceOldValue = this.ReplaceOldValue.Get(executionContext);
-            string replaceNewValue = this.ReplaceNewValue.Get(executionContext);
+            var replaceOldValue = this.ReplaceOldValue.Get(executionContext);
+            var replaceNewValue = this.ReplaceNewValue.Get(executionContext);
             if (replaceNewValue == null) replaceNewValue = "";
-            bool caseSensitive = this.CaseSensitive.Get(executionContext);
+            var caseSensitive = this.CaseSensitive.Get(executionContext);
 
-            bool fromLefttoRight = this.FromLefttoRight.Get(executionContext);
-            int startIndex = this.StartIndex.Get(executionContext);
-            int subStringLength = this.SubStringLength.Get(executionContext);
-            string regularExpression = this.RegularExpression.Get(executionContext);
+            var fromLefttoRight = this.FromLefttoRight.Get(executionContext);
+            var startIndex = this.StartIndex.Get(executionContext);
+            var subStringLength = this.SubStringLength.Get(executionContext);
+            var regularExpression = this.RegularExpression.Get(executionContext);
 
             #endregion
 
             string capitalizedText="", paddedText = "", replacedText = "", subStringText = "", regexText = "", uppercaseText = "", lowercaseText="";
-            bool regexSuccess=false;
-            string withoutSpaces = "";
-            msdyncrmWorkflowTools_Class commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
-            bool test=commonClass.StringFunctions(capitalizeAllWords, inputText, padCharacter, padontheLeft, finalLengthwithPadding, caseSensitive,
+            var regexSuccess=false;
+            var withoutSpaces = "";
+            var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
+            var test=commonClass.StringFunctions(capitalizeAllWords, inputText, padCharacter, padontheLeft, finalLengthwithPadding, caseSensitive,
                 replaceOldValue, replaceNewValue, subStringLength, startIndex, fromLefttoRight, regularExpression,
                 ref capitalizedText, ref paddedText, ref replacedText, ref subStringText, ref regexText, 
                 ref uppercaseText, ref lowercaseText, ref regexSuccess, ref withoutSpaces);

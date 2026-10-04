@@ -14,10 +14,10 @@ namespace msdyncrmWorkflowTools_Tests
         {
             var classObj = new msdyncrmWorkflowTools_Class(objService.service);
             string capitalizedText = "", paddedText = "", replacedText = "", subStringText = "", regexText = "", uppercaseText = "", lowercaseText = "";
-            bool regexSuccess = false;
-            string withoutSpaces = "";
+            var regexSuccess = false;
+            var withoutSpaces = "";
 
-            bool test = classObj.StringFunctions(true, "Demian", "w", true, 150, true,
+            var test = classObj.StringFunctions(true, "Demian", "w", true, 150, true,
                 "w", "w", 150, 0, true, "w",
                 ref capitalizedText, ref paddedText, ref replacedText, ref subStringText, ref regexText,
                 ref uppercaseText, ref lowercaseText, ref regexSuccess, ref withoutSpaces);
@@ -36,10 +36,10 @@ namespace msdyncrmWorkflowTools_Tests
         {
             var classObj = new msdyncrmWorkflowTools_Class(objService.service);
             string capitalizedText = "", paddedText = "", replacedText = "", subStringText = "", regexText = "", uppercaseText = "", lowercaseText = "";
-            bool regexSuccess = false;
-            string withoutSpaces = "";
+            var regexSuccess = false;
+            var withoutSpaces = "";
 
-            bool test = classObj.StringFunctions(true, "Demian", "w", true, 10, true,
+            var test = classObj.StringFunctions(true, "Demian", "w", true, 10, true,
                 "w", "w", 150, 0, true, "w",
                 ref capitalizedText, ref paddedText, ref replacedText, ref subStringText, ref regexText,
                 ref uppercaseText, ref lowercaseText, ref regexSuccess, ref withoutSpaces);

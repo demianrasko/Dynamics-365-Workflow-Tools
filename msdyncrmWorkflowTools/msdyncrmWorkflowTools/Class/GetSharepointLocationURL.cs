@@ -18,12 +18,12 @@ namespace msdyncrmWorkflowTools
 
         protected override void Execute(CodeActivityContext executionContext)
         {
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
 
-            string recordId = GetRecordIdFromURL(executionContext);
+            var recordId = GetRecordIdFromURL(executionContext);
 
-            EntityCollection locatioColl = GetSharepointLocation(objCommon.service, recordId);
+            var locatioColl = GetSharepointLocation(objCommon.service, recordId);
 
             string absoluteURL;
             absoluteURL = GetAbsoluteURLFromLocation(objCommon, locatioColl);
@@ -36,11 +36,11 @@ namespace msdyncrmWorkflowTools
             string absoluteURL;
             if (locatioColl.Entities.Count > 0)
             {
-                RetrieveAbsoluteAndSiteCollectionUrlRequest retrieveRequest = new RetrieveAbsoluteAndSiteCollectionUrlRequest
+                var retrieveRequest = new RetrieveAbsoluteAndSiteCollectionUrlRequest
                 {
                     Target = new EntityReference(locatioColl[0].LogicalName, locatioColl[0].Id)
                 };
-                RetrieveAbsoluteAndSiteCollectionUrlResponse retriveResponse = (RetrieveAbsoluteAndSiteCollectionUrlResponse)objCommon.service.Execute(retrieveRequest);
+                var retriveResponse = (RetrieveAbsoluteAndSiteCollectionUrlResponse)objCommon.service.Execute(retrieveRequest);
 
                 absoluteURL = retriveResponse.AbsoluteUrl.ToString();
                 objCommon.tracingService.Trace("Absolute URL of document location record is '{0}'." + retriveResponse.AbsoluteUrl.ToString());
@@ -57,9 +57,9 @@ namespace msdyncrmWorkflowTools
         {
             var _recordURL = RecordURL.Get<string>(executionContext);
 
-            string[] urlParts = _recordURL.Split("?".ToArray());
-            string[] urlParams = urlParts[1].Split("&".ToCharArray());
-            string recordId = urlParams[1].Replace("id=", "");
+            var urlParts = _recordURL.Split("?".ToArray());
+            var urlParams = urlParts[1].Split("&".ToCharArray());
+            var recordId = urlParams[1].Replace("id=", "");
             return recordId;
         }
 

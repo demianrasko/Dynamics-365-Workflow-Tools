@@ -26,12 +26,12 @@ namespace msdyncrmWorkflowTools
 
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
              
             #region "Read Parameters"
-            EntityReference roleReference = this.Role.Get(executionContext);
+            var roleReference = this.Role.Get(executionContext);
 
             objCommon.tracingService.Trace(String.Format("RoleId: {0} ", roleReference.Id.ToString()));
             #endregion
@@ -40,7 +40,7 @@ namespace msdyncrmWorkflowTools
 
             Console.WriteLine("Checking association between user and role.");
             // Establish a SystemUser link for a query.
-            LinkEntity systemUserLink = new LinkEntity()
+            var systemUserLink = new LinkEntity()
             {
                 LinkFromEntityName = "systemuserroles",
                 LinkFromAttributeName = "systemuserid",
@@ -58,7 +58,7 @@ namespace msdyncrmWorkflowTools
 
             // Build the query.
                 
-            QueryExpression linkQuery = new QueryExpression()
+            var linkQuery = new QueryExpression()
             {
                 EntityName = "role",
                 ColumnSet = new ColumnSet("parentrootroleid"),
@@ -83,11 +83,11 @@ namespace msdyncrmWorkflowTools
             };
 
             // Retrieve matching roles.
-            EntityCollection matchEntities = objCommon.service.RetrieveMultiple(linkQuery);
+            var matchEntities = objCommon.service.RetrieveMultiple(linkQuery);
 
             // if an entity is returned then the user is a member
             // of the role
-            Boolean UserInRole = (matchEntities.Entities.Count > 0);
+            var UserInRole = (matchEntities.Entities.Count > 0);
 
             if (UserInRole)
                 Console.WriteLine("User do not belong to the role.");

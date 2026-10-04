@@ -52,23 +52,23 @@ namespace msdyncrmWorkflowTools
         {
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             
             objCommon.tracingService.Trace("Entered ShareSecuredField.Execute(), Activity Instance Id: {0}, Workflow Instance Id: {1}", executionContext.ActivityInstanceId, executionContext.WorkflowInstanceId);
 
             #endregion
 
             #region "Read Parameters"
-            String _RecordURL = this.RecordURL.Get(executionContext);
+            var _RecordURL = this.RecordURL.Get(executionContext);
             if (_RecordURL == null || _RecordURL == "")
             {
                 return;
             }
-            string[] urlParts = _RecordURL.Split("?".ToArray());
-            string[] urlParams = urlParts[1].Split("&".ToCharArray());
-            string objectTypeCode = urlParams[0].Replace("etc=", "");
-            string entityName = objCommon.sGetEntityNameFromCode(objectTypeCode, objCommon.service);
-            string objectId = urlParams[1].Replace("id=", "");
+            var urlParts = _RecordURL.Split("?".ToArray());
+            var urlParams = urlParts[1].Split("&".ToCharArray());
+            var objectTypeCode = urlParams[0].Replace("etc=", "");
+            var entityName = objCommon.sGetEntityNameFromCode(objectTypeCode, objCommon.service);
+            var objectId = urlParams[1].Replace("id=", "");
             objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
 
             #endregion
@@ -91,21 +91,21 @@ namespace msdyncrmWorkflowTools
 
             //string entityName = context.PrimaryEntityName;
             //Guid entityId = context.PrimaryEntityId;
-            string attributeName = this.AttributeName.Get(executionContext);
-            EntityReference userToShare = this.UserToShare.Get(executionContext);
-            EntityReference teamToShare = this.TeamToShare.Get(executionContext);
-            bool allowRead = this.AllowRead.Get(executionContext);
-            bool allowUpdate = this.AllowUpdate.Get(executionContext);
+            var attributeName = this.AttributeName.Get(executionContext);
+            var userToShare = this.UserToShare.Get(executionContext);
+            var teamToShare = this.TeamToShare.Get(executionContext);
+            var allowRead = this.AllowRead.Get(executionContext);
+            var allowUpdate = this.AllowUpdate.Get(executionContext);
 
             if (userToShare != null)
             {
-                Guid objectId = userToShare.Id;
+                var objectId = userToShare.Id;
                 ShareSecuredFieldCore(service, entityName, attributeName, entityId, objectId, allowRead, allowUpdate, false);
             }
 
             if (teamToShare != null)
             {
-                Guid objectId = teamToShare.Id;
+                var objectId = teamToShare.Id;
                 ShareSecuredFieldCore(service, entityName, attributeName, entityId, objectId, allowRead, allowUpdate);
             }
         }
@@ -113,7 +113,7 @@ namespace msdyncrmWorkflowTools
         private void ShareSecuredFieldCore(IOrganizationService service, string entityName, string attributeName, Guid objectId, Guid principalId, bool allowRead, bool allowUpdate, bool shareWithTeam = true)
         {
             // Create the request
-            RetrieveAttributeRequest attributeRequest = new RetrieveAttributeRequest
+            var attributeRequest = new RetrieveAttributeRequest
             {
                 EntityLogicalName = entityName,
                 LogicalName = attributeName,
@@ -121,12 +121,12 @@ namespace msdyncrmWorkflowTools
             };
 
             // Execute the request
-            RetrieveAttributeResponse attributeResponse = (RetrieveAttributeResponse)service.Execute(attributeRequest);
+            var attributeResponse = (RetrieveAttributeResponse)service.Execute(attributeRequest);
 
             if (attributeResponse.AttributeMetadata != null && attributeResponse.AttributeMetadata.IsSecured != null && attributeResponse.AttributeMetadata.IsSecured.HasValue && attributeResponse.AttributeMetadata.IsSecured.Value)
             {
                 // Create the query for retrieve User Shared Attribute permissions.
-                QueryExpression queryPOAA = new QueryExpression("principalobjectattributeaccess");
+                var queryPOAA = new QueryExpression("principalobjectattributeaccess");
                 queryPOAA.ColumnSet = new ColumnSet(new string[] { "readaccess", "updateaccess" });
                 queryPOAA.Criteria.FilterOperator = LogicalOperator.And;
                 queryPOAA.Criteria.Conditions.Add(new ConditionExpression("attributeid", ConditionOperator.Equal, attributeResponse.AttributeMetadata.MetadataId));
@@ -134,11 +134,11 @@ namespace msdyncrmWorkflowTools
                 queryPOAA.Criteria.Conditions.Add(new ConditionExpression("principalid", ConditionOperator.Equal, principalId));
 
                 // Execute the query.
-                EntityCollection responsePOAA = service.RetrieveMultiple(queryPOAA);
+                var responsePOAA = service.RetrieveMultiple(queryPOAA);
 
                 if (responsePOAA.Entities.Count > 0)
                 {
-                    Entity poaa = responsePOAA.Entities[0];
+                    var poaa = responsePOAA.Entities[0];
 
                     if (allowRead || allowUpdate)
                     {
@@ -157,7 +157,7 @@ namespace msdyncrmWorkflowTools
                     if (allowRead || allowUpdate)
                     {
                         // Create POAA entity for user
-                        Entity poaa = new Entity("principalobjectattributeaccess");
+                        var poaa = new Entity("principalobjectattributeaccess");
                         poaa["attributeid"] = attributeResponse.AttributeMetadata.MetadataId;
                         poaa["objectid"] = new EntityReference(entityName, objectId);
                         poaa["readaccess"] = allowRead;

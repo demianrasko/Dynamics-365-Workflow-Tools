@@ -35,13 +35,13 @@ namespace msdyncrmWorkflowTools
 
         protected override void Execute(CodeActivityContext executionContext)
         {
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
 
-            EntityReference sourceEntityReference = GetTargeteEntityReference(executionContext,objCommon.tracingService, objCommon.service);
-            string attributeName = GetAttributeName(executionContext,objCommon.tracingService);
-            OptionSetValueCollection newValues = GetNewAttributeValues(executionContext, objCommon.tracingService);
-            OptionSetValueCollection existingValues = GetExistingAttributeValues(sourceEntityReference, attributeName,executionContext, objCommon.tracingService, objCommon.service);
+            var sourceEntityReference = GetTargeteEntityReference(executionContext,objCommon.tracingService, objCommon.service);
+            var attributeName = GetAttributeName(executionContext,objCommon.tracingService);
+            var newValues = GetNewAttributeValues(executionContext, objCommon.tracingService);
+            var existingValues = GetExistingAttributeValues(sourceEntityReference, attributeName,executionContext, objCommon.tracingService, objCommon.service);
 
 
             //UpdateRecord(sourceEntityReference, attributeName, values,objCommon.service,objCommon.tracingService);
@@ -51,7 +51,7 @@ namespace msdyncrmWorkflowTools
 
         private EntityReference GetTargeteEntityReference(CodeActivityContext executionContext, ITracingService tracingService, IOrganizationService organizationService)
         {
-            string sourceRecordUrl = TargetRecordUrl.Get<string>(executionContext) ?? throw new ArgumentNullException("Source URL is empty");
+            var sourceRecordUrl = TargetRecordUrl.Get<string>(executionContext) ?? throw new ArgumentNullException("Source URL is empty");
             tracingService.Trace("Source Record URL:'{0}'", sourceRecordUrl);
             return new DynamicUrlParser(sourceRecordUrl).ToEntityReference(organizationService);
         }
@@ -59,7 +59,7 @@ namespace msdyncrmWorkflowTools
 
         private string GetAttributeName(CodeActivityContext executionContext, ITracingService tracingService)
         {
-            string attributeName = AttributeName.Get<string>(executionContext) ?? throw new ArgumentNullException("Attribute Name is empty");
+            var attributeName = AttributeName.Get<string>(executionContext) ?? throw new ArgumentNullException("Attribute Name is empty");
             tracingService.Trace("Attribute name:'{0}'", attributeName);
             return attributeName;
         }
@@ -68,7 +68,7 @@ namespace msdyncrmWorkflowTools
         private OptionSetValueCollection GetNewAttributeValues(CodeActivityContext executionContext, ITracingService tracingService)
 
         {
-            string attributeValues = AttributeValues.Get<string>(executionContext) ?? throw new ArgumentNullException("Attribute Values is empty");
+            var attributeValues = AttributeValues.Get<string>(executionContext) ?? throw new ArgumentNullException("Attribute Values is empty");
             tracingService.Trace("Attribute Values:'{0}'", attributeValues);
 
             if (string.IsNullOrEmpty(attributeValues))
@@ -77,7 +77,7 @@ namespace msdyncrmWorkflowTools
                 return new OptionSetValueCollection();
             }
 
-            string[] values = attributeValues.Split(',');
+            var values = attributeValues.Split(',');
 
             if (values == null || values.Length == 0)
             {
@@ -85,10 +85,10 @@ namespace msdyncrmWorkflowTools
                 return new OptionSetValueCollection();
             }
 
-            OptionSetValueCollection optionSetValueCollection = new OptionSetValueCollection();
+            var optionSetValueCollection = new OptionSetValueCollection();
 
             int intValue;
-            foreach (string value in values)
+            foreach (var value in values)
             {
                 if (int.TryParse(value, out intValue))
                 {
@@ -107,12 +107,12 @@ namespace msdyncrmWorkflowTools
         {
             tracingService.Trace("Retrieving existing values");
 
-            Boolean attributeValues = KeepExistingValues.Get<Boolean>(executionContext);
+            var attributeValues = KeepExistingValues.Get<Boolean>(executionContext);
 
             if (attributeValues == false)
                 return null;
 
-            Entity record = organizationService.Retrieve(targetEntityReference.LogicalName, targetEntityReference.Id, new ColumnSet(new string[] { attributeName }));
+            var record = organizationService.Retrieve(targetEntityReference.LogicalName, targetEntityReference.Id, new ColumnSet(new string[] { attributeName }));
 
             tracingService.Trace("Existing values have been retrieved correctly");
 
@@ -131,7 +131,7 @@ namespace msdyncrmWorkflowTools
                 throw new ArgumentNullException(string.Format("Unexpected null parameters when trying to update record. Record reference '{0}' - attibute name '{1}' - values '{2}'", targetEntityReference, attributeName, newValues));
 
 
-            Entity targetEntity = new Entity(targetEntityReference.LogicalName, targetEntityReference.Id);
+            var targetEntity = new Entity(targetEntityReference.LogicalName, targetEntityReference.Id);
             targetEntity[attributeName] = MergeOptionSetCollections(newValues, existingValues, tracingService);
 
             organizationService.Update(targetEntity);
@@ -151,7 +151,7 @@ namespace msdyncrmWorkflowTools
             if (newValues == null)
                 return existingValues;
 
-            foreach (OptionSetValue newValue in newValues)
+            foreach (var newValue in newValues)
             {
                 if (!existingValues.Contains(newValue))
                     existingValues.Add(newValue);

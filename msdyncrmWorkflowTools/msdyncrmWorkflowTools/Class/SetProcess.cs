@@ -29,34 +29,34 @@ namespace msdyncrmWorkflowTools.Class
         {
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
+            var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
-            String _ClonningRecordURL = this.ClonningRecordURL.Get(executionContext);
+            var _ClonningRecordURL = this.ClonningRecordURL.Get(executionContext);
             if (_ClonningRecordURL == null || _ClonningRecordURL == "")
             {
                 return;
             }
-            string[] urlParts = _ClonningRecordURL.Split("?".ToArray());
-            string[] urlParams = urlParts[1].Split("&".ToCharArray());
-            string objectTypeCode = urlParams[0].Replace("etc=", "");
-            string entityName = objCommon.sGetEntityNameFromCode(objectTypeCode, objCommon.service);
-            string objectId = urlParams[1].Replace("id=", "");
+            var urlParts = _ClonningRecordURL.Split("?".ToArray());
+            var urlParams = urlParts[1].Split("&".ToCharArray());
+            var objectTypeCode = urlParams[0].Replace("etc=", "");
+            var entityName = objCommon.sGetEntityNameFromCode(objectTypeCode, objCommon.service);
+            var objectId = urlParams[1].Replace("id=", "");
             objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
 
-            EntityReference process = this.Process.Get(executionContext);
+            var process = this.Process.Get(executionContext);
             
 
             #endregion
 
             #region "SetProcess Execution"
 
-            SetProcessRequest req = new SetProcessRequest();
+            var req = new SetProcessRequest();
             req.Target = new EntityReference(entityName, new Guid(objectId));
             req.NewProcess = process;
-            SetProcessResponse res = (SetProcessResponse)objCommon.service.Execute(req);
+            var res = (SetProcessResponse)objCommon.service.Execute(req);
 
             #endregion
 
