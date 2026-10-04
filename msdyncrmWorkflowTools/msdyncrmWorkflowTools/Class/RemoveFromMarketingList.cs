@@ -15,15 +15,15 @@ namespace msdyncrmWorkflowTools.Class
 
         [Input("Account")]
         [ReferenceTarget("account")]
-        public InArgument<EntityReference> Account { get; set; }
+        public InArgument<EntityReference> account { get; set; }
 
         [Input("Contact")]
         [ReferenceTarget("contact")]
-        public InArgument<EntityReference> Contact { get; set; }
+        public InArgument<EntityReference> contact { get; set; }
 
         [Input("Lead")]
         [ReferenceTarget("lead")]
-        public InArgument<EntityReference> Lead { get; set; }
+        public InArgument<EntityReference> lead { get; set; }
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
@@ -31,27 +31,27 @@ namespace msdyncrmWorkflowTools.Class
             var marketingList = MarketingList.Get(executionContext);
             common.Trace($"marketingList: {marketingList.Id.ToString()} ");
 
-            var account = Account.Get(executionContext);
+            var accountReference = account.Get(executionContext);
 
-            var contact = Contact.Get(executionContext);
+            var contactReference = contact.Get(executionContext);
 
-            var lead = Lead.Get(executionContext);
+            var leadReference = lead.Get(executionContext);
 
             #endregion
 
             var idToRemove = Guid.Empty;
 
-            if (account != null)
+            if (accountReference != null)
             {
-                idToRemove = account.Id;
+                idToRemove = accountReference.Id;
             }
-            else if (contact != null)
+            else if (contactReference != null)
             {
-                idToRemove = contact.Id;
+                idToRemove = contactReference.Id;
             }
-            else if (lead != null)
+            else if (leadReference != null)
             {
-                idToRemove = lead.Id;
+                idToRemove = leadReference.Id;
             }
 
             common.Trace($"idToRemove: {idToRemove.ToString()} ");
