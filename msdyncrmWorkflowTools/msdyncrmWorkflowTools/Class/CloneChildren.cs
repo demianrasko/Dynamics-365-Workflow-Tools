@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
-using System;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools
@@ -50,7 +49,6 @@ namespace msdyncrmWorkflowTools
         [Input("Fields to Ignore")]
         [Default("")]
         public InArgument<string> FieldstoIgnore { get; set; }
-
         #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
@@ -76,10 +74,7 @@ namespace msdyncrmWorkflowTools
             }
 
             var parsedUrl = common.ParseRecordUrl(source);
-            //var parentObjectTypeCode = parsedUrl.ObjectTypeCode;
-            //var parentEntityName = parsedUrl.EntityName;
-            //var parentId = parsedUrl.Id;
-            common.Trace($"ObjectTypeCode={parsedUrl.EntityName}--ParentId={parsedUrl.Id}");
+            common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
 
             var destination = TargetRecordUrl.Get(executionContext);
             if (string.IsNullOrEmpty(destination))
@@ -87,27 +82,23 @@ namespace msdyncrmWorkflowTools
                 throw new InvalidPluginExecutionException("Target Record URL is required.");
             }
             var parsedDestinationUrl = common.ParseRecordUrl(destination);
-            var destinationObjectTypeCode = parsedDestinationUrl.ObjectTypeCode;
-            var destinationEntityName = parsedDestinationUrl.EntityName;
-            var destinationId = parsedDestinationUrl.Id;
-            common.Trace($"ObjectTypeCode={destinationObjectTypeCode}--ParentId={destinationId}");
+            common.Trace($"EntityName={parsedDestinationUrl.EntityName}--Id={parsedDestinationUrl.Id}");
 
             //Optional
             var oldParentFieldName = OldParentFieldNameToUpdate.Get(executionContext);
             var prefix = Prefix.Get(executionContext);
             var fieldstoIgnore = FieldstoIgnore.Get(executionContext);
-
             #endregion
 
             var children = common.GetChildRecords(relationshipName, parsedUrl.Id);
 
             foreach (var item in children.Entities)
             {
-                var newRecordId = common.CloneRecord(item.LogicalName, item.Id.ToString(), fieldstoIgnore, prefix);
+                var newRecordId = common.CloneRecord(item.LogicalName, item.Id, fieldstoIgnore, prefix);
 
                 var update = new Entity(item.LogicalName);
                 update.Id = newRecordId;
-                update.Attributes.Add(newParentFieldName, new EntityReference(destinationEntityName, new Guid(destinationId)));
+                update.Attributes.Add(newParentFieldName, parsedDestinationUrl.ToEntityReference());
                 if (!string.IsNullOrEmpty(oldParentFieldName) && oldParentFieldName != newParentFieldName)
                 {
                     update.Attributes.Add(oldParentFieldName, null);

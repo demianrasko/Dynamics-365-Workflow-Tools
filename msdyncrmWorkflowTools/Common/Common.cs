@@ -97,9 +97,9 @@ namespace msdyncrmWorkflowTools
         {
             var parsedUrl = ParseRecordUrl(recordUrl);
 
-            Trace($"ObjectTypeCode={parsedUrl.ObjectTypeCode}--ParentId={parsedUrl.Id}");
+            Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
 
-            return new EntityReference(parsedUrl.EntityName, new Guid(parsedUrl.Id));
+            return parsedUrl.ToEntityReference();
         }
 
         public string GetAppModuleId(string appModuleUniqueName)
@@ -408,7 +408,7 @@ namespace msdyncrmWorkflowTools
         #endregion
 
         #region Records
-        public Guid CloneRecord(string entityName, string objectId, string fieldstoIgnore, string prefix)
+        public Guid CloneRecord(string entityName, Guid objectId, string fieldstoIgnore, string prefix)
         {
             Trace("entering CloneRecord");
             if (fieldstoIgnore == null)
@@ -419,7 +419,7 @@ namespace msdyncrmWorkflowTools
             fieldstoIgnore = fieldstoIgnore.ToLower();
             Trace($"{nameof(fieldstoIgnore)}={fieldstoIgnore}");
 
-            var retrievedObject = Service.Retrieve(entityName, new Guid(objectId), new ColumnSet(allColumns: true));
+            var retrievedObject = Service.Retrieve(entityName, objectId, new ColumnSet(allColumns: true));
             Trace("retrieved object OK");
 
             var newEntity = new Entity(entityName);
@@ -457,7 +457,7 @@ namespace msdyncrmWorkflowTools
                     }
 
                     var returnCollection = Service.RetrieveMultiple(
-                        Queries.ActivityParties(new Guid(objectId), int.Parse(participationTypeMask)));
+                        Queries.ActivityParties(objectId, int.Parse(participationTypeMask)));
 
                     Trace("attribute:{0}", attribute2);
 
@@ -514,11 +514,11 @@ namespace msdyncrmWorkflowTools
             return id;
         }
 
-        public void DeleteRecordAuditHistory(string logicalName, string id)
+        public void DeleteRecordAuditHistory(string logicalName, Guid id)
         {
             var request = new DeleteRecordChangeHistoryRequest();
 
-            var entityReference = new EntityReference(logicalName, new Guid(id));
+            var entityReference = new EntityReference(logicalName, id);
 
             request.Target = entityReference;
             Service.Execute(request);
@@ -633,14 +633,14 @@ namespace msdyncrmWorkflowTools
         /// <param name="intersectEntityName">Name of the N:N intersect entity.</param>
         /// <param name="entityName">Logical name of the related record.</param>
         /// <param name="parentId">Id of the related record.</param>
-        public EntityCollection GetAssociations(string primaryEntityName, Guid primaryEntityId, string intersectEntityName, string entityName, string parentId)
+        public EntityCollection GetAssociations(string primaryEntityName, Guid primaryEntityId, string intersectEntityName, string entityName, Guid parentId)
         {
             Trace($"Associations: {primaryEntityName} {primaryEntityId} via {intersectEntityName} to {entityName} {parentId}");
 
-            return Service.RetrieveMultiple(Queries.Associations(primaryEntityName, primaryEntityId, intersectEntityName, entityName, new Guid(parentId)));
+            return Service.RetrieveMultiple(Queries.Associations(primaryEntityName, primaryEntityId, intersectEntityName, entityName, parentId));
         }
 
-        public void AssociateEntity(string primaryEntityName, Guid primaryEntityId, string relationshipName, string relationshipEntityName, string entityName, string parentId)
+        public void AssociateEntity(string primaryEntityName, Guid primaryEntityId, string relationshipName, string relationshipEntityName, string entityName, Guid parentId)
         {
             try
             {
@@ -653,7 +653,7 @@ namespace msdyncrmWorkflowTools
 
                 var relatedEntities = new EntityReferenceCollection
                 {
-                    new EntityReference(entityName, new Guid(parentId))
+                    new EntityReference(entityName, parentId)
                 };
 
                 var relationship = new Relationship(relationshipName);
@@ -668,12 +668,6 @@ namespace msdyncrmWorkflowTools
             catch (Exception ex)
             {
                 Trace("Error : {0} - {1}", ex.Message, ex.StackTrace);
-                //    common.tracingService.Trace("Error : {0} - {1}", ex.Message, ex.StackTrace);//
-                //throw ex;
-                // if (ex.Detail.ErrorCode != 2147220937)//ignore if the error is a duplicate insert
-                //{
-                // throw ex;
-                //}
             }
         }
 
@@ -727,7 +721,7 @@ namespace msdyncrmWorkflowTools
         /// <param name="relationshipName">relationship to navigate</param>
         /// <param name="parentEntityId">Parent Id</param>
         /// <returns></returns>
-        public EntityCollection GetChildRecords(string relationshipName, string parentEntityId)
+        public EntityCollection GetChildRecords(string relationshipName, Guid parentEntityId)
         {
             var request = new RetrieveRelationshipRequest()
             {
@@ -743,13 +737,13 @@ namespace msdyncrmWorkflowTools
             {
                 ColumnSet = new ColumnSet(childEntityFieldName),
                 Attributes = { childEntityFieldName },
-                Values = { new Guid(parentEntityId) }
+                Values = { parentEntityId }
             };
 
             return Service.RetrieveMultiple(query);
         }
 
-        public void UpdateChildRecords(string relationshipName, string parentEntityType, string parentEntityId, string parentFieldNameToUpdate, string setValueToUpdate, string childFieldNameToUpdate, bool updateonlyActive)
+        public void UpdateChildRecords(string relationshipName, string parentEntityType, Guid parentEntityId, string parentFieldNameToUpdate, string setValueToUpdate, string childFieldNameToUpdate, bool updateonlyActive)
         {
             //1) Get child lookup field name
             var req = new RetrieveRelationshipRequest()
@@ -767,7 +761,7 @@ namespace msdyncrmWorkflowTools
             {
                 ColumnSet = new ColumnSet(childEntityFieldName),
                 Attributes = { childEntityFieldName },
-                Values = { new Guid(parentEntityId) }
+                Values = { parentEntityId }
             };
 
             if (updateonlyActive)
@@ -782,7 +776,7 @@ namespace msdyncrmWorkflowTools
 
             if (!string.IsNullOrEmpty(parentFieldNameToUpdate))
             {
-                var retrievedEntity = Service.Retrieve(parentEntityType, new Guid(parentEntityId), new ColumnSet(parentFieldNameToUpdate));
+                var retrievedEntity = Service.Retrieve(parentEntityType, parentEntityId, new ColumnSet(parentFieldNameToUpdate));
 
                 valueToUpdate = retrievedEntity.Attributes.Contains(parentFieldNameToUpdate) ? retrievedEntity.Attributes[parentFieldNameToUpdate] : null;
             }
@@ -1005,11 +999,8 @@ namespace msdyncrmWorkflowTools
         public EntityReference RetrieveUserBuDefaultTeam(string systemUserId)
         {
             // TODO: Cleanup after testing
-            //var teamReference = new EntityReference("team");
 
             var team = Service.RetrieveMultiple(Queries.DefaultTeamForUser(new Guid(systemUserId)));
-
-            //teamReference.Id = team.Entities[0].Id;
 
             return team?.Entities[0].ToEntityReference();
         }
@@ -1196,20 +1187,19 @@ namespace msdyncrmWorkflowTools
             return true;
         }
 
-        public void EntityAttachmentToEmail(string fileName, string parentId, EntityReference email, bool retrieveActivityMimeAttachment, bool mostRecent, int? topRecords = 0)
+        public void EntityAttachmentToEmail(string fileName, Guid parentId, EntityReference email, bool retrieveActivityMimeAttachment, bool mostRecent, int? topRecords = 0)
         {
             #region "Query Attachments"
 
             Trace($"Attachments: {(retrieveActivityMimeAttachment ? "activitymimeattachment" : "annotation")} of {parentId}, file name like '{fileName}', top {topRecords}");
             var attachmentFiles = Service.RetrieveMultiple(
-                Queries.EntityAttachments(retrieveActivityMimeAttachment, fileName, new Guid(parentId), topRecords ?? 0));
+                Queries.EntityAttachments(retrieveActivityMimeAttachment, fileName, parentId, topRecords ?? 0));
 
             if (attachmentFiles.Entities.Count == 0)
             {
                 Trace("No Attachment Files found.");
                 return;
             }
-
             #endregion
 
             #region "Add Attachments to Email"
@@ -1268,7 +1258,6 @@ namespace msdyncrmWorkflowTools
                     Service.Create(attachment);
                 }
             }
-
             #endregion
         }
 
@@ -1292,7 +1281,6 @@ namespace msdyncrmWorkflowTools
                 Trace("No Attachment Files found.");
                 return;
             }
-
             #endregion
 
             #region "Add Attachments to Email"
@@ -1316,7 +1304,6 @@ namespace msdyncrmWorkflowTools
 
                 Service.Create(attachment);
             }
-
             #endregion
         }
         #endregion

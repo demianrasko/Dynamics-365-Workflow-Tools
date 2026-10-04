@@ -44,11 +44,8 @@ namespace msdyncrmWorkflowTools
             }
 
             var parsedUrl = common.ParseRecordUrl(parentRecordUrl);
-            //var objectTypeCode = parsedUrl.ObjectTypeCode;
-            //var parentEntityId = parsedUrl.Id;
-            //var parentEntityType = parsedUrl.EntityName;
 
-            common.Trace($"ObjectTypeCode={parsedUrl.EntityName}--ParentId={parsedUrl.Id}");
+            common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
 
             var relationshipName = RelationshipName.Get(executionContext);
             var parentFieldNameToUpdate = ParentFieldNameToUpdate.Get(executionContext);

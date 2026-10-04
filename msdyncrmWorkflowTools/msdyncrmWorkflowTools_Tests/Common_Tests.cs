@@ -49,7 +49,7 @@ namespace msdyncrmWorkflowTools_Tests
             var parsedUrl = common.ParseRecordUrl($"https://org.crm.dynamics.com/main.aspx?etc=1&id={RecordId}");
 
             Assert.AreEqual("account", parsedUrl.EntityName);
-            Assert.AreEqual(RecordId.ToString(), parsedUrl.Id);
+            Assert.AreEqual(RecordId, parsedUrl.Id);
             Assert.IsInstanceOfType(service.Executed.Single(), typeof(RetrieveMetadataChangesRequest));
         }
 

@@ -40,16 +40,14 @@ namespace msdyncrmWorkflowTools.Class
             var email = Email.Get(executionContext);
 
             var retrieveActivityMimeAttachment = RetrieveActivityMimeAttachment.Get(executionContext);
-            
+
             var mostRecent = MostRecent.Get(executionContext);
             int? topRecords = TopRecords.Get(executionContext);
 
             // Extract values from URL
             var parsedUrl = Utility.ParseRecordUrl(mainRecordUrl);
-            //var parentObjectTypeCode = parsedUrl.ObjectTypeCode;
-            //var parentId = parsedUrl.Id;
 
-            common.Trace($"ParentObjectTypeCode={parsedUrl.EntityName}--ParentId={parsedUrl.Id}");
+            common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
 
             // Treat file name
             if (fileName == "*")
@@ -58,7 +56,6 @@ namespace msdyncrmWorkflowTools.Class
             }
 
             fileName = fileName.Replace("*", "%");
-
             #endregion
 
             common.EntityAttachmentToEmail(fileName, parsedUrl.Id, email, retrieveActivityMimeAttachment, mostRecent, topRecords);

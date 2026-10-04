@@ -21,7 +21,6 @@ namespace msdyncrmWorkflowTools
 
         [Output("Mobile Deep Link Default View")]
         public OutArgument<string> MobileDeepLinkDefaultView { get; set; }
-
         #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
@@ -34,12 +33,8 @@ namespace msdyncrmWorkflowTools
                 throw new InvalidPluginExecutionException("Record URL is required.");
             }
             var parsedUrl = common.ParseRecordUrl(recordUrl);
-            //var objectTypeCode = parsedUrl.ObjectTypeCode;
-            //var entityName = parsedUrl.EntityName;
-            //var objectId = parsedUrl.Id;
-            
-            common.Trace($"ObjectTypeCode={parsedUrl.EntityName}--ParentId={parsedUrl.Id}");
 
+            common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
             #endregion
 
             #region "Generating Mobile Deep Links Execution"
@@ -57,7 +52,6 @@ namespace msdyncrmWorkflowTools
             MobileDeepLinkDefaultView.Set(executionContext, recordUrlDefaultView);
 
             common.Trace("returned object links OK");
-
             #endregion
         }
     }

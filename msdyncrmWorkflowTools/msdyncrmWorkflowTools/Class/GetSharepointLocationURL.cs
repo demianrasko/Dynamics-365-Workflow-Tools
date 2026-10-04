@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xrm.Sdk.Workflow;
-using System;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools
@@ -17,7 +16,7 @@ namespace msdyncrmWorkflowTools
         {
             var recordId = Utility.ParseRecordUrl(RecordURL.Get(executionContext)).Id;
 
-            var locations = common.GetSharepointLocations(new Guid(recordId));
+            var locations = common.GetSharepointLocations(recordId);
 
             SharepointLocationURL.Set(executionContext, common.GetAbsoluteUrlFromLocation(locations));
         }

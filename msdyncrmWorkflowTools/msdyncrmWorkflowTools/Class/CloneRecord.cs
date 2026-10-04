@@ -23,19 +23,7 @@ namespace msdyncrmWorkflowTools
 
         [Output("Cloned Guid")]
         public OutArgument<string> ClonedGuid { get; set; }
-
         #endregion
-
-        /*private EntityCollection getActivityObject(Entity entNewActivity, string activityFieldName)
-        {
-            Entity partyToFrom = new Entity("activityparty");
-            partyToFrom["partyid"] = ((EntityReference)((EntityCollection)entNewActivity[activityFieldName]).Entities[0].Attributes["partyid"]);
-
-            EntityCollection toFrom = new EntityCollection();
-            toFrom.Entities.Add(partyToFrom);
-
-            return toFrom;
-        }*/
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
@@ -46,10 +34,7 @@ namespace msdyncrmWorkflowTools
                 throw new InvalidPluginExecutionException("Cloning Record URL is required.");
             }
             var parsedUrl = common.ParseRecordUrl(_ClonningRecordURL);
-            //var objectTypeCode = parsedUrl.ObjectTypeCode;
-            //var entityName = parsedUrl.EntityName;
-            //var objectId = parsedUrl.Id;
-            common.Trace($"ObjectTypeCode={parsedUrl.EntityName}--ParentId={parsedUrl.Id}");
+            common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
 
             var prefix = Prefix.Get(executionContext);
             var fieldsToIgnore = FieldstoIgnore.Get(executionContext);
@@ -62,7 +47,6 @@ namespace msdyncrmWorkflowTools
             ClonedGuid.Set(executionContext, createdGuid.ToString());
 
             common.Trace("cloned object OK");
-
             #endregion
         }
     }

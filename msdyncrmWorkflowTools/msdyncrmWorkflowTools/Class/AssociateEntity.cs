@@ -25,7 +25,6 @@ namespace msdyncrmWorkflowTools
         [Input("Record URL")]
         [ReferenceTarget("")]
         public InArgument<string> RecordURL { get; set; }
-
         #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
@@ -41,11 +40,8 @@ namespace msdyncrmWorkflowTools
             }
 
             var parsedUrl = common.ParseRecordUrl(recordUrl);
-            //var parentObjectTypeCode=parsedUrl.ObjectTypeCode;
-            //var entityName = parsedUrl.EntityName;
-            //var parentId = parsedUrl.Id;
 
-            common.Trace($"ParentObjectTypeCode={parsedUrl.EntityName}--ParentId={parsedUrl.Id}");
+            common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
             #endregion
 
             #region "Associate Execution"

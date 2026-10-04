@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
-using System;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools
@@ -31,24 +30,20 @@ namespace msdyncrmWorkflowTools
             }
 
             var parsedUrl = common.ParseRecordUrl(recordUrl);
-            //var parentObjectTypeCode=parsedUrl.ObjectTypeCode;
-            //var parentId = parsedUrl.Id;
-            //var entityName = parsedUrl.EntityName;
 
-            common.Trace($"ParentObjectTypeCode={parsedUrl.EntityName}--ParentId={parsedUrl.Id}");
+            common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
             #endregion
 
             #region "Disassociate Execution"
 
             var relatedEntities = new EntityReferenceCollection
             {
-                new EntityReference(parsedUrl.EntityName, new Guid(parsedUrl.Id))
+                parsedUrl.ToEntityReference()
             };
 
             var relationship = new Relationship(relationshipName);
 
             common.Service.Disassociate(common.Context.PrimaryEntityName, common.Context.PrimaryEntityId, relationship,relatedEntities);
-
             #endregion
         }
     }

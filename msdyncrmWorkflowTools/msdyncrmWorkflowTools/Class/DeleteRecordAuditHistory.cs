@@ -22,17 +22,12 @@ namespace msdyncrmWorkflowTools.Class
                 throw new InvalidPluginExecutionException("Record URL is required.");
             }
             var parsedUrl = common.ParseRecordUrl(recordUrl);
-            //var objectTypeCode = parsedUrl.ObjectTypeCode;
-            //var entityName = parsedUrl.EntityName;
-            //var objectId = parsedUrl.Id;
-            common.Trace($"ObjectTypeCode={parsedUrl.EntityName}--ParentId={parsedUrl.Id}");
-
+            common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
             #endregion
 
             #region "DeleteRecordAuditHistory"
 
             common.DeleteRecordAuditHistory(parsedUrl.EntityName, parsedUrl.Id);
-
             #endregion
         }
     }

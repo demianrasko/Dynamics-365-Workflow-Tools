@@ -1,7 +1,6 @@
 ﻿using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
-using System;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools
@@ -24,10 +23,8 @@ namespace msdyncrmWorkflowTools
             }
 
             var parsedUrl = common.ParseRecordUrl(incidentRecordUrl);
-            //var parentObjectTypeCode = parsedUrl.ObjectTypeCode;
-            //var parentId = parsedUrl.Id;
 
-            common.Trace($"ParentObjectTypeCode={parsedUrl.EntityName}--ParentId={parsedUrl.Id}");
+            common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
             #endregion
 
             #region "ApplyRoutingRuleRequest Execution"
@@ -35,11 +32,10 @@ namespace msdyncrmWorkflowTools
 
             var request = new ApplyRoutingRuleRequest
             {
-                Target = new EntityReference(entityName, new Guid(parsedUrl.Id))
+                Target = new EntityReference(entityName, parsedUrl.Id)
             };
 
             common.Service.Execute(request);
-
             #endregion
         }
     }

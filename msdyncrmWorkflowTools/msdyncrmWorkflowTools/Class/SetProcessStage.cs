@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
-using System;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools.Class
@@ -30,9 +29,9 @@ namespace msdyncrmWorkflowTools.Class
             }
 
             var parsedUrl = common.ParseRecordUrl(ClonningRecordURL.Get(executionContext));
-            common.Trace($"ObjectTypeCode={parsedUrl.ObjectTypeCode}--ParentId={parsedUrl.Id}");
+            common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
 
-            common.SetProcessStage(new EntityReference(parsedUrl.EntityName, new Guid(parsedUrl.Id)), process, stageName);
+            common.SetProcessStage(parsedUrl.ToEntityReference(), process, stageName);
         }
     }
 }

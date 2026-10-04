@@ -1,7 +1,6 @@
 ﻿using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
-using System;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools
@@ -35,10 +34,7 @@ namespace msdyncrmWorkflowTools
             common.Trace($"_ParentRecordURL={parentRecordUrl}");
             var parsedUrl = common.ParseRecordUrl(parentRecordUrl);
 
-            //var parentObjectTypeCode = parsedUrl.ObjectTypeCode;
-            //var parentId = parsedUrl.Id;
-
-            common.Trace($"ParentObjectTypeCode={parsedUrl.EntityName}--ParentId={parsedUrl.Id}");
+            common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
             #endregion
 
             #region "CalculateRollupField Execution"
@@ -46,7 +42,7 @@ namespace msdyncrmWorkflowTools
             var request = new CalculateRollupFieldRequest
             {
                 FieldName = fieldName,
-                Target = new EntityReference(parentEntityName, new Guid(parsedUrl.Id))
+                Target = new EntityReference(parentEntityName, parsedUrl.Id)
             };
 
             common.Service.Execute(request);

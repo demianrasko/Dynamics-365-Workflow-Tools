@@ -1,7 +1,6 @@
 ﻿using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
-using System;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools
@@ -24,16 +23,14 @@ namespace msdyncrmWorkflowTools
                 throw new InvalidPluginExecutionException("Target Record URL is required.");
             }
             var parsedUrl = common.ParseRecordUrl(targetRecordUrl);
-            //var parentObjectTypeCode = parsedUrl.ObjectTypeCode;
-            //var parentId = parsedUrl.Id;
 
-            common.Trace($"ParentObjectTypeCode={parsedUrl.EntityName}--ParentId={parsedUrl.Id}");
+            common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
             #endregion
 
             #region "ApplyRoutingRuleRequest Execution"
             var entityName = parsedUrl.EntityName;
 
-            var target = new EntityReference(entityName, new Guid(parsedUrl.Id));
+            var target = new EntityReference(entityName, parsedUrl.Id);
 
             var request = new CalculatePriceRequest
             {
@@ -41,7 +38,6 @@ namespace msdyncrmWorkflowTools
             };
 
             common.Service.Execute(request);
-
             #endregion
         }
     }

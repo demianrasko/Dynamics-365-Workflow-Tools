@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
-using System;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools
@@ -41,10 +40,10 @@ namespace msdyncrmWorkflowTools
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             var parsedUrl = common.ParseRecordUrl(RecordUrl.Get(executionContext));
-            common.Trace($"ObjectTypeCode={parsedUrl.ObjectTypeCode}--ParentId={parsedUrl.Id}");
+            common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
 
             common.ShareSecuredField(
-                new EntityReference(parsedUrl.EntityName, new Guid(parsedUrl.Id)),
+                parsedUrl.ToEntityReference(),
                 AttributeName.Get(executionContext),
                 AllowRead.Get(executionContext),
                 AllowUpdate.Get(executionContext),

@@ -1,6 +1,5 @@
 ﻿// Not in the Power Platform build: it needs Dynamics 365 tables (opportunity, product and uom).
 #if !POWERPLATFORM
-using System;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;

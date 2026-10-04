@@ -172,8 +172,8 @@ namespace msdyncrmWorkflowTools
         /// so URLs that worked before return exactly the same values.
         /// </remarks>
         /// <param name="recordUrl">The record URL, e.g. https://org.crm.dynamics.com/main.aspx?etc=1&amp;id=...&amp;pagetype=entityrecord</param>
-        /// <returns>The object type code and id, as the strings they appear in the URL.</returns>
-        /// <exception cref="InvalidPluginExecutionException">The URL is empty or has no query string.</exception>
+        /// <returns>The object type code, the record id and, when the URL has an "etn" parameter, the entity name.</returns>
+        /// <exception cref="InvalidPluginExecutionException">The URL is empty, has no query string or has no valid record id.</exception>
         public static RecordUrl ParseRecordUrl(string recordUrl)
         {
             if (string.IsNullOrEmpty(recordUrl))
@@ -227,12 +227,18 @@ namespace msdyncrmWorkflowTools
                 id = parameters[1].Replace("id=", string.Empty);
             }
 
-            return new RecordUrl(objectTypeCode, id, entityName);
+            // ids may be wrapped in braces, literally or URL-encoded (%7B...%7D)
+            if (!Guid.TryParse(Uri.UnescapeDataString(id ?? string.Empty).Trim(), out var recordId))
+            {
+                throw new InvalidPluginExecutionException($"The record URL '{recordUrl}' does not contain a valid record id.");
+            }
+
+            return new RecordUrl(objectTypeCode, recordId, entityName);
         }
 
         public static string GetRecordId(string recordUrl)
         {
-            return string.IsNullOrEmpty(recordUrl) ? string.Empty : ParseRecordUrl(recordUrl).Id;
+            return string.IsNullOrEmpty(recordUrl) ? string.Empty : ParseRecordUrl(recordUrl).Id.ToString();
         }
 
         /// <summary>
@@ -662,7 +668,7 @@ namespace msdyncrmWorkflowTools
         /// <param name="id">Record id written for the primary key.</param>
         /// <param name="record">The retrieved record.</param>
         /// <param name="attributes">Attributes to include, in order.</param>
-        public static string SerializeEntity(string entityName, string primaryIdAttribute, string id, Entity record, IEnumerable<string> attributes)
+        public static string SerializeEntity(string entityName, string primaryIdAttribute, Guid id, Entity record, IEnumerable<string> attributes)
         {
             var body = new JObject
             {
@@ -1191,7 +1197,7 @@ namespace msdyncrmWorkflowTools
     /// </summary>
     public sealed class RecordUrl
     {
-        public RecordUrl(string objectTypeCode, string id, string entityName)
+        public RecordUrl(string objectTypeCode, Guid id, string entityName)
         {
             ObjectTypeCode = objectTypeCode;
             Id = id;
@@ -1208,7 +1214,13 @@ namespace msdyncrmWorkflowTools
         public string EntityName { get; }
 
         /// <summary>The record id from the "id" parameter.</summary>
-        public string Id { get; }
+        public Guid Id { get; }
+
+        /// <summary>The record as an EntityReference (needs <see cref="EntityName"/>).</summary>
+        public EntityReference ToEntityReference()
+        {
+            return new EntityReference(EntityName, Id);
+        }
     }
 
     /// <summary>

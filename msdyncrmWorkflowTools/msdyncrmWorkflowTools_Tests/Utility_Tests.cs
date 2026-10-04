@@ -17,7 +17,7 @@ namespace msdyncrmWorkflowTools_Tests
             var parsedUrl = Utility.ParseRecordUrl(RecordUrl);
 
             Assert.AreEqual("4207", parsedUrl.ObjectTypeCode);
-            Assert.AreEqual("d3c3b3b2-ae19-e811-811f-5065f38a3a01", parsedUrl.Id);
+            Assert.AreEqual(new System.Guid("d3c3b3b2-ae19-e811-811f-5065f38a3a01"), parsedUrl.Id);
         }
 
         [TestMethod]
@@ -26,7 +26,7 @@ namespace msdyncrmWorkflowTools_Tests
             var parsedUrl = Utility.ParseRecordUrl("https://org.crm.dynamics.com/main.aspx?pagetype=entityrecord&id=d3c3b3b2-ae19-e811-811f-5065f38a3a01&etc=1");
 
             Assert.AreEqual("1", parsedUrl.ObjectTypeCode);
-            Assert.AreEqual("d3c3b3b2-ae19-e811-811f-5065f38a3a01", parsedUrl.Id);
+            Assert.AreEqual(new System.Guid("d3c3b3b2-ae19-e811-811f-5065f38a3a01"), parsedUrl.Id);
         }
 
         [TestMethod]
@@ -42,6 +42,22 @@ namespace msdyncrmWorkflowTools_Tests
         public void ParseRecordUrl_LeavesEntityNameNullWithoutEtn()
         {
             Assert.IsNull(Utility.ParseRecordUrl(RecordUrl).EntityName);
+        }
+
+        [TestMethod]
+        public void ParseRecordUrl_AcceptsBracedAndEncodedIds()
+        {
+            var expected = new System.Guid("d3c3b3b2-ae19-e811-811f-5065f38a3a01");
+
+            Assert.AreEqual(expected, Utility.ParseRecordUrl("https://org.crm.dynamics.com/main.aspx?etc=1&id={D3C3B3B2-AE19-E811-811F-5065F38A3A01}").Id);
+            Assert.AreEqual(expected, Utility.ParseRecordUrl("https://org.crm.dynamics.com/main.aspx?etc=1&id=%7bd3c3b3b2-ae19-e811-811f-5065f38a3a01%7d").Id);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidPluginExecutionException))]
+        public void ParseRecordUrl_ThrowsWhenTheIdIsNotAGuid()
+        {
+            Utility.ParseRecordUrl("https://org.crm.dynamics.com/main.aspx?etc=1&id=not-a-guid");
         }
 
         [TestMethod]
@@ -182,7 +198,7 @@ namespace msdyncrmWorkflowTools_Tests
             record["parentaccountid"] = new EntityReference("Account", parentId) { Name = "Parent \"Co\"" };
             record["createdon"] = new System.DateTime(2026, 10, 4, 5, 30, 0, System.DateTimeKind.Utc);
 
-            var json = Utility.SerializeEntity("account", "accountid", id.ToString(), record,
+            var json = Utility.SerializeEntity("account", "accountid", id, record,
                 new[] { "name", "donotemail", "industrycode", "revenue", "numberofemployees", "parentaccountid", "createdon", "missingattribute" });
 
             var body = (Newtonsoft.Json.Linq.JObject)Newtonsoft.Json.Linq.JObject.Parse(json)["account"];

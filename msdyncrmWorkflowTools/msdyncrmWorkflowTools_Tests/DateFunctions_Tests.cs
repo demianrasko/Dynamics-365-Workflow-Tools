@@ -115,7 +115,3 @@ namespace msdyncrmWorkflowTools_Tests
         }
     }
 }
-
-/*
-    
-*/
