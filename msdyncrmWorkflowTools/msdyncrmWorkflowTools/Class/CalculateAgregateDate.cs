@@ -62,7 +62,7 @@ namespace msdyncrmWorkflowTools
             fetchXml = fetchXml.Replace("{PARENT_GUID}", context.PrimaryEntityId.ToString());
 
             objCommon.tracingService.Trace(fetchXml);
-            var xml = CreateXml(fetchXml, null, pageNumber, fetchCount);
+            var xml = Utility.CreateXml(fetchXml, null, pageNumber, fetchCount);
 
             var fetchRequest1 = new RetrieveMultipleRequest
             {
@@ -106,46 +106,6 @@ namespace msdyncrmWorkflowTools
             objCommon.tracingService.Trace("Calculate Aggregate Date --- Done");
 
             #endregion
-        }
-
-        public string CreateXml(string xml, string cookie, int page, int count)
-        {
-            var stringReader = new StringReader(xml);
-            var reader = new XmlTextReader(stringReader);
-
-            var doc = new XmlDocument();
-            doc.Load(reader);
-
-            return CreateXml(doc, cookie, page, count);
-        }
-
-        public string CreateXml(XmlDocument doc, string cookie, int page, int count)
-        {
-            var attrs = doc.DocumentElement.Attributes;
-
-            if (cookie != null)
-            {
-                var pagingAttr = doc.CreateAttribute("paging-cookie");
-                pagingAttr.Value = cookie;
-                attrs.Append(pagingAttr);
-            }
-
-            var pageAttr = doc.CreateAttribute("page");
-            pageAttr.Value = System.Convert.ToString(page);
-            attrs.Append(pageAttr);
-
-            var countAttr = doc.CreateAttribute("count");
-            countAttr.Value = System.Convert.ToString(count);
-            attrs.Append(countAttr);
-
-            var sb = new StringBuilder(1024);
-            var stringWriter = new StringWriter(sb);
-
-            var writer = new XmlTextWriter(stringWriter);
-            doc.WriteTo(writer);
-            writer.Close();
-
-            return sb.ToString();
         }
     }
 }

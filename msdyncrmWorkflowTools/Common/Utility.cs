@@ -1,4 +1,7 @@
 ﻿using System;
+using System.IO;
+using System.Text;
+using System.Xml;
 using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 
@@ -96,6 +99,64 @@ namespace msdyncrmWorkflowTools
             }
 
             return new RecordUrl(objectTypeCode, id);
+        }
+
+        /// <summary>
+        /// Adds FetchXML paging attributes (paging-cookie, page, count) to a fetch query.
+        /// A null cookie, or a page or count of 0, leaves that attribute out.
+        /// </summary>
+        public static string CreateXml(string xml, string cookie, int page, int count)
+        {
+            var stringReader = new StringReader(xml);
+            var reader = new XmlTextReader(stringReader);
+
+            // Load document
+            var doc = new XmlDocument();
+            doc.Load(reader);
+
+            return CreateXml(doc, cookie, page, count);
+        }
+
+        /// <summary>
+        /// Adds FetchXML paging attributes (paging-cookie, page, count) to a loaded fetch document.
+        /// </summary>
+        public static string CreateXml(XmlDocument doc, string cookie, int page, int count)
+        {
+            if (doc.DocumentElement == null)
+            {
+                return string.Empty;
+            }
+            var attrs = doc.DocumentElement.Attributes;
+
+            if (cookie != null)
+            {
+                var pagingAttr = doc.CreateAttribute("paging-cookie");
+                pagingAttr.Value = cookie;
+                attrs.Append(pagingAttr);
+            }
+
+            if (page > 0)
+            {
+                var pageAttr = doc.CreateAttribute("page");
+                pageAttr.Value = Convert.ToString(page);
+                attrs.Append(pageAttr);
+            }
+
+            if (count > 0)
+            {
+                var countAttr = doc.CreateAttribute("count");
+                countAttr.Value = Convert.ToString(count);
+                attrs.Append(countAttr);
+            }
+
+            var sb = new StringBuilder(1024);
+            var stringWriter = new StringWriter(sb);
+
+            var writer = new XmlTextWriter(stringWriter);
+            doc.WriteTo(writer);
+            writer.Close();
+
+            return sb.ToString();
         }
     }
 

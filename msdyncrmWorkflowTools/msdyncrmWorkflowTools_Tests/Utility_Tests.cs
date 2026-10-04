@@ -66,5 +66,21 @@ namespace msdyncrmWorkflowTools_Tests
                 AccessRights.DeleteAccess | AccessRights.ShareAccess | AccessRights.AssignAccess,
                 mask);
         }
+
+        [TestMethod]
+        public void CreateXml_AddsPagingAttributes()
+        {
+            var xml = Utility.CreateXml("<fetch><entity name='account' /></fetch>", "cookie-value", 2, 250);
+
+            Assert.AreEqual("<fetch paging-cookie=\"cookie-value\" page=\"2\" count=\"250\"><entity name=\"account\" /></fetch>", xml);
+        }
+
+        [TestMethod]
+        public void CreateXml_LeavesOutUnsetAttributes()
+        {
+            var xml = Utility.CreateXml("<fetch><entity name='account' /></fetch>", null, 0, 0);
+
+            Assert.AreEqual("<fetch><entity name=\"account\" /></fetch>", xml);
+        }
     }
 }
