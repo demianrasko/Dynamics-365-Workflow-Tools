@@ -10,38 +10,33 @@ namespace msdyncrmWorkflowTools_Tests
         [TestMethod]
         public void CurrencyConvert1()
         {
-            var classObj = new Common(objService.service);
-            var rate=classObj.CurrencyConvert(1, "EUR", "USD");
+            var rate=Utility.CurrencyConvert(1, "EUR", "USD");
             Assert.IsTrue(rate != 0);
         }
         [TestMethod]
         public void CurrencyConvert2()
         {
-            var classObj = new Common(objService.service);
-            var rate = classObj.CurrencyConvert(1, "USD", "EUR");
+            var rate = Utility.CurrencyConvert(1, "USD", "EUR");
             Assert.IsTrue(rate != 0);
         }
 
         [TestMethod]
         public void CurrencyConvert3()
         {
-            var classObj = new Common(objService.service);
-            var rate = classObj.CurrencyConvert((decimal)100.35, "EUR", "GBP");
+            var rate = Utility.CurrencyConvert((decimal)100.35, "EUR", "GBP");
             Assert.IsTrue(rate != 0);
         }
         [TestMethod]
         public void CurrencyConvert4()
         {
-            var classObj = new Common(objService.service);
-            var rate = classObj.CurrencyConvert((decimal)11231300.30055, "JPY", "EUR");
+            var rate = Utility.CurrencyConvert((decimal)11231300.30055, "JPY", "EUR");
             Assert.IsTrue(rate != 0);
         }
 
         [TestMethod]
         public void CurrencyConvert_SameCurrencyReturnsAmount()
         {
-            var classObj = new Common(objService.service);
-            Assert.AreEqual(12.34m, classObj.CurrencyConvert(12.34m, "usd", "USD"));
+            Assert.AreEqual(12.34m, Utility.CurrencyConvert(12.34m, "usd", "USD"));
         }
 
         [TestMethod]

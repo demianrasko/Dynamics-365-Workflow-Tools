@@ -8,8 +8,12 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.ServiceModel;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Xml;
 
 namespace msdyncrmWorkflowTools
@@ -221,6 +225,15 @@ namespace msdyncrmWorkflowTools
             return new RecordUrl(objectTypeCode, id);
         }
 
+        public static string GetRecordID(string recordURL)
+        {
+            if (string.IsNullOrEmpty(recordURL))
+            {
+                return string.Empty;
+            }
+            return ParseRecordUrl(recordURL).Id;
+        }
+
         /// <summary>
         /// Adds FetchXML paging attributes (paging-cookie, page, count) to a fetch query.
         /// A null cookie, or a page or count of 0, leaves that attribute out.
@@ -429,6 +442,21 @@ namespace msdyncrmWorkflowTools
         #endregion
 
         #region JSON
+        public static string JsonParser(string Json, string JsonPath)
+        {
+            if (JsonPath == null)
+            {
+                JsonPath = string.Empty;
+            }
+            var o = JObject.Parse(Json);
+            var name = string.Empty;
+            if (o.SelectToken(JsonPath) != null)
+            {
+                name = o.SelectToken(JsonPath).ToString();
+            }
+            return name;
+        }
+
         /// <summary>
         /// Serializes a record as <c>{"entityname": {"primaryid": "id", "attribute": value, ...}}</c>,
         /// the format the Entity JSON Serializer activity has always produced.
@@ -501,6 +529,138 @@ namespace msdyncrmWorkflowTools
                 default:
                     return value.ToString();
             }
+        }
+        #endregion
+
+        #region Text and dates
+        public static bool DateFunctions(DateTime date1, DateTime date2, ref TimeSpan difference,
+            ref int DayOfWeek, ref int DayOfYear, ref int Day, ref int Month, ref int Year, ref int WeekOfYear)
+        {
+            difference = date1 - date2;
+            DayOfWeek = (int)date1.DayOfWeek;
+            DayOfYear = date1.DayOfYear;
+            Day = date1.Day;
+            Month = date1.Month;
+            Year = date1.Year;
+            var dfi = DateTimeFormatInfo.CurrentInfo;
+            var cal = dfi.Calendar;
+            WeekOfYear = cal.GetWeekOfYear(date1, dfi.CalendarWeekRule, dfi.FirstDayOfWeek);
+
+            return true;
+        }
+
+        public static bool StringFunctions(bool capitalizeAllWords, string inputText, string padCharacter, bool padOnTheLeft,
+            int finalLengthWithPadding, bool caseSensitive, string replaceOldValue, string replaceNewValue,
+            int subStringLength, int startIndex, bool fromLeftToRight, string regularExpression,
+            ref string capitalizedText, ref string paddedText, ref string replacedText, ref string subStringText, ref string regexText,
+                ref string uppercaseText, ref string lowercaseText, ref bool regexSuccess, ref string withoutSpaces)
+        {
+            capitalizedText = string.Empty;
+            if (capitalizeAllWords)
+            {
+                // All words
+                capitalizedText = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(inputText);
+            }
+            else
+            {
+                // First Letter only
+                capitalizedText = inputText.Substring(0, 1).ToUpper() + inputText.Substring(1);
+            }
+
+            //padding
+            paddedText = string.Empty;
+            if (padCharacter == string.Empty)
+            {
+                padCharacter = " ";
+            }
+
+            paddedText = padOnTheLeft ? inputText.PadLeft(finalLengthWithPadding, padCharacter.ToCharArray()[0]) : inputText.PadRight(finalLengthWithPadding, padCharacter.ToCharArray()[0]);
+
+            //replace string
+            replacedText = string.Empty;
+            if (!caseSensitive)
+            {
+                if (!string.IsNullOrEmpty(inputText) && !string.IsNullOrEmpty(replaceOldValue))
+                {
+                    replacedText = inputText.Replace(replaceOldValue, replaceNewValue);
+                }
+            }
+            else
+            {
+                replacedText = CompareAndReplace(inputText, replaceOldValue, replaceNewValue, StringComparison.CurrentCultureIgnoreCase);
+            }
+
+            //substring
+            subStringText = string.Empty;
+            if (subStringLength <= 0 || startIndex < 0)
+            {
+                subStringText = string.Empty;
+            }
+            else
+            {
+                if (!fromLeftToRight)
+                {
+                    startIndex = inputText.Length - subStringLength - startIndex;
+                }
+
+                if (inputText.Length < subStringLength)
+                {
+                    subStringLength = inputText.Length;
+                }
+
+                if (startIndex < 0)
+                {
+                    startIndex = 0;
+                }
+
+                subStringText = inputText.Substring(startIndex, subStringLength);
+            }
+
+            //regex
+            regexText = string.Empty;
+            regexSuccess = false;
+            if (regularExpression != string.Empty)
+            {
+                var regex = new Regex(regularExpression);
+                var match = regex.Match(inputText);
+
+                if (match.Success)
+                {
+                    regexSuccess = true;
+                    regexText = match.Value;
+                }
+            }
+
+            uppercaseText = inputText.ToUpper();
+            lowercaseText = inputText.ToLower();
+
+            withoutSpaces = inputText.Replace(" ", string.Empty);
+
+            return true;
+        }
+
+        private static string CompareAndReplace(string text, string old, string @new, StringComparison comparison)
+        {
+            if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(old))
+            {
+                return text;
+            }
+
+            var result = new StringBuilder();
+            var oldLength = old.Length;
+            var pos = 0;
+            var next = text.IndexOf(old, comparison);
+
+            while (next > 0)
+            {
+                result.Append(text, pos, next - pos);
+                result.Append(@new);
+                pos = next + oldLength;
+                next = text.IndexOf(old, pos, comparison);
+            }
+
+            result.Append(text, pos, text.Length - pos);
+            return result.ToString();
         }
         #endregion
 
@@ -582,6 +742,135 @@ namespace msdyncrmWorkflowTools
             }
 
             return (string)text;
+        }
+        #endregion
+
+        #region External web services (not Dataverse)
+        // Shared HttpClient for the external web services
+        private static readonly HttpClient httpClient;
+
+        /// <summary>
+        /// Class Constructor: Inits Singletion objects
+        /// </summary>
+        static Utility()
+        {
+            //Setup a commong HttpClient as a best practice to avoid leaving open connections
+            //more details https://docs.microsoft.com/en-us/azure/architecture/antipatterns/improper-instantiation/
+            httpClient = new HttpClient();
+            httpClient.Timeout = new TimeSpan(0, 0, 30); //30 second timeout as recommend by Microsoft Support to prevent TimeOut on Sandbox
+            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));//ACCEPT header
+        }
+
+        private static void Trace(ITracingService tracingService, string format, params object[] args)
+        {
+            tracingService?.Trace(format, args);
+        }
+
+        /// <summary>
+        /// Translates text with Azure AI Translator (Text Translation v3.0).
+        /// </summary>
+        /// <param name="textToTranslate">Text to translate; the source language is detected automatically.</param>
+        /// <param name="language">Target language code, e.g. "en", "es", "pt", "fr-ca".</param>
+        /// <param name="key">Translator resource key (Ocp-Apim-Subscription-Key).</param>
+        /// <param name="region">Azure region of the Translator resource, e.g. "westeurope". Required for regional and
+        /// multi-service resources; leave empty for a global Translator resource.</param>
+        /// <param name="tracingService">Optional tracing service for the response.</param>
+        /// <returns>The translated text, or an empty string when there is nothing to translate.</returns>
+        public static string TranslateText(string textToTranslate, string language, string key, string region = null, ITracingService tracingService = null)
+        {
+            if (string.IsNullOrEmpty(textToTranslate))
+            {
+                return string.Empty;
+            }
+
+            var url = "https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&to=" +
+                      Uri.EscapeDataString((language ?? string.Empty).Trim());
+
+            var request = new HttpRequestMessage(HttpMethod.Post, url)
+            {
+                Content = new StringContent(BuildTranslatorRequest(textToTranslate), Encoding.UTF8, "application/json")
+            };
+            request.Headers.Add("Ocp-Apim-Subscription-Key", key);
+
+            if (!string.IsNullOrWhiteSpace(region))
+            {
+                request.Headers.Add("Ocp-Apim-Subscription-Region", region.Trim());
+            }
+
+            var response = ExecuteAsyncRequest(request, tracingService);
+            Trace(tracingService, "Translator response: {0}", response);
+
+            return ParseTranslatorResponse(response);
+        }
+
+        /// <summary>
+        /// Converts an amount between currencies using the European Central Bank reference rates published by
+        /// Frankfurter (https://frankfurter.dev, free, no API key). Rates are updated once per working day.
+        /// </summary>
+        /// <remarks>Only the ~30 currencies the ECB publishes are supported (USD, EUR, GBP, JPY, CAD, AUD, ...).</remarks>
+        /// <param name="amount">Amount in <paramref name="fromCurrency"/>.</param>
+        /// <param name="fromCurrency">ISO 4217 code, e.g. USD.</param>
+        /// <param name="toCurrency">ISO 4217 code, e.g. EUR.</param>
+        /// <param name="tracingService">Optional tracing service for the request and response.</param>
+        /// <returns>The converted amount in <paramref name="toCurrency"/>.</returns>
+        public static decimal CurrencyConvert(decimal amount, string fromCurrency, string toCurrency, ITracingService tracingService = null)
+        {
+            var from = (fromCurrency ?? string.Empty).Trim().ToUpperInvariant();
+            var to = (toCurrency ?? string.Empty).Trim().ToUpperInvariant();
+
+            if (from == to)
+            {
+                return amount;
+            }
+
+            var url = string.Format(CultureInfo.InvariantCulture,
+                "https://api.frankfurter.dev/v1/latest?amount={0}&base={1}&symbols={2}",
+                amount, Uri.EscapeDataString(from), Uri.EscapeDataString(to));
+
+            Trace(tracingService, "Currency conversion request: {0}", url);
+            var response = ExecuteAsyncRequest(new HttpRequestMessage(HttpMethod.Get, url), tracingService);
+            Trace(tracingService, "Currency conversion response: {0}", response);
+
+            return ParseCurrencyConversion(response, from, to);
+        }
+
+        /// <summary>
+        /// Sends an HTTP request synchronously (shared HttpClient, 30-second timeout) and returns the response body.
+        /// </summary>
+        /// <remarks>
+        /// An error status with a JSON body is returned to the caller, which turns the API's own error message into a
+        /// readable exception (Frankfurter, Translator). Any other error status throws with the status and the start of the body.
+        /// </remarks>
+        /// <param name="message">The request to send.</param>
+        /// <param name="tracingService">Optional tracing service for the response status.</param>
+        /// <returns>The response body.</returns>
+        private static string ExecuteAsyncRequest(HttpRequestMessage message, ITracingService tracingService)
+        {
+            HttpResponseMessage response;
+            string body;
+
+            try
+            {
+                // Task.Run keeps the async calls off any synchronization context; GetResult blocks without spinning
+                response = Task.Run(() => httpClient.SendAsync(message)).GetAwaiter().GetResult();
+                body = Task.Run(() => response.Content.ReadAsStringAsync()).GetAwaiter().GetResult();
+            }
+            catch (TaskCanceledException)
+            {
+                throw new TimeoutException($"Timeout waiting for HttpResponse {message.Method}:{message.RequestUri}");
+            }
+
+            Trace(tracingService, "HTTP {0} {1} from {2}", (int)response.StatusCode, response.ReasonPhrase, message.RequestUri.Host);
+
+            var mediaType = response.Content.Headers.ContentType?.MediaType ?? string.Empty;
+            if (!response.IsSuccessStatusCode && mediaType.IndexOf("json", StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                var detail = body.Length > 500 ? $"{body.Substring(0, 500)}..." : body;
+                throw new InvalidPluginExecutionException(
+                    $"HTTP {(int)response.StatusCode} {response.ReasonPhrase} from {message.RequestUri.Host}: {detail}");
+            }
+
+            return body;
         }
         #endregion
     }

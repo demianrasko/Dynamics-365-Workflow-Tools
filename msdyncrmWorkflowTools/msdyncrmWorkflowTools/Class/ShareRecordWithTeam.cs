@@ -1,9 +1,6 @@
-﻿using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk;
+﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
-using System;
 using System.Activities;
-using System.Collections.Generic;
 
 namespace msdyncrmWorkflowTools
 {
@@ -74,63 +71,26 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var principals = new List<EntityReference>();
-
             #region "Read Parameters"
             var sharingRecordUrl = SharingRecordURL.Get(executionContext);
+
             if (string.IsNullOrEmpty(sharingRecordUrl))
             {
                 throw new InvalidPluginExecutionException("Sharing Record URL is required.");
             }
 
-            var teamReference = Team.Get(executionContext);
-
-            var parsedUrl = Utility.ParseRecordUrl(sharingRecordUrl);
-            var objectTypeCode = parsedUrl.ObjectTypeCode;
-            var objectId = parsedUrl.Id;
-
-            common.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={objectId}");
-
-            if (teamReference != null)
-            {
-                principals.Add(teamReference);
-            }
-
+            var principal = Team.Get(executionContext);
+            var accessMask = Utility.GetMask(
+                read: ShareRead.Get(executionContext),
+                write: ShareWrite.Get(executionContext),
+                append: ShareAppend.Get(executionContext),
+                appendTo: ShareAppendTo.Get(executionContext),
+                delete: ShareDelete.Get(executionContext),
+                share: ShareShare.Get(executionContext),
+                assign: ShareAssign.Get(executionContext));
             #endregion
 
-            #region "ApplyRoutingRuteamReferenceleRequest Execution"
-            var entityName = common.GetEntityNameFromCode(objectTypeCode);
-
-            var refObject = new EntityReference(entityName, new Guid(objectId));
-
-            common.Trace("Grant Request--- Start");
-
-            var grantRequest = new GrantAccessRequest
-            {
-                Target = refObject,
-                PrincipalAccess = new PrincipalAccess
-                {
-                    AccessMask = Utility.GetMask(
-                        read: ShareRead.Get(executionContext),
-                        write: ShareWrite.Get(executionContext),
-                        append: ShareAppend.Get(executionContext),
-                        appendTo: ShareAppendTo.Get(executionContext),
-                        delete: ShareDelete.Get(executionContext),
-                        share: ShareShare.Get(executionContext),
-                        assign: ShareAssign.Get(executionContext))
-                }
-            };
-
-            foreach (var principalObject2 in principals)
-            {
-                grantRequest.PrincipalAccess.Principal = principalObject2;
-
-                common.service.Execute(grantRequest);
-            }
-
-            common.Trace("Grant Request--- end");
-
-            #endregion
+            common.ShareRecord(sharingRecordUrl, principal, accessMask);
         }
     }
 }

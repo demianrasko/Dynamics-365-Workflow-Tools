@@ -1,9 +1,6 @@
-﻿using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk;
+﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
-using System;
 using System.Activities;
-using System.Collections.Generic;
 
 namespace msdyncrmWorkflowTools
 {
@@ -25,8 +22,6 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var principals = new List<EntityReference>();
-
             #region "Read Parameters"
             var sharingRecordUrl = SharingRecordURL.Get(executionContext);
 
@@ -35,40 +30,10 @@ namespace msdyncrmWorkflowTools
                 throw new InvalidPluginExecutionException("Sharing Record URL is required.");
             }
 
-            var parsedUrl = Utility.ParseRecordUrl(sharingRecordUrl);
-            var objectTypeCode = parsedUrl.ObjectTypeCode;
-            var objectId = parsedUrl.Id;
-
-            common.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={objectId}");
-
-            var teamReference = Team.Get(executionContext);
-
-            if (teamReference != null)
-            {
-                principals.Add(teamReference);
-            }
+            var principal = Team.Get(executionContext);
             #endregion
 
-            #region "ApplyRoutingRuteamReferenceleRequest Execution"
-            var entityName = common.GetEntityNameFromCode(objectTypeCode);
-
-            var refObject = new EntityReference(entityName, new Guid(objectId));
-
-            var request = new RevokeAccessRequest
-            {
-                Target = refObject
-            };
-
-            foreach (var principalObject in principals)
-            {
-                request.Revokee = principalObject;
-
-                common.service.Execute(request);
-            }
-
-            common.Trace("Revoked Permissions--- OK");
-
-            #endregion
+            common.UnshareRecord(sharingRecordUrl, principal);
         }
     }
 }

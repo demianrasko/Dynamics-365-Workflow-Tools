@@ -33,16 +33,17 @@ namespace msdyncrmWorkflowTools
             }
 
             var parsedUrl = Utility.ParseRecordUrl(recordUrl);
-            var parentObjectTypeCode=parsedUrl.ObjectTypeCode;
+            var parentObjectTypeCode = parsedUrl.ObjectTypeCode;
             var entityName = common.GetEntityNameFromCode(parentObjectTypeCode);
             var parentId = parsedUrl.Id;
-           
+
             common.Trace($"ParentObjectTypeCode={parentObjectTypeCode}--ParentId={parentId}");
             #endregion
 
             #region "Associate Execution"
 
-            var relations = common.GetAssociations(common.context.PrimaryEntityName, common.context.PrimaryEntityId,relationshipName, entityName, parentId);
+            var intersectEntityName = common.GetIntersectEntityName(relationshipName);
+            var relations = common.GetAssociations(common.context.PrimaryEntityName, common.context.PrimaryEntityId, intersectEntityName, entityName, parentId);
 
             Result.Set(executionContext, relations.Entities.Count > 0);
 

@@ -23,7 +23,7 @@ namespace msdyncrmWorkflowTools
 
             #endregion
 
-            var recordID=common.GetRecordID(recordURL);
+            var recordID=Utility.GetRecordID(recordURL);
 
             RecordID.Set(executionContext, recordID);
         }

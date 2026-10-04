@@ -21,7 +21,7 @@ namespace msdyncrmWorkflowTools_Tests
                 Assert.Inconclusive("Set the TRANSLATOR_KEY environment variable to run the live Translator tests.");
             }
 
-            return new Common(objService.service).TranslateText(text, language, Key, Region);
+            return Utility.TranslateText(text, language, Key, Region);
         }
 
         [TestMethod]
@@ -45,7 +45,7 @@ namespace msdyncrmWorkflowTools_Tests
         [TestMethod]
         public void TranslateText_EmptyTextReturnsEmpty()
         {
-            Assert.AreEqual(string.Empty, new Common(objService.service).TranslateText(string.Empty, "es", "unused"));
+            Assert.AreEqual(string.Empty, Utility.TranslateText(string.Empty, "es", "unused"));
         }
 
         [TestMethod]

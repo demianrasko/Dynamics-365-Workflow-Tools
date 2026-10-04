@@ -140,7 +140,7 @@ namespace msdyncrmWorkflowTools
             var regexSuccess = false;
             var withoutSpaces = string.Empty;
 
-            common.StringFunctions(capitalizeAllWords, inputText, padCharacter, padontheLeft, finalLengthwithPadding, caseSensitive,
+            Utility.StringFunctions(capitalizeAllWords, inputText, padCharacter, padontheLeft, finalLengthwithPadding, caseSensitive,
                 replaceOldValue, replaceNewValue, subStringLength, startIndex, fromLefttoRight, regularExpression,
                 ref capitalizedText, ref paddedText, ref replacedText, ref subStringText, ref regexText,
                 ref uppercaseText, ref lowercaseText, ref regexSuccess, ref withoutSpaces);

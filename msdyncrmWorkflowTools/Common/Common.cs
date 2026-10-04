@@ -5,17 +5,12 @@ using Microsoft.Xrm.Sdk.Metadata;
 using Microsoft.Xrm.Sdk.Metadata.Query;
 using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Activities;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using System.ServiceModel;
 
 namespace msdyncrmWorkflowTools
 {
@@ -25,21 +20,6 @@ namespace msdyncrmWorkflowTools
         public IWorkflowContext context;
         public IOrganizationServiceFactory serviceFactory;
         public IOrganizationService service;
-
-        //Shared HttpClient
-        private static HttpClient httpClient;
-
-        /// <summary>
-        /// Class Constructor: Inits Singletion objects
-        /// </summary>
-        static Common()
-        {
-            //Setup a commong HttpClient as a best practice to avoid leaving open connections
-            //more details https://docs.microsoft.com/en-us/azure/architecture/antipatterns/improper-instantiation/
-            httpClient = new HttpClient();
-            httpClient.Timeout = new TimeSpan(0, 0, 30); //30 second timeout as recommend by Microsoft Support to prevent TimeOut on Sandbox
-            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));//ACCEPT header
-        }
 
         /// <summary>
         /// Used by the workflow activities: pulls the tracing service, workflow context and organization service from the execution context.
@@ -122,14 +102,41 @@ namespace msdyncrmWorkflowTools
         /// </summary>
         /// <param name="primaryEntityName">Logical name of the primary record.</param>
         /// <param name="primaryEntityId">Id of the primary record.</param>
-        /// <param name="relationshipName">Name of the N:N intersect entity.</param>
+        /// <param name="intersectEntityName">Name of the N:N intersect entity.</param>
         /// <param name="entityName">Logical name of the related record.</param>
         /// <param name="parentId">Id of the related record.</param>
-        public EntityCollection GetAssociations(string primaryEntityName, Guid primaryEntityId, string relationshipName, string entityName, string parentId)
+        public EntityCollection GetAssociations(string primaryEntityName, Guid primaryEntityId, string intersectEntityName, string entityName, string parentId)
         {
-            Trace($"Associations: {primaryEntityName} {primaryEntityId} via {relationshipName} to {entityName} {parentId}");
+            Trace($"Associations: {primaryEntityName} {primaryEntityId} via {intersectEntityName} to {entityName} {parentId}");
 
-            return service.RetrieveMultiple(Queries.Associations(primaryEntityName, primaryEntityId, relationshipName, entityName, new Guid(parentId)));
+            return service.RetrieveMultiple(Queries.Associations(primaryEntityName, primaryEntityId, intersectEntityName, entityName, new Guid(parentId)));
+        }
+
+        /// <summary>
+        /// Intersect entity of an N:N relationship. A name that is not a relationship is returned unchanged,
+        /// so workflows configured with the intersect entity name keep working.
+        /// </summary>
+        public string GetIntersectEntityName(string relationshipName)
+        {
+            RetrieveRelationshipResponse response;
+
+            try
+            {
+                response = (RetrieveRelationshipResponse)service.Execute(new RetrieveRelationshipRequest { Name = relationshipName, RetrieveAsIfPublished = false });
+            }
+            catch (FaultException<OrganizationServiceFault>)
+            {
+                Trace($"Relationship '{relationshipName}' not found; using it as the intersect entity name.");
+
+                return relationshipName;
+            }
+
+            if (!(response.RelationshipMetadata is ManyToManyRelationshipMetadata relationship))
+            {
+                throw new InvalidPluginExecutionException($"Relationship '{relationshipName}' is not Many to Many.");
+            }
+
+            return relationship.IntersectEntityName;
         }
 
         /// <summary>
@@ -409,29 +416,6 @@ namespace msdyncrmWorkflowTools
             return id;
         }
 
-        public void QueryValues()
-        {
-        }
-
-        public string JsonParser(string Json, string JsonPath)
-        {
-            if (JsonPath == null)
-            {
-                JsonPath = string.Empty;
-            }
-            var o = JObject.Parse(Json);
-            var name = string.Empty;
-            if (o.SelectToken(JsonPath) != null)
-            {
-                name = o.SelectToken(JsonPath).ToString();
-            }
-            return name;
-        }
-
-        public void DeleteAudit(string entityname, string entityid)
-        {
-        }
-
         public void DeleteRecordAuditHistory(string logicalName, string id)
         {
             var delRequest = new DeleteRecordChangeHistoryRequest();
@@ -608,15 +592,6 @@ namespace msdyncrmWorkflowTools
             return true;
         }
 
-        public string GetRecordID(string recordURL)
-        {
-            if (string.IsNullOrEmpty(recordURL))
-            {
-                return string.Empty;
-            }
-            return Utility.ParseRecordUrl(recordURL).Id;
-        }
-
         public string GetAppModuleId(string appModuleUniqueName)
         {
             var query = new QueryExpression
@@ -665,134 +640,52 @@ namespace msdyncrmWorkflowTools
             return retrievedUsers.Entities.Count > 0;
         }
 
-        public bool DateFunctions(DateTime date1, DateTime date2, ref TimeSpan difference,
-            ref int DayOfWeek, ref int DayOfYear, ref int Day, ref int Month, ref int Year, ref int WeekOfYear)
+        /// <summary>
+        /// The record a record URL points at, with the entity name looked up from the URL's type code.
+        /// </summary>
+        public EntityReference GetRecordReference(string recordUrl)
         {
-            difference = date1 - date2;
-            DayOfWeek = (int)date1.DayOfWeek;
-            DayOfYear = date1.DayOfYear;
-            Day = date1.Day;
-            Month = date1.Month;
-            Year = date1.Year;
-            var dfi = DateTimeFormatInfo.CurrentInfo;
-            var cal = dfi.Calendar;
-            WeekOfYear = cal.GetWeekOfYear(date1, dfi.CalendarWeekRule, dfi.FirstDayOfWeek);
+            var parsedUrl = Utility.ParseRecordUrl(recordUrl);
 
-            return true;
+            Trace($"ObjectTypeCode={parsedUrl.ObjectTypeCode}--ParentId={parsedUrl.Id}");
+
+            return new EntityReference(GetEntityNameFromCode(parsedUrl.ObjectTypeCode), new Guid(parsedUrl.Id));
         }
 
-        public bool StringFunctions(bool capitalizeAllWords, string inputText, string padCharacter, bool padOnTheLeft,
-            int finalLengthWithPadding, bool caseSensitive, string replaceOldValue, string replaceNewValue,
-            int subStringLength, int startIndex, bool fromLeftToRight, string regularExpression,
-            ref string capitalizedText, ref string paddedText, ref string replacedText, ref string subStringText, ref string regexText,
-                ref string uppercaseText, ref string lowercaseText, ref bool regexSuccess, ref string withoutSpaces)
+        /// <summary>
+        /// Grants a user or team access to the record a record URL points at. A null principal grants nothing.
+        /// </summary>
+        public void ShareRecord(string recordUrl, EntityReference principal, AccessRights accessMask)
         {
-            capitalizedText = string.Empty;
-            if (capitalizeAllWords)
-            {
-                // All words
-                capitalizedText = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(inputText);
-            }
-            else
-            {
-                // First Letter only
-                capitalizedText = inputText.Substring(0, 1).ToUpper() + inputText.Substring(1);
-            }
+            var target = GetRecordReference(recordUrl);
 
-            //padding
-            paddedText = string.Empty;
-            if (padCharacter == string.Empty)
-            {
-                padCharacter = " ";
-            }
+            Trace("Grant Request--- Start");
 
-            paddedText = padOnTheLeft ? inputText.PadLeft(finalLengthWithPadding, padCharacter.ToCharArray()[0]) : inputText.PadRight(finalLengthWithPadding, padCharacter.ToCharArray()[0]);
-
-            //replace string
-            replacedText = string.Empty;
-            if (!caseSensitive)
+            if (principal != null)
             {
-                if (!string.IsNullOrEmpty(inputText) && !string.IsNullOrEmpty(replaceOldValue))
+                service.Execute(new GrantAccessRequest
                 {
-                    replacedText = inputText.Replace(replaceOldValue, replaceNewValue);
-                }
-            }
-            else
-            {
-                replacedText = CompareAndReplace(inputText, replaceOldValue, replaceNewValue, StringComparison.CurrentCultureIgnoreCase);
+                    Target = target,
+                    PrincipalAccess = new PrincipalAccess { Principal = principal, AccessMask = accessMask }
+                });
             }
 
-            //substring
-            subStringText = string.Empty;
-            if (subStringLength <= 0 || startIndex < 0)
-            {
-                subStringText = string.Empty;
-            }
-            else
-            {
-                if (!fromLeftToRight)
-                {
-                    startIndex = inputText.Length - subStringLength - startIndex;
-                }
-
-                if (inputText.Length < subStringLength)
-                {
-                    subStringLength = inputText.Length;
-                }
-
-                if (startIndex < 0)
-                {
-                    startIndex = 0;
-                }
-
-                subStringText = inputText.Substring(startIndex, subStringLength);
-            }
-
-            //regex
-            regexText = string.Empty;
-            regexSuccess = false;
-            if (regularExpression != string.Empty)
-            {
-                var regex = new Regex(regularExpression);
-                var match = regex.Match(inputText);
-
-                if (match.Success)
-                {
-                    regexSuccess = true;
-                    regexText = match.Value;
-                }
-            }
-
-            uppercaseText = inputText.ToUpper();
-            lowercaseText = inputText.ToLower();
-
-            withoutSpaces = inputText.Replace(" ", string.Empty);
-
-            return true;
+            Trace("Grant Request--- end");
         }
 
-        private static string CompareAndReplace(string text, string old, string @new, StringComparison comparison)
+        /// <summary>
+        /// Removes a user's or team's shared access to the record a record URL points at. A null principal revokes nothing.
+        /// </summary>
+        public void UnshareRecord(string recordUrl, EntityReference principal)
         {
-            if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(old))
+            var target = GetRecordReference(recordUrl);
+
+            if (principal != null)
             {
-                return text;
+                service.Execute(new RevokeAccessRequest { Target = target, Revokee = principal });
             }
 
-            var result = new StringBuilder();
-            var oldLength = old.Length;
-            var pos = 0;
-            var next = text.IndexOf(old, comparison);
-
-            while (next > 0)
-            {
-                result.Append(text, pos, next - pos);
-                result.Append(@new);
-                pos = next + oldLength;
-                next = text.IndexOf(old, pos, comparison);
-            }
-
-            result.Append(text, pos, text.Length - pos);
-            return result.ToString();
+            Trace("Revoked Permissions--- OK");
         }
 
         public void DeleteOptionValue(bool globalOptionSet, string attributeName, string entityName, int optionValue)
@@ -1061,71 +954,6 @@ namespace msdyncrmWorkflowTools
             return retrieved;
         }
 
-        /// <summary>
-        /// Translates text with Azure AI Translator (Text Translation v3.0).
-        /// </summary>
-        /// <param name="textToTranslate">Text to translate; the source language is detected automatically.</param>
-        /// <param name="language">Target language code, e.g. "en", "es", "pt", "fr-ca".</param>
-        /// <param name="key">Translator resource key (Ocp-Apim-Subscription-Key).</param>
-        /// <param name="region">Azure region of the Translator resource, e.g. "westeurope". Required for regional and
-        /// multi-service resources; leave empty for a global Translator resource.</param>
-        /// <returns>The translated text, or an empty string when there is nothing to translate.</returns>
-        public string TranslateText(string textToTranslate, string language, string key, string region = null)
-        {
-            if (string.IsNullOrEmpty(textToTranslate))
-            {
-                return string.Empty;
-            }
-
-            var url = "https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&to=" +
-                      Uri.EscapeDataString((language ?? string.Empty).Trim());
-
-            var request = new HttpRequestMessage(HttpMethod.Post, url)
-            {
-                Content = new StringContent(Utility.BuildTranslatorRequest(textToTranslate), Encoding.UTF8, "application/json")
-            };
-            request.Headers.Add("Ocp-Apim-Subscription-Key", key);
-
-            if (!string.IsNullOrWhiteSpace(region))
-            {
-                request.Headers.Add("Ocp-Apim-Subscription-Region", region.Trim());
-            }
-
-            var response = ExecuteAsyncRequest(request);
-            Trace("Translator response: {0}", response);
-
-            return Utility.ParseTranslatorResponse(response);
-        }
-        /// <summary>
-        /// Converts an amount between currencies using the European Central Bank reference rates published by
-        /// Frankfurter (https://frankfurter.dev, free, no API key). Rates are updated once per working day.
-        /// </summary>
-        /// <remarks>Only the ~30 currencies the ECB publishes are supported (USD, EUR, GBP, JPY, CAD, AUD, ...).</remarks>
-        /// <param name="amount">Amount in <paramref name="fromCurrency"/>.</param>
-        /// <param name="fromCurrency">ISO 4217 code, e.g. USD.</param>
-        /// <param name="toCurrency">ISO 4217 code, e.g. EUR.</param>
-        /// <returns>The converted amount in <paramref name="toCurrency"/>.</returns>
-        public decimal CurrencyConvert(decimal amount, string fromCurrency, string toCurrency)
-        {
-            var from = (fromCurrency ?? string.Empty).Trim().ToUpperInvariant();
-            var to = (toCurrency ?? string.Empty).Trim().ToUpperInvariant();
-
-            if (from == to)
-            {
-                return amount;
-            }
-
-            var url = string.Format(CultureInfo.InvariantCulture,
-                "https://api.frankfurter.dev/v1/latest?amount={0}&base={1}&symbols={2}",
-                amount, Uri.EscapeDataString(from), Uri.EscapeDataString(to));
-
-            Trace("Currency conversion request: {0}", url);
-            var response = ExecuteAsyncRequest(new HttpRequestMessage(HttpMethod.Get, url));
-            Trace("Currency conversion response: {0}", response);
-
-            return Utility.ParseCurrencyConversion(response, from, to);
-        }
-
         public void UpdateChildRecords(string relationshipName, string parentEntityType, string parentEntityId, string parentFieldNameToUpdate, string setValueToUpdate, string childFieldNameToUpdate, bool _UpdateonlyActive)
         {
             //1) Get child lookup field name
@@ -1243,43 +1071,6 @@ namespace msdyncrmWorkflowTools
 
                 service.Update(entUpdate);
             }
-        }
-        /// <summary>
-        /// Sends an HTTP request synchronously (shared HttpClient, 30-second timeout) and returns the response body.
-        /// </summary>
-        /// <remarks>
-        /// An error status with a JSON body is returned to the caller, which turns the API's own error message into a
-        /// readable exception (Frankfurter, Translator). Any other error status throws with the status and the start of the body.
-        /// </remarks>
-        /// <param name="message">The request to send.</param>
-        /// <returns>The response body.</returns>
-        private string ExecuteAsyncRequest(HttpRequestMessage message)
-        {
-            HttpResponseMessage response;
-            string body;
-
-            try
-            {
-                // Task.Run keeps the async calls off any synchronization context; GetResult blocks without spinning
-                response = Task.Run(() => httpClient.SendAsync(message)).GetAwaiter().GetResult();
-                body = Task.Run(() => response.Content.ReadAsStringAsync()).GetAwaiter().GetResult();
-            }
-            catch (TaskCanceledException)
-            {
-                throw new TimeoutException($"Timeout waiting for HttpResponse {message.Method}:{message.RequestUri}");
-            }
-
-            Trace("HTTP {0} {1} from {2}", (int)response.StatusCode, response.ReasonPhrase, message.RequestUri.Host);
-
-            var mediaType = response.Content.Headers.ContentType?.MediaType ?? string.Empty;
-            if (!response.IsSuccessStatusCode && mediaType.IndexOf("json", StringComparison.OrdinalIgnoreCase) < 0)
-            {
-                var detail = body.Length > 500 ? $"{body.Substring(0, 500)}..." : body;
-                throw new InvalidPluginExecutionException(
-                    $"HTTP {(int)response.StatusCode} {response.ReasonPhrase} from {message.RequestUri.Host}: {detail}");
-            }
-
-            return body;
         }
     }
 }
