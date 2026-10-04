@@ -6,7 +6,6 @@ namespace msdyncrmWorkflowTools_Tests
     [TestClass]
     public class CurrencyConvert_Tests
     {
-        CrmService objService = new CrmService();
         [TestMethod]
         public void CurrencyConvert1()
         {

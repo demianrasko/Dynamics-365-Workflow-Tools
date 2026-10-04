@@ -25,7 +25,7 @@ namespace msdyncrmWorkflowTools
 
             #endregion
 
-            var team = common.RetrieveUserBuDefaultTeam(user.Id.ToString());
+            var team = common.RetrieveUserBuDefaultTeam(user.Id);
 
             DefaultTeam.Set(executionContext, team);
         }

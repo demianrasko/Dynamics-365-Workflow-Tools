@@ -98,6 +98,14 @@ To see how to use each of the tools includes in this solution, please access to 
 * 84 [AI Summarize Record](/docs/AI%20Summarize%20Record.md) thanks to [rwilson504](https://github.com/rwilson504)
 * 85 [AI Summarize Text](/docs/AI%20Summarize%20Text.md) thanks to [rwilson504](https://github.com/rwilson504)
 * 86 [AI Translate Text](/docs/AI%20Translate%20Text.md) thanks to [rwilson504](https://github.com/rwilson504)
+* 87 [Create Opportunity Product](/docs/CreateOpportunityProduct.md)
+* 88 [Create Quote From Opportunity](/docs/CreateQuoteFromOpportunity.md)
+* 89 [Update Quote Value](/docs/UpdateQuoteValue.md)
+* 90 [Update Product Quote Value](/docs/UpdateProductQuoteValue.md)
+* 91 [Win Quote](/docs/WinQuote.md)
+* 92 [Distribute Workflow (One To Many)](/docs/DistributeWFActivityOneToMany.md)
+* 93 [Distribute Workflow (Many To Many)](/docs/DistributeWFActivityManyToMany.md)
+* 94 [Execute Workflow For Records In Query](/docs/ExecuteWorkflowForRecordsinQuery.md)
 
 
 

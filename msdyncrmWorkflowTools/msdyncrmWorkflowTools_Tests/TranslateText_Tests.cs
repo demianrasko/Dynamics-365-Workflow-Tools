@@ -8,8 +8,6 @@ namespace msdyncrmWorkflowTools_Tests
     [TestClass]
     public class TranslateText_Tests
     {
-        CrmService objService = new CrmService();
-
         // Live tests need a Translator resource: set TRANSLATOR_KEY (and TRANSLATOR_REGION for a regional resource).
         private static string Key => Environment.GetEnvironmentVariable("TRANSLATOR_KEY");
         private static string Region => Environment.GetEnvironmentVariable("TRANSLATOR_REGION");

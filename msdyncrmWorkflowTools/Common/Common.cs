@@ -1042,13 +1042,14 @@ namespace msdyncrmWorkflowTools
             return retrievedUsers.Entities.Count > 0;
         }
 
-        public EntityReference RetrieveUserBuDefaultTeam(string systemUserId)
+        /// <summary>
+        /// The default team of a user's business unit, or null when there is none.
+        /// </summary>
+        public EntityReference RetrieveUserBuDefaultTeam(Guid systemUserId)
         {
-            // TODO: Cleanup after testing
+            var teams = Service.RetrieveMultiple(Queries.DefaultTeamForUser(systemUserId)).Entities;
 
-            var team = Service.RetrieveMultiple(Queries.DefaultTeamForUser(new Guid(systemUserId)));
-
-            return team?.Entities[0].ToEntityReference();
+            return teams.Count > 0 ? teams[0].ToEntityReference() : null;
         }
 
         /// <summary>
@@ -1126,7 +1127,7 @@ namespace msdyncrmWorkflowTools
         #endregion
 
         #region Email and attachments
-        public bool SendEmailFromTemplate(EntityReference template, Guid userId)
+        public void SendEmailFromTemplate(EntityReference template, Guid userId)
         {
             var toEntities = new List<Entity>();
             var activityParty = new Entity
@@ -1160,10 +1161,7 @@ namespace msdyncrmWorkflowTools
                 RegardingType = EntityNames.SystemUser
             };
 
-            var response = (SendEmailFromTemplateResponse)Service.Execute(request);
-
-            // TODO: Investigate
-            return true;
+            Service.Execute(request);
         }
 
         public bool SendEmailFromTemplateToUsersInRole(EntityReference securityRoleLookup, EntityReference emailTemplateLookup)
@@ -1197,7 +1195,7 @@ namespace msdyncrmWorkflowTools
             return true;
         }
 
-        public bool SendEmailToUsersInRole(EntityReference securityRoleLookup, EntityReference emailReference)
+        public void SendEmailToUsersInRole(EntityReference securityRoleLookup, EntityReference emailReference)
         {
             var userList = Service.RetrieveMultiple(Queries.UsersInRole(securityRoleLookup.Id));
             Trace("Retrieved Data");
@@ -1227,10 +1225,7 @@ namespace msdyncrmWorkflowTools
                 EmailId = emailReference.Id
             };
 
-            var response = (SendEmailResponse)Service.Execute(request);
-
-            //TODO: Investigate
-            return true;
+            Service.Execute(request);
         }
 
         public void EntityAttachmentToEmail(string fileName, Guid parentId, EntityReference email, bool retrieveActivityMimeAttachment, bool mostRecent, int? topRecords = 0)
