@@ -11,7 +11,7 @@ namespace msdyncrmWorkflowTools_Tests
         [TestMethod]
         public void StringFunctions1()
         {
-            var classObj = new msdyncrmWorkflowTools_Class(objService.service);
+            var classObj = new Common(objService.service);
             string capitalizedText = string.Empty, paddedText = string.Empty, replacedText = string.Empty, subStringText = string.Empty, regexText = string.Empty, uppercaseText = string.Empty, lowercaseText = string.Empty;
             var regexSuccess = false;
             var withoutSpaces = string.Empty;
@@ -33,7 +33,7 @@ namespace msdyncrmWorkflowTools_Tests
         [TestMethod]
         public void StringFunctions2()
         {
-            var classObj = new msdyncrmWorkflowTools_Class(objService.service);
+            var classObj = new Common(objService.service);
             string capitalizedText = string.Empty, paddedText = string.Empty, replacedText = string.Empty, subStringText = string.Empty, regexText = string.Empty, uppercaseText = string.Empty, lowercaseText = string.Empty;
             var regexSuccess = false;
             var withoutSpaces = string.Empty;

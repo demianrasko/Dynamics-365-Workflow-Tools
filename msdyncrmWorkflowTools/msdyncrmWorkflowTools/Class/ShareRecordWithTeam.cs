@@ -114,14 +114,13 @@ namespace msdyncrmWorkflowTools
             var refObject = new EntityReference(entityName, new Guid(objectId));
 
             objCommon.tracingService.Trace("Grant Request--- Start");
-            var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
 
             var grantRequest = new GrantAccessRequest
             {
                 Target = refObject,
                 PrincipalAccess = new PrincipalAccess
                 {
-                    AccessMask = msdyncrmWorkflowTools_Class.GetMask(
+                    AccessMask = Common.GetMask(
                         read: ShareRead.Get(executionContext),
                         write: ShareWrite.Get(executionContext),
                         append: ShareAppend.Get(executionContext),

@@ -12,7 +12,7 @@ namespace msdyncrmWorkflowTools_Tests
         [TestMethod]
         public void DateFunctions1()
         {
-            var classObj = new msdyncrmWorkflowTools_Class(objService.service);
+            var classObj = new Common(objService.service);
 
             var difference = new TimeSpan();
             var DayOfWeek = 0;
@@ -40,7 +40,7 @@ namespace msdyncrmWorkflowTools_Tests
         [TestMethod]
         public void DateFunctions2()
         {
-            var classObj = new msdyncrmWorkflowTools_Class(objService.service);
+            var classObj = new Common(objService.service);
 
             var difference = new TimeSpan();
             var DayOfWeek = 0;

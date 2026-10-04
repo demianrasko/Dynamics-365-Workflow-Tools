@@ -88,8 +88,8 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\msdyncrmWorkflowTools_Class\msdyncrmWorkflowTools_Class.cs">
-      <Link>msdyncrmWorkflowTools_Class.cs</Link>
+    <Compile Include="..\msdyncrmWorkflowTools_Class\Common.cs">
+      <Link>Common.cs</Link>
     </Compile>
     <Compile Include="Class\CalculateAgregateDate.cs" />
     <Compile Include="Class\CalculatePrice.cs" />
@@ -168,7 +168,6 @@
     <Compile Include="Class\ShareRecordWithUser.cs" />
     <Compile Include="Class\UnshareRecordWithTeam.cs" />
     <Compile Include="Class\UnshareRecordWithUser.cs" />
-    <Compile Include="Common.cs" />
     <Compile Include="Newtonsoft\Bson\BsonBinaryType.cs" />
     <Compile Include="Newtonsoft\Bson\BsonBinaryWriter.cs" />
     <Compile Include="Newtonsoft\Bson\BsonObjectId.cs" />

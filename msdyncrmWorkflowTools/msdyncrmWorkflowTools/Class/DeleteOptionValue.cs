@@ -59,8 +59,7 @@ namespace msdyncrmWorkflowTools
 
             try
             {
-                var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service);
-                commonClass.DeleteOptionValue(_GlobalOptionSet,_AttributeName, _EntityName,  _OptionValue);
+                objCommon.DeleteOptionValue(_GlobalOptionSet,_AttributeName, _EntityName,  _OptionValue);
 
                 
             }

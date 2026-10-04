@@ -57,8 +57,7 @@ namespace msdyncrmWorkflowTools
 
             try
             {
-                var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service);
-                var createdTeamId= commonClass.CreateTeam(_teamName,_teamType, _administrator, _businessUnit);
+                var createdTeamId= objCommon.CreateTeam(_teamName,_teamType, _administrator, _businessUnit);
                 createdTeam.Set(executionContext, new EntityReference("team", createdTeamId));
 
             }

@@ -46,8 +46,7 @@ namespace msdyncrmWorkflowTools
             var toCurrency = ToCurrency.Get(executionContext);
 
             #endregion
-            var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
-            var result=commonClass.CurrencyConvert(amount,fromCurrency, toCurrency);
+            var result=objCommon.CurrencyConvert(amount,fromCurrency, toCurrency);
 
 
             Result.Set(executionContext, result);

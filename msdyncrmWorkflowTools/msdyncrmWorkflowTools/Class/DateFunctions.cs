@@ -64,7 +64,6 @@ namespace msdyncrmWorkflowTools
 
             #endregion
 
-            var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
             var difference = TimeSpan.Zero;
 
             var dayOfWeek = 0;
@@ -74,7 +73,7 @@ namespace msdyncrmWorkflowTools
             var year = 0;
             var weekOfYear = 0;
 
-            commonClass.DateFunctions(date1, date2, ref difference,
+            objCommon.DateFunctions(date1, date2, ref difference,
                 ref dayOfWeek, ref dayOfYear, ref day, ref month, ref year, ref weekOfYear);
 
             TotalDays.Set(executionContext, difference.TotalDays);

@@ -67,9 +67,8 @@ namespace msdyncrmWorkflowTools
             objCommon.tracingService.Trace($"_ValueToSet={valueToSet}--_ChildFieldNameToUpdate={childFieldNameToUpdate}");
             #endregion
 
-            var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service);
 
-            commonClass.UpdateChildRecords(relationshipName, parentEntityType, parentEntityId, parentFieldNameToUpdate, valueToSet, childFieldNameToUpdate, updateOnlyActive);
+            objCommon.UpdateChildRecords(relationshipName, parentEntityType, parentEntityId, parentFieldNameToUpdate, valueToSet, childFieldNameToUpdate, updateOnlyActive);
         }
     }
 }

@@ -67,8 +67,7 @@ namespace msdyncrmWorkflowTools
 
             try
             {
-                var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service);
-                commonClass.InsertOptionValue(_GlobalOptionSet,_AttributeName, _EntityName, _OptionText, _OptionValue, _LanguageCode);
+                objCommon.InsertOptionValue(_GlobalOptionSet,_AttributeName, _EntityName, _OptionText, _OptionValue, _LanguageCode);
 
                 
             }

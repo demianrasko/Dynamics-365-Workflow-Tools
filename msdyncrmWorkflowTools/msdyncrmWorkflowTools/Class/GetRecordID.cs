@@ -32,8 +32,7 @@ namespace msdyncrmWorkflowTools
 
             #endregion
 
-            var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
-            var recordID=commonClass.GetRecordID(recordURL);
+            var recordID=objCommon.GetRecordID(recordURL);
                 
            
             RecordID.Set(executionContext, recordID);

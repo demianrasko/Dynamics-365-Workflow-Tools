@@ -32,9 +32,8 @@ namespace msdyncrmWorkflowTools.Class
             #endregion
 
             #region "Is user member of team"
-            var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
 
-            var isMember = commonClass.IsMemberOfTeam(team.Id, user.Id);
+            var isMember = objCommon.IsMemberOfTeam(team.Id, user.Id);
 
             Result.Set(executionContext, isMember);
             

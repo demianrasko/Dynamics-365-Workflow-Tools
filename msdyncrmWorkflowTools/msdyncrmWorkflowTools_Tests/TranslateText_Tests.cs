@@ -11,7 +11,7 @@ namespace msdyncrmWorkflowTools_Tests
         [TestMethod]
         public void TranslateText1()
         {
-            var classObj = new msdyncrmWorkflowTools_Class(objService.service);
+            var classObj = new Common(objService.service);
             var traslated = classObj.TranslateText("Hola", "pt", "a60244d696fc421f85e2adcd386bdf9e");
 
             Assert.AreEqual(traslated, "Olá");
@@ -20,7 +20,7 @@ namespace msdyncrmWorkflowTools_Tests
         [TestMethod]
         public void TranslateText2()
         {
-            var classObj = new msdyncrmWorkflowTools_Class(objService.service);
+            var classObj = new Common(objService.service);
             var traslated = classObj.TranslateText("Hola", "en", "a60244d696fc421f85e2adcd386bdf9e");
 
             Assert.AreEqual(traslated, "Hello");
@@ -29,7 +29,7 @@ namespace msdyncrmWorkflowTools_Tests
         [TestMethod]
         public void TranslateText3()
         {
-            var classObj = new msdyncrmWorkflowTools_Class(objService.service);
+            var classObj = new Common(objService.service);
             var traslated = classObj.TranslateText("Hello", "es", "a60244d696fc421f85e2adcd386bdf9e");
 
             Assert.AreEqual(traslated, "Hola");

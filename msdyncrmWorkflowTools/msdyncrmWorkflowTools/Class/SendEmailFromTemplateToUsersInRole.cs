@@ -44,8 +44,7 @@ namespace msdyncrmWorkflowTools.Class
             #endregion
             objCommon.tracingService.Trace("Init");
 
-            var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
-            commonClass.SendEmailFromTemplateToUsersInRole(securityRoleLookup,emailTemplateLookup);
+            objCommon.SendEmailFromTemplateToUsersInRole(securityRoleLookup,emailTemplateLookup);
 
 
         }

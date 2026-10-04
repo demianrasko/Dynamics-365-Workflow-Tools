@@ -41,8 +41,7 @@ namespace msdyncrmWorkflowTools
             var authenticationKey = Authenticationkey.Get(executionContext);
             #endregion
             
-            var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
-            var res=commonClass.TranslateText(textToTranslate, language, authenticationKey) ?? string.Empty;
+            var res=objCommon.TranslateText(textToTranslate, language, authenticationKey) ?? string.Empty;
 
             TranslatedText.Set(executionContext, res);
         }

@@ -43,9 +43,8 @@ namespace msdyncrmWorkflowTools.Class
 
             #endregion
 
-            var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
 
-            commonClass.SalesLiteratureToEmail(fileName, salesLiterature.Id.ToString(), email.Id.ToString());
+            objCommon.SalesLiteratureToEmail(fileName, salesLiterature.Id.ToString(), email.Id.ToString());
         }
     }
 }

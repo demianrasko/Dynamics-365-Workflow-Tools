@@ -142,9 +142,8 @@ namespace msdyncrmWorkflowTools
 
             var regexSuccess = false;
             var withoutSpaces = string.Empty;
-            var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
 
-            commonClass.StringFunctions(capitalizeAllWords, inputText, padCharacter, padontheLeft, finalLengthwithPadding, caseSensitive,
+            objCommon.StringFunctions(capitalizeAllWords, inputText, padCharacter, padontheLeft, finalLengthwithPadding, caseSensitive,
                 replaceOldValue, replaceNewValue, subStringLength, startIndex, fromLefttoRight, regularExpression,
                 ref capitalizedText, ref paddedText, ref replacedText, ref subStringText, ref regexText,
                 ref uppercaseText, ref lowercaseText, ref regexSuccess, ref withoutSpaces);

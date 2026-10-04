@@ -28,9 +28,8 @@ namespace msdyncrmWorkflowTools
             var appModuleUniqueName = AppModuleUniqueName.Get(executionContext);
             #endregion
 
-            var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
             
-            var appModuleId = commonClass.GetAppModuleId(appModuleUniqueName);
+            var appModuleId = objCommon.GetAppModuleId(appModuleUniqueName);
                 
             AppModuleId.Set(executionContext, appModuleId);
 

@@ -101,8 +101,7 @@ namespace msdyncrmWorkflowTools
             try
             {
                 objCommon.tracingService.Trace("Start QR Creation");
-                msdyncrmWorkflowTools_Class commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
-                commonClass.QRCode(entityName, ParentId, _QRInfo, _noteSubject, _noteText, _fileName);
+                objCommon.QRCode(entityName, ParentId, _QRInfo, _noteSubject, _noteText, _fileName);
 
 
             }

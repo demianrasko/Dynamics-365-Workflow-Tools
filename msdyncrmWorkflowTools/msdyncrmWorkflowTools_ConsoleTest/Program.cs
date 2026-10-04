@@ -12,7 +12,7 @@ namespace msdyncrmWorkflowTools_ConsoleTest
        // static ITracingService tracingService;
         static void Main(string[] args)
         {
-            var classObj = new msdyncrmWorkflowTools_Class(service);
+            var classObj = new Common(service);
 
 
             //classObj.DeleteRecordAuditHistory("account", "475B158C-541C-E511-80D3-3863BB347BA8");

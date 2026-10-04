@@ -64,8 +64,7 @@ namespace msdyncrmWorkflowTools.Class
 
             #endregion
 
-            var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
-            commonClass.EntityAttachmentToEmail(fileName, parentId, email, retrieveActivityMimeAttachment, mostRecent, topRecords);
+            objCommon.EntityAttachmentToEmail(fileName, parentId, email, retrieveActivityMimeAttachment, mostRecent, topRecords);
         }
     }
 }

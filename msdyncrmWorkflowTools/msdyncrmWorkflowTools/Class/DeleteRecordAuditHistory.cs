@@ -40,9 +40,8 @@ namespace msdyncrmWorkflowTools.Class
 
             #region "DeleteRecordAuditHistory"
 
-            var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
 
-            commonClass.DeleteRecordAuditHistory(entityName,objectId);
+            objCommon.DeleteRecordAuditHistory(entityName,objectId);
             
 
             #endregion

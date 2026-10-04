@@ -35,8 +35,7 @@ namespace msdyncrmWorkflowTools
             #endregion
 
            
-            var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
-            var team = commonClass.retrieveUserBUDefaultTeam(user.Id.ToString());
+            var team = objCommon.retrieveUserBUDefaultTeam(user.Id.ToString());
             
             DefaultTeam.Set(executionContext, team);
             

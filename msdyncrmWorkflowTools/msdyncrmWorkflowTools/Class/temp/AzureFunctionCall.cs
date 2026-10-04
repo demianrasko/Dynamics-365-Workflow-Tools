@@ -49,8 +49,7 @@ namespace msdyncrmWorkflowTools
 
             #endregion
 
-            msdyncrmWorkflowTools_Class commonClass = new msdyncrmWorkflowTools_Class(objCommon.service);
-            string result=commonClass.AzureFunctionCall(_jsonData,_functionURL);
+            string result=objCommon.AzureFunctionCall(_jsonData,_functionURL);
 
             this.Result.Set(executionContext, result);
         }

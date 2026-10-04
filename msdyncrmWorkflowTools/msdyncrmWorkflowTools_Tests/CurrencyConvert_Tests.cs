@@ -10,14 +10,14 @@ namespace msdyncrmWorkflowTools_Tests
         [TestMethod]
         public void CurrencyConvert1()
         {
-            var classObj = new msdyncrmWorkflowTools_Class(objService.service);
+            var classObj = new Common(objService.service);
             var rate=classObj.CurrencyConvert(1, "EUR", "USD");
             Assert.IsTrue(rate != 0);
         }
         [TestMethod]
         public void CurrencyConvert2()
         {
-            var classObj = new msdyncrmWorkflowTools_Class(objService.service);
+            var classObj = new Common(objService.service);
             var rate = classObj.CurrencyConvert(1, "USD", "EUR");
             Assert.IsTrue(rate != 0);
         }
@@ -25,14 +25,14 @@ namespace msdyncrmWorkflowTools_Tests
         [TestMethod]
         public void CurrencyConvert3()
         {
-            var classObj = new msdyncrmWorkflowTools_Class(objService.service);
+            var classObj = new Common(objService.service);
             var rate = classObj.CurrencyConvert((decimal)100.35, "EUR", "ARS");
             Assert.IsTrue(rate != 0);
         }
         [TestMethod]
         public void CurrencyConvert4()
         {
-            var classObj = new msdyncrmWorkflowTools_Class(objService.service);
+            var classObj = new Common(objService.service);
             var rate = classObj.CurrencyConvert((decimal)11231300.30055, "CLP", "EUR");
             Assert.IsTrue(rate != 0);
         }

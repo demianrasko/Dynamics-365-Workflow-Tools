@@ -111,9 +111,8 @@ namespace msdyncrmWorkflowTools
 
             #endregion
 
-            var tools = new msdyncrmWorkflowTools_Class(objCommon.service);
 
-            var children = tools.GetChildRecords(_relationshipName, parentId);
+            var children = objCommon.GetChildRecords(_relationshipName, parentId);
              
             foreach (var item in children.Entities)
             {

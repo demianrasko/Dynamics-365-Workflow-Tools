@@ -54,8 +54,7 @@ namespace msdyncrmWorkflowTools
 
             #endregion
 
-            msdyncrmWorkflowTools_Class commonClass = new msdyncrmWorkflowTools_Class(objCommon.service);
-            string result=commonClass.AzureTextAnalyticsSentiment(_subscriptionKey, _texttoAnalyze, _language);
+            string result=objCommon.AzureTextAnalyticsSentiment(_subscriptionKey, _texttoAnalyze, _language);
 
             this.Result.Set(executionContext, result);
         }

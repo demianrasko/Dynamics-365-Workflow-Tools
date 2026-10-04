@@ -60,8 +60,7 @@ namespace msdyncrmWorkflowTools
 
             try
             {
-                var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service);
-                commonClass.AssociateEntity(objCommon.context.PrimaryEntityName, objCommon.context.PrimaryEntityId, relationshipName, relationshipEntityName, entityName, parentId);
+                objCommon.AssociateEntity(objCommon.context.PrimaryEntityName, objCommon.context.PrimaryEntityId, relationshipName, relationshipEntityName, entityName, parentId);
             }
             catch (FaultException<OrganizationServiceFault> ex)
             {
