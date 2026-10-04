@@ -88,7 +88,7 @@ namespace msdyncrmWorkflowTools
             //Optional
             var oldParentFieldName = OldParentFieldNameToUpdate.Get(executionContext);
             var prefix = Prefix.Get(executionContext);
-            var fieldstoIgnore = FieldstoIgnore.Get(executionContext);
+            var fieldsToIgnore = FieldstoIgnore.Get(executionContext);
             #endregion
 
             // the new parent is set when each copy is created, so a locked parent (e.g. an invoiced order) is never touched
@@ -106,7 +106,7 @@ namespace msdyncrmWorkflowTools
 
             foreach (var item in children.Entities)
             {
-                common.CloneRecord(item.LogicalName, item.Id, fieldstoIgnore, prefix, fieldsToReplace);
+                common.CloneRecord(item.LogicalName, item.Id, fieldsToIgnore, prefix, fieldsToReplace);
             }
         }
     }
