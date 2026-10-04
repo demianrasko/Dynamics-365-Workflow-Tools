@@ -13,7 +13,7 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("Incident Record URL")]
         [ReferenceTarget("")]
-        public InArgument<String> IncidentRecordURL { get; set; }
+        public InArgument<string> IncidentRecordURL { get; set; }
         #endregion
         protected override void Execute(CodeActivityContext executionContext)
         {

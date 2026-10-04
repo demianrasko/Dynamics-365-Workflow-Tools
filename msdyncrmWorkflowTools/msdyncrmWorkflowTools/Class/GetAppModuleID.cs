@@ -1,5 +1,4 @@
-﻿using System;
-using System.Activities;
+﻿using System.Activities;
 using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
@@ -10,7 +9,7 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("Application Unique Name")]
         [Default("")]
-        public InArgument<String> AppModuleUniqueName { get; set; }
+        public InArgument<string> AppModuleUniqueName { get; set; }
 
         [Output("App Module ID")]
         public OutArgument<string> AppModuleId { get; set; }

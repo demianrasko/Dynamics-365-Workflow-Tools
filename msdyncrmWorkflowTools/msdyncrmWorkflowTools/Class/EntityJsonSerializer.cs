@@ -15,7 +15,7 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("Serializing Record URL")]
         [ReferenceTarget("")]
-        public InArgument<String> SerializingRecordURL { get; set; }
+        public InArgument<string> SerializingRecordURL { get; set; }
 
         [Output("Output Json")] public OutArgument<string> OutputJson { get; set; }
 

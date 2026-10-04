@@ -23,34 +23,34 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("Source Record URL")]
         [ReferenceTarget("")]
-        public InArgument<String> SourceRecordUrl { get; set; }
+        public InArgument<string> SourceRecordUrl { get; set; }
 
         [RequiredArgument]
         [Input("Target Record URL")]
         [ReferenceTarget("")]
-        public InArgument<String> TargetRecordUrl { get; set; }
+        public InArgument<string> TargetRecordUrl { get; set; }
 
         [RequiredArgument]
         [Input("Relationship Name")]
         [ReferenceTarget("")]
-        public InArgument<String> RelationshipName { get; set; }
+        public InArgument<string> RelationshipName { get; set; }
 
         [RequiredArgument]
         [Input("New Parent Field Name")]
         [ReferenceTarget("")]
-        public InArgument<String> NewParentFieldNameToUpdate { get; set; }
+        public InArgument<string> NewParentFieldNameToUpdate { get; set; }
 
         [Input("Old Parent Field Name")]
         [ReferenceTarget("")]
-        public InArgument<String> OldParentFieldNameToUpdate { get; set; }
+        public InArgument<string> OldParentFieldNameToUpdate { get; set; }
 
         [Input("Prefix")]
         [Default("")]
-        public InArgument<String> Prefix { get; set; }
+        public InArgument<string> Prefix { get; set; }
 
         [Input("Fields to Ignore")]
         [Default("")]
-        public InArgument<String> FieldstoIgnore { get; set; }
+        public InArgument<string> FieldstoIgnore { get; set; }
 
         #endregion
 

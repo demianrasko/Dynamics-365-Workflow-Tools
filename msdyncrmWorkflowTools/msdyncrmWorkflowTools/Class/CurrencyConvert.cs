@@ -1,5 +1,4 @@
-﻿using System;
-using System.Activities;
+﻿using System.Activities;
 using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
@@ -10,7 +9,7 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("Amount")]
         [Default("0")]
-        public InArgument<Decimal> Amount{ get; set; }
+        public InArgument<decimal> Amount{ get; set; }
 
         [RequiredArgument]
         [Input("From Currency")]
@@ -24,7 +23,7 @@ namespace msdyncrmWorkflowTools
 
         
         [Output("Result")]
-        public OutArgument<Decimal> Result { get; set; }
+        public OutArgument<decimal> Result { get; set; }
 
        
 

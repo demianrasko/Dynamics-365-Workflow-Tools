@@ -15,7 +15,7 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("Sharing Record URL")]
         [ReferenceTarget("")]
-        public InArgument<String> SharingRecordURL { get; set; }
+        public InArgument<string> SharingRecordURL { get; set; }
 
         [RequiredArgument]
         [Input("Team")]

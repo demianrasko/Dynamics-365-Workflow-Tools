@@ -1,5 +1,4 @@
-﻿using System;
-using System.Activities;
+﻿using System.Activities;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 namespace msdyncrmWorkflowTools.Class
@@ -36,10 +35,10 @@ namespace msdyncrmWorkflowTools.Class
 
             #region "Read Parameters"
             var securityRoleLookup = SecurityRoleLookup.Get(executionContext);
-            objCommon.tracingService.Trace(String.Format("marketingList: {0} ", securityRoleLookup.Id.ToString()));
+            objCommon.tracingService.Trace(string.Format("marketingList: {0} ", securityRoleLookup.Id.ToString()));
 
             var emailTemplateLookup = EmailTemplateLookup.Get(executionContext);
-            objCommon.tracingService.Trace(String.Format("campaign: {0} ", emailTemplateLookup.Id.ToString()));
+            objCommon.tracingService.Trace(string.Format("campaign: {0} ", emailTemplateLookup.Id.ToString()));
 
 
             #endregion

@@ -12,12 +12,12 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("orgDBSetting to Update")]
         [Default("")]
-        public InArgument<String> orgDBSetting { get; set; }
+        public InArgument<string> orgDBSetting { get; set; }
 
         [RequiredArgument]
         [Input("Value")]
         [Default("")]
-        public InArgument<String> Value { get; set; }
+        public InArgument<string> Value { get; set; }
 
         
 

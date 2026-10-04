@@ -5,7 +5,6 @@ using System.Linq;
 using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
-using msdyncrmWorkflowTools.SupportingClasses;
 
 namespace msdyncrmWorkflowTools
 {

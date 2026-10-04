@@ -1,5 +1,4 @@
-﻿using System;
-using System.Activities;
+﻿using System.Activities;
 using System.Linq;
 using Microsoft.Xrm.Sdk.Workflow;
 
@@ -12,7 +11,7 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("Record URL")]
         [ReferenceTarget("")]
-        public InArgument<String> RecordURL { get; set; }
+        public InArgument<string> RecordURL { get; set; }
 
 
         [Output("Mobile Deep Link Edit")]
@@ -54,9 +53,9 @@ namespace msdyncrmWorkflowTools
 
             #region "Generating Mobile Deep Links Execution"
 
-            var recordURLEdit = String.Format("ms-dynamicsxrm://?pagetype=entity&etn={0}&id={1}", entityName, objectId);
-            var recordURLNew = String.Format("ms-dynamicsxrm://?pagetype=create&etn={0}", entityName);
-            var recordURLDefaultView = String.Format("ms-dynamicsxrm://?pagetype=view&etn={0}", entityName);
+            var recordURLEdit = string.Format("ms-dynamicsxrm://?pagetype=entity&etn={0}&id={1}", entityName, objectId);
+            var recordURLNew = string.Format("ms-dynamicsxrm://?pagetype=create&etn={0}", entityName);
+            var recordURLDefaultView = string.Format("ms-dynamicsxrm://?pagetype=view&etn={0}", entityName);
 
             objCommon.tracingService.Trace("MobileDeepLinkEdit: "+ recordURLEdit);
             objCommon.tracingService.Trace("MobileDeepLinkNew: "+ recordURLNew);

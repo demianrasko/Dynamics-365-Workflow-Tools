@@ -1,5 +1,4 @@
-﻿using System;
-using System.Activities;
+﻿using System.Activities;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Xrm.Sdk.Workflow;
@@ -12,16 +11,16 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("Text to Encrypt")]
         [Default("")]
-        public InArgument<String> TexttoEncrypt { get; set; }
+        public InArgument<string> TexttoEncrypt { get; set; }
 
       
 
 
         [Output("MD5 Hash Value")]
-        public OutArgument<String> MD5HashValue { get; set; }
+        public OutArgument<string> MD5HashValue { get; set; }
 
         [Output("SHA512 Hash Value")]
-        public OutArgument<String> SHA512HashValue { get; set; }
+        public OutArgument<string> SHA512HashValue { get; set; }
 
 
         #endregion
@@ -39,7 +38,7 @@ namespace msdyncrmWorkflowTools
             var _TexttoEncrypt = TexttoEncrypt.Get(executionContext);
            
 
-            objCommon.tracingService.Trace(String.Format("_TexttoEncrypt: {0} ",_TexttoEncrypt));
+            objCommon.tracingService.Trace(string.Format("_TexttoEncrypt: {0} ",_TexttoEncrypt));
             #endregion
 
 

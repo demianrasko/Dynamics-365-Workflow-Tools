@@ -18,7 +18,7 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("FetchXML")]
         [Default("")]
-        public InArgument<String> FetchXML { get; set; }
+        public InArgument<string> FetchXML { get; set; }
 
 
         [Output("Value")]

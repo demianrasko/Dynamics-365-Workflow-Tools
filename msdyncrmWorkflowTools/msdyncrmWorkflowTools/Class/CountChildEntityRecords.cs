@@ -1,5 +1,4 @@
-﻿using System;
-using System.Activities;
+﻿using System.Activities;
 using System.Linq;
 using System.ServiceModel;
 using Microsoft.Xrm.Sdk;
@@ -16,17 +15,17 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("Child Entity Schema Name")]
         [Default("")]
-        public InArgument<String> ChildEntityName { get; set; }
+        public InArgument<string> ChildEntityName { get; set; }
 
         [RequiredArgument]
         [Input("Parent Lookup Field Name on Child")]
         [Default("")]
-        public InArgument<String> ParentLookupName { get; set; }
+        public InArgument<string> ParentLookupName { get; set; }
 
         [RequiredArgument]
         [Input("Record URL (Parent)")]
         [ReferenceTarget("")]
-        public InArgument<String> RecordURL { get; set; }
+        public InArgument<string> RecordURL { get; set; }
 
 
         [Output("Result")]
@@ -72,7 +71,7 @@ namespace msdyncrmWorkflowTools
                                     </entity>
                                 </fetch>";
                 fetchXml = string.Format(fetchXml, _childEntityName, _parentLookupName, ParentEntityId);
-                objCommon.tracingService.Trace(String.Format("FetchXML: {0} ", fetchXml));
+                objCommon.tracingService.Trace(string.Format("FetchXML: {0} ", fetchXml));
                 var results = objCommon.service.RetrieveMultiple(new FetchExpression(fetchXml));
 
                 Result.Set(executionContext, results.Entities.Count);

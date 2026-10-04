@@ -16,11 +16,11 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("Record URL")]
         [ReferenceTarget("")]
-        public InArgument<String> RecordURL { get; set; }
+        public InArgument<string> RecordURL { get; set; }
 
         [RequiredArgument]
         [Input("Attribute Name")]
-        public InArgument<String> AttributeName { get; set; }
+        public InArgument<string> AttributeName { get; set; }
 
         [Input("Share With User")]
         [ReferenceTarget("systemuser")]
@@ -33,12 +33,12 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("Allow Read")]
         [Default("true")]
-        public InArgument<Boolean> AllowRead { get; set; }
+        public InArgument<bool> AllowRead { get; set; }
 
         [RequiredArgument]
         [Input("Allow Update")]
         [Default("true")]
-        public InArgument<Boolean> AllowUpdate { get; set; }
+        public InArgument<bool> AllowUpdate { get; set; }
 
 
         #endregion

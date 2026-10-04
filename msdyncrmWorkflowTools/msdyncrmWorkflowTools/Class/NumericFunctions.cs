@@ -1,5 +1,4 @@
-﻿using System;
-using System.Activities;
+﻿using System.Activities;
 using System.Globalization;
 using Microsoft.Xrm.Sdk.Workflow;
 

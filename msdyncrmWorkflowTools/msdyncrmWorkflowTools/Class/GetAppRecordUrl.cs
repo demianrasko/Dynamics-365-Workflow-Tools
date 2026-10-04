@@ -1,5 +1,4 @@
-﻿using System;
-using System.Activities;
+﻿using System.Activities;
 using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
@@ -10,12 +9,12 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("Record URL")]
         [Default("")]
-        public InArgument<String> RecordURL { get; set; }
+        public InArgument<string> RecordURL { get; set; }
 
         [RequiredArgument]
         [Input("Application Unique Name")]
         [Default("")]
-        public InArgument<String> AppModuleUniqueName { get; set; }
+        public InArgument<string> AppModuleUniqueName { get; set; }
 
         [Output("Record URL for App Module")]
         public OutArgument<string> AppRecordUrl { get; set; }

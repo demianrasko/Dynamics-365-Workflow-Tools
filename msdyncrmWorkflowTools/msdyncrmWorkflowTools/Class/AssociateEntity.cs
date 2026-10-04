@@ -13,17 +13,17 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("Relationship Name")]
         [Default("")]        
-        public InArgument<String> RelationshipName { get; set; }
+        public InArgument<string> RelationshipName { get; set; }
 
         [RequiredArgument]
         [Input("Relationship Entity Name")]
         [Default("")]
-        public InArgument<String> RelationshipEntityName { get; set; }
+        public InArgument<string> RelationshipEntityName { get; set; }
 
         [RequiredArgument]
         [Input("Record URL")]
         [ReferenceTarget("")]
-        public InArgument<String> RecordURL { get; set; }
+        public InArgument<string> RecordURL { get; set; }
 
         
 

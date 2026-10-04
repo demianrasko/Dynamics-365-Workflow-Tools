@@ -1,5 +1,4 @@
-﻿using System;
-using System.Activities;
+﻿using System.Activities;
 using System.Linq;
 using Microsoft.Xrm.Sdk.Workflow;
 
@@ -12,19 +11,19 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("Clonning Record URL")]
         [ReferenceTarget("")]
-        public InArgument<String> ClonningRecordURL { get; set; }
+        public InArgument<string> ClonningRecordURL { get; set; }
 
         
         [Input("Prefix")]
         [Default("")]
-        public InArgument<String> Prefix { get; set; }
+        public InArgument<string> Prefix { get; set; }
 
         [Input("Fields to Ignore")]
         [Default("")]
-        public InArgument<String> FieldstoIgnore { get; set; }
+        public InArgument<string> FieldstoIgnore { get; set; }
 
         [Output("Cloned Guid")]
-        public OutArgument<String> ClonedGuid { get; set; }
+        public OutArgument<string> ClonedGuid { get; set; }
 
         
         #endregion

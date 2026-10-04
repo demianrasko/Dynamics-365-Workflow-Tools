@@ -1,5 +1,4 @@
-﻿using System;
-using System.Activities;
+﻿using System.Activities;
 using System.ServiceModel;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
@@ -21,11 +20,11 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("Attribute Name")]
         [Default("")]        
-        public InArgument<String> AttributeName { get; set; }
+        public InArgument<string> AttributeName { get; set; }
 
         [Input("Entity Name")]
         [Default("")]
-        public InArgument<String> EntityName { get; set; }
+        public InArgument<string> EntityName { get; set; }
 
        
         [RequiredArgument]

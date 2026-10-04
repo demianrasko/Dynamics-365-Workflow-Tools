@@ -1,5 +1,4 @@
-﻿using System;
-using System.Activities;
+﻿using System.Activities;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 
@@ -15,7 +14,7 @@ namespace msdyncrmWorkflowTools.Class
         [RequiredArgument]
         [Input("File Name (use * for filter)")]
         [ReferenceTarget("")]
-        public InArgument<String> FileName { get; set; }
+        public InArgument<string> FileName { get; set; }
 
         [RequiredArgument]
         [Input("Email")]

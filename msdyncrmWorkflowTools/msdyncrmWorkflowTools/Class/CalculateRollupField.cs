@@ -16,12 +16,12 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("FieldName")]
         [Default("")]        
-        public InArgument<String> FieldName { get; set; }
+        public InArgument<string> FieldName { get; set; }
 
         [RequiredArgument]
         [Input("Parent Record URL")]
         [ReferenceTarget("")]
-        public InArgument<String> ParentRecordURL { get; set; }
+        public InArgument<string> ParentRecordURL { get; set; }
         #endregion
 
         protected override void Execute(CodeActivityContext executionContext)

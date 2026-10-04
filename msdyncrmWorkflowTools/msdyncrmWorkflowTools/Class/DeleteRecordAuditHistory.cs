@@ -1,5 +1,4 @@
-﻿using System;
-using System.Activities;
+﻿using System.Activities;
 using System.Linq;
 using Microsoft.Xrm.Sdk.Workflow;
 
@@ -11,7 +10,7 @@ namespace msdyncrmWorkflowTools.Class
         [RequiredArgument]
         [Input("Record URL")]
         [ReferenceTarget("")]
-        public InArgument<String> RecordURL { get; set; }
+        public InArgument<string> RecordURL { get; set; }
 
         protected override void Execute(CodeActivityContext executionContext)
         {

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Activities;
+﻿using System.Activities;
 using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
@@ -10,7 +9,7 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("JSON")]
         [Default("")]
-        public InArgument<String> JSON { get; set; }
+        public InArgument<string> JSON { get; set; }
 
         [RequiredArgument]
         [Input("JSON Path")]
@@ -20,7 +19,7 @@ namespace msdyncrmWorkflowTools
 
       
         [Output("JSON Result")]
-        public OutArgument<String> JSONResult { get; set; }
+        public OutArgument<string> JSONResult { get; set; }
         
         #endregion
 

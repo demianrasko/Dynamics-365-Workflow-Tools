@@ -1,5 +1,4 @@
-﻿using System;
-using System.Activities;
+﻿using System.Activities;
 using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
@@ -29,10 +28,10 @@ namespace msdyncrmWorkflowTools.Class
 
             #region "Read Parameters"
             var sourceList = SourceList.Get(executionContext);
-            objCommon.tracingService.Trace(String.Format("marketingList: {0} ", sourceList.Id.ToString()));
+            objCommon.tracingService.Trace(string.Format("marketingList: {0} ", sourceList.Id.ToString()));
 
             var targetList = TargetList.Get(executionContext);
-            objCommon.tracingService.Trace(String.Format("campaign: {0} ", targetList.Id.ToString()));
+            objCommon.tracingService.Trace(string.Format("campaign: {0} ", targetList.Id.ToString()));
 
 
             #endregion

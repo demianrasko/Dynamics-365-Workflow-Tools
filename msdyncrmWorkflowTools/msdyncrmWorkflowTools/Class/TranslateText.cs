@@ -1,5 +1,4 @@
-﻿using System;
-using System.Activities;
+﻿using System.Activities;
 using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
@@ -10,7 +9,7 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("Text To Translate")]
         [Default("")]
-        public InArgument<String> TextToTranslate { get; set; }
+        public InArgument<string> TextToTranslate { get; set; }
 
         [RequiredArgument]
         [Input("Language")]
@@ -24,7 +23,7 @@ namespace msdyncrmWorkflowTools
 
 
         [Output("Translated Text")]
-        public OutArgument<String> TranslatedText { get; set; }
+        public OutArgument<string> TranslatedText { get; set; }
         
         #endregion
 

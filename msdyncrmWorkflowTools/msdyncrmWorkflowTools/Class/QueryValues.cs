@@ -12,46 +12,46 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("EntityName")]
         [Default("")]
-        public InArgument<String> EntityName { get; set; }
+        public InArgument<string> EntityName { get; set; }
 
         [RequiredArgument]
         [Input("Attribute1")]
         [ReferenceTarget("")]
-        public InArgument<String> Attribute1 { get; set; }
+        public InArgument<string> Attribute1 { get; set; }
 
         [RequiredArgument]
         [Input("Attribute2")]
         [ReferenceTarget("")]
-        public InArgument<String> Attribute2 { get; set; }
+        public InArgument<string> Attribute2 { get; set; }
 
         [RequiredArgument]
         [Input("FilterAttibute1")]
         [ReferenceTarget("")]
-        public InArgument<String> FilterAttribute1 { get; set; }
+        public InArgument<string> FilterAttribute1 { get; set; }
 
         [RequiredArgument]
         [Input("ValueAttribute1")]
         [ReferenceTarget("")]
-        public InArgument<String> ValueAttribute1 { get; set; }
+        public InArgument<string> ValueAttribute1 { get; set; }
 
         
         [Input("FilterAttribute2")]
         [ReferenceTarget("")]
-        public InArgument<String> FilterAttribute2 { get; set; }
+        public InArgument<string> FilterAttribute2 { get; set; }
 
         
         [Input("ValueAttribute2")]
         [ReferenceTarget("")]
-        public InArgument<String> ValueAttribute2 { get; set; }
+        public InArgument<string> ValueAttribute2 { get; set; }
 
 
 
         [Output("ResultValue1")]
-        public OutArgument<String> ResultValue1 { get; set; }
+        public OutArgument<string> ResultValue1 { get; set; }
 
 
         [Output("ResultValue2")]
-        public OutArgument<String> ResultValue2 { get; set; }
+        public OutArgument<string> ResultValue2 { get; set; }
 
         
         #endregion

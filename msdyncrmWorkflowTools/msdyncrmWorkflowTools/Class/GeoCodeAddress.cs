@@ -13,7 +13,7 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("Address")]
         [Default("")]
-        public InArgument<String> Address { get; set; }
+        public InArgument<string> Address { get; set; }
 
         [RequiredArgument]
         [Input("Bing Maps Key")]
@@ -25,10 +25,10 @@ namespace msdyncrmWorkflowTools
 
 
         [Output("Latitude")]
-        public OutArgument<Decimal> Latitude { get; set; }
+        public OutArgument<decimal> Latitude { get; set; }
 
         [Output("Longitude")]
-        public OutArgument<Decimal> Longitude { get; set; }
+        public OutArgument<decimal> Longitude { get; set; }
 
        
 
@@ -79,7 +79,7 @@ namespace msdyncrmWorkflowTools
                 using (var response = request.GetResponse() as HttpWebResponse)
                 {
                     if (response.StatusCode != HttpStatusCode.OK)
-                        throw new Exception(String.Format(
+                        throw new Exception(string.Format(
                         "Server error (HTTP {0}: {1}).",
                         response.StatusCode,
                         response.StatusDescription));

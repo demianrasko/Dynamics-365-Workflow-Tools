@@ -143,7 +143,7 @@ namespace msdyncrmWorkflowTools
         {
             tracingService.Trace("Retrieving existing values");
 
-            var attributeValues = KeepExistingValues.Get<Boolean>(executionContext);
+            var attributeValues = KeepExistingValues.Get<bool>(executionContext);
 
             if (attributeValues == false)
                 return null;
