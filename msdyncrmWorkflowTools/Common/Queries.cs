@@ -214,6 +214,21 @@ namespace msdyncrmWorkflowTools
         }
 
         /// <summary>
+        /// SharePoint document locations whose regarding record is <paramref name="regardingObjectId"/>.
+        /// </summary>
+        public static QueryExpression SharepointDocumentLocations(Guid regardingObjectId)
+        {
+            var query = new QueryExpression("sharepointdocumentlocation")
+            {
+                ColumnSet = new ColumnSet("absoluteurl", "sharepointdocumentlocationid", "relativeurl")
+            };
+
+            query.Criteria.AddCondition("regardingobjectid", ConditionOperator.Equal, regardingObjectId);
+
+            return query;
+        }
+
+        /// <summary>
         /// Records of <paramref name="relatedEntityName"/> associated with a record through an N:N intersect entity.
         /// The record is matched on the intersect entity itself, which also works for self-referencing relationships.
         /// </summary>

@@ -21,27 +21,22 @@ namespace msdyncrmWorkflowTools
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
-            var _goal = Goal.Get(executionContext);
-            var _goalguid = GoalGuid.Get(executionContext);
-            if (_goal == null)
+            var goal = Goal.Get(executionContext);
+            var guid = GoalGuid.Get(executionContext);
+
+            if (goal == null)
             {
                 return;
             }
 
-            common.Trace($"GoalID={_goal.Id.ToString()}");
+            common.Trace($"GoalID={goal.Id.ToString()}");
             #endregion
 
             #region "GoalRequest Execution"
-            var id = string.Empty;
-            if (_goal != null)
-            {
-                id = _goal.Id.ToString();
-            }
-            else {
-                id = _goalguid;
-            }
+            string id;
+            id = goal.Id.ToString();
 
-            var request = new RecalculateRequest()
+            var request = new RecalculateRequest
             {
                 Target = new EntityReference("goal", new Guid (id))
             };
