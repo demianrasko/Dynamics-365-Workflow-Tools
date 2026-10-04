@@ -363,6 +363,27 @@ namespace msdyncrmWorkflowTools
                     return value.ToString();
             }
         }
+
+        /// <summary>
+        /// Copies an attribute value from one record to another when the source record has it.
+        /// A missing source attribute leaves the target unchanged.
+        /// </summary>
+        /// <param name="source">Record to read from.</param>
+        /// <param name="sourceAttribute">Logical name of the attribute to read.</param>
+        /// <param name="target">Record to write to.</param>
+        /// <param name="targetAttribute">Logical name of the attribute to set; defaults to <paramref name="sourceAttribute"/>.</param>
+        /// <returns>True when the value was copied.</returns>
+        public static bool CopyAttributeValue(Entity source, string sourceAttribute, Entity target, string targetAttribute = null)
+        {
+            if (!source.TryGetAttributeValue(sourceAttribute, out object value))
+            {
+                return false;
+            }
+
+            target[targetAttribute ?? sourceAttribute] = value;
+
+            return true;
+        }
         #endregion
 
         #region JSON

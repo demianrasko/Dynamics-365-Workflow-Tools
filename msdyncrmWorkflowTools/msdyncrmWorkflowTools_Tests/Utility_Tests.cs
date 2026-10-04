@@ -184,5 +184,35 @@ namespace msdyncrmWorkflowTools_Tests
             Assert.IsNull(body["missingattribute"]);
             StringAssert.StartsWith(json, "{\"account\":{\"accountid\":");
         }
+
+        [TestMethod]
+        public void CopyAttributeValue_CopiesToTheTargetAttribute()
+        {
+            var source = new Entity("salesliteratureitem") { ["title"] = "Brochure" };
+            var target = new Entity("activitymimeattachment");
+
+            Assert.IsTrue(Utility.CopyAttributeValue(source, "title", target, "subject"));
+            Assert.AreEqual("Brochure", target["subject"]);
+        }
+
+        [TestMethod]
+        public void CopyAttributeValue_DefaultsToTheSourceAttributeName()
+        {
+            var source = new Entity("annotation") { ["mimetype"] = "application/pdf" };
+            var target = new Entity("activitymimeattachment");
+
+            Assert.IsTrue(Utility.CopyAttributeValue(source, "mimetype", target));
+            Assert.AreEqual("application/pdf", target["mimetype"]);
+        }
+
+        [TestMethod]
+        public void CopyAttributeValue_MissingSourceLeavesTargetUnset()
+        {
+            var source = new Entity("annotation");
+            var target = new Entity("activitymimeattachment");
+
+            Assert.IsFalse(Utility.CopyAttributeValue(source, "documentbody", target, "body"));
+            Assert.IsFalse(target.Contains("body"));
+        }
     }
 }

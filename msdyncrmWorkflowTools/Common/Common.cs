@@ -838,25 +838,10 @@ namespace msdyncrmWorkflowTools
 
                 i++;
 
-                if (file.TryGetAttributeValue("title", out string title))
-                {
-                    attachment["subject"] = title;
-                }
-
-                if (file.TryGetAttributeValue("filename", out string attachmentFileName))
-                {
-                    attachment["filename"] = attachmentFileName;
-                }
-
-                if (file.TryGetAttributeValue("documentbody", out string documentBody))
-                {
-                    attachment["body"] = documentBody;
-                }
-
-                if (file.TryGetAttributeValue("mimetype", out string mimeType))
-                {
-                    attachment["mimetype"] = mimeType;
-                }
+                Utility.CopyAttributeValue(file, "title", attachment, "subject");
+                Utility.CopyAttributeValue(file, "filename", attachment);
+                Utility.CopyAttributeValue(file, "documentbody", attachment, "body");
+                Utility.CopyAttributeValue(file, "mimetype", attachment);
 
                 Service.Create(attachment);
             }
@@ -970,28 +955,13 @@ namespace msdyncrmWorkflowTools
                 };
                 i++;
 
-                if (file.TryGetAttributeValue("subject", out string subject))
-                {
-                    attachment["subject"] = subject;
-                }
+                Utility.CopyAttributeValue(file, "subject", attachment);
+                Utility.CopyAttributeValue(file, "filename", attachment);
+                Utility.CopyAttributeValue(file, "mimetype", attachment);
 
-                if (file.TryGetAttributeValue("filename", out string attachmentFileName))
+                if (!Utility.CopyAttributeValue(file, "documentbody", attachment, "body"))
                 {
-                    attachment["filename"] = attachmentFileName;
-                }
-
-                if (file.TryGetAttributeValue("documentbody", out string documentBody))
-                {
-                    attachment["body"] = documentBody;
-                }
-                else if (file.TryGetAttributeValue("body", out string body))
-                {
-                    attachment["body"] = body;
-                }
-
-                if (file.TryGetAttributeValue("mimetype", out string mimeType))
-                {
-                    attachment["mimetype"] = mimeType;
+                    Utility.CopyAttributeValue(file, "body", attachment);
                 }
 
                 if (mostRecent)
