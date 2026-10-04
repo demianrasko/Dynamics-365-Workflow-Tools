@@ -242,6 +242,18 @@ namespace msdyncrmWorkflowTools
         }
 
         /// <summary>
+        /// A record URL for a record in the same environment as <paramref name="referenceRecordUrl"/>: its address
+        /// (everything before "?") with etc, id, etn and pagetype parameters.
+        /// </summary>
+        public static string BuildRecordUrl(string referenceRecordUrl, int objectTypeCode, string entityName, Guid id)
+        {
+            var queryStart = referenceRecordUrl.IndexOf('?');
+            var address = queryStart < 0 ? referenceRecordUrl : referenceRecordUrl.Substring(0, queryStart);
+
+            return $"{address}?etc={objectTypeCode}&id={id}&etn={Uri.EscapeDataString(entityName)}&pagetype=entityrecord";
+        }
+
+        /// <summary>
         /// Adds FetchXML paging attributes (paging-cookie, page, count) to a fetch query.
         /// A null cookie, or a page or count of 0, leaves that attribute out.
         /// </summary>

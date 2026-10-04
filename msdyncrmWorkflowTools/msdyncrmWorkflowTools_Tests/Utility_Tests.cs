@@ -486,5 +486,19 @@ namespace msdyncrmWorkflowTools_Tests
             Assert.AreEqual("Red,Blue,9", Utility.JoinOptionSetLabels(values, labels));
             Assert.AreEqual(string.Empty, Utility.JoinOptionSetValues(new OptionSetValueCollection()));
         }
+
+        [TestMethod]
+        public void BuildRecordUrl_ReusesTheAddressAndRoundTrips()
+        {
+            var id = new System.Guid("d3c3b3b2-ae19-e811-811f-5065f38a3a01");
+
+            var url = Utility.BuildRecordUrl(RecordUrl, 2, "contact", id);
+            var parsed = Utility.ParseRecordUrl(url);
+
+            Assert.AreEqual("https://demianrasko.crm4.dynamics.com:443/main.aspx?etc=2&id=d3c3b3b2-ae19-e811-811f-5065f38a3a01&etn=contact&pagetype=entityrecord", url);
+            Assert.AreEqual("2", parsed.ObjectTypeCode);
+            Assert.AreEqual(id, parsed.Id);
+            Assert.AreEqual("contact", parsed.EntityName);
+        }
     }
 }

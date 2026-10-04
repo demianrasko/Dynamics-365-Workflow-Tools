@@ -132,6 +132,32 @@ namespace msdyncrmWorkflowTools
 
         #region Metadata and option sets
         /// <summary>
+        /// The object type code (the "etc" in record URLs) of an entity, from its logical name.
+        /// </summary>
+        /// <exception cref="InvalidPluginExecutionException">There is no entity with that name.</exception>
+        public int GetEntityTypeCode(string entityName)
+        {
+            var filter = new MetadataFilterExpression(LogicalOperator.And);
+            filter.Conditions.Add(new MetadataConditionExpression("LogicalName", MetadataConditionOperator.Equals, entityName));
+
+            var request = new RetrieveMetadataChangesRequest
+            {
+                Query = new EntityQueryExpression { Criteria = filter },
+                ClientVersionStamp = null
+            };
+
+            var response = (RetrieveMetadataChangesResponse)Service.Execute(request);
+            var objectTypeCode = response.EntityMetadata.FirstOrDefault()?.ObjectTypeCode;
+
+            if (objectTypeCode == null)
+            {
+                throw new InvalidPluginExecutionException($"Entity '{entityName}' was not found.");
+            }
+
+            return objectTypeCode.Value;
+        }
+
+        /// <summary>
         /// Query the Metadata to get the Entity Schema Name from the Object Type Code
         /// </summary>
         /// <param name="objectTypeCode"></param>

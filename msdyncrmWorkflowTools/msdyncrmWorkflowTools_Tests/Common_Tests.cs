@@ -54,6 +54,26 @@ namespace msdyncrmWorkflowTools_Tests
         }
 
         [TestMethod]
+        public void GetEntityTypeCode_ReadsTheObjectTypeCode()
+        {
+            service.OnExecute = r => new RetrieveMetadataChangesResponse
+            {
+                Results = { ["EntityMetadata"] = new EntityMetadataCollection { MetadataWithTypeCode(2) } }
+            };
+
+            Assert.AreEqual(2, common.GetEntityTypeCode("contact"));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidPluginExecutionException))]
+        public void GetEntityTypeCode_UnknownEntityThrows()
+        {
+            service.OnExecute = r => new RetrieveMetadataChangesResponse { Results = { ["EntityMetadata"] = new EntityMetadataCollection() } };
+
+            common.GetEntityTypeCode("new_missing");
+        }
+
+        [TestMethod]
         public void GetRecordReference_BuildsTheReference()
         {
             service.OnExecute = r => MetadataResponse("Contact");
@@ -608,6 +628,15 @@ namespace msdyncrmWorkflowTools_Tests
             {
                 Results = { ["EntityMetadata"] = new EntityMetadataCollection { new EntityMetadata { SchemaName = schemaName } } }
             };
+        }
+
+        private static EntityMetadata MetadataWithTypeCode(int objectTypeCode)
+        {
+            // ObjectTypeCode has no public setter
+            var metadata = new EntityMetadata();
+            typeof(EntityMetadata).GetProperty("ObjectTypeCode").SetValue(metadata, (int?)objectTypeCode);
+
+            return metadata;
         }
 
         private static RetrieveAttributeResponse AttributeResponse(bool isSecured)

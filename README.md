@@ -91,6 +91,7 @@ To see how to use each of the tools includes in this solution, please access to 
 * 77 [Share Secured Field](/docs/ShareSecuredField.md) Thanks to [zhongchen zhou](https://github.com/zzc000)
 * 78 [Set Lookup Field from Record URL](/docs/SetLookupFieldFromRecordUrl.md) thanks to [beyro](https://github.com/beyro)
 * 79 [Resolve Case](/docs/ResolveCase.md) thanks to [Chris Milton](https://github.com/ChrisMilton)
+* 80 [Get Record URL](/docs/GetRecordUrl.md) thanks to [vinaymenda](https://github.com/vinaymenda)
 
 
 

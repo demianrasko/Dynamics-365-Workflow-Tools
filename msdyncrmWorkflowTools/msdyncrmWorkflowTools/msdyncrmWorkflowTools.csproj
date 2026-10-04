@@ -124,6 +124,7 @@
     <Compile Include="Class\GetAppRecordUrl.cs" />
     <Compile Include="Class\GetAppModuleID.cs" />
     <Compile Include="Class\GetRecordID.cs" />
+    <Compile Include="Class\GetRecordUrl.cs" />
     <Compile Include="Class\MapMultiSelectOptionSet.cs" />
     <Compile Include="Class\RetrieveUserBUDefaultTeam.cs" />
     <Compile Include="Class\SetMultiSelectOptionSet.cs" />
