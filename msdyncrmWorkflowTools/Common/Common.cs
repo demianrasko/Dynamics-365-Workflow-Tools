@@ -346,6 +346,14 @@ namespace msdyncrmWorkflowTools
         }
 
         /// <summary>
+        /// The first record a query returns, or null when there is none.
+        /// </summary>
+        public Entity RetrieveFirst(QueryBase query)
+        {
+            return Service.RetrieveMultiple(query).Entities.FirstOrDefault();
+        }
+
+        /// <summary>
         /// Counts the records a query returns, page by page, so there is no 5,000-row or 50,000-row aggregate limit.
         /// </summary>
         public int CountRecords(QueryExpression query)
@@ -499,6 +507,15 @@ namespace msdyncrmWorkflowTools
             var attributes = GetEntityAttributesToClone(record.LogicalName, ref primaryIdAttribute, ref primaryNameAttribute);
 
             return Utility.SerializeEntity(record.LogicalName, primaryIdAttribute, record.Id, entity, attributes);
+        }
+
+        /// <summary>
+        /// Deletes a record.
+        /// </summary>
+        public void DeleteRecord(EntityReference record)
+        {
+            Trace($"Deleting {record.LogicalName} {record.Id}");
+            Service.Delete(record.LogicalName, record.Id);
         }
 
         /// <summary>
@@ -751,6 +768,15 @@ namespace msdyncrmWorkflowTools
             Trace($"Associations: {primaryEntityName} {primaryEntityId} via {intersectEntityName} to {entityName} {parentId}");
 
             return Service.RetrieveMultiple(Queries.Associations(primaryEntityName, primaryEntityId, intersectEntityName, entityName, parentId));
+        }
+
+        /// <summary>
+        /// Removes the N:N association between two records.
+        /// </summary>
+        public void DisassociateEntity(EntityReference record, string relationshipName, EntityReference related)
+        {
+            Trace($"Disassociating {record.LogicalName} {record.Id} and {related.LogicalName} {related.Id} ({relationshipName})");
+            Service.Disassociate(record.LogicalName, record.Id, new Relationship(relationshipName), new EntityReferenceCollection { related });
         }
 
         public void AssociateEntity(string primaryEntityName, Guid primaryEntityId, string relationshipName, string relationshipEntityName, string entityName, Guid parentId)

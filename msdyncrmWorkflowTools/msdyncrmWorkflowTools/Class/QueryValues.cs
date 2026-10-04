@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace msdyncrmWorkflowTools
 {
@@ -69,7 +68,7 @@ namespace msdyncrmWorkflowTools
                 new KeyValuePair<string, object>(filterAttribute1, valueAttribute1),
                 new KeyValuePair<string, object>(filterAttribute2, valueAttribute2));
 
-            var record = common.Service.RetrieveMultiple(query).Entities.FirstOrDefault();
+            var record = common.RetrieveFirst(query);
 
             if (record == null)
             {

@@ -20,8 +20,6 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
-            var relationshipName = RelationshipName.Get(executionContext);
             var recordUrl = RecordURL.Get(executionContext);
 
             if (string.IsNullOrEmpty(recordUrl))
@@ -29,22 +27,10 @@ namespace msdyncrmWorkflowTools
                 throw new InvalidPluginExecutionException("Record URL is required.");
             }
 
-            var parsedUrl = common.ParseRecordUrl(recordUrl);
-
-            common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
-            #endregion
-
-            #region "Disassociate Execution"
-
-            var relatedEntities = new EntityReferenceCollection
-            {
-                parsedUrl.ToEntityReference()
-            };
-
-            var relationship = new Relationship(relationshipName);
-
-            common.Service.Disassociate(common.Context.PrimaryEntityName, common.Context.PrimaryEntityId, relationship,relatedEntities);
-            #endregion
+            common.DisassociateEntity(
+                new EntityReference(common.Context.PrimaryEntityName, common.Context.PrimaryEntityId),
+                RelationshipName.Get(executionContext),
+                common.GetRecordReference(recordUrl));
         }
     }
 }

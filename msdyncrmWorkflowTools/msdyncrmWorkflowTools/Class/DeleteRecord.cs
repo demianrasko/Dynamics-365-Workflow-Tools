@@ -30,8 +30,7 @@ namespace msdyncrmWorkflowTools.Class
                 ? GetTargetFromUrl(executionContext, common)
                 : GetTargetFromNameAndGuid(executionContext);
 
-            common.Trace($"Deleting {target.LogicalName} {target.Id}");
-            common.Service.Delete(target.LogicalName, target.Id);
+            common.DeleteRecord(target);
         }
 
         private EntityReference GetTargetFromUrl(CodeActivityContext executionContext, Common common)

@@ -909,6 +909,25 @@ namespace msdyncrmWorkflowTools_Tests
             Assert.AreEqual("Won", win.QuoteClose["subject"]);
             Assert.AreEqual(quote, win.QuoteClose["quoteid"]);
         }
+
+        [TestMethod]
+        public void DeleteDisassociateAndRetrieveFirst()
+        {
+            var record = new EntityReference("account", RecordId);
+            var related = new EntityReference("contact", Guid.NewGuid());
+            var first = new Entity("contact", Guid.NewGuid());
+            service.OnRetrieveMultiple = query => Collection(first, new Entity("contact", Guid.NewGuid()));
+
+            common.DeleteRecord(record);
+            common.DisassociateEntity(record, "new_account_contact", related);
+
+            Assert.AreEqual(record, service.Deleted.Single());
+            var call = service.Disassociated.Single();
+            Assert.AreEqual(record, call.Record);
+            Assert.AreEqual("new_account_contact", call.Relationship.SchemaName);
+            Assert.AreEqual(related, call.Related.Single());
+            Assert.AreSame(first, common.RetrieveFirst(new QueryExpression("contact")));
+        }
         #endregion
 
         #region AI functions
