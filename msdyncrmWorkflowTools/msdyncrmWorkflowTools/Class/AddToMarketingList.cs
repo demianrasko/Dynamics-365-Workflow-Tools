@@ -1,9 +1,7 @@
 ﻿// Not in the Power Platform build: it needs Dynamics 365 tables (lead, list or salesliterature).
 #if !POWERPLATFORM
-using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
-using System;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools.Class
@@ -32,41 +30,10 @@ namespace msdyncrmWorkflowTools.Class
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
             var marketingList = MarketingList.Get(executionContext);
-            common.Trace($"marketingList: {marketingList.Id.ToString()} ");
+            var member = Utility.GetMarketingListMember(account.Get(executionContext), contact.Get(executionContext), lead.Get(executionContext));
 
-            var accountReference = account.Get(executionContext);
-
-            var contactReference = contact.Get(executionContext);
-
-            var leadReference = lead.Get(executionContext);
-
-            #endregion
-
-            var idToAdd = Guid.Empty;
-
-            if (accountReference != null)
-            {
-                idToAdd = accountReference.Id;
-            }
-            else if (contactReference != null)
-            {
-                idToAdd = contactReference.Id;
-            }
-            else if (leadReference != null)
-            {
-                idToAdd = leadReference.Id;
-            }
-            common.Trace($"idToAdd: {idToAdd.ToString()} ");
-
-            var request = new AddMemberListRequest
-            {
-                ListId = marketingList.Id,
-                EntityId = idToAdd
-            };
-
-            common.Service.Execute(request);
+            common.AddToMarketingList(marketingList.Id, member);
         }
     }
 }

@@ -394,6 +394,19 @@ namespace msdyncrmWorkflowTools_Tests
         }
 
         [TestMethod]
+        public void AddToMarketingList_AddsTheMemberToTheList()
+        {
+            var listId = Guid.NewGuid();
+            service.OnExecute = r => new OrganizationResponse();
+
+            common.AddToMarketingList(listId, new EntityReference("lead", RecordId));
+
+            var request = (AddMemberListRequest)service.Executed.Single();
+            Assert.AreEqual(listId, request.ListId);
+            Assert.AreEqual(RecordId, request.EntityId);
+        }
+
+        [TestMethod]
         public void RemoveFromAllMarketingLists_RemovesTheRecordFromEachList()
         {
             var lists = new[] { Guid.NewGuid(), Guid.NewGuid() };

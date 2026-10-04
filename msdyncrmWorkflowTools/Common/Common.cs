@@ -1370,6 +1370,20 @@ namespace msdyncrmWorkflowTools
         }
 
         /// <summary>
+        /// Adds a record (account, contact or lead) to a marketing list.
+        /// </summary>
+        public void AddToMarketingList(Guid listId, EntityReference member)
+        {
+            Trace($"Adding {member.LogicalName} {member.Id} to marketing list {listId}");
+
+            Service.Execute(new AddMemberListRequest
+            {
+                ListId = listId,
+                EntityId = member.Id
+            });
+        }
+
+        /// <summary>
         /// Removes a record (account, contact or lead) from a marketing list.
         /// </summary>
         public void RemoveFromMarketingList(Guid listId, Guid memberId)

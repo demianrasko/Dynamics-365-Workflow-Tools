@@ -314,5 +314,24 @@ namespace msdyncrmWorkflowTools_Tests
             CollectionAssert.AreEqual(new[] { "new_colors", "new_sizes" }, Utility.SplitAttributeNames(" new_colors, ,new_sizes "));
             Assert.AreEqual(0, Utility.SplitAttributeNames(null).Length);
         }
+
+        [TestMethod]
+        public void GetMarketingListMember_PrefersAccountThenContactThenLead()
+        {
+            var account = new EntityReference("account", System.Guid.NewGuid());
+            var contact = new EntityReference("contact", System.Guid.NewGuid());
+            var lead = new EntityReference("lead", System.Guid.NewGuid());
+
+            Assert.AreSame(account, Utility.GetMarketingListMember(account, contact, lead));
+            Assert.AreSame(contact, Utility.GetMarketingListMember(null, contact, lead));
+            Assert.AreSame(lead, Utility.GetMarketingListMember(null, null, lead));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidPluginExecutionException))]
+        public void GetMarketingListMember_NoneSetThrows()
+        {
+            Utility.GetMarketingListMember(null, null, null);
+        }
     }
 }

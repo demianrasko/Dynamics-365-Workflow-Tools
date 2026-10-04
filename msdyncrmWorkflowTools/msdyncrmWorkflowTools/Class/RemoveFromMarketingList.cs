@@ -2,7 +2,6 @@
 #if !POWERPLATFORM
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
-using System;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools.Class
@@ -28,34 +27,10 @@ namespace msdyncrmWorkflowTools.Class
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
             var marketingList = MarketingList.Get(executionContext);
-            common.Trace($"marketingList: {marketingList.Id.ToString()} ");
+            var member = Utility.GetMarketingListMember(account.Get(executionContext), contact.Get(executionContext), lead.Get(executionContext));
 
-            var accountReference = account.Get(executionContext);
-
-            var contactReference = contact.Get(executionContext);
-
-            var leadReference = lead.Get(executionContext);
-
-            #endregion
-
-            var idToRemove = Guid.Empty;
-
-            if (accountReference != null)
-            {
-                idToRemove = accountReference.Id;
-            }
-            else if (contactReference != null)
-            {
-                idToRemove = contactReference.Id;
-            }
-            else if (leadReference != null)
-            {
-                idToRemove = leadReference.Id;
-            }
-
-            common.RemoveFromMarketingList(marketingList.Id, idToRemove);
+            common.RemoveFromMarketingList(marketingList.Id, member.Id);
         }
     }
 }

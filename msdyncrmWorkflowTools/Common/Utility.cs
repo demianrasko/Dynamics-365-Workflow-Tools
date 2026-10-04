@@ -454,6 +454,16 @@ namespace msdyncrmWorkflowTools
                 .Where(a => a.Length > 0)
                 .ToArray();
         }
+
+        /// <summary>
+        /// The marketing list member a workflow step was given: the account, else the contact, else the lead.
+        /// </summary>
+        /// <exception cref="InvalidPluginExecutionException">None of them is set.</exception>
+        public static EntityReference GetMarketingListMember(EntityReference account, EntityReference contact, EntityReference lead)
+        {
+            return account ?? contact ?? lead
+                ?? throw new InvalidPluginExecutionException("Account, Contact or Lead is required.");
+        }
         #endregion
 
         #region Rollups
@@ -535,17 +545,17 @@ namespace msdyncrmWorkflowTools
         #endregion
 
         #region JSON
-        public static string JsonParser(string Json, string JsonPath)
+        public static string JsonParser(string json, string jsonPath)
         {
-            if (JsonPath == null)
+            if (jsonPath == null)
             {
-                JsonPath = string.Empty;
+                jsonPath = string.Empty;
             }
-            var o = JObject.Parse(Json);
+            var o = JObject.Parse(json);
             var name = string.Empty;
-            if (o.SelectToken(JsonPath) != null)
+            if (o.SelectToken(jsonPath) != null)
             {
-                name = o.SelectToken(JsonPath).ToString();
+                name = o.SelectToken(jsonPath)?.ToString();
             }
             return name;
         }
@@ -627,17 +637,17 @@ namespace msdyncrmWorkflowTools
 
         #region Text and dates
         public static bool DateFunctions(DateTime date1, DateTime date2, ref TimeSpan difference,
-            ref int DayOfWeek, ref int DayOfYear, ref int Day, ref int Month, ref int Year, ref int WeekOfYear)
+            ref int dayOfWeek, ref int dayOfYear, ref int day, ref int month, ref int year, ref int weekOfYear)
         {
             difference = date1 - date2;
-            DayOfWeek = (int)date1.DayOfWeek;
-            DayOfYear = date1.DayOfYear;
-            Day = date1.Day;
-            Month = date1.Month;
-            Year = date1.Year;
+            dayOfWeek = (int)date1.DayOfWeek;
+            dayOfYear = date1.DayOfYear;
+            day = date1.Day;
+            month = date1.Month;
+            year = date1.Year;
             var dfi = DateTimeFormatInfo.CurrentInfo;
             var cal = dfi.Calendar;
-            WeekOfYear = cal.GetWeekOfYear(date1, dfi.CalendarWeekRule, dfi.FirstDayOfWeek);
+            weekOfYear = cal.GetWeekOfYear(date1, dfi.CalendarWeekRule, dfi.FirstDayOfWeek);
 
             return true;
         }
@@ -833,7 +843,7 @@ namespace msdyncrmWorkflowTools
 
         #region External web services (not Dataverse)
         // Shared HttpClient for the external web services
-        private static readonly HttpClient httpClient;
+        private static readonly HttpClient HttpClient;
 
         /// <summary>
         /// Class Constructor: Inits Singletion objects
@@ -842,9 +852,9 @@ namespace msdyncrmWorkflowTools
         {
             //Setup a commong HttpClient as a best practice to avoid leaving open connections
             //more details https://docs.microsoft.com/en-us/azure/architecture/antipatterns/improper-instantiation/
-            httpClient = new HttpClient();
-            httpClient.Timeout = new TimeSpan(0, 0, 30); //30 second timeout as recommend by Microsoft Support to prevent TimeOut on Sandbox
-            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));//ACCEPT header
+            HttpClient = new HttpClient();
+            HttpClient.Timeout = new TimeSpan(0, 0, 30); //30 second timeout as recommend by Microsoft Support to prevent TimeOut on Sandbox
+            HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));//ACCEPT header
         }
 
         private static void Trace(ITracingService tracingService, string format, params object[] args)
@@ -938,7 +948,7 @@ namespace msdyncrmWorkflowTools
             try
             {
                 // Task.Run keeps the async calls off any synchronization context; GetResult blocks without spinning
-                response = Task.Run(() => httpClient.SendAsync(message)).GetAwaiter().GetResult();
+                response = Task.Run(() => HttpClient.SendAsync(message)).GetAwaiter().GetResult();
                 body = Task.Run(() => response.Content.ReadAsStringAsync()).GetAwaiter().GetResult();
             }
             catch (TaskCanceledException)
