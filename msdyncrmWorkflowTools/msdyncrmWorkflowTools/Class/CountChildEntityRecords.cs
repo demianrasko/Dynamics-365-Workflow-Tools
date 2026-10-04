@@ -34,7 +34,7 @@ namespace msdyncrmWorkflowTools
             var _parentLookupName = ParentLookupName.Get(executionContext);
             var _recordURL = RecordURL.Get(executionContext);
             common.Trace($"ChildEntityName={_childEntityName}--ParentLookupName={_parentLookupName}--RecordURL={_recordURL}");
-            if (_recordURL == null || _recordURL == string.Empty)
+            if (string.IsNullOrEmpty(_recordURL))
             {
                 throw new InvalidPluginExecutionException("Record URL (Parent) is required.");
             }

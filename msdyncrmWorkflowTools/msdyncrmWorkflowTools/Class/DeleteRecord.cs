@@ -61,7 +61,7 @@ namespace msdyncrmWorkflowTools.Class
             else
             {
                 common.Trace($"Record type to be deleted: {entityTypeName} and ID:{entityGuid}");
-                if (string.IsNullOrEmpty(entityTypeName) || entityGuid == null || entityGuid == string.Empty)
+                if (string.IsNullOrEmpty(entityTypeName) || string.IsNullOrEmpty(entityGuid))
                 {
                     throw new InvalidPluginExecutionException("ERROR: Entity Type name or GUID to be deleted missing.");
                 }

@@ -27,7 +27,7 @@ namespace msdyncrmWorkflowTools
             common.Trace($"_FieldName={_FieldName}");
             var _ParentRecordURL = ParentRecordURL.Get(executionContext);
 
-            if (_ParentRecordURL == null || _ParentRecordURL == string.Empty)
+            if (string.IsNullOrEmpty(_ParentRecordURL))
             {
                 throw new InvalidPluginExecutionException("Parent Record URL is required.");
             }

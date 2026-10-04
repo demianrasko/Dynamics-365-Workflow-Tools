@@ -50,7 +50,7 @@ namespace msdyncrmWorkflowTools
 
             #region "Read Parameters"
             String _recordURL = this.RecordURL.Get(executionContext);
-            if (_recordURL == null || _recordURL == "")
+            if (string.IsNullOrEmpty(_recordURL))
             {
                 return;
             }
@@ -64,7 +64,7 @@ namespace msdyncrmWorkflowTools
             string _QRInfo = this.QRInfo.Get(executionContext);
             common.tracingService.Trace("QR Ok");
             string _noteSubject = this.noteSubject.Get(executionContext);
-            if (_noteSubject == null || _noteSubject == "")
+            if (string.IsNullOrEmpty(_noteSubject))
             {
                 _noteSubject = "QR";
             }
@@ -79,11 +79,11 @@ namespace msdyncrmWorkflowTools
             string _imageFormat = "jpg";//this.imageFormat.Get(executionContext);
             common.tracingService.Trace("ImageFormat Ok");
 
-            if (_imageFormat == null || _imageFormat == "")
+            if (string.IsNullOrEmpty(_imageFormat))
             {
                 _imageFormat = "jpg";
             }
-            if (_fileName == null || _fileName == "")
+            if (string.IsNullOrEmpty(_fileName))
             {
                 _fileName = $"QR.{_imageFormat}";
             }

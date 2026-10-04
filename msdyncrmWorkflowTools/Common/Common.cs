@@ -494,7 +494,7 @@ namespace msdyncrmWorkflowTools
 
         public string GetRecordID(string recordURL)
         {
-            if (recordURL == null || recordURL == string.Empty)
+            if (string.IsNullOrEmpty(recordURL))
             {
                 return string.Empty;
             }
@@ -1040,7 +1040,7 @@ namespace msdyncrmWorkflowTools
 
             //2') retrieve parent fielv value
             var valueToUpdate = new object();
-            if (parentFieldNameToUpdate != null && parentFieldNameToUpdate != string.Empty)
+            if (!string.IsNullOrEmpty(parentFieldNameToUpdate))
             {
                 var retrievedEntity = (Entity)service.Retrieve(parentEntityType, new Guid(parentEntityId), new ColumnSet(parentFieldNameToUpdate));
                 if (retrievedEntity.Attributes.Contains(parentFieldNameToUpdate))

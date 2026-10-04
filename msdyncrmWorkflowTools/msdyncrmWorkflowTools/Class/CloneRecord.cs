@@ -41,7 +41,7 @@ namespace msdyncrmWorkflowTools
         {
             #region "Read Parameters"
             var _ClonningRecordURL = ClonningRecordURL.Get(executionContext);
-            if (_ClonningRecordURL == null || _ClonningRecordURL == string.Empty)
+            if (string.IsNullOrEmpty(_ClonningRecordURL))
             {
                 throw new InvalidPluginExecutionException("Clonning Record URL is required.");
             }

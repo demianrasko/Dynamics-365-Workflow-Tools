@@ -58,19 +58,19 @@ namespace msdyncrmWorkflowTools
             #region "Read Parameters"
 
             var _relationshipName = RelationshipName.Get(executionContext);
-            if (_relationshipName == null || _relationshipName == string.Empty)
+            if (string.IsNullOrEmpty(_relationshipName))
             {
                 throw new InvalidPluginExecutionException("Relationship Name is required.");
             }
 
             var _newParentFieldName = NewParentFieldNameToUpdate.Get(executionContext);
-            if (_newParentFieldName == null || _newParentFieldName == string.Empty)
+            if (string.IsNullOrEmpty(_newParentFieldName))
             {
                 throw new InvalidPluginExecutionException("New Parent Field Name is required.");
             }
 
             var _source = SourceRecordUrl.Get(executionContext);
-            if (_source == null || _source == string.Empty)
+            if (string.IsNullOrEmpty(_source))
             {
                 throw new InvalidPluginExecutionException("Source Record URL is required.");
             }
@@ -82,7 +82,7 @@ namespace msdyncrmWorkflowTools
             common.Trace($"ObjectTypeCode={parentObjectTypeCode}--ParentId={parentId}");
 
             var _destination = TargetRecordUrl.Get(executionContext);
-            if (_destination == null || _destination == string.Empty)
+            if (string.IsNullOrEmpty(_destination))
             {
                 throw new InvalidPluginExecutionException("Target Record URL is required.");
             }

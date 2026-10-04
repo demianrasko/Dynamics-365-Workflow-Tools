@@ -28,7 +28,7 @@ namespace msdyncrmWorkflowTools
         {
             #region "Read Parameters"
             var _recordURL = RecordURL.Get(executionContext);
-            if (_recordURL == null || _recordURL == string.Empty)
+            if (string.IsNullOrEmpty(_recordURL))
             {
                 throw new InvalidPluginExecutionException("Record URL is required.");
             }
