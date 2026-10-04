@@ -3,6 +3,7 @@ using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 using System;
 using System.Activities;
+
 namespace msdyncrmWorkflowTools.Class
 {
     public class AddToMarketingList : WorkflowActivityBase

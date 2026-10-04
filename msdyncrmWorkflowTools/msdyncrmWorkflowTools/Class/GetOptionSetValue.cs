@@ -3,7 +3,6 @@ using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
 
-
 namespace msdyncrmWorkflowTools
 {
     public class GetOptionSetValue : WorkflowActivityBase

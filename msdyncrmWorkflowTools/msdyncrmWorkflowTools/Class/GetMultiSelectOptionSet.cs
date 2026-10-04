@@ -4,7 +4,6 @@ using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
 using System.Text;
 
-
 namespace msdyncrmWorkflowTools
 {
     public class GetMultiSelectOptionSet : WorkflowActivityBase
