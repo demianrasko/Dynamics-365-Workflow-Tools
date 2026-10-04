@@ -1084,25 +1084,13 @@ namespace msdyncrmWorkflowTools
 
                 if (meta.AttributeType.Value.ToString() == "Boolean")
                 {
-                    if (valueToUpdate is bool)
-                    {
-                        if ((bool)valueToUpdate == true)
-                        {
-                            valueToUpdate = "1";
-                        }
-                        else
-                        {
-                            valueToUpdate = "0";
-                        }
-                    }
-                    if (valueToUpdate == "1")
-                    {
-                        entUpdate.Attributes.Add(childFieldNameToUpdate, true);
-                    }
-                    else
-                    {
-                        entUpdate.Attributes.Add(childFieldNameToUpdate, false);
-                    }
+                    // valueToUpdate is an object, so compare its text (== "1" compared references and missed "1" read from a field)
+                    var text = Convert.ToString(valueToUpdate, CultureInfo.InvariantCulture);
+                    var isTrue = valueToUpdate is bool flag
+                        ? flag
+                        : text == "1" || string.Equals(text, "true", StringComparison.OrdinalIgnoreCase);
+
+                    entUpdate.Attributes.Add(childFieldNameToUpdate, isTrue);
                 }
                 else
                 {
@@ -1141,32 +1129,41 @@ namespace msdyncrmWorkflowTools
             }
         }
         /// <summary>
-        /// Forces a synchronous Execution of an HttpRequest
+        /// Sends an HTTP request synchronously (shared HttpClient, 30-second timeout) and returns the response body.
         /// </summary>
-        /// <param name="message">HttpRequest to Execute</param>
-        /// <returns>String with Response</returns>
+        /// <remarks>
+        /// An error status with a JSON body is returned to the caller, which turns the API's own error message into a
+        /// readable exception (Frankfurter, Translator). Any other error status throws with the status and the start of the body.
+        /// </remarks>
+        /// <param name="message">The request to send.</param>
+        /// <returns>The response body.</returns>
         private string ExecuteAsyncRequest(HttpRequestMessage message)
         {
-            string result = null;
-            var task = Task.Run(async () =>
-            {
-                var response = await httpClient.SendAsync(message);
-                result = await response.Content.ReadAsStringAsync();
-            });
+            HttpResponseMessage response;
+            string body;
 
-            while (!task.IsCompleted)
+            try
             {
-                System.Threading.Thread.Yield();
+                // Task.Run keeps the async calls off any synchronization context; GetResult blocks without spinning
+                response = Task.Run(() => httpClient.SendAsync(message)).GetAwaiter().GetResult();
+                body = Task.Run(() => response.Content.ReadAsStringAsync()).GetAwaiter().GetResult();
             }
-            if (task.IsFaulted)
-            {
-                throw task.Exception;
-            }
-            else if (task.IsCanceled)
+            catch (TaskCanceledException)
             {
                 throw new TimeoutException($"Timeout waiting for HttpResponse {message.Method}:{message.RequestUri}");
             }
-            return result;
+
+            Trace("HTTP {0} {1} from {2}", (int)response.StatusCode, response.ReasonPhrase, message.RequestUri.Host);
+
+            var mediaType = response.Content.Headers.ContentType?.MediaType ?? string.Empty;
+            if (!response.IsSuccessStatusCode && mediaType.IndexOf("json", StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                var detail = body.Length > 500 ? $"{body.Substring(0, 500)}..." : body;
+                throw new InvalidPluginExecutionException(
+                    $"HTTP {(int)response.StatusCode} {response.ReasonPhrase} from {message.RequestUri.Host}: {detail}");
+            }
+
+            return body;
         }
     }
 }
