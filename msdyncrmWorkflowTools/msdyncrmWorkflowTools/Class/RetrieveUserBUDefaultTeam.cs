@@ -9,11 +9,11 @@ namespace msdyncrmWorkflowTools
         #region "Parameter Definition"
         [RequiredArgument]
         [Input("User")]
-        [ReferenceTarget("systemuser")]
+        [ReferenceTarget(EntityNames.SystemUser)]
         public InArgument<EntityReference> User { get; set; }
 
         [Output("DefaultTeam")]
-        [ReferenceTarget("team")]
+        [ReferenceTarget(EntityNames.Team)]
         public OutArgument<EntityReference> DefaultTeam { get; set; }
 
         #endregion

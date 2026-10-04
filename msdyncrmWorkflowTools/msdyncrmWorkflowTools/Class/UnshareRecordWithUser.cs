@@ -15,7 +15,7 @@ namespace msdyncrmWorkflowTools
 
         [RequiredArgument]
         [Input("User")]
-        [ReferenceTarget("systemuser")]
+        [ReferenceTarget(EntityNames.SystemUser)]
         public InArgument<EntityReference> User { get; set; }
 
         #endregion

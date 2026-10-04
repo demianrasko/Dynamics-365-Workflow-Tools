@@ -12,7 +12,7 @@ namespace msdyncrmWorkflowTools
 
         [RequiredArgument]
         [Input("User")]
-        [ReferenceTarget("systemuser")]
+        [ReferenceTarget(EntityNames.SystemUser)]
         public InArgument<EntityReference> User { get; set; }
 
         [RequiredArgument]
@@ -77,7 +77,7 @@ namespace msdyncrmWorkflowTools
             common.Trace($"UserID: {userReference.Id.ToString()} ");
             #endregion
 
-            var newSettings = new Entity("usersettings");
+            var newSettings = new Entity(EntityNames.UserSettings);
             newSettings.Attributes.Add("systemuserid", userReference.Id);
 
             // TODO: Find a better way to do this

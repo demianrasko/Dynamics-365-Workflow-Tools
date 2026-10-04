@@ -7,7 +7,7 @@ namespace msdyncrmWorkflowTools
     public class ExecuteWorkflowForRecordsinQuery : WorkflowActivityBase
     {
         [Input("Process")]
-        [ReferenceTarget("workflow")]
+        [ReferenceTarget(EntityNames.Workflow)]
         public InArgument<EntityReference> Process { get; set; }
 
         [Input("Query")]

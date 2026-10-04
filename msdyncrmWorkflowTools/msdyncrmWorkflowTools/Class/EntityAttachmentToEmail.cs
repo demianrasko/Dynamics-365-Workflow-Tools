@@ -18,7 +18,7 @@ namespace msdyncrmWorkflowTools.Class
 
         [RequiredArgument]
         [Input("Email")]
-        [ReferenceTarget("email")]
+        [ReferenceTarget(EntityNames.Email)]
         public InArgument<EntityReference> Email { get; set; }
 
         [Input("Retrieve ActivityMimeAttachment")]

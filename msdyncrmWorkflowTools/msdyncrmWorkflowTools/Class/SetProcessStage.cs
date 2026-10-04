@@ -12,7 +12,7 @@ namespace msdyncrmWorkflowTools.Class
         public InArgument<string> ClonningRecordURL { get; set; }
 
         [Input("Process")]
-        [ReferenceTarget("workflow")]
+        [ReferenceTarget(EntityNames.Workflow)]
         public InArgument<EntityReference> Process { get; set; }
 
         [Input("Process Stage Name")]

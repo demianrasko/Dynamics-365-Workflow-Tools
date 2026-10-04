@@ -11,12 +11,12 @@ namespace msdyncrmWorkflowTools.Class
     {
         [RequiredArgument]
         [Input("Marketing List")]
-        [ReferenceTarget("list")]
+        [ReferenceTarget(EntityNames.List)]
         public InArgument<EntityReference> MarketingList { get; set; }
 
         [RequiredArgument]
         [Input("Marketing Campaign")]
-        [ReferenceTarget("campaign")]
+        [ReferenceTarget(EntityNames.Campaign)]
         public InArgument<EntityReference> Campaign { get; set; }
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
@@ -34,7 +34,7 @@ namespace msdyncrmWorkflowTools.Class
             {
                 CampaignId = campaign.Id,
                 EntityId = marketingList.Id,
-                EntityName = "list",
+                EntityName = EntityNames.List,
             };
 
             common.Service.Execute(request);

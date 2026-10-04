@@ -10,7 +10,7 @@ namespace msdyncrmWorkflowTools.Class
     {
         [RequiredArgument]
         [Input("Sales Literature")]
-        [ReferenceTarget("salesliterature")]
+        [ReferenceTarget(EntityNames.SalesLiterature)]
         public InArgument<EntityReference> SalesLiterature { get; set; }
 
         [RequiredArgument]
@@ -20,7 +20,7 @@ namespace msdyncrmWorkflowTools.Class
 
         [RequiredArgument]
         [Input("Email")]
-        [ReferenceTarget("email")]
+        [ReferenceTarget(EntityNames.Email)]
         public InArgument<EntityReference> Email { get; set; }
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)

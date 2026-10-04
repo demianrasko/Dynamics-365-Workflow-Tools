@@ -39,7 +39,7 @@ namespace msdyncrmWorkflowTools
         /// <summary>The parties of an activity with one participation type (from, to, cc, ...).</summary>
         public static QueryExpression ActivityParties(Guid activityId, int participationTypeMask)
         {
-            var query = new QueryExpression("activityparty")
+            var query = new QueryExpression(EntityNames.ActivityParty)
             {
                 ColumnSet = new ColumnSet("partyid"),
                 Distinct = true
@@ -53,7 +53,7 @@ namespace msdyncrmWorkflowTools
         /// <summary>The default team of the business unit a user belongs to.</summary>
         public static QueryExpression DefaultTeamForUser(Guid systemUserId)
         {
-            var query = new QueryExpression("team")
+            var query = new QueryExpression(EntityNames.Team)
             {
                 ColumnSet = new ColumnSet("name", "businessunitid", "teamid", "teamtype"),
                 Distinct = true
@@ -62,10 +62,10 @@ namespace msdyncrmWorkflowTools
             query.Criteria.AddCondition("teamtype", ConditionOperator.Equal, 0);
             query.Criteria.AddCondition("isdefault", ConditionOperator.Equal, true);
 
-            var businessUnit = query.AddLink("businessunit", "businessunitid", "businessunitid", JoinOperator.Inner);
+            var businessUnit = query.AddLink(EntityNames.BusinessUnit, "businessunitid", "businessunitid", JoinOperator.Inner);
             businessUnit.EntityAlias = "ae";
 
-            var user = businessUnit.AddLink("systemuser", "businessunitid", "businessunitid", JoinOperator.Inner);
+            var user = businessUnit.AddLink(EntityNames.SystemUser, "businessunitid", "businessunitid", JoinOperator.Inner);
             user.EntityAlias = "af";
             user.LinkCriteria.AddCondition("systemuserid", ConditionOperator.Equal, systemUserId);
 
@@ -75,15 +75,15 @@ namespace msdyncrmWorkflowTools
         /// <summary>Enabled, read-write users that hold a security role.</summary>
         public static QueryExpression UsersInRole(Guid roleId)
         {
-            var query = new QueryExpression("systemuser")
+            var query = new QueryExpression(EntityNames.SystemUser)
             {
                 ColumnSet = new ColumnSet("systemuserid"),
                 Distinct = true
             };
             query.Criteria.AddCondition("accessmode", ConditionOperator.Equal, 0);
 
-            var userRoles = query.AddLink("systemuserroles", "systemuserid", "systemuserid");
-            var role = userRoles.AddLink("role", "roleid", "roleid");
+            var userRoles = query.AddLink(EntityNames.SystemUserRoles, "systemuserid", "systemuserid");
+            var role = userRoles.AddLink(EntityNames.Role, "roleid", "roleid");
             role.EntityAlias = "aa";
             role.LinkCriteria.AddCondition("roleid", ConditionOperator.Equal, roleId);
 
@@ -93,7 +93,7 @@ namespace msdyncrmWorkflowTools
         /// <summary>Sales literature items whose file name matches a LIKE pattern (% and _ wildcards).</summary>
         public static QueryExpression SalesLiteratureItems(string fileNamePattern, Guid salesLiteratureId)
         {
-            var query = new QueryExpression("salesliteratureitem")
+            var query = new QueryExpression(EntityNames.SalesLiteratureItem)
             {
                 ColumnSet = new ColumnSet("filename", "salesliteratureitemid", "title", "documentbody", "mimetype")
             };
@@ -116,7 +116,7 @@ namespace msdyncrmWorkflowTools
 
             if (activityMimeAttachments)
             {
-                query = new QueryExpression("activitymimeattachment")
+                query = new QueryExpression(EntityNames.ActivityMimeAttachment)
                 {
                     ColumnSet = new ColumnSet("filename", "attachmentid", "subject", "body", "mimetype")
                 };
@@ -124,7 +124,7 @@ namespace msdyncrmWorkflowTools
             }
             else
             {
-                query = new QueryExpression("annotation")
+                query = new QueryExpression(EntityNames.Annotation)
                 {
                     ColumnSet = new ColumnSet("filename", "annotationid", "subject", "documentbody", "mimetype")
                 };
@@ -149,15 +149,15 @@ namespace msdyncrmWorkflowTools
         /// <summary>The team, if the user is a member of it (one row) — otherwise no rows.</summary>
         public static QueryExpression TeamMembership(Guid teamId, Guid systemUserId)
         {
-            var query = new QueryExpression("team")
+            var query = new QueryExpression(EntityNames.Team)
             {
                 ColumnSet = new ColumnSet("teamid"),
                 Distinct = true
             };
             query.Criteria.AddCondition("teamid", ConditionOperator.Equal, teamId);
 
-            var membership = query.AddLink("teammembership", "teamid", "teamid");
-            var user = membership.AddLink("systemuser", "systemuserid", "systemuserid");
+            var membership = query.AddLink(EntityNames.TeamMembership, "teamid", "teamid");
+            var user = membership.AddLink(EntityNames.SystemUser, "systemuserid", "systemuserid");
             user.EntityAlias = "ag";
             user.LinkCriteria.AddCondition("systemuserid", ConditionOperator.Equal, systemUserId);
 
@@ -167,7 +167,7 @@ namespace msdyncrmWorkflowTools
         /// <summary>Every marketing list membership of a record (account, contact or lead).</summary>
         public static QueryExpression MarketingListMemberships(Guid memberId)
         {
-            var query = new QueryExpression("listmember")
+            var query = new QueryExpression(EntityNames.ListMember)
             {
                 ColumnSet = new ColumnSet("listid")
             };
@@ -179,7 +179,7 @@ namespace msdyncrmWorkflowTools
         /// <summary>The marketing list membership of a record (one row) — otherwise no rows.</summary>
         public static QueryExpression MarketingListMembership(Guid listId, Guid memberId)
         {
-            var query = new QueryExpression("listmember")
+            var query = new QueryExpression(EntityNames.ListMember)
             {
                 ColumnSet = new ColumnSet("listmemberid"),
                 TopCount = 1
@@ -213,7 +213,7 @@ namespace msdyncrmWorkflowTools
         /// <summary>The field-sharing record (principalobjectattributeaccess) for one secured field, record and principal.</summary>
         public static QueryExpression FieldSharing(Guid attributeId, Guid objectId, Guid principalId)
         {
-            var query = new QueryExpression("principalobjectattributeaccess")
+            var query = new QueryExpression(EntityNames.PrincipalObjectAttributeAccess)
             {
                 ColumnSet = new ColumnSet("readaccess", "updateaccess"),
                 TopCount = 1
@@ -228,7 +228,7 @@ namespace msdyncrmWorkflowTools
         /// <summary>The stage of a business process flow with the given name.</summary>
         public static QueryExpression ProcessStage(Guid processId, string stageName)
         {
-            var query = new QueryExpression("processstage")
+            var query = new QueryExpression(EntityNames.ProcessStage)
             {
                 ColumnSet = new ColumnSet("processstageid"),
                 TopCount = 1
@@ -243,7 +243,7 @@ namespace msdyncrmWorkflowTools
         /// <param name="top">Maximum number of records; 0 or less means no limit.</param>
         public static QueryExpression QueueItems(Guid queueId, bool onlyUnassigned, int top = 0)
         {
-            var query = new QueryExpression("queueitem")
+            var query = new QueryExpression(EntityNames.QueueItem)
             {
                 ColumnSet = new ColumnSet("enteredon", "objecttypecode", "objectid", "queueid")
             };
@@ -280,7 +280,7 @@ namespace msdyncrmWorkflowTools
         /// <summary>One column of the organization record.</summary>
         public static QueryExpression OrganizationSetting(string attributeName)
         {
-            var query = new QueryExpression("organization")
+            var query = new QueryExpression(EntityNames.Organization)
             {
                 ColumnSet = new ColumnSet(attributeName),
                 TopCount = 1
@@ -295,7 +295,7 @@ namespace msdyncrmWorkflowTools
         /// </summary>
         public static QueryExpression SharepointDocumentLocations(Guid regardingObjectId)
         {
-            var query = new QueryExpression("sharepointdocumentlocation")
+            var query = new QueryExpression(EntityNames.SharePointDocumentLocation)
             {
                 ColumnSet = new ColumnSet("absoluteurl", "sharepointdocumentlocationid", "relativeurl")
             };

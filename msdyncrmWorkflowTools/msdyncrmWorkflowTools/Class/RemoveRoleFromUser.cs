@@ -8,12 +8,12 @@ namespace msdyncrmWorkflowTools
     {
         [RequiredArgument]
         [Input("Role")]
-        [ReferenceTarget("role")]
+        [ReferenceTarget(EntityNames.Role)]
         public InArgument<EntityReference> Role { get; set; }
 
         [RequiredArgument]
         [Input("User")]
-        [ReferenceTarget("systemuser")]
+        [ReferenceTarget(EntityNames.SystemUser)]
         public InArgument<EntityReference> User { get; set; }
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
@@ -25,7 +25,7 @@ namespace msdyncrmWorkflowTools
             common.Trace($"RoleId: {roleReference.Id.ToString()} - UserID: {userReference.Id.ToString()} ");
             #endregion
 
-            var roleId = common.GetRoleIdInBusinessUnit(new EntityReference("systemuser", userReference.Id), roleReference.Id);
+            var roleId = common.GetRoleIdInBusinessUnit(new EntityReference(EntityNames.SystemUser, userReference.Id), roleReference.Id);
 
             if (roleId == null)
             {
@@ -35,10 +35,10 @@ namespace msdyncrmWorkflowTools
             var entRoleId = roleId.Value;
 
             common.Service.Disassociate(
-                "systemuser",
+                EntityNames.SystemUser,
                 userReference.Id,
                 new Relationship("systemuserroles_association"), 
-                new EntityReferenceCollection { new EntityReference("role", entRoleId) });
+                new EntityReferenceCollection { new EntityReference(EntityNames.Role, entRoleId) });
         }
     }
 }

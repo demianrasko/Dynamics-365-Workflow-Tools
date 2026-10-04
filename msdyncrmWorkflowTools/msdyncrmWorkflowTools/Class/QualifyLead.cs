@@ -13,7 +13,7 @@ namespace msdyncrmWorkflowTools
         #region "Parameter Definition"
         [RequiredArgument]
         [Input("Lead")]
-        [ReferenceTarget("lead")]
+        [ReferenceTarget(EntityNames.Lead)]
         public InArgument<EntityReference> Lead { get; set; }
 
         [RequiredArgument]
@@ -29,11 +29,11 @@ namespace msdyncrmWorkflowTools
         public InArgument<bool> CreateOpportunity { get; set; }
 
         [Input("Existing Account")]
-        [ReferenceTarget("account")]
+        [ReferenceTarget(EntityNames.Account)]
         public InArgument<EntityReference> ExistingAccount { get; set; }
 
         [Input("Existing Contact")]
-        [ReferenceTarget("contact")]
+        [ReferenceTarget(EntityNames.Contact)]
         public InArgument<EntityReference> ExistingContact { get; set; }
 
         [RequiredArgument]
@@ -62,7 +62,7 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "QualifyLead Execution"
-            var query = new QueryExpression("organization")
+            var query = new QueryExpression(EntityNames.Organization)
             {
                 ColumnSet = new ColumnSet("basecurrencyid")
             };
@@ -80,15 +80,15 @@ namespace msdyncrmWorkflowTools
 
             if (existingAccount != null)
             {
-                request.OpportunityCustomerId = new EntityReference("account", existingAccount.Id);
+                request.OpportunityCustomerId = new EntityReference(EntityNames.Account, existingAccount.Id);
             }
             else if (existingContact != null)
             {
-                request.OpportunityCustomerId = new EntityReference("contact", existingContact.Id);
+                request.OpportunityCustomerId = new EntityReference(EntityNames.Contact, existingContact.Id);
             }
 
             request.Status = new OptionSetValue(leadStatus);
-            request.LeadId = new EntityReference("lead", lead.Id);
+            request.LeadId = new EntityReference(EntityNames.Lead, lead.Id);
 
             common.Service.Execute(request);
             common.Trace("  Executed OK.");

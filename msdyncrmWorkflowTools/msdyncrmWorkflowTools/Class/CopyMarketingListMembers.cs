@@ -11,12 +11,12 @@ namespace msdyncrmWorkflowTools.Class
     {
         [RequiredArgument]
         [Input("Source List")]
-        [ReferenceTarget("list")]
+        [ReferenceTarget(EntityNames.List)]
         public InArgument<EntityReference> SourceList { get; set; }
 
         [RequiredArgument]
         [Input("Target List")]
-        [ReferenceTarget("list")]
+        [ReferenceTarget(EntityNames.List)]
         public InArgument<EntityReference> TargetList { get; set; }
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)

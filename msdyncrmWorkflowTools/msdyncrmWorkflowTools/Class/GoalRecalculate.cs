@@ -9,7 +9,7 @@ namespace msdyncrmWorkflowTools
     {
         #region "Parameter Definition"
         [Input("Goal")]
-        [ReferenceTarget("goal")]
+        [ReferenceTarget(EntityNames.Goal)]
         public InArgument<EntityReference> Goal { get; set; }
 
         [Input("Goal Guid")]

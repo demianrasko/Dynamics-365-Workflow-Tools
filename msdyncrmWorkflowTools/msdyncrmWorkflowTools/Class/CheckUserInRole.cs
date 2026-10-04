@@ -9,11 +9,11 @@ namespace msdyncrmWorkflowTools
     {
         [RequiredArgument]
         [Input("Role")]
-        [ReferenceTarget("role")]
+        [ReferenceTarget(EntityNames.Role)]
         public InArgument<EntityReference> Role { get; set; }
 
         [Input("User")]
-        [ReferenceTarget("systemuser")]
+        [ReferenceTarget(EntityNames.SystemUser)]
         public InArgument<EntityReference> User { get; set; }
 
         [Output("isUserInRole")]
@@ -32,9 +32,9 @@ namespace msdyncrmWorkflowTools
 
             var systemUserLink = new LinkEntity
             {
-                LinkFromEntityName = "systemuserroles",
+                LinkFromEntityName = EntityNames.SystemUserRoles,
                 LinkFromAttributeName = "systemuserid",
-                LinkToEntityName = "systemuser",
+                LinkToEntityName = EntityNames.SystemUser,
                 LinkToAttributeName = "systemuserid",
                 LinkCriteria =
             {
@@ -48,15 +48,15 @@ namespace msdyncrmWorkflowTools
 
             var linkQuery = new QueryExpression
             {
-                EntityName = "role",
+                EntityName = EntityNames.Role,
                 ColumnSet = new ColumnSet("parentrootroleid"),
                 LinkEntities =
             {
                 new LinkEntity
                 {
-                    LinkFromEntityName = "role",
+                    LinkFromEntityName = EntityNames.Role,
                     LinkFromAttributeName = "roleid",
-                    LinkToEntityName = "systemuserroles",
+                    LinkToEntityName = EntityNames.SystemUserRoles,
                     LinkToAttributeName = "roleid",
                     LinkEntities = {systemUserLink}
                 }

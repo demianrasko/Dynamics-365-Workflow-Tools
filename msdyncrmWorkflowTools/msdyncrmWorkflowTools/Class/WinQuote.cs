@@ -11,7 +11,7 @@ namespace msdyncrmWorkflowTools
     {
         [RequiredArgument]
         [Input("Quote")]
-        [ReferenceTarget("quote")]
+        [ReferenceTarget(EntityNames.Quote)]
         public InArgument<EntityReference> Quote { get; set; }
 
         [Input("Message")]
@@ -30,7 +30,7 @@ namespace msdyncrmWorkflowTools
             common.Trace($"quote: {quote.Id} message: {message}");
             #endregion
 
-            var quoteClose = new Entity("quoteclose")
+            var quoteClose = new Entity(EntityNames.QuoteClose)
             {
                 ["subject"] = message,
                 ["quoteid"] = quote

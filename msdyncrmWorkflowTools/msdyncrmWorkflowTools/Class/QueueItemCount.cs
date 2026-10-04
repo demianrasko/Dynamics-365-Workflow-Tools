@@ -9,7 +9,7 @@ namespace msdyncrmWorkflowTools.Class
         #region "Parameter Definition"
         [RequiredArgument]
         [Input("Source Queue")]
-        [ReferenceTarget("queue")]
+        [ReferenceTarget(EntityNames.Queue)]
         public InArgument<EntityReference> SourceQueue { get; set; }
 
         [RequiredArgument]

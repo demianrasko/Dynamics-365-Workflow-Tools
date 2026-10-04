@@ -17,16 +17,16 @@ namespace msdyncrmWorkflowTools
 
         [RequiredArgument]
         [Input("Administrator")]
-        [ReferenceTarget("systemuser")]
+        [ReferenceTarget(EntityNames.SystemUser)]
         public InArgument<EntityReference> Administrator { get; set; }
 
         [RequiredArgument]
         [Input("Business Unit")]
-        [ReferenceTarget("businessunit")]
+        [ReferenceTarget(EntityNames.BusinessUnit)]
         public InArgument<EntityReference> BusinessUnit { get; set; }
 
         [Output("Team")]
-        [ReferenceTarget("team")]
+        [ReferenceTarget(EntityNames.Team)]
         public OutArgument<EntityReference> createdTeam { get; set; }
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
@@ -44,7 +44,7 @@ namespace msdyncrmWorkflowTools
 
             var createdTeamId = common.CreateTeam(teamName, teamType, administrator, businessUnit);
 
-            createdTeam.Set(executionContext, new EntityReference("team", createdTeamId));
+            createdTeam.Set(executionContext, new EntityReference(EntityNames.Team, createdTeamId));
 
             #endregion
         }

@@ -14,7 +14,7 @@ namespace msdyncrmWorkflowTools.Class
         public InArgument<string> RecordID { get; set; }
 
         [Input("Process")]
-        [ReferenceTarget("workflow")]
+        [ReferenceTarget(EntityNames.Workflow)]
         public InArgument<EntityReference> Process { get; set; }
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)

@@ -9,12 +9,12 @@ namespace msdyncrmWorkflowTools.Class
     {
         [RequiredArgument]
         [Input("Email")]
-        [ReferenceTarget("email")]
+        [ReferenceTarget(EntityNames.Email)]
         public InArgument<EntityReference> Email { get; set; }
 
         [RequiredArgument]
         [Input("Team")]
-        [ReferenceTarget("team")]
+        [ReferenceTarget(EntityNames.Team)]
         public InArgument<EntityReference> Team { get; set; }
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
@@ -28,12 +28,12 @@ namespace msdyncrmWorkflowTools.Class
 
             #region "Query Email of team members"
             var teamId = team.Id;
-            var userQuery = new QueryExpression("systemuser")
+            var userQuery = new QueryExpression(EntityNames.SystemUser)
             {
                 ColumnSet = new ColumnSet("systemuserid")
             };
 
-            var teamLink = new LinkEntity("systemuser", "teammembership", "systemuserid", "systemuserid", JoinOperator.Inner);
+            var teamLink = new LinkEntity(EntityNames.SystemUser, EntityNames.TeamMembership, "systemuserid", "systemuserid", JoinOperator.Inner);
             var teamCondition = new ConditionExpression("teamid", ConditionOperator.Equal, teamId);
 
             teamLink.LinkCriteria.AddCondition(teamCondition);
@@ -49,7 +49,7 @@ namespace msdyncrmWorkflowTools.Class
             #endregion
 
             #region "Update the "To" field on the Email"
-            var emailEnt = new Entity("email",email.Id);
+            var emailEnt = new Entity(EntityNames.Email,email.Id);
 
             var to = new EntityCollection();
 
@@ -57,9 +57,9 @@ namespace msdyncrmWorkflowTools.Class
             {
                 var userId = user.Id;
 
-                var to1 = new Entity("activityparty")
+                var to1 = new Entity(EntityNames.ActivityParty)
                 {
-                    ["partyid"] = new EntityReference("systemuser", userId)
+                    ["partyid"] = new EntityReference(EntityNames.SystemUser, userId)
                 };
 
                 to.Entities.Add(to1);

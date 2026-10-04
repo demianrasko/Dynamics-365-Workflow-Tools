@@ -13,7 +13,7 @@ namespace msdyncrmWorkflowTools.Class
 
         [RequiredArgument]
         [Input("Case")]
-        [ReferenceTarget("incident")]
+        [ReferenceTarget(EntityNames.Incident)]
         public InArgument<EntityReference> Incident { get; set; }
 
         [Input("Case Resolution")]
@@ -39,9 +39,9 @@ namespace msdyncrmWorkflowTools.Class
             common.Trace($"IncidentID: {incident.Id} - Description: {description} - Subject: {subject}");
             #endregion
 
-            var incidentResolution = new Entity("incidentresolution")
+            var incidentResolution = new Entity(EntityNames.IncidentResolution)
             {
-                ["incidentid"] = new EntityReference("incident", incident.Id),
+                ["incidentid"] = new EntityReference(EntityNames.Incident, incident.Id),
                 ["subject"] = subject,
                 ["description"] = description
             };

@@ -9,7 +9,7 @@ namespace msdyncrmWorkflowTools.Class
     {
         [RequiredArgument]
         [Input("Email to send")]
-        [ReferenceTarget("email")]
+        [ReferenceTarget(EntityNames.Email)]
         public InArgument<EntityReference> SourceEmail
         { get; set; }
 

@@ -10,7 +10,7 @@ namespace msdyncrmWorkflowTools
     {
         [RequiredArgument]
         [Input("Quote")]
-        [ReferenceTarget("quote")]
+        [ReferenceTarget(EntityNames.Quote)]
         public InArgument<EntityReference> Quote { get; set; }
 
         [RequiredArgument]

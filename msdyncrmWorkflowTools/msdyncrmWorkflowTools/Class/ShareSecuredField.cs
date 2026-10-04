@@ -18,11 +18,11 @@ namespace msdyncrmWorkflowTools
         public InArgument<string> AttributeName { get; set; }
 
         [Input("Share With User")]
-        [ReferenceTarget("systemuser")]
+        [ReferenceTarget(EntityNames.SystemUser)]
         public InArgument<EntityReference> UserToShare { get; set; }
 
         [Input("Share With Team")]
-        [ReferenceTarget("team")]
+        [ReferenceTarget(EntityNames.Team)]
         public InArgument<EntityReference> TeamToShare { get; set; }
 
         [RequiredArgument]

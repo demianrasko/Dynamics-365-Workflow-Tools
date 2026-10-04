@@ -9,12 +9,12 @@ namespace msdyncrmWorkflowTools
     {
         [RequiredArgument]
         [Input("User")]
-        [ReferenceTarget("systemuser")]
+        [ReferenceTarget(EntityNames.SystemUser)]
         public InArgument<EntityReference> User { get; set; }
 
         [RequiredArgument]
         [Input("Team")]
-        [ReferenceTarget("team")]
+        [ReferenceTarget(EntityNames.Team)]
         public InArgument<EntityReference> Team { get; set; }
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)

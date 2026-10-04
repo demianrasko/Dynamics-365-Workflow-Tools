@@ -10,21 +10,21 @@ namespace msdyncrmWorkflowTools.Class
     {
         [RequiredArgument]
         [Input("Marketing List")]
-        [ReferenceTarget("list")]
+        [ReferenceTarget(EntityNames.List)]
         public InArgument<EntityReference> MarketingList { get; set; }
 
         [Input("Account")]
-        [ReferenceTarget("account")]
+        [ReferenceTarget(EntityNames.Account)]
         // ReSharper disable once InconsistentNaming
         public InArgument<EntityReference> account { get; set; }
 
         [Input("Contact")]
-        [ReferenceTarget("contact")]
+        [ReferenceTarget(EntityNames.Contact)]
         // ReSharper disable once InconsistentNaming
         public InArgument<EntityReference> contact { get; set; }
 
         [Input("Lead")]
-        [ReferenceTarget("lead")]
+        [ReferenceTarget(EntityNames.Lead)]
         // ReSharper disable once InconsistentNaming
         public InArgument<EntityReference> lead { get; set; }
 

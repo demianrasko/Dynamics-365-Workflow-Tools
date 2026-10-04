@@ -7,7 +7,7 @@ namespace msdyncrmWorkflowTools.Class
     public class GetInitiatingUser : WorkflowActivityBase
     {
         [Output("Initiating User")]
-        [ReferenceTarget("systemuser")]
+        [ReferenceTarget(EntityNames.SystemUser)]
         public OutArgument<EntityReference> InitiatingUser
         {
             get;
@@ -16,7 +16,7 @@ namespace msdyncrmWorkflowTools.Class
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            InitiatingUser.Set(executionContext, new EntityReference("systemuser", common.Context.InitiatingUserId));
+            InitiatingUser.Set(executionContext, new EntityReference(EntityNames.SystemUser, common.Context.InitiatingUserId));
         }
     }
 }

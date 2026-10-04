@@ -15,7 +15,7 @@ namespace msdyncrmWorkflowTools
 
         [RequiredArgument]
         [Input("Team")]
-        [ReferenceTarget("team")]
+        [ReferenceTarget(EntityNames.Team)]
         public InArgument<EntityReference> Team { get; set; }
 
         #endregion

@@ -10,17 +10,17 @@ namespace msdyncrmWorkflowTools
     {
         [RequiredArgument]
         [Input("Opportunity")]
-        [ReferenceTarget("opportunity")]
+        [ReferenceTarget(EntityNames.Opportunity)]
         public InArgument<EntityReference> Opportunity { get; set; }
 
         [RequiredArgument]
         [Input("Existing Product")]
-        [ReferenceTarget("product")]
+        [ReferenceTarget(EntityNames.Product)]
         public InArgument<EntityReference> ExistingProduct { get; set; }
 
         [RequiredArgument]
         [Input("Unit")]
-        [ReferenceTarget("uom")]
+        [ReferenceTarget(EntityNames.Uom)]
         public InArgument<EntityReference> UoM { get; set; }
 
         [RequiredArgument]

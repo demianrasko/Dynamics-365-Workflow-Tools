@@ -9,7 +9,7 @@ namespace msdyncrmWorkflowTools
         [Input("Relationship Name"), RequiredArgument]
         public InArgument<string> RelationshipName { get; set; }
 
-        [ReferenceTarget("workflow"), Input("Distributed Workflow"), RequiredArgument]
+        [ReferenceTarget(EntityNames.Workflow), Input("Distributed Workflow"), RequiredArgument]
         public InArgument<EntityReference> Workflow { get; set; }
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)

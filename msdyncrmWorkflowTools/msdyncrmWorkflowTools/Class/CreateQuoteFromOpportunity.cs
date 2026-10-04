@@ -12,11 +12,11 @@ namespace msdyncrmWorkflowTools
     {
         [RequiredArgument]
         [Input("Opportunity")]
-        [ReferenceTarget("opportunity")]
+        [ReferenceTarget(EntityNames.Opportunity)]
         public InArgument<EntityReference> Opportunity { get; set; }
 
         [Output("Quote")]
-        [ReferenceTarget("quote")]
+        [ReferenceTarget(EntityNames.Quote)]
         public OutArgument<EntityReference> Quote { get; set; }
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)

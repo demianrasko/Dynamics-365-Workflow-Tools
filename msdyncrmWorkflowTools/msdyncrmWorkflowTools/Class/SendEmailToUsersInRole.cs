@@ -8,7 +8,7 @@ namespace msdyncrmWorkflowTools.Class
     {
         [Input("Security Role")]
         [RequiredArgument]
-        [ReferenceTarget("role")]
+        [ReferenceTarget(EntityNames.Role)]
         public InArgument<EntityReference> SecurityRoleLookup
         {
             get;
@@ -17,7 +17,7 @@ namespace msdyncrmWorkflowTools.Class
 
         [Input("Email")]
         [RequiredArgument]
-        [ReferenceTarget("email")]
+        [ReferenceTarget(EntityNames.Email)]
         public InArgument<EntityReference> Email
         {
             get;

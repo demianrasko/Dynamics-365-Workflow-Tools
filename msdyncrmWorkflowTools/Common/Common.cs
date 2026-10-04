@@ -106,7 +106,7 @@ namespace msdyncrmWorkflowTools
         {
             var query = new QueryExpression
             {
-                EntityName = "appmodule",
+                EntityName = EntityNames.AppModule,
                 ColumnSet = new ColumnSet("appmoduleid", "uniquename"),
                 Criteria =
                         {
@@ -503,7 +503,7 @@ namespace msdyncrmWorkflowTools
                         var partyid = (EntityReference)ent.Attributes["partyid"];
 
                         // one activityparty per party (re-using one entity threw "same key" for a second party)
-                        var party = new Entity("activityparty")
+                        var party = new Entity(EntityNames.ActivityParty)
                         {
                             ["partyid"] = new EntityReference(partyid.LogicalName, partyid.Id)
                         };
@@ -997,7 +997,7 @@ namespace msdyncrmWorkflowTools
                     continue;
                 }
 
-                Service.Create(new Entity("principalobjectattributeaccess")
+                Service.Create(new Entity(EntityNames.PrincipalObjectAttributeAccess)
                 {
                     ["attributeid"] = attribute.MetadataId.Value,
                     ["objectid"] = record,
@@ -1010,7 +1010,7 @@ namespace msdyncrmWorkflowTools
 
         public Guid CreateTeam(string teamName, int teamType, EntityReference administrator, EntityReference businessUnit)
         {
-            var team = new Entity("team")
+            var team = new Entity(EntityNames.Team)
             {
                 ["administratorid"] = administrator,
                 ["name"] = teamName,
@@ -1025,7 +1025,7 @@ namespace msdyncrmWorkflowTools
         {
             var query = new QueryExpression
             {
-                EntityName = "teammembership",
+                EntityName = EntityNames.TeamMembership,
                 ColumnSet = new ColumnSet("systemuserid", "teamid"),
                 Criteria =
                         {
@@ -1067,7 +1067,7 @@ namespace msdyncrmWorkflowTools
 
             var roleQuery = new QueryExpression
             {
-                EntityName = "role",
+                EntityName = EntityNames.Role,
                 ColumnSet = new ColumnSet("parentrootroleid"),
                 Criteria = new FilterExpression
                 {
@@ -1097,7 +1097,7 @@ namespace msdyncrmWorkflowTools
 
             var businessUnitRoleQuery = new QueryExpression
             {
-                EntityName = "role",
+                EntityName = EntityNames.Role,
                 ColumnSet = new ColumnSet("roleid"),
                 Criteria = new FilterExpression
                 {
@@ -1131,16 +1131,16 @@ namespace msdyncrmWorkflowTools
             var toEntities = new List<Entity>();
             var activityParty = new Entity
             {
-                LogicalName = "activityparty",
+                LogicalName = EntityNames.ActivityParty,
                 Attributes =
                 {
-                    ["partyid"] = new EntityReference("systemuser", userId)
+                    ["partyid"] = new EntityReference(EntityNames.SystemUser, userId)
                 }
             };
 
             toEntities.Add(activityParty);
 
-            var email = new Entity("email")
+            var email = new Entity(EntityNames.Email)
             {
                 Attributes =
                 {
@@ -1157,7 +1157,7 @@ namespace msdyncrmWorkflowTools
 
                 // The regarding Id is required, and must be of the same type as the Email Template.
                 RegardingId = userId,
-                RegardingType = "systemuser"
+                RegardingType = EntityNames.SystemUser
             };
 
             var response = (SendEmailFromTemplateResponse)Service.Execute(request);
@@ -1202,7 +1202,7 @@ namespace msdyncrmWorkflowTools
             var userList = Service.RetrieveMultiple(Queries.UsersInRole(securityRoleLookup.Id));
             Trace("Retrieved Data");
 
-            var email = new Entity("email", emailReference.Id);
+            var email = new Entity(EntityNames.Email, emailReference.Id);
 
             var to = new EntityCollection();
 
@@ -1210,9 +1210,9 @@ namespace msdyncrmWorkflowTools
             {
                 var userId = user.Id;
 
-                var to1 = new Entity("activityparty")
+                var to1 = new Entity(EntityNames.ActivityParty)
                 {
-                    ["partyid"] = new EntityReference("systemuser", userId)
+                    ["partyid"] = new EntityReference(EntityNames.SystemUser, userId)
                 };
 
                 to.Entities.Add(to1);
@@ -1237,7 +1237,7 @@ namespace msdyncrmWorkflowTools
         {
             #region "Query Attachments"
 
-            Trace($"Attachments: {(retrieveActivityMimeAttachment ? "activitymimeattachment" : "annotation")} of {parentId}, file name like '{fileName}', top {topRecords}");
+            Trace($"Attachments: {(retrieveActivityMimeAttachment ? EntityNames.ActivityMimeAttachment : EntityNames.Annotation)} of {parentId}, file name like '{fileName}', top {topRecords}");
             var attachmentFiles = Service.RetrieveMultiple(
                 Queries.EntityAttachments(retrieveActivityMimeAttachment, fileName, parentId, topRecords ?? 0));
 
@@ -1257,10 +1257,10 @@ namespace msdyncrmWorkflowTools
             {
                 Trace("Entities Count: {0} ", i);
 
-                var attachment = new Entity("activitymimeattachment")
+                var attachment = new Entity(EntityNames.ActivityMimeAttachment)
                 {
-                    ["objectid"] = new EntityReference("email", email.Id),
-                    ["objecttypecode"] = "email",
+                    ["objectid"] = new EntityReference(EntityNames.Email, email.Id),
+                    ["objecttypecode"] = EntityNames.Email,
                     ["attachmentnumber"] = i
                 };
                 i++;
@@ -1334,10 +1334,10 @@ namespace msdyncrmWorkflowTools
 
             foreach (var file in attachmentFiles.Entities)
             {
-                var attachment = new Entity("activitymimeattachment")
+                var attachment = new Entity(EntityNames.ActivityMimeAttachment)
                 {
-                    ["objectid"] = new EntityReference("email", emailId),
-                    ["objecttypecode"] = "email",
+                    ["objectid"] = new EntityReference(EntityNames.Email, emailId),
+                    ["objecttypecode"] = EntityNames.Email,
                     ["attachmentnumber"] = i
                 };
 
@@ -1404,7 +1404,7 @@ namespace msdyncrmWorkflowTools
 
             Service.Update(new Entity(instanceEntityName, instance.Id)
             {
-                ["activestageid"] = new EntityReference("processstage", stageId)
+                ["activestageid"] = new EntityReference(EntityNames.ProcessStage, stageId)
             });
         }
 
@@ -1459,7 +1459,7 @@ namespace msdyncrmWorkflowTools
         /// </summary>
         public string GetProcessEntityName(Guid processId)
         {
-            return Service.Retrieve("workflow", processId, new ColumnSet("uniquename")).GetAttributeValue<string>("uniquename");
+            return Service.Retrieve(EntityNames.Workflow, processId, new ColumnSet("uniquename")).GetAttributeValue<string>("uniquename");
         }
         #endregion
 
@@ -1468,7 +1468,7 @@ namespace msdyncrmWorkflowTools
         public Guid CreateOpportunityProduct(EntityReference opportunity,
             EntityReference existingProduct, EntityReference uom, decimal quantity)
         {
-            var opportunityProduct = new Entity("opportunityproduct")
+            var opportunityProduct = new Entity(EntityNames.OpportunityProduct)
             {
                 ["opportunityid"] = new EntityReference(opportunity.LogicalName, opportunity.Id),
                 ["productid"] = new EntityReference(existingProduct.LogicalName, existingProduct.Id),
@@ -1524,7 +1524,7 @@ namespace msdyncrmWorkflowTools
         /// <exception cref="InvalidPluginExecutionException">The record is not an account, contact or lead.</exception>
         public int RemoveFromAllMarketingLists(EntityReference member)
         {
-            if (member.LogicalName != "account" && member.LogicalName != "contact" && member.LogicalName != "lead")
+            if (member.LogicalName != EntityNames.Account && member.LogicalName != EntityNames.Contact && member.LogicalName != EntityNames.Lead)
             {
                 throw new InvalidPluginExecutionException("Remove From All Marketing Lists only supports account, contact or lead records.");
             }
@@ -1551,7 +1551,7 @@ namespace msdyncrmWorkflowTools
 
             var request = new RecalculateRequest
             {
-                Target = new EntityReference("goal", goalId)
+                Target = new EntityReference(EntityNames.Goal, goalId)
             };
 
             Service.Execute(request);

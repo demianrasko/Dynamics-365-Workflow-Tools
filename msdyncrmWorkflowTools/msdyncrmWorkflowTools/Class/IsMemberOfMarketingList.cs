@@ -10,7 +10,7 @@ namespace msdyncrmWorkflowTools.Class
     {
         [RequiredArgument]
         [Input("Marketing List")]
-        [ReferenceTarget("list")]
+        [ReferenceTarget(EntityNames.List)]
         public InArgument<EntityReference> MarketingList { get; set; }
 
         [Output("IsMemberOfMarketingList")]
