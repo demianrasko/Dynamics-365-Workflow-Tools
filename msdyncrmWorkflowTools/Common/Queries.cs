@@ -162,6 +162,20 @@ namespace msdyncrmWorkflowTools
             return query;
         }
 
+        /// <summary>The marketing list membership of a record (one row) — otherwise no rows.</summary>
+        public static QueryExpression MarketingListMembership(Guid listId, Guid memberId)
+        {
+            var query = new QueryExpression("listmember")
+            {
+                ColumnSet = new ColumnSet("listmemberid"),
+                TopCount = 1
+            };
+            query.Criteria.AddCondition("listid", ConditionOperator.Equal, listId);
+            query.Criteria.AddCondition("entityid", ConditionOperator.Equal, memberId);
+
+            return query;
+        }
+
         /// <summary>Active queue items in a queue, newest first; optionally only those not assigned to a worker.</summary>
         /// <param name="top">Maximum number of records; 0 or less means no limit.</param>
         public static QueryExpression QueueItems(Guid queueId, bool onlyUnassigned, int top = 0)

@@ -701,6 +701,16 @@ namespace msdyncrmWorkflowTools
             Service.Execute(request);
         }
 
+        /// <summary>
+        /// Whether a record (account, contact or lead) is a member of a marketing list.
+        /// </summary>
+        /// <param name="listId">The marketing list.</param>
+        /// <param name="memberId">The record to look for.</param>
+        public bool IsMemberOfMarketingList(Guid listId, Guid memberId)
+        {
+            return Service.RetrieveMultiple(Queries.MarketingListMembership(listId, memberId)).Entities.Count > 0;
+        }
+
         public bool IsMemberOfTeam(Guid teamId, Guid userId)
         {
             var query = new QueryExpression
