@@ -1,5 +1,4 @@
-﻿using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk;
+﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
 
@@ -18,31 +17,14 @@ namespace msdyncrmWorkflowTools.Class
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
-            var cloningRecordUrl = ClonningRecordURL.Get(executionContext);
+            var recordUrl = ClonningRecordURL.Get(executionContext);
 
-            if (string.IsNullOrEmpty(cloningRecordUrl))
+            if (string.IsNullOrEmpty(recordUrl))
             {
                 throw new InvalidPluginExecutionException("Record URL is required.");
             }
 
-            var parsedUrl = common.ParseRecordUrl(cloningRecordUrl);
-
-            common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
-
-            var process = Process.Get(executionContext);
-            #endregion
-
-            #region "SetProcess Execution"
-
-            var request = new SetProcessRequest
-            {
-                Target = parsedUrl.ToEntityReference(),
-                NewProcess = process
-            };
-
-            common.Service.Execute(request);
-            #endregion
+            common.SetProcess(common.GetRecordReference(recordUrl), Process.Get(executionContext));
         }
     }
 }

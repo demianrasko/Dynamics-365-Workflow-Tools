@@ -23,23 +23,15 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
-            var quoteProduct = Quote.Get(executionContext);
-            var discountAmount = Discountamount.Get(executionContext);
+            var record = Quote.Get(executionContext);
             var fieldName = Fieldname.Get(executionContext);
 
-            if (quoteProduct == null || string.IsNullOrEmpty(fieldName))
+            if (record == null || string.IsNullOrEmpty(fieldName))
             {
                 throw new InvalidPluginExecutionException("Quote Product and Field name are required.");
             }
 
-            common.Trace($"quotedetail: {quoteProduct.Id} DiscountAmount: {discountAmount} Fieldname: {fieldName}");
-            #endregion
-
-            common.Service.Update(new Entity(quoteProduct.LogicalName, quoteProduct.Id)
-            {
-                [fieldName] = new Money(discountAmount)
-            });
+            common.SetMoney(record, fieldName, Discountamount.Get(executionContext));
         }
     }
 }

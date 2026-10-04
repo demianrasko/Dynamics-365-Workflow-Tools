@@ -1,6 +1,5 @@
 ﻿// Not in the Power Platform build: it needs Dynamics 365 tables (lead, list or salesliterature).
 #if !POWERPLATFORM
-using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
@@ -21,22 +20,7 @@ namespace msdyncrmWorkflowTools.Class
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
-            var sourceList = SourceList.Get(executionContext);
-            common.Trace($"marketingList: {sourceList.Id.ToString()} ");
-
-            var targetList = TargetList.Get(executionContext);
-            common.Trace($"campaign: {targetList.Id.ToString()} ");
-
-            #endregion
-
-            var request = new CopyMembersListRequest
-            {
-                SourceListId = sourceList.Id,
-                TargetListId = targetList.Id
-            };
-
-            common.Service.Execute(request);
+            common.CopyListMembers(SourceList.Get(executionContext).Id, TargetList.Get(executionContext).Id);
         }
     }
 }

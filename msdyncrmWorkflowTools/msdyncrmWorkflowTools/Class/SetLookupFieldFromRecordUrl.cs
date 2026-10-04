@@ -16,32 +16,25 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
             var recordUrl = RecordUrl.Get(executionContext);
+
             if (string.IsNullOrEmpty(recordUrl))
             {
                 throw new InvalidPluginExecutionException("Record URL is required.");
             }
 
             var lookupFieldName = LookupFieldName.Get(executionContext);
+
             if (string.IsNullOrEmpty(lookupFieldName))
             {
                 throw new InvalidPluginExecutionException("Lookup Field Name is required.");
             }
 
-            common.Trace($"Inputs -- RecordUrl: {recordUrl} | LookupFieldName: {lookupFieldName}");
-            #endregion
-
             // the record the URL points at becomes the lookup value on the workflow's primary record
-            var entityReference = common.GetRecordReference(recordUrl);
-
-            var recordToUpdate = new Entity(common.Context.PrimaryEntityName, common.Context.PrimaryEntityId)
-            {
-                [lookupFieldName] = entityReference
-            };
-
-            common.Trace($"PrimaryEntityName: {common.Context.PrimaryEntityName} | PrimaryEntityId: {common.Context.PrimaryEntityId}");
-            common.Service.Update(recordToUpdate);
+            common.SetLookup(
+                new EntityReference(common.Context.PrimaryEntityName, common.Context.PrimaryEntityId),
+                lookupFieldName,
+                common.GetRecordReference(recordUrl));
         }
     }
 }

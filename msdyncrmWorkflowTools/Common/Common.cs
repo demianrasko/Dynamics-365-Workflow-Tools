@@ -454,6 +454,54 @@ namespace msdyncrmWorkflowTools
         }
 
         /// <summary>
+        /// Sets a lookup field on a record.
+        /// </summary>
+        public void SetLookup(EntityReference record, string lookupFieldName, EntityReference value)
+        {
+            Trace($"{record.LogicalName} {record.Id}: {lookupFieldName} = {value.LogicalName} {value.Id}");
+
+            Service.Update(new Entity(record.LogicalName, record.Id)
+            {
+                [lookupFieldName] = value
+            });
+        }
+
+        /// <summary>
+        /// Sets a currency (Money) field on a record.
+        /// </summary>
+        public void SetMoney(EntityReference record, string fieldName, decimal amount)
+        {
+            Trace($"{record.LogicalName} {record.Id}: {fieldName} = {amount}");
+
+            Service.Update(new Entity(record.LogicalName, record.Id)
+            {
+                [fieldName] = new Money(amount)
+            });
+        }
+
+        /// <summary>
+        /// Recalculates a rollup field now instead of waiting for the scheduled job.
+        /// </summary>
+        public void CalculateRollupField(EntityReference record, string fieldName)
+        {
+            Trace($"Calculating rollup {fieldName} on {record.LogicalName} {record.Id}");
+            Service.Execute(new CalculateRollupFieldRequest { Target = record, FieldName = fieldName });
+        }
+
+        /// <summary>
+        /// A record as JSON (see <see cref="Utility.SerializeEntity"/>), with every attribute that can be cloned.
+        /// </summary>
+        public string SerializeRecord(EntityReference record)
+        {
+            var entity = Service.Retrieve(record.LogicalName, record.Id, new ColumnSet(allColumns: true));
+            var primaryIdAttribute = string.Empty;
+            var primaryNameAttribute = string.Empty;
+            var attributes = GetEntityAttributesToClone(record.LogicalName, ref primaryIdAttribute, ref primaryNameAttribute);
+
+            return Utility.SerializeEntity(record.LogicalName, primaryIdAttribute, record.Id, entity, attributes);
+        }
+
+        /// <summary>
         /// Creates a copy of a record, copying every attribute that can be set on create.
         /// </summary>
         /// <param name="entityName">Logical name of the record.</param>
@@ -1293,6 +1341,17 @@ namespace msdyncrmWorkflowTools
         }
 
         /// <summary>
+        /// Sends an email (SendEmail, IssueSend).
+        /// </summary>
+        /// <returns>The subject of the sent email.</returns>
+        public string SendEmail(Guid emailId)
+        {
+            var response = (SendEmailResponse)Service.Execute(new SendEmailRequest { EmailId = emailId, IssueSend = true });
+
+            return response.Subject;
+        }
+
+        /// <summary>
         /// Sets the To recipients of an email to the given users (replacing any recipients it had).
         /// </summary>
         public void SetEmailRecipients(Guid emailId, IEnumerable<Guid> userIds)
@@ -1491,6 +1550,24 @@ namespace msdyncrmWorkflowTools
         }
 
         /// <summary>
+        /// Applies the active routing rule to a record (usually a case).
+        /// </summary>
+        public void ApplyRoutingRule(EntityReference record)
+        {
+            Trace($"Applying the routing rule to {record.LogicalName} {record.Id}");
+            Service.Execute(new ApplyRoutingRuleRequest { Target = record });
+        }
+
+        /// <summary>
+        /// Switches a record to another business process flow.
+        /// </summary>
+        public void SetProcess(EntityReference record, EntityReference process)
+        {
+            Trace($"Setting process {process?.Id} on {record.LogicalName} {record.Id}");
+            Service.Execute(new SetProcessRequest { Target = record, NewProcess = process });
+        }
+
+        /// <summary>
         /// Starts an on-demand workflow for each record.
         /// </summary>
         public void ExecuteWorkflow(Guid workflowId, IEnumerable<Guid> recordIds)
@@ -1669,6 +1746,89 @@ namespace msdyncrmWorkflowTools
 
             Trace($"Qualifying lead {lead.Id}");
             Service.Execute(request);
+        }
+
+        /// <summary>
+        /// Adds a marketing list to a campaign.
+        /// </summary>
+        public void AddListToCampaign(Guid listId, Guid campaignId)
+        {
+            Trace($"Adding marketing list {listId} to campaign {campaignId}");
+            Service.Execute(new AddItemCampaignRequest { CampaignId = campaignId, EntityId = listId, EntityName = EntityNames.List });
+        }
+
+        /// <summary>
+        /// Copies the members of one marketing list to another.
+        /// </summary>
+        public void CopyListMembers(Guid sourceListId, Guid targetListId)
+        {
+            Trace($"Copying members of marketing list {sourceListId} to {targetListId}");
+            Service.Execute(new CopyMembersListRequest { SourceListId = sourceListId, TargetListId = targetListId });
+        }
+
+        /// <summary>
+        /// Converts a dynamic marketing list to a static one.
+        /// </summary>
+        public void CopyDynamicListToStatic(Guid listId)
+        {
+            Trace($"Copying dynamic marketing list {listId} to a static list");
+            Service.Execute(new CopyDynamicListToStaticRequest { ListId = listId });
+        }
+
+        /// <summary>
+        /// Creates a quote, with its products, from an opportunity.
+        /// </summary>
+        /// <returns>The new quote.</returns>
+        public EntityReference CreateQuoteFromOpportunity(Guid opportunityId)
+        {
+            var response = (GenerateQuoteFromOpportunityResponse)Service.Execute(new GenerateQuoteFromOpportunityRequest
+            {
+                OpportunityId = opportunityId,
+                ColumnSet = new ColumnSet("quoteid", "name")
+            });
+
+            Trace($"Quote {response.Entity.Id} created from opportunity {opportunityId}");
+
+            return response.Entity.ToEntityReference();
+        }
+
+        /// <summary>
+        /// Closes a quote as won.
+        /// </summary>
+        /// <param name="quote">The quote.</param>
+        /// <param name="subject">Subject of the quote close activity.</param>
+        public void WinQuote(EntityReference quote, string subject)
+        {
+            Trace($"Winning quote {quote.Id}");
+
+            Service.Execute(new WinQuoteRequest
+            {
+                QuoteClose = new Entity(EntityNames.QuoteClose)
+                {
+                    ["subject"] = subject,
+                    ["quoteid"] = quote
+                },
+                Status = new OptionSetValue(-1)
+            });
+        }
+
+        /// <summary>
+        /// Resolves a case (status reason Problem Solved).
+        /// </summary>
+        public void ResolveCase(Guid incidentId, string subject, string description)
+        {
+            Trace($"Resolving case {incidentId}");
+
+            Service.Execute(new CloseIncidentRequest
+            {
+                IncidentResolution = new Entity(EntityNames.IncidentResolution)
+                {
+                    ["incidentid"] = new EntityReference(EntityNames.Incident, incidentId),
+                    ["subject"] = subject,
+                    ["description"] = description
+                },
+                Status = new OptionSetValue(5)
+            });
         }
 
         public Guid CreateOpportunityProduct(EntityReference opportunity,

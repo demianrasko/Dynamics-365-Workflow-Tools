@@ -1,5 +1,4 @@
-﻿using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk;
+﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 using System;
 using System.Activities;
@@ -19,23 +18,14 @@ namespace msdyncrmWorkflowTools.Class
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
             var recordId = RecordID.Get(executionContext);
 
-            var process = Process.Get(executionContext);
-            #endregion
-
-            #region "SetProcess Execution"
-
-            var request = new ExecuteWorkflowRequest
+            if (!Guid.TryParse(recordId, out var id))
             {
-                EntityId = new Guid(recordId),
-                WorkflowId = process.Id
-            };
+                throw new InvalidPluginExecutionException($"Record ID '{recordId}' is not a valid GUID.");
+            }
 
-            common.Service.Execute(request);
-
-            #endregion
+            common.ExecuteWorkflow(Process.Get(executionContext).Id, new[] { id });
         }
     }
 }

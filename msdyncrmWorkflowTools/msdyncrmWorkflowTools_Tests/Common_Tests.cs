@@ -845,6 +845,72 @@ namespace msdyncrmWorkflowTools_Tests
         }
         #endregion
 
+        #region Single requests
+
+        [TestMethod]
+        public void SingleRequests_SendTheRightMessage()
+        {
+            var record = new EntityReference("incident", RecordId);
+            var process = new EntityReference("workflow", Guid.NewGuid());
+            var listId = Guid.NewGuid();
+            var campaignId = Guid.NewGuid();
+            service.OnExecute = r => r is SendEmailRequest ? new SendEmailResponse { Results = { ["Subject"] = "Hello" } } : new OrganizationResponse();
+
+            common.ApplyRoutingRule(record);
+            common.SetProcess(record, process);
+            common.CalculateRollupField(record, "new_total");
+            common.AddListToCampaign(listId, campaignId);
+            common.CopyListMembers(listId, campaignId);
+            common.CopyDynamicListToStatic(listId);
+            common.ResolveCase(RecordId, "Fixed", "Details");
+            Assert.AreEqual("Hello", common.SendEmail(RecordId));
+
+            var e = service.Executed;
+            Assert.AreEqual(record, ((ApplyRoutingRuleRequest)e[0]).Target);
+            Assert.AreEqual(process, ((SetProcessRequest)e[1]).NewProcess);
+            Assert.AreEqual("new_total", ((CalculateRollupFieldRequest)e[2]).FieldName);
+            Assert.AreEqual(campaignId, ((AddItemCampaignRequest)e[3]).CampaignId);
+            Assert.AreEqual("list", ((AddItemCampaignRequest)e[3]).EntityName);
+            Assert.AreEqual(listId, ((CopyMembersListRequest)e[4]).SourceListId);
+            Assert.AreEqual(listId, ((CopyDynamicListToStaticRequest)e[5]).ListId);
+            var close = (CloseIncidentRequest)e[6];
+            Assert.AreEqual(5, close.Status.Value);
+            Assert.AreEqual(RecordId, close.IncidentResolution.GetAttributeValue<EntityReference>("incidentid").Id);
+            Assert.IsTrue(((SendEmailRequest)e[7]).IssueSend);
+        }
+
+        [TestMethod]
+        public void SetLookupAndSetMoney_UpdateTheField()
+        {
+            var record = new EntityReference("quote", RecordId);
+            var account = new EntityReference("account", Guid.NewGuid());
+
+            common.SetLookup(record, "customerid", account);
+            common.SetMoney(record, "discountamount", 12.5m);
+
+            Assert.AreEqual(account, service.Updated[0]["customerid"]);
+            Assert.AreEqual(12.5m, service.Updated[1].GetAttributeValue<Money>("discountamount").Value);
+        }
+
+        [TestMethod]
+        public void QuoteRequests_CreateAndWin()
+        {
+            var quoteId = Guid.NewGuid();
+            service.OnExecute = r => r is GenerateQuoteFromOpportunityRequest
+                ? new GenerateQuoteFromOpportunityResponse { Results = { ["Entity"] = new Entity("quote", quoteId) } }
+                : new OrganizationResponse();
+
+            var quote = common.CreateQuoteFromOpportunity(RecordId);
+            common.WinQuote(quote, "Won");
+
+            Assert.AreEqual(quoteId, quote.Id);
+            Assert.AreEqual(RecordId, ((GenerateQuoteFromOpportunityRequest)service.Executed[0]).OpportunityId);
+            var win = (WinQuoteRequest)service.Executed[1];
+            Assert.AreEqual("Won", win.QuoteClose["subject"]);
+            Assert.AreEqual(quote, win.QuoteClose["quoteid"]);
+        }
+        #endregion
+
         #region AI functions
 
         [TestMethod]

@@ -1,5 +1,4 @@
-﻿using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk;
+﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
 
@@ -18,24 +17,7 @@ namespace msdyncrmWorkflowTools.Class
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
-            var email = SourceEmail.Get(executionContext);
-            #endregion
-
-            #region "SendEmail Execution"
-
-            if (common.Service.Execute(
-                    new SendEmailRequest
-                    {
-                        EmailId = email.Id,
-                        IssueSend = true
-                    }
-                ) is SendEmailResponse ser)
-            {
-                Subject.Set(executionContext, ser.Subject);
-            }
-
-            #endregion
+            Subject.Set(executionContext, common.SendEmail(SourceEmail.Get(executionContext).Id));
         }
     }
 }

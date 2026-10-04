@@ -1,5 +1,4 @@
-﻿using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk;
+﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
 
@@ -21,32 +20,14 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
-            var fieldName = FieldName.Get(executionContext);
-            common.Trace($"_FieldName={fieldName}");
-            var parentRecordUrl = ParentRecordUrl.Get(executionContext);
+            var recordUrl = ParentRecordUrl.Get(executionContext);
 
-            if (string.IsNullOrEmpty(parentRecordUrl))
+            if (string.IsNullOrEmpty(recordUrl))
             {
                 throw new InvalidPluginExecutionException("Parent Record URL is required.");
             }
 
-            common.Trace($"_ParentRecordURL={parentRecordUrl}");
-            var parsedUrl = common.ParseRecordUrl(parentRecordUrl);
-
-            common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
-            #endregion
-
-            #region "CalculateRollupField Execution"
-            var parentEntityName = parsedUrl.EntityName;
-            var request = new CalculateRollupFieldRequest
-            {
-                FieldName = fieldName,
-                Target = new EntityReference(parentEntityName, parsedUrl.Id)
-            };
-
-            common.Service.Execute(request);
-            #endregion
+            common.CalculateRollupField(common.GetRecordReference(recordUrl), FieldName.Get(executionContext));
         }
     }
 }

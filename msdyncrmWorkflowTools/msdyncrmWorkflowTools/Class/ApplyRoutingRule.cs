@@ -1,5 +1,4 @@
-﻿using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk;
+﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
 
@@ -15,28 +14,14 @@ namespace msdyncrmWorkflowTools
         #endregion
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
-            var incidentRecordUrl= IncidentRecordURL.Get(executionContext);
-            if (string.IsNullOrEmpty(incidentRecordUrl))
+            var recordUrl = IncidentRecordURL.Get(executionContext);
+
+            if (string.IsNullOrEmpty(recordUrl))
             {
                 throw new InvalidPluginExecutionException("Incident Record URL is required.");
             }
 
-            var parsedUrl = common.ParseRecordUrl(incidentRecordUrl);
-
-            common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
-            #endregion
-
-            #region "ApplyRoutingRuleRequest Execution"
-            var entityName = parsedUrl.EntityName;
-
-            var request = new ApplyRoutingRuleRequest
-            {
-                Target = new EntityReference(entityName, parsedUrl.Id)
-            };
-
-            common.Service.Execute(request);
-            #endregion
+            common.ApplyRoutingRule(common.GetRecordReference(recordUrl));
         }
     }
 }
