@@ -105,6 +105,14 @@ NOTE ABOUT CDS: The CDS Version not include all the actions, because it requires
 - AddMarketingListToCampaign
 - SalesLiteratureToEmail
 
+The quote and opportunity activities added since then are left out of the Power Platform version too, because they need the Sales tables opportunity, product, quote, quotedetail and uom:
+
+- CreateOpportunityProduct
+- CreateQuoteFromOpportunity
+- UpdateProductQuoteValue
+- UpdateQuoteValue
+- WinQuote
+
 To build the Power Platform version, which leaves these activities out, run `msbuild msdyncrmWorkflowTools\msdyncrmWorkflowTools\msdyncrmWorkflowTools.csproj /p:Configuration=Release /p:PowerPlatform=true`. The assembly is written to `bin\Release-PowerPlatform`.
 
 ![](docs/Home_wf1_61.gif)

@@ -1,4 +1,6 @@
-﻿using Microsoft.Xrm.Sdk;
+﻿// Not in the Power Platform build: it needs Dynamics 365 tables (opportunity, product and uom).
+#if !POWERPLATFORM
+using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
 
@@ -50,3 +52,4 @@ namespace msdyncrmWorkflowTools
         }
     }
 }
+#endif

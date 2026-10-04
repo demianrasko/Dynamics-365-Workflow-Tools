@@ -16,11 +16,16 @@ namespace msdyncrmWorkflowTools_Tests
     [TestClass]
     public class PowerPlatformBuild_Tests
     {
-        private static readonly string[] Dynamics365Tables = { "lead", "list", "salesliterature" };
+        private static readonly string[] Dynamics365Tables = { "lead", "list", "opportunity", "product", "quote", "quotedetail", "salesliterature", "uom" };
 
         private static readonly string[] Dynamics365Activities =
         {
+            "msdyncrmWorkflowTools.CreateOpportunityProduct",
+            "msdyncrmWorkflowTools.CreateQuoteFromOpportunity",
             "msdyncrmWorkflowTools.QualifyLead",
+            "msdyncrmWorkflowTools.UpdateProductQuoteValue",
+            "msdyncrmWorkflowTools.UpdateQuoteValue",
+            "msdyncrmWorkflowTools.WinQuote",
             "msdyncrmWorkflowTools.Class.AddMarketingListToCampaign",
             "msdyncrmWorkflowTools.Class.AddToMarketingList",
             "msdyncrmWorkflowTools.Class.CopyMarketingListMembers",
