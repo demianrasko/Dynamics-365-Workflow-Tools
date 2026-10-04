@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "msdyncrmWorkflowTools", "ms
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "msdyncrmWorkflowTools_ConsoleTest", "msdyncrmWorkflowTools_ConsoleTest\msdyncrmWorkflowTools_ConsoleTest.csproj", "{2F103372-B287-4057-9E83-667C29492F61}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "msdyncrmWorkflowTools_Class", "msdyncrmWorkflowTools_Class\msdyncrmWorkflowTools_Class.csproj", "{55DEDF5E-4BA2-498C-AB7A-B7EF2E41F79A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{55DEDF5E-4BA2-498C-AB7A-B7EF2E41F79A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "msdyncrmWorkflowTools_Tests", "msdyncrmWorkflowTools_Tests\msdyncrmWorkflowTools_Tests.csproj", "{26D3954C-576F-4C3E-91C5-5BAACF2FD029}"
 EndProject

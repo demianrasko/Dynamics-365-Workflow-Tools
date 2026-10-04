@@ -113,9 +113,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\msdyncrmWorkflowTools_Class\msdyncrmWorkflowTools_Class.csproj">
+    <ProjectReference Include="..\Common\Common.csproj">
       <Project>{55dedf5e-4ba2-498c-ab7a-b7ef2e41f79a}</Project>
-      <Name>msdyncrmWorkflowTools_Class</Name>
+      <Name>Common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

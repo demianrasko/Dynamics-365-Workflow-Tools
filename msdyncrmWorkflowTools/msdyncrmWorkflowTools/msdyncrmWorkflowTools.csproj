@@ -88,7 +88,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\msdyncrmWorkflowTools_Class\Common.cs">
+    <Compile Include="..\Common\Common.cs">
       <Link>Common.cs</Link>
     </Compile>
     <Compile Include="Class\CalculateAgregateDate.cs" />

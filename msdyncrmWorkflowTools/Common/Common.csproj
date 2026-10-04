@@ -7,8 +7,8 @@
     <ProjectGuid>{55DEDF5E-4BA2-498C-AB7A-B7EF2E41F79A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>msdyncrmWorkflowTools_Class</RootNamespace>
-    <AssemblyName>msdyncrmWorkflowTools_Class</AssemblyName>
+    <RootNamespace>msdyncrmWorkflowTools</RootNamespace>
+    <AssemblyName>msdyncrmWorkflowTools.Common</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
