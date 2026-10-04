@@ -33,7 +33,7 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             // the record the URL points at becomes the lookup value on the workflow's primary record
-            var entityReference = new DynamicUrlParser(recordUrl).ToEntityReference(common.Service);
+            var entityReference = common.GetRecordReference(recordUrl);
 
             var recordToUpdate = new Entity(common.Context.PrimaryEntityName, common.Context.PrimaryEntityId)
             {

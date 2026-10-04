@@ -62,14 +62,18 @@ namespace msdyncrmWorkflowTools_Tests
             return OnExecute(request);
         }
 
+        public List<AssociateCall> Associated { get; } = new List<AssociateCall>();
+
+        public List<AssociateCall> Disassociated { get; } = new List<AssociateCall>();
+
         public void Associate(string entityName, Guid entityId, Relationship relationship, EntityReferenceCollection relatedEntities)
         {
-            Executed.Add(new OrganizationRequest("Associate"));
+            Associated.Add(new AssociateCall(new EntityReference(entityName, entityId), relationship, relatedEntities));
         }
 
         public void Disassociate(string entityName, Guid entityId, Relationship relationship, EntityReferenceCollection relatedEntities)
         {
-            Executed.Add(new OrganizationRequest("Disassociate"));
+            Disassociated.Add(new AssociateCall(new EntityReference(entityName, entityId), relationship, relatedEntities));
         }
 
         public EntityCollection RetrieveMultiple(QueryBase query)
@@ -91,5 +95,24 @@ namespace msdyncrmWorkflowTools_Tests
         {
             Messages.Add(args == null || args.Length == 0 ? format : string.Format(format, args));
         }
+    }
+
+    /// <summary>
+    /// One Associate or Disassociate call recorded by <see cref="FakeOrganizationService"/>.
+    /// </summary>
+    internal sealed class AssociateCall
+    {
+        public AssociateCall(EntityReference record, Relationship relationship, EntityReferenceCollection related)
+        {
+            Record = record;
+            Relationship = relationship;
+            Related = related;
+        }
+
+        public EntityReference Record { get; }
+
+        public Relationship Relationship { get; }
+
+        public EntityReferenceCollection Related { get; }
     }
 }

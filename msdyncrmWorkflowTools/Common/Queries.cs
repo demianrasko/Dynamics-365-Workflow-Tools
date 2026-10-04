@@ -1,4 +1,5 @@
-﻿using Microsoft.Xrm.Sdk.Query;
+﻿using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Query;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -235,6 +236,23 @@ namespace msdyncrmWorkflowTools
             };
             query.Criteria.AddCondition("processid", ConditionOperator.Equal, processId);
             query.Criteria.AddCondition("stagename", ConditionOperator.Equal, stageName);
+
+            return query;
+        }
+
+        /// <summary>The role assignment of a team or user (one row) — otherwise no rows.</summary>
+        /// <param name="principal">A team or systemuser.</param>
+        /// <param name="roleId">The role, in the principal's business unit.</param>
+        public static QueryExpression PrincipalRole(EntityReference principal, Guid roleId)
+        {
+            var isTeam = principal.LogicalName == EntityNames.Team;
+            var query = new QueryExpression(isTeam ? EntityNames.TeamRoles : EntityNames.SystemUserRoles)
+            {
+                ColumnSet = new ColumnSet(false),
+                TopCount = 1
+            };
+            query.Criteria.AddCondition(isTeam ? "teamid" : "systemuserid", ConditionOperator.Equal, principal.Id);
+            query.Criteria.AddCondition("roleid", ConditionOperator.Equal, roleId);
 
             return query;
         }

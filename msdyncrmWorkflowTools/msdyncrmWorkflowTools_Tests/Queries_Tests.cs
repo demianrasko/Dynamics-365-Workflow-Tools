@@ -253,5 +253,18 @@ namespace msdyncrmWorkflowTools_Tests
             CollectionAssert.AreEqual(new[] { "listid" }, query.ColumnSet.Columns.ToArray());
             AssertCondition(query.Criteria.Conditions.Single(), "entityid", ConditionOperator.Equal, IdA);
         }
+
+        [TestMethod]
+        public void PrincipalRole_UsesTheTeamOrUserIntersect()
+        {
+            var team = Queries.PrincipalRole(new EntityReference("team", IdA), IdB);
+            var user = Queries.PrincipalRole(new EntityReference("systemuser", IdA), IdB);
+
+            Assert.AreEqual("teamroles", team.EntityName);
+            AssertCondition(team.Criteria.Conditions[0], "teamid", ConditionOperator.Equal, IdA);
+            AssertCondition(team.Criteria.Conditions[1], "roleid", ConditionOperator.Equal, IdB);
+            Assert.AreEqual("systemuserroles", user.EntityName);
+            AssertCondition(user.Criteria.Conditions[0], "systemuserid", ConditionOperator.Equal, IdA);
+        }
     }
 }

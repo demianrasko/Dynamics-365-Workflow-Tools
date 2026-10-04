@@ -18,27 +18,10 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
-            var roleReference = Role.Get(executionContext);
-            var userReference = User.Get(executionContext);
+            var role = Role.Get(executionContext);
+            var principal = User.Get(executionContext);
 
-            common.Trace($"RoleId: {roleReference.Id.ToString()} - UserID: {userReference.Id.ToString()} ");
-            #endregion
-
-            var roleId = common.GetRoleIdInBusinessUnit(new EntityReference(EntityNames.SystemUser, userReference.Id), roleReference.Id);
-
-            if (roleId == null)
-            {
-                return;
-            }
-
-            var entRoleId = roleId.Value;
-
-            common.Service.Disassociate(
-                EntityNames.SystemUser,
-                userReference.Id,
-                new Relationship("systemuserroles_association"), 
-                new EntityReferenceCollection { new EntityReference(EntityNames.Role, entRoleId) });
+            common.RemoveRole(new EntityReference(EntityNames.SystemUser, principal.Id), role.Id);
         }
     }
 }

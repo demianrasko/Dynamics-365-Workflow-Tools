@@ -34,9 +34,9 @@ namespace msdyncrmWorkflowTools
             var targetAttributes = Utility.SplitAttributeNames(TargetAttributes.Get(executionContext) ?? throw new InvalidPluginExecutionException("Target Attributes is empty"));
 
             common.MapMultiSelectOptionSets(
-                new DynamicUrlParser(sourceRecordUrl).ToEntityReference(common.Service),
+                common.GetRecordReference(sourceRecordUrl),
                 sourceAttributes,
-                new DynamicUrlParser(targetRecordUrl).ToEntityReference(common.Service),
+                common.GetRecordReference(targetRecordUrl),
                 targetAttributes,
                 KeepExistingValues.Get(executionContext));
         }

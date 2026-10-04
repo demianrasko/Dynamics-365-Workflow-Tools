@@ -179,10 +179,14 @@ namespace msdyncrmWorkflowTools
             };
 
             var response = (RetrieveMetadataChangesResponse)Service.Execute(request);
+            var entityMetadata = response.EntityMetadata.FirstOrDefault();
 
-            var entityMetadata = response.EntityMetadata[0];
+            if (entityMetadata == null)
+            {
+                throw new InvalidPluginExecutionException($"No entity has the object type code '{objectTypeCode}'.");
+            }
 
-            return entityMetadata.SchemaName.ToLower();
+            return entityMetadata.LogicalName ?? entityMetadata.SchemaName.ToLowerInvariant();
         }
 
         /// <summary>
@@ -1021,25 +1025,91 @@ namespace msdyncrmWorkflowTools
             return Service.Create(team);
         }
 
+        /// <summary>
+        /// Adds a user to a team.
+        /// </summary>
+        public void AddTeamMember(Guid teamId, Guid userId)
+        {
+            Trace($"Adding user {userId} to team {teamId}");
+            Service.Execute(new AddMembersTeamRequest { TeamId = teamId, MemberIds = new[] { userId } });
+        }
+
+        /// <summary>
+        /// Removes a user from a team.
+        /// </summary>
+        public void RemoveTeamMember(Guid teamId, Guid userId)
+        {
+            Trace($"Removing user {userId} from team {teamId}");
+            Service.Execute(new RemoveMembersTeamRequest { TeamId = teamId, MemberIds = new[] { userId } });
+        }
+
+        /// <summary>
+        /// Gives a team or user a security role (the copy of the role in their business unit). Does nothing when
+        /// the role does not exist or the principal already has it.
+        /// </summary>
+        /// <param name="principal">A team or systemuser.</param>
+        /// <param name="roleId">Any copy of the role (usually the one picked in the workflow).</param>
+        public void AddRole(EntityReference principal, Guid roleId)
+        {
+            var businessUnitRoleId = GetRoleIdInBusinessUnit(principal, roleId);
+
+            if (businessUnitRoleId == null)
+            {
+                Trace($"Role {roleId} was not found.");
+                return;
+            }
+
+            if (Service.RetrieveMultiple(Queries.PrincipalRole(principal, businessUnitRoleId.Value)).Entities.Count > 0)
+            {
+                Trace($"{principal.LogicalName} {principal.Id} already has role {businessUnitRoleId}.");
+                return;
+            }
+
+            Trace($"Adding role {businessUnitRoleId} to {principal.LogicalName} {principal.Id}");
+            Service.Associate(principal.LogicalName, principal.Id, RoleRelationship(principal),
+                new EntityReferenceCollection { new EntityReference(EntityNames.Role, businessUnitRoleId.Value) });
+        }
+
+        /// <summary>
+        /// Removes a security role (the copy of the role in their business unit) from a team or user. Does nothing
+        /// when the role does not exist.
+        /// </summary>
+        /// <param name="principal">A team or systemuser.</param>
+        /// <param name="roleId">Any copy of the role (usually the one picked in the workflow).</param>
+        public void RemoveRole(EntityReference principal, Guid roleId)
+        {
+            var businessUnitRoleId = GetRoleIdInBusinessUnit(principal, roleId);
+
+            if (businessUnitRoleId == null)
+            {
+                Trace($"Role {roleId} was not found.");
+                return;
+            }
+
+            Trace($"Removing role {businessUnitRoleId} from {principal.LogicalName} {principal.Id}");
+            Service.Disassociate(principal.LogicalName, principal.Id, RoleRelationship(principal),
+                new EntityReferenceCollection { new EntityReference(EntityNames.Role, businessUnitRoleId.Value) });
+        }
+
+        private static Relationship RoleRelationship(EntityReference principal)
+        {
+            switch (principal.LogicalName)
+            {
+                case EntityNames.Team:
+                    return new Relationship("teamroles_association");
+                case EntityNames.SystemUser:
+                    return new Relationship("systemuserroles_association");
+                default:
+                    throw new InvalidPluginExecutionException($"Roles can only be given to teams and users, not {principal.LogicalName}.");
+            }
+        }
+
         public bool IsMemberOfTeam(Guid teamId, Guid userId)
         {
-            var query = new QueryExpression
-            {
-                EntityName = EntityNames.TeamMembership,
-                ColumnSet = new ColumnSet("systemuserid", "teamid"),
-                Criteria =
-                        {
-                            Conditions =
-                            {
-                                new ConditionExpression ("systemuserid", ConditionOperator.Equal, userId),
-                                new ConditionExpression ("teamid", ConditionOperator.Equal, teamId)
-                            }
-                        }
-            };
+            var isMember = Service.RetrieveMultiple(Queries.TeamMembership(teamId, userId)).Entities.Count > 0;
+            Trace($"User {userId} {(isMember ? "is" : "is not")} a member of team {teamId}.");
 
-            var retrievedUsers = Service.RetrieveMultiple(query);
-
-            return retrievedUsers.Entities.Count > 0;
+            return isMember;
         }
 
         /// <summary>

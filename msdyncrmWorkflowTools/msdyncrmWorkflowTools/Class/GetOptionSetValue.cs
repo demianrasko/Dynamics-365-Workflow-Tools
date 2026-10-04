@@ -24,7 +24,7 @@ namespace msdyncrmWorkflowTools
 
             common.Trace($"Source Record URL:'{sourceRecordUrl}' Attribute name:'{attributeName}'");
 
-            var source = new DynamicUrlParser(sourceRecordUrl).ToEntityReference(common.Service);
+            var source = common.GetRecordReference(sourceRecordUrl);
 
             SelectedValue.Set(executionContext, common.GetOptionSetValue(source, attributeName));
         }

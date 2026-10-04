@@ -1,5 +1,4 @@
-﻿using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk;
+﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
 
@@ -19,20 +18,7 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
-            var userReference = User.Get(executionContext);
-            var teamReference = Team.Get(executionContext);
-
-            common.Trace($"UserID: {userReference.Id.ToString()} - TeamID: {teamReference.Id.ToString()} ");
-            #endregion
-
-            var request = new RemoveMembersTeamRequest
-            {
-                TeamId = teamReference.Id,
-                MemberIds = new[] { userReference.Id}
-            };
-
-            common.Service.Execute(request);
+            common.RemoveTeamMember(Team.Get(executionContext).Id, User.Get(executionContext).Id);
         }
     }
 }

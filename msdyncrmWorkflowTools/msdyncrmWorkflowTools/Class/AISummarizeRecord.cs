@@ -44,7 +44,7 @@ namespace msdyncrmWorkflowTools
                     throw new InvalidPluginExecutionException("Record URL is required.");
                 }
 
-                var record = new DynamicUrlParser(recordUrl).ToEntityReference(common.Service);
+                var record = common.GetRecordReference(recordUrl);
                 common.Trace($"EntityName={record.LogicalName}--Id={record.Id}, include catchup: {includeCatchup}");
 
                 return common.AISummarizeRecord(record, includeCatchup, recordContext);

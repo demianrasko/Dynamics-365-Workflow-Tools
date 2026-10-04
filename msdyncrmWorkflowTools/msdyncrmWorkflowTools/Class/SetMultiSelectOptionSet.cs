@@ -35,7 +35,7 @@ namespace msdyncrmWorkflowTools
 
             common.Trace($"Record URL: '{recordUrl}', attribute: '{attributeName}', values: '{attributeValues}'");
 
-            var target = new DynamicUrlParser(recordUrl).ToEntityReference(common.Service);
+            var target = common.GetRecordReference(recordUrl);
 
             var invalidValues = new List<string>();
             var values = Utility.ParseOptionSetValues(attributeValues, invalidValues);

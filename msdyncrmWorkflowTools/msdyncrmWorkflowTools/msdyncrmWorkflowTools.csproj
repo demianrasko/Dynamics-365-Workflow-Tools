@@ -119,7 +119,6 @@
     <Compile Include="Class\DeleteOptionValue.cs" />
     <Compile Include="Class\CurrencyConvert.cs" />
     <Compile Include="Class\DeleteRecordAuditHistory.cs" />
-    <Compile Include="Class\DynamicUrlParser.cs" />
     <Compile Include="Class\GetOptionSetValue.cs" />
     <Compile Include="Class\GetMultiSelectOptionSet.cs" />
     <Compile Include="Class\GetSharepointLocationURL.cs" />
