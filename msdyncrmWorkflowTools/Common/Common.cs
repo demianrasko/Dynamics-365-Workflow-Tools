@@ -11,7 +11,6 @@ using System.Activities;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -1122,16 +1121,34 @@ namespace msdyncrmWorkflowTools
             }
 
         }
+        /// <summary>
+        /// Converts an amount between currencies using the European Central Bank reference rates published by
+        /// Frankfurter (https://frankfurter.dev, free, no API key). Rates are updated once per working day.
+        /// </summary>
+        /// <remarks>Only the ~30 currencies the ECB publishes are supported (USD, EUR, GBP, JPY, CAD, AUD, ...).</remarks>
+        /// <param name="amount">Amount in <paramref name="fromCurrency"/>.</param>
+        /// <param name="fromCurrency">ISO 4217 code, e.g. USD.</param>
+        /// <param name="toCurrency">ISO 4217 code, e.g. EUR.</param>
+        /// <returns>The converted amount in <paramref name="toCurrency"/>.</returns>
         public decimal CurrencyConvert(decimal amount, string fromCurrency, string toCurrency)
         {
+            var from = (fromCurrency ?? string.Empty).Trim().ToUpperInvariant();
+            var to = (toCurrency ?? string.Empty).Trim().ToUpperInvariant();
 
-            var web = new WebClient();
-            var apiURL = string.Format("http://finance.google.com/finance/converter?a={0}&from={1}&to={2}", amount, fromCurrency.ToUpper(), toCurrency.ToUpper());
-            var response = web.DownloadString(apiURL);
-            var split = response.Split((new string[] { "<span class=bld>" }), StringSplitOptions.None);
-            var value = split[1].Split(' ')[0];
-            var rate = decimal.Parse(value, CultureInfo.InvariantCulture);
-            return rate;
+            if (from == to)
+            {
+                return amount;
+            }
+
+            var url = string.Format(CultureInfo.InvariantCulture,
+                "https://api.frankfurter.dev/v1/latest?amount={0}&base={1}&symbols={2}",
+                amount, Uri.EscapeDataString(from), Uri.EscapeDataString(to));
+
+            Trace("Currency conversion request: {0}", url);
+            var response = ExecuteAsyncRequest(new HttpRequestMessage(HttpMethod.Get, url));
+            Trace("Currency conversion response: {0}", response);
+
+            return Utility.ParseCurrencyConversion(response, from, to);
         }
 
 
