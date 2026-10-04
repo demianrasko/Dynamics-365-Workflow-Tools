@@ -685,6 +685,22 @@ namespace msdyncrmWorkflowTools
             return response.AbsoluteUrl;
         }
 
+        /// <summary>
+        /// Recalculates a goal now instead of waiting for the server's scheduled recalculation.
+        /// </summary>
+        /// <param name="goalId">The goal to recalculate.</param>
+        public void RecalculateGoal(Guid goalId)
+        {
+            Trace($"Recalculating goal {goalId}");
+
+            var request = new RecalculateRequest
+            {
+                Target = new EntityReference("goal", goalId)
+            };
+
+            Service.Execute(request);
+        }
+
         public bool IsMemberOfTeam(Guid teamId, Guid userId)
         {
             var query = new QueryExpression
