@@ -711,6 +711,70 @@ namespace msdyncrmWorkflowTools
             return Service.RetrieveMultiple(Queries.MarketingListMembership(listId, memberId)).Entities.Count > 0;
         }
 
+        /// <summary>
+        /// Shares a secured (field security) field of a record with users and teams, updates their existing access,
+        /// or removes it when both <paramref name="allowRead"/> and <paramref name="allowUpdate"/> are false.
+        /// Does nothing when the field is not secured.
+        /// </summary>
+        /// <param name="record">The record whose field is shared.</param>
+        /// <param name="attributeName">Logical name of the secured field.</param>
+        /// <param name="allowRead">Grant read access.</param>
+        /// <param name="allowUpdate">Grant update access.</param>
+        /// <param name="principals">The systemuser and team references to share with; nulls are skipped.</param>
+        public void ShareSecuredField(EntityReference record, string attributeName, bool allowRead, bool allowUpdate, params EntityReference[] principals)
+        {
+            var request = new RetrieveAttributeRequest
+            {
+                EntityLogicalName = record.LogicalName,
+                LogicalName = attributeName,
+                RetrieveAsIfPublished = true
+            };
+
+            var response = (RetrieveAttributeResponse)Service.Execute(request);
+            var attribute = response.AttributeMetadata;
+
+            if (attribute?.IsSecured != true || attribute.MetadataId == null)
+            {
+                Trace($"{record.LogicalName}.{attributeName} is not a secured field; nothing to share.");
+                return;
+            }
+
+            foreach (var principal in principals.Where(p => p != null))
+            {
+                var existing = Service.RetrieveMultiple(Queries.FieldSharing(attribute.MetadataId.Value, record.Id, principal.Id)).Entities.FirstOrDefault();
+
+                if (existing != null)
+                {
+                    if (allowRead || allowUpdate)
+                    {
+                        existing["readaccess"] = allowRead;
+                        existing["updateaccess"] = allowUpdate;
+                        Service.Update(existing);
+                    }
+                    else
+                    {
+                        Service.Delete(existing.LogicalName, existing.Id);
+                    }
+
+                    continue;
+                }
+
+                if (!allowRead && !allowUpdate)
+                {
+                    continue;
+                }
+
+                Service.Create(new Entity("principalobjectattributeaccess")
+                {
+                    ["attributeid"] = attribute.MetadataId.Value,
+                    ["objectid"] = record,
+                    ["principalid"] = principal,
+                    ["readaccess"] = allowRead,
+                    ["updateaccess"] = allowUpdate
+                });
+            }
+        }
+
         public bool IsMemberOfTeam(Guid teamId, Guid userId)
         {
             var query = new QueryExpression

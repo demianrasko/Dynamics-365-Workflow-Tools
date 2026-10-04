@@ -198,6 +198,21 @@ namespace msdyncrmWorkflowTools
             return query;
         }
 
+        /// <summary>The field-sharing record (principalobjectattributeaccess) for one secured field, record and principal.</summary>
+        public static QueryExpression FieldSharing(Guid attributeId, Guid objectId, Guid principalId)
+        {
+            var query = new QueryExpression("principalobjectattributeaccess")
+            {
+                ColumnSet = new ColumnSet("readaccess", "updateaccess"),
+                TopCount = 1
+            };
+            query.Criteria.AddCondition("attributeid", ConditionOperator.Equal, attributeId);
+            query.Criteria.AddCondition("objectid", ConditionOperator.Equal, objectId);
+            query.Criteria.AddCondition("principalid", ConditionOperator.Equal, principalId);
+
+            return query;
+        }
+
         /// <summary>Active queue items in a queue, newest first; optionally only those not assigned to a worker.</summary>
         /// <param name="top">Maximum number of records; 0 or less means no limit.</param>
         public static QueryExpression QueueItems(Guid queueId, bool onlyUnassigned, int top = 0)
