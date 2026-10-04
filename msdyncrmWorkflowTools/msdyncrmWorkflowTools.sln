@@ -11,6 +11,106 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "msdyncrmWorkflowTools_Tests", "msdyncrmWorkflowTools_Tests\msdyncrmWorkflowTools_Tests.csproj", "{26D3954C-576F-4C3E-91C5-5BAACF2FD029}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7A1C2E44-5B3D-4F6A-9C8E-1D2B3A4C5E61}"
+	ProjectSection(SolutionItems) = preProject
+		..\README.md = ..\README.md
+		..\.github\workflows\build.yml = ..\.github\workflows\build.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{8B2D3F55-6C4E-4A7B-AD9F-2E3C4B5D6F72}"
+	ProjectSection(SolutionItems) = preProject
+		..\docs\Add Marketing List To Campaign.md = ..\docs\Add Marketing List To Campaign.md
+		..\docs\Add Role To Team.md = ..\docs\Add Role To Team.md
+		..\docs\Add Role To User.md = ..\docs\Add Role To User.md
+		..\docs\Add To Marketing List.md = ..\docs\Add To Marketing List.md
+		..\docs\Add User To Team.md = ..\docs\Add User To Team.md
+		..\docs\AI Classify Text.md = ..\docs\AI Classify Text.md
+		..\docs\AI Draft Reply.md = ..\docs\AI Draft Reply.md
+		..\docs\AI Sentiment Detect.md = ..\docs\AI Sentiment Detect.md
+		..\docs\AI Summarize Record.md = ..\docs\AI Summarize Record.md
+		..\docs\AI Summarize Text.md = ..\docs\AI Summarize Text.md
+		..\docs\AI Translate Text.md = ..\docs\AI Translate Text.md
+		..\docs\Apply Routing Rules.md = ..\docs\Apply Routing Rules.md
+		..\docs\Associate Entity.md = ..\docs\Associate Entity.md
+		..\docs\CalculateAgregateDate.md = ..\docs\CalculateAgregateDate.md
+		..\docs\CalculatePrice.md = ..\docs\CalculatePrice.md
+		..\docs\Check Associate Entity.md = ..\docs\Check Associate Entity.md
+		..\docs\Check If User is in Role.md = ..\docs\Check If User is in Role.md
+		..\docs\Check If User is in Team.md = ..\docs\Check If User is in Team.md
+		..\docs\Clone Children.md = ..\docs\Clone Children.md
+		..\docs\Clone Record.md = ..\docs\Clone Record.md
+		..\docs\ConcatenateFromQuery.md = ..\docs\ConcatenateFromQuery.md
+		..\docs\Copy Marketing List Members.md = ..\docs\Copy Marketing List Members.md
+		..\docs\Copy To Static List.md = ..\docs\Copy To Static List.md
+		..\docs\CountChildEntityRecord.md = ..\docs\CountChildEntityRecord.md
+		..\docs\CreateTeam.md = ..\docs\CreateTeam.md
+		..\docs\CurrencyConvert.md = ..\docs\CurrencyConvert.md
+		..\docs\DateFunctions.md = ..\docs\DateFunctions.md
+		..\docs\Delete Option Value.md = ..\docs\Delete Option Value.md
+		..\docs\Delete Record.md = ..\docs\Delete Record.md
+		..\docs\DeleteRecordAuditHistory.md = ..\docs\DeleteRecordAuditHistory.md
+		..\docs\Disassociate Entity.md = ..\docs\Disassociate Entity.md
+		..\docs\Documentation.md = ..\docs\Documentation.md
+		..\docs\Email To Team.md = ..\docs\Email To Team.md
+		..\docs\Encrypt Text.md = ..\docs\Encrypt Text.md
+		..\docs\Entity Attachment To Email.md = ..\docs\Entity Attachment To Email.md
+		..\docs\Entity Json Serializer.md = ..\docs\Entity Json Serializer.md
+		..\docs\Entity Mobile Deep Link.md = ..\docs\Entity Mobile Deep Link.md
+		..\docs\ExecuteWorkflowByID.md = ..\docs\ExecuteWorkflowByID.md
+		..\docs\Force Calculate Rollup Field.md = ..\docs\Force Calculate Rollup Field.md
+		..\docs\Geocode Address.md = ..\docs\Geocode Address.md
+		..\docs\Get Initiating User.md = ..\docs\Get Initiating User.md
+		..\docs\GetAppModuleID.md = ..\docs\GetAppModuleID.md
+		..\docs\GetAppRecordUrl.md = ..\docs\GetAppRecordUrl.md
+		..\docs\GetMultiSelectOptionSet.md = ..\docs\GetMultiSelectOptionSet.md
+		..\docs\GetOptionSetValue.md = ..\docs\GetOptionSetValue.md
+		..\docs\GetRecordID.md = ..\docs\GetRecordID.md
+		..\docs\GetRecordUrl.md = ..\docs\GetRecordUrl.md
+		..\docs\GetSharepointLocationURL.md = ..\docs\GetSharepointLocationURL.md
+		..\docs\Goal Recalculate.md = ..\docs\Goal Recalculate.md
+		..\docs\Home.md = ..\docs\Home.md
+		..\docs\Insert Option Value.md = ..\docs\Insert Option Value.md
+		..\docs\Is Member Of Marketing List.md = ..\docs\Is Member Of Marketing List.md
+		..\docs\IsMemberOfTeam.md = ..\docs\IsMemberOfTeam.md
+		..\docs\JSONParser.md = ..\docs\JSONParser.md
+		..\docs\MapMultiSelectOptionSet.md = ..\docs\MapMultiSelectOptionSet.md
+		..\docs\Numeric Functions.md = ..\docs\Numeric Functions.md
+		..\docs\OrgDBSettingsExample.md = ..\docs\OrgDBSettingsExample.md
+		..\docs\OrgDBSettingsRetrieve.md = ..\docs\OrgDBSettingsRetrieve.md
+		..\docs\OrgDBSettingsUpdate.md = ..\docs\OrgDBSettingsUpdate.md
+		..\docs\Pick From Queue.md = ..\docs\Pick From Queue.md
+		..\docs\Qualify Lead.md = ..\docs\Qualify Lead.md
+		..\docs\Query Values Step.md = ..\docs\Query Values Step.md
+		..\docs\Queue Item Count.md = ..\docs\Queue Item Count.md
+		..\docs\Remove From All Marketing Lists.md = ..\docs\Remove From All Marketing Lists.md
+		..\docs\Remove From Marketing List.md = ..\docs\Remove From Marketing List.md
+		..\docs\Remove Role From a Team.md = ..\docs\Remove Role From a Team.md
+		..\docs\Remove Role From Team.md = ..\docs\Remove Role From Team.md
+		..\docs\Remove Role From User.md = ..\docs\Remove Role From User.md
+		..\docs\Remove User From Team.md = ..\docs\Remove User From Team.md
+		..\docs\ResolveCase.md = ..\docs\ResolveCase.md
+		..\docs\RetrieveUserBUDefaultTeam.md = ..\docs\RetrieveUserBUDefaultTeam.md
+		..\docs\Rollup Functions.md = ..\docs\Rollup Functions.md
+		..\docs\Sales Literature To Email.md = ..\docs\Sales Literature To Email.md
+		..\docs\Send Email.md = ..\docs\Send Email.md
+		..\docs\SendEmailFromTemplateToUsersInRole.md = ..\docs\SendEmailFromTemplateToUsersInRole.md
+		..\docs\SendEmailToUsersInRole.md = ..\docs\SendEmailToUsersInRole.md
+		..\docs\Set Process Stage.md = ..\docs\Set Process Stage.md
+		..\docs\Set Process.md = ..\docs\Set Process.md
+		..\docs\Set State.md = ..\docs\Set State.md
+		..\docs\Set User Settings.md = ..\docs\Set User Settings.md
+		..\docs\SetLookupFieldFromRecordUrl.md = ..\docs\SetLookupFieldFromRecordUrl.md
+		..\docs\SetMultiSelectOptionSet.md = ..\docs\SetMultiSelectOptionSet.md
+		..\docs\Share Record With Team.md = ..\docs\Share Record With Team.md
+		..\docs\Share Record With User.md = ..\docs\Share Record With User.md
+		..\docs\Sharing Record Step.md = ..\docs\Sharing Record Step.md
+		..\docs\String Functions.md = ..\docs\String Functions.md
+		..\docs\TranslateText.md = ..\docs\TranslateText.md
+		..\docs\Unshare Record With Team.md = ..\docs\Unshare Record With Team.md
+		..\docs\Unshare Record With User.md = ..\docs\Unshare Record With User.md
+		..\docs\Update Child Records.md = ..\docs\Update Child Records.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +136,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8B2D3F55-6C4E-4A7B-AD9F-2E3C4B5D6F72} = {7A1C2E44-5B3D-4F6A-9C8E-1D2B3A4C5E61}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6303B93E-6674-4BD9-A6F1-FA90A5EA7E5A}
