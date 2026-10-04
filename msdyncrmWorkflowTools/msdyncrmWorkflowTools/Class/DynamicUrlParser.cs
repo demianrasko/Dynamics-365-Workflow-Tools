@@ -1,8 +1,8 @@
-﻿using System;
-using Microsoft.Xrm.Sdk;
+﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata.Query;
 using Microsoft.Xrm.Sdk.Query;
+using System;
 
 namespace msdyncrmWorkflowTools
 {

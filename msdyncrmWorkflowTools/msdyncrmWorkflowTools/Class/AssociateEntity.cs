@@ -1,7 +1,7 @@
-﻿using System.Activities;
-using System.ServiceModel;
-using Microsoft.Xrm.Sdk;
+﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
+using System.Activities;
+using System.ServiceModel;
 
 namespace msdyncrmWorkflowTools
 {

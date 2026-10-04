@@ -1,7 +1,7 @@
-﻿using System;
-using Microsoft.Xrm.Sdk;
+﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Tooling.Connector;
 using msdyncrmWorkflowTools;
+using System;
 
 namespace msdyncrmWorkflowTools_ConsoleTest
 {

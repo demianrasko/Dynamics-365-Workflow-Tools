@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Query;
+using Microsoft.Xrm.Sdk.Workflow;
+using System;
 using System.Activities;
 using System.Linq;
 using System.Text;
-using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Query;
-using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
 {
