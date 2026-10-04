@@ -1,6 +1,8 @@
-# Dynamics-365-Workflow-Tools
+# Workflow Tools for Dynamics 365
 This Solution includes one Assembly that contains Tools based on Workflow Activities.
-You must import this solution, to use it. It only contains the Workflow Assembly and the activities to be used in Workflows, so the import of this solution it will not affect any form, entity, view or navigation item. In any case, you should allways follow your ALM steps, installing it in Non-production environments, test everything and then move to Production environment when you are sure.
+You must import this solution, to use it. It only contains the Workflow Assembly and the activities to be used in Workflows, so the import of this solution it will not affect any form, entity, view or navigation item. 
+
+NOTE: You should allways follow your ALM procedure,downloading the source Code, installing it in Non-production environments, test everything and then move to Production environment when you are sure that everything works as you need.
 
 To import the Solution follow these steps:
 
@@ -78,15 +80,18 @@ To see how to use each of the tools includes in this solution, please access to 
 * 66 [Get App Record Url](/docs/GetAppRecordUrl.md) Thanks to [Brent Howard](https://github.com/schwoi)
 * 67 [Is Member Of Team](/docs/IsMemberOfTeam.md) Thanks to [Brent Howard](https://github.com/schwoi)
 * 68 [Count Child Entity Record](/docs/CountChildEntityRecord.md) Thanks to [Ravi Kashyap](https://github.com/RaviKKashyap)
-* 69 [Get Multi Select OptionSet](/docs/GetMultiSelectOptionSet.md) Thanks to [Ramon Tebar](https://github.com/rtebar)
-* 70 [Map Multi Select OptionSet](/docs/MapMultiSelectOptionSet.md) Thanks to [Ramon Tebar](https://github.com/rtebar)
-* 71 [Set Multi Select Option Set](/docs/SetMultiSelectOptionSet.md) Thanks to [Ramon Tebar](https://github.com/rtebar)
+* 69 [Get Multi Select OptionSet](/docs/GetMultiSelectOptionSet.md) Thanks to [Ramon Tebar](https://github.com/ramontebar)
+* 70 [Map Multi Select OptionSet](/docs/MapMultiSelectOptionSet.md) Thanks to [Ramon Tebar](https://github.com/ramontebar)
+* 71 [Set Multi Select Option Set](/docs/SetMultiSelectOptionSet.md) Thanks to [Ramon Tebar](https://github.com/ramontebar)
 * 72 [Delete Record Audit History](/docs/DeleteRecordAuditHistory.md) 
 * 73 [Concatenate from Query](/docs/ConcatenateFromQuery.md) Thanks To [Raj](https://github.com/rajrao)
 * 74 [Get Sharepoint Location URL](/docs/GetSharepointLocationURL.md) Thanks To [TarogStar](https://github.com/TarogStar)
 * 75 [Create Team](/docs/CreateTeam.md) 
 * 76 [Get Option Set Value](/docs/GetOptionSetValue.md) 
 * 77 [Share Secured Field](/docs/ShareSecuredField.md) Thanks to [zhongchen zhou](https://github.com/zzc000)
+* 78 [Set Lookup Field from Record URL](/docs/SetLookupFieldFromRecordUrl.md) thanks to [beyro](https://github.com/beyro)
+* 79 [Resolve Case](/docs/ResolveCase.md) thanks to [Chris Milton](https://github.com/ChrisMilton)
+
 
 
 NOTE ABOUT CDS: The CDS Version not include all the actions, because it requires the entities "lead, salesliterature, list" not included in CDS. The Actions not included in the CDS Version are:
@@ -100,5 +105,5 @@ NOTE ABOUT CDS: The CDS Version not include all the actions, because it requires
 - AddMarketingListToCampaign
 - SalesLiteratureToEmail
 
-![](docs/Home_wf1_54.gif)
+![](docs/Home_wf1_61.gif)
 

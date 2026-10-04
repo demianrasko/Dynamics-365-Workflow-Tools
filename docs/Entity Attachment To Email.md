@@ -1,7 +1,7 @@
 This step allows you to retrieve attachments from one Entity, and attach them to a created Email record.
 You can also filter the attached Files by FileName.
 
-For using this activity you mus access here and select Entity Attachment To Email:
+For using this activity you must access here and select Entity Attachment To Email:
 
 ![](Entity%20Attachment%20To%20Email_wf1.gif)
 

@@ -4,16 +4,21 @@ To use this activity, you just need to select the **GetMultiSelectOptionSet** op
 
 ![](GetMultiSelectOptionSet.png)
 
-Then, you need to specify the following input parameters:
+Then you specify the following input parameters:
 
-![](GetMultiSelectOptionSetInputParameters.png)
+![](GetMultiSelectOptionSet_with_options_names.jpg)
 
-* **Source Record URL (required)** : the URL of the record where the corresponding attribute is located.
-* **Attribute Name: (required)** : logical name of the attribute whose values are going to be retrieved.
-* **Fail on Exception (optional)** : this is a secondary attribute which allows you to indicate if the activity will throw an exception if something goes wrong or it will just return the error in an output parameter.
+* **Source Record URL (required)**: the URL of the record where the corresponding attribute is located.
+* **Attribute Name (required)**: logical name of the attribute whose values are going to be retrieved.
+* **Retrieve Options Names (optional)**: flag to indicate if choices (multi-select optionset) labels should be retrieved as well. This will enforce the population of the output parameter **Selected Names**.
+* **Fail on Exception (optional)**: this is a secondary attribute which allows you to indicate if the activity will throw an exception if something goes wrong or it will just return the error in an output parameter.
 
-The output parameter **Selected Values** returns a string with the corresponding results **separated by comma**. So that you can check them using the contains operator for example.
+Once they activity has been executed, there will be two output parameters:
 
-You can also find an example in this article:
+* **Selected Values**: returns a string with the corresponding numberic option values **separated by comma**. Example: 957340000,957340001,957340002
+* **Selected Names**: returns a string with the corresponding option names **separated by comma**. Example: Red,Black,White
 
-[https://ramontebar.net/2018/12/12/getting-multi-select-option-set-values-in-workflows/](https://ramontebar.net/2018/12/12/getting-multi-select-option-set-values-in-workflows/)
+You can also find two examples in these articles:
+
+* [https://ramontebar.net/2018/12/12/getting-multi-select-option-set-values-in-workflows/](https://ramontebar.net/2018/12/12/getting-multi-select-option-set-values-in-workflows/)
+* [https://ramontebar.net/2020/12/22/get-choices-names-in-workflows/](https://ramontebar.net/2020/12/22/get-choices-names-in-workflows/)
