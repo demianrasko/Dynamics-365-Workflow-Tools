@@ -22,15 +22,7 @@ namespace msdyncrmWorkflowTools_ConsoleTest
             */
 
             //EntityReference team=classObj.retrieveUserBUDefaultTeam("A292B22E-C957-4B97-BED1-EA0A504954C7");
-            //string jsonresult=classObj.AzureTextAnalyticsSentiment("8c8f3ccfbad44ac4b992901b3df0f797", "Muy malo, desastrozo","en");
 
-            /*classObj.AzureFunctionCall(@"{
-                     ""topic"": ""asunto"",
-                     ""fullname"": ""Demian Adolfo Raschkovan"",
-                     ""email"" :""demian_Rasko@yahoo.com""
-                 }",
-                 "https://crmsaturday.azurewebsites.net/api/CRMSaturdayGenericWebHook?code=jgOU91LUbxxt/oQko7GRTuezpPWrNJsbOt8Nl1HykRRuOFPyJzQu7Q==");
-            */ //"https://crmsaturday990f.queue.core.windows.net/crmsaturdaystoragequeue");
 
             // classObj.SalesLiteratureToEmail("*.*", "978CE02B-E72D-E711-80F6-5065F38B5621", "9588F65E-EA2D-E711-80F6-5065F38B5621");
 
