@@ -44,11 +44,11 @@ namespace msdyncrmWorkflowTools
             }
 
             var parsedUrl = common.ParseRecordUrl(parentRecordUrl);
-            var objectTypeCode = parsedUrl.ObjectTypeCode;
-            var parentEntityId = parsedUrl.Id;
-            var parentEntityType = parsedUrl.EntityName;
+            //var objectTypeCode = parsedUrl.ObjectTypeCode;
+            //var parentEntityId = parsedUrl.Id;
+            //var parentEntityType = parsedUrl.EntityName;
 
-            common.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={parentEntityId}");
+            common.Trace($"ObjectTypeCode={parsedUrl.EntityName}--ParentId={parsedUrl.Id}");
 
             var relationshipName = RelationshipName.Get(executionContext);
             var parentFieldNameToUpdate = ParentFieldNameToUpdate.Get(executionContext);
@@ -60,7 +60,7 @@ namespace msdyncrmWorkflowTools
             common.Trace($"_ValueToSet={valueToSet}--_ChildFieldNameToUpdate={childFieldNameToUpdate}");
             #endregion
 
-            common.UpdateChildRecords(relationshipName, parentEntityType, parentEntityId, parentFieldNameToUpdate, valueToSet, childFieldNameToUpdate, updateOnlyActive);
+            common.UpdateChildRecords(relationshipName, parsedUrl.EntityName, parsedUrl.Id, parentFieldNameToUpdate, valueToSet, childFieldNameToUpdate, updateOnlyActive);
         }
     }
 }

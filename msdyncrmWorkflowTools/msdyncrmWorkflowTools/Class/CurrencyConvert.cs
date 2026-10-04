@@ -9,7 +9,7 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("Amount")]
         [Default("0")]
-        public InArgument<decimal> Amount{ get; set; }
+        public InArgument<decimal> Amount { get; set; }
 
         [RequiredArgument]
         [Input("From Currency")]
@@ -29,13 +29,12 @@ namespace msdyncrmWorkflowTools
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
-
             var amount = Amount.Get(executionContext);
-            var fromCurrency= FromCurrency.Get(executionContext);
+            var fromCurrency = FromCurrency.Get(executionContext);
             var toCurrency = ToCurrency.Get(executionContext);
-
             #endregion
-            var result=Utility.CurrencyConvert(amount,fromCurrency, toCurrency, common.TracingService);
+
+            var result = Utility.CurrencyConvert(amount, fromCurrency, toCurrency, common.TracingService);
 
             Result.Set(executionContext, result);
         }

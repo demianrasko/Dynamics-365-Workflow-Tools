@@ -1,8 +1,6 @@
 ﻿using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
-using System.Linq;
 
 namespace msdyncrmWorkflowTools
 {
@@ -43,31 +41,28 @@ namespace msdyncrmWorkflowTools
             var retrieveOptionsNames = RetrieveOptionsNames.Get(executionContext);
             common.Trace($"Source Record URL:'{sourceRecordUrl}' Attribute name:'{attributeName}' Retrieve names:'{retrieveOptionsNames}'");
 
-            var sourceEntityReference = new DynamicUrlParser(sourceRecordUrl).ToEntityReference(common.Service);
-            var sourceEntity = common.Service.Retrieve(sourceEntityReference.LogicalName, sourceEntityReference.Id, new ColumnSet(attributeName));
-            common.Trace("Source record has been retrieved correctly. Id:{0}", sourceEntity.Id);
+            var source = new DynamicUrlParser(sourceRecordUrl).ToEntityReference(common.Service);
+            var values = common.GetMultiSelectOptionSet(source, attributeName);
 
-            var optionSetValues = sourceEntity.GetAttributeValue<OptionSetValueCollection>(attributeName);
-            if (optionSetValues == null || optionSetValues.Count == 0)
+            if (values.Count == 0)
             {
                 common.Trace("No selected options");
                 SelectedValues.Set(executionContext, string.Empty);
                 return;
             }
 
-            common.Trace("Number of selected options: {0}", optionSetValues.Count);
+            var selectedValues = Utility.JoinOptionSetValues(values);
+            common.Trace($"Selected values: {selectedValues}");
+            SelectedValues.Set(executionContext, selectedValues);
 
-            var values = string.Join(",", optionSetValues.Select(o => o.Value));
-            SelectedValues.Set(executionContext, values);
-            common.Trace("Values have been retrieved correctly. Values: {0}", values);
-
-            if (retrieveOptionsNames)
+            if (!retrieveOptionsNames)
             {
-                var labels = common.GetOptionSetLabels(sourceEntityReference.LogicalName, attributeName);
-                var names = string.Join(",", optionSetValues.Select(o => labels.TryGetValue(o.Value, out var label) ? label : o.Value.ToString()));
-                SelectedNames.Set(executionContext, names);
-                common.Trace("Names have been retrieved correctly. Names: {0}", names);
+                return;
             }
+
+            var names = common.GetOptionSetNames(source.LogicalName, attributeName, values);
+            common.Trace($"Selected names: {names}");
+            SelectedNames.Set(executionContext, names);
         }
     }
 }

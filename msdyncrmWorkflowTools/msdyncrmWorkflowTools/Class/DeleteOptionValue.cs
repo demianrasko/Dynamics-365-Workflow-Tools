@@ -31,18 +31,18 @@ namespace msdyncrmWorkflowTools
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
-            var _GlobalOptionSet = GlobalOptionSet.Get(executionContext);
-            var _AttributeName = AttributeName.Get(executionContext);
-            var _EntityName = EntityName.Get(executionContext);
+            var globalOptionSet = GlobalOptionSet.Get(executionContext);
+            var attributeName = AttributeName.Get(executionContext);
+            var entityName = EntityName.Get(executionContext);
 
-            var _OptionValue = OptionValue.Get(executionContext);
+            var optionValue = OptionValue.Get(executionContext);
 
-            common.Trace($"_AttributeName={_AttributeName}--_EntityName={_EntityName}" );
+            common.Trace($"attributeName={attributeName}--entityName={entityName}" );
             #endregion
 
             #region "Insert Option Value"
 
-            common.DeleteOptionValue(_GlobalOptionSet,_AttributeName, _EntityName,  _OptionValue);
+            common.DeleteOptionValue(globalOptionSet,attributeName, entityName,  optionValue);
 
             #endregion
         }

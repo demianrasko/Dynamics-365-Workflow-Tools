@@ -15,22 +15,23 @@ namespace msdyncrmWorkflowTools.Class
         {
             #region "Read Parameters"
 
-            var _RecordURL = RecordURL.Get(executionContext);
-            if (string.IsNullOrEmpty(_RecordURL))
+            var recordUrl = RecordURL.Get(executionContext);
+
+            if (string.IsNullOrEmpty(recordUrl))
             {
                 throw new InvalidPluginExecutionException("Record URL is required.");
             }
-            var parsedUrl = common.ParseRecordUrl(_RecordURL);
-            var objectTypeCode = parsedUrl.ObjectTypeCode;
-            var entityName = parsedUrl.EntityName;
-            var objectId = parsedUrl.Id;
-            common.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={objectId}");
+            var parsedUrl = common.ParseRecordUrl(recordUrl);
+            //var objectTypeCode = parsedUrl.ObjectTypeCode;
+            //var entityName = parsedUrl.EntityName;
+            //var objectId = parsedUrl.Id;
+            common.Trace($"ObjectTypeCode={parsedUrl.EntityName}--ParentId={parsedUrl.Id}");
 
             #endregion
 
             #region "DeleteRecordAuditHistory"
 
-            common.DeleteRecordAuditHistory(entityName,objectId);
+            common.DeleteRecordAuditHistory(parsedUrl.EntityName, parsedUrl.Id);
 
             #endregion
         }

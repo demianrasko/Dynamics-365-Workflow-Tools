@@ -26,15 +26,9 @@ namespace msdyncrmWorkflowTools
             #region "Read Parameters"
             var json = JSON.Get(executionContext);
             var jsonPath = JSONPath.Get(executionContext);
-
             #endregion
 
-            var res=Utility.JsonParser(json, jsonPath);
-
-            if (res == null)
-            {
-                res = string.Empty;
-            }
+            var res = Utility.JsonParser(json, jsonPath) ?? string.Empty;
 
             JSONResult.Set(executionContext, res);
         }

@@ -47,6 +47,7 @@ namespace msdyncrmWorkflowTools.Class
             }
 
             #endregion
+            
             #region "Update the "To" field on the Email"
             var emailEnt = new Entity("email",email.Id);
 

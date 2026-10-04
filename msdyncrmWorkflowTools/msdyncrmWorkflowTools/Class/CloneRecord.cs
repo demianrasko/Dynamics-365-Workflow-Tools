@@ -43,22 +43,23 @@ namespace msdyncrmWorkflowTools
             var _ClonningRecordURL = ClonningRecordURL.Get(executionContext);
             if (string.IsNullOrEmpty(_ClonningRecordURL))
             {
-                throw new InvalidPluginExecutionException("Clonning Record URL is required.");
+                throw new InvalidPluginExecutionException("Cloning Record URL is required.");
             }
             var parsedUrl = common.ParseRecordUrl(_ClonningRecordURL);
-            var objectTypeCode = parsedUrl.ObjectTypeCode;
-            var entityName = parsedUrl.EntityName;
-            var objectId = parsedUrl.Id;
-            common.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={objectId}");
+            //var objectTypeCode = parsedUrl.ObjectTypeCode;
+            //var entityName = parsedUrl.EntityName;
+            //var objectId = parsedUrl.Id;
+            common.Trace($"ObjectTypeCode={parsedUrl.EntityName}--ParentId={parsedUrl.Id}");
 
             var prefix = Prefix.Get(executionContext);
-            var fieldstoIgnore = FieldstoIgnore.Get(executionContext);
+            var fieldsToIgnore = FieldstoIgnore.Get(executionContext);
             #endregion
 
             #region "Clone Execution"
 
-            var createdGUID = common.CloneRecord(entityName, objectId, fieldstoIgnore, prefix);
-            ClonedGuid.Set(executionContext, createdGUID.ToString());
+            var createdGuid = common.CloneRecord(parsedUrl.EntityName, parsedUrl.Id, fieldsToIgnore, prefix);
+
+            ClonedGuid.Set(executionContext, createdGuid.ToString());
 
             common.Trace("cloned object OK");
 

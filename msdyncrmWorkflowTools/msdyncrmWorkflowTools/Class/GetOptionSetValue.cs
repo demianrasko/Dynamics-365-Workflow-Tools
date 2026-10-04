@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
 
@@ -20,51 +19,14 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var sourceEntityReference = GetSourceEntityReference(common, executionContext, common.Service);
-            var attributeName = GetAttributeName(common, executionContext);
+            var sourceRecordUrl = SourceRecordUrl.Get(executionContext) ?? throw new InvalidPluginExecutionException("Source URL is empty");
+            var attributeName = AttributeName.Get(executionContext) ?? throw new InvalidPluginExecutionException("Attribute Name is empty");
 
-            var value= GetValue(sourceEntityReference, attributeName, common, common.Service);
+            common.Trace($"Source Record URL:'{sourceRecordUrl}' Attribute name:'{attributeName}'");
 
-            SelectedValue.Set(executionContext, value);
-        }
+            var source = new DynamicUrlParser(sourceRecordUrl).ToEntityReference(common.Service);
 
-        private EntityReference GetSourceEntityReference(Common common, CodeActivityContext executionContext, IOrganizationService organizationService)
-        {
-            var sourceRecordUrl = SourceRecordUrl.Get<string>(executionContext) ?? throw new InvalidPluginExecutionException("Source URL is empty");
-            common.Trace("Source Record URL:'{0}'", sourceRecordUrl);
-            return new DynamicUrlParser(sourceRecordUrl).ToEntityReference(organizationService);
-        }
-
-        private string GetAttributeName(Common common, CodeActivityContext executionContext)
-        {
-            var attributeName = AttributeName.Get<string>(executionContext) ?? throw new InvalidPluginExecutionException("Attribute Name is empty");
-            common.Trace("Attribute name:'{0}'", attributeName);
-            return attributeName;
-        }
-
-        private int GetValue(EntityReference sourceEntityReference, string attributeName, Common common, IOrganizationService organizationService)
-        {
-            if (sourceEntityReference == null || attributeName == null)
-            {
-                common.Trace("Null parameters have been passed, so string will be empty");
-                return 0;
-            }
-
-            var sourceEntity = organizationService.Retrieve(sourceEntityReference.LogicalName, sourceEntityReference.Id, new ColumnSet(attributeName));
-            common.Trace("Source record has been retrieved correctly. Id:{0}", sourceEntity.Id);
-
-            if (!sourceEntity.Contains(attributeName))
-            {
-                common.Trace("Attribues {0} was not found", attributeName);
-                return 0;
-            }
-            var value = 0;
-            if (sourceEntity.Attributes.Contains(attributeName))
-            {
-                value = ((OptionSetValue)sourceEntity.Attributes[attributeName]).Value;
-            }
-
-            return value;
+            SelectedValue.Set(executionContext, common.GetOptionSetValue(source, attributeName));
         }
     }
 }

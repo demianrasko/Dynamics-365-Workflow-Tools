@@ -15,14 +15,17 @@ namespace msdyncrmWorkflowTools.Class
 
         [Input("Account")]
         [ReferenceTarget("account")]
+        // ReSharper disable once InconsistentNaming
         public InArgument<EntityReference> account { get; set; }
 
         [Input("Contact")]
         [ReferenceTarget("contact")]
+        // ReSharper disable once InconsistentNaming
         public InArgument<EntityReference> contact { get; set; }
 
         [Input("Lead")]
         [ReferenceTarget("lead")]
+        // ReSharper disable once InconsistentNaming
         public InArgument<EntityReference> lead { get; set; }
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)

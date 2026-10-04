@@ -24,10 +24,10 @@ namespace msdyncrmWorkflowTools
             }
 
             var parsedUrl = common.ParseRecordUrl(incidentRecordUrl);
-            var parentObjectTypeCode = parsedUrl.ObjectTypeCode;
-            var parentId = parsedUrl.Id;
+            //var parentObjectTypeCode = parsedUrl.ObjectTypeCode;
+            //var parentId = parsedUrl.Id;
 
-            common.Trace($"ParentObjectTypeCode={parentObjectTypeCode}--ParentId={parentId}");
+            common.Trace($"ParentObjectTypeCode={parsedUrl.EntityName}--ParentId={parsedUrl.Id}");
             #endregion
 
             #region "ApplyRoutingRuleRequest Execution"
@@ -35,7 +35,7 @@ namespace msdyncrmWorkflowTools
 
             var request = new ApplyRoutingRuleRequest
             {
-                Target = new EntityReference(entityName, new Guid(parentId))
+                Target = new EntityReference(entityName, new Guid(parsedUrl.Id))
             };
 
             common.Service.Execute(request);

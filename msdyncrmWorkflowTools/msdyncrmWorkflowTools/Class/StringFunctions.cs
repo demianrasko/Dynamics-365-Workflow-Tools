@@ -103,26 +103,18 @@ namespace msdyncrmWorkflowTools
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
-            var inputText = InputText.Get(executionContext);
-            if (inputText == null)
-            {
-                inputText = string.Empty;
-            }
+            var inputText = InputText.Get(executionContext) ?? string.Empty;
             var capitalizeAllWords = CapitalizeAllWords.Get(executionContext);
 
             var padCharacter = PadCharacter.Get(executionContext);
-            var padontheLeft = PadontheLeft.Get(executionContext);
-            var finalLengthwithPadding = FinalLengthwithPadding.Get(executionContext);
+            var padOnTheLeft = PadontheLeft.Get(executionContext);
+            var finalLengthWithPadding = FinalLengthwithPadding.Get(executionContext);
 
             var replaceOldValue = ReplaceOldValue.Get(executionContext);
-            var replaceNewValue = ReplaceNewValue.Get(executionContext);
-            if (replaceNewValue == null)
-            {
-                replaceNewValue = string.Empty;
-            }
+            var replaceNewValue = ReplaceNewValue.Get(executionContext) ?? string.Empty;
             var caseSensitive = CaseSensitive.Get(executionContext);
 
-            var fromLefttoRight = FromLefttoRight.Get(executionContext);
+            var fromLeftToRight = FromLefttoRight.Get(executionContext);
             var startIndex = StartIndex.Get(executionContext);
             var subStringLength = SubStringLength.Get(executionContext);
             var regularExpression = RegularExpression.Get(executionContext);
@@ -140,8 +132,8 @@ namespace msdyncrmWorkflowTools
             var regexSuccess = false;
             var withoutSpaces = string.Empty;
 
-            Utility.StringFunctions(capitalizeAllWords, inputText, padCharacter, padontheLeft, finalLengthwithPadding, caseSensitive,
-                replaceOldValue, replaceNewValue, subStringLength, startIndex, fromLefttoRight, regularExpression,
+            Utility.StringFunctions(capitalizeAllWords, inputText, padCharacter, padOnTheLeft, finalLengthWithPadding, caseSensitive,
+                replaceOldValue, replaceNewValue, subStringLength, startIndex, fromLeftToRight, regularExpression,
                 ref capitalizedText, ref paddedText, ref replacedText, ref subStringText, ref regexText,
                 ref uppercaseText, ref lowercaseText, ref regexSuccess, ref withoutSpaces);
 

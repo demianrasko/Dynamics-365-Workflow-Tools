@@ -80,6 +80,7 @@ namespace msdyncrmWorkflowTools
             }
 
             var principal = User.Get(executionContext);
+
             var accessMask = Utility.GetMask(
                 read: ShareRead.Get(executionContext),
                 write: ShareWrite.Get(executionContext),

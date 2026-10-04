@@ -1,7 +1,5 @@
 ﻿using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace msdyncrmWorkflowTools
 {
@@ -14,68 +12,28 @@ namespace msdyncrmWorkflowTools
         public InArgument<string> TexttoEncrypt { get; set; }
 
         [Output("MD5 Hash Value")]
-        public OutArgument<string> MD5HashValue { get; set; }
+        public OutArgument<string> Md5HashValue { get; set; }
 
         [Output("SHA512 Hash Value")]
-        public OutArgument<string> SHA512HashValue { get; set; }
+        public OutArgument<string> Sha512HashValue { get; set; }
 
         #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
-            var _TexttoEncrypt = TexttoEncrypt.Get(executionContext);
+            var text = TexttoEncrypt.Get(executionContext);
 
-            common.Trace($"_TexttoEncrypt: {_TexttoEncrypt} ");
+            common.Trace($"Text: {text} ");
             #endregion
 
             #region "Encryption Execution"
-            var _MD5HashValue = MD5Hash(_TexttoEncrypt);
-            var _SHA512HashValue = SHA512Hash(_TexttoEncrypt);
+            var md5HashValue = Utility.Md5Hash(text);
+            var sha512HashValue = Utility.Sha512Hash(text);
 
-            MD5HashValue.Set(executionContext, _MD5HashValue);
-            SHA512HashValue.Set(executionContext, _SHA512HashValue);
-
+            Md5HashValue.Set(executionContext, md5HashValue);
+            Sha512HashValue.Set(executionContext, sha512HashValue);
             #endregion
-        }
-
-        public string SHA512Hash(string text)
-        {
-            byte[] result;
-            SHA512 shaM = new SHA512Managed();
-            shaM.ComputeHash(ASCIIEncoding.ASCII.GetBytes(text));
-            result = shaM.Hash;
-
-            var strBuilder = new StringBuilder();
-            for (var i = 0; i < result.Length; i++)
-            {
-                //change it into 2 hexadecimal digits
-                //for each byte
-                strBuilder.Append(result[i].ToString("x2"));
-            }
-
-            return strBuilder.ToString();
-        }
-
-        public string MD5Hash(string text)
-        {
-            MD5 md5 = new MD5CryptoServiceProvider();
-
-            //compute hash from the bytes of text
-            md5.ComputeHash(ASCIIEncoding.ASCII.GetBytes(text));
-
-            //get hash result after compute it
-            var result = md5.Hash;
-
-            var strBuilder = new StringBuilder();
-            for (var i = 0; i < result.Length; i++)
-            {
-                //change it into 2 hexadecimal digits
-                //for each byte
-                strBuilder.Append(result[i].ToString("x2"));
-            }
-
-            return strBuilder.ToString();
         }
     }
 }

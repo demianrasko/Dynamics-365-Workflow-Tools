@@ -9,11 +9,11 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("Team Name")]
         [Default("")]
-        public InArgument<string> TeamName{ get; set; }
+        public InArgument<string> TeamName { get; set; }
 
         [RequiredArgument]
         [Input("Team Type")]
-        public InArgument<int> TeamType{ get; set; }
+        public InArgument<int> TeamType { get; set; }
 
         [RequiredArgument]
         [Input("Administrator")]
@@ -32,17 +32,18 @@ namespace msdyncrmWorkflowTools
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
-            var _teamName = TeamName.Get(executionContext);
-            var _teamType = TeamType.Get(executionContext);
-            var _administrator= Administrator.Get(executionContext);
-            var _businessUnit= BusinessUnit.Get(executionContext);
+            var teamName = TeamName.Get(executionContext);
+            var teamType = TeamType.Get(executionContext);
+            var administrator = Administrator.Get(executionContext);
+            var businessUnit = BusinessUnit.Get(executionContext);
 
-            common.Trace($"_teamName={_teamName}" );
+            common.Trace($"teamName={teamName}");
             #endregion
 
-            #region "Associate Execution"
+            #region "Create the Team"
 
-            var createdTeamId= common.CreateTeam(_teamName,_teamType, _administrator, _businessUnit);
+            var createdTeamId = common.CreateTeam(teamName, teamType, administrator, businessUnit);
+
             createdTeam.Set(executionContext, new EntityReference("team", createdTeamId));
 
             #endregion

@@ -57,49 +57,49 @@ namespace msdyncrmWorkflowTools
         {
             #region "Read Parameters"
 
-            var _relationshipName = RelationshipName.Get(executionContext);
-            if (string.IsNullOrEmpty(_relationshipName))
+            var relationshipName = RelationshipName.Get(executionContext);
+            if (string.IsNullOrEmpty(relationshipName))
             {
                 throw new InvalidPluginExecutionException("Relationship Name is required.");
             }
 
-            var _newParentFieldName = NewParentFieldNameToUpdate.Get(executionContext);
-            if (string.IsNullOrEmpty(_newParentFieldName))
+            var newParentFieldName = NewParentFieldNameToUpdate.Get(executionContext);
+            if (string.IsNullOrEmpty(newParentFieldName))
             {
                 throw new InvalidPluginExecutionException("New Parent Field Name is required.");
             }
 
-            var _source = SourceRecordUrl.Get(executionContext);
-            if (string.IsNullOrEmpty(_source))
+            var source = SourceRecordUrl.Get(executionContext);
+            if (string.IsNullOrEmpty(source))
             {
                 throw new InvalidPluginExecutionException("Source Record URL is required.");
             }
 
-            var parsedUrl = common.ParseRecordUrl(_source);
-            var parentObjectTypeCode = parsedUrl.ObjectTypeCode;
-            var parentEntityName = parsedUrl.EntityName;
-            var parentId = parsedUrl.Id;
-            common.Trace($"ObjectTypeCode={parentObjectTypeCode}--ParentId={parentId}");
+            var parsedUrl = common.ParseRecordUrl(source);
+            //var parentObjectTypeCode = parsedUrl.ObjectTypeCode;
+            //var parentEntityName = parsedUrl.EntityName;
+            //var parentId = parsedUrl.Id;
+            common.Trace($"ObjectTypeCode={parsedUrl.EntityName}--ParentId={parsedUrl.Id}");
 
-            var _destination = TargetRecordUrl.Get(executionContext);
-            if (string.IsNullOrEmpty(_destination))
+            var destination = TargetRecordUrl.Get(executionContext);
+            if (string.IsNullOrEmpty(destination))
             {
                 throw new InvalidPluginExecutionException("Target Record URL is required.");
             }
-            var parsedDestinationUrl = common.ParseRecordUrl(_destination);
+            var parsedDestinationUrl = common.ParseRecordUrl(destination);
             var destinationObjectTypeCode = parsedDestinationUrl.ObjectTypeCode;
             var destinationEntityName = parsedDestinationUrl.EntityName;
             var destinationId = parsedDestinationUrl.Id;
             common.Trace($"ObjectTypeCode={destinationObjectTypeCode}--ParentId={destinationId}");
 
             //Optional
-            var _oldParentFieldName = OldParentFieldNameToUpdate.Get(executionContext);
+            var oldParentFieldName = OldParentFieldNameToUpdate.Get(executionContext);
             var prefix = Prefix.Get(executionContext);
             var fieldstoIgnore = FieldstoIgnore.Get(executionContext);
 
             #endregion
 
-            var children = common.GetChildRecords(_relationshipName, parentId);
+            var children = common.GetChildRecords(relationshipName, parsedUrl.Id);
 
             foreach (var item in children.Entities)
             {
@@ -107,10 +107,10 @@ namespace msdyncrmWorkflowTools
 
                 var update = new Entity(item.LogicalName);
                 update.Id = newRecordId;
-                update.Attributes.Add(_newParentFieldName, new EntityReference(destinationEntityName, new Guid(destinationId)));
-                if (!string.IsNullOrEmpty(_oldParentFieldName) && _oldParentFieldName != _newParentFieldName)
+                update.Attributes.Add(newParentFieldName, new EntityReference(destinationEntityName, new Guid(destinationId)));
+                if (!string.IsNullOrEmpty(oldParentFieldName) && oldParentFieldName != newParentFieldName)
                 {
-                    update.Attributes.Add(_oldParentFieldName, null);
+                    update.Attributes.Add(oldParentFieldName, null);
                 }
 
                 common.Service.Update(update);

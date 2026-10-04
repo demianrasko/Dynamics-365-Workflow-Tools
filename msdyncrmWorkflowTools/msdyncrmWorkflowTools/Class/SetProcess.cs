@@ -28,11 +28,11 @@ namespace msdyncrmWorkflowTools.Class
             }
 
             var parsedUrl = common.ParseRecordUrl(cloningRecordUrl);
-            var objectTypeCode = parsedUrl.ObjectTypeCode;
-            var objectId = parsedUrl.Id;
-            var entityName = parsedUrl.EntityName;
+            //var objectTypeCode = parsedUrl.ObjectTypeCode;
+            //var objectId = parsedUrl.Id;
+            //var entityName = parsedUrl.EntityName;
 
-            common.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={objectId}");
+            common.Trace($"ObjectTypeCode={parsedUrl.EntityName}--ParentId={parsedUrl.Id}");
 
             var process = Process.Get(executionContext);
 
@@ -42,7 +42,7 @@ namespace msdyncrmWorkflowTools.Class
 
             var request = new SetProcessRequest
             {
-                Target = new EntityReference(entityName, new Guid(objectId)),
+                Target = new EntityReference(parsedUrl.EntityName, new Guid(parsedUrl.Id)),
                 NewProcess = process
             };
 

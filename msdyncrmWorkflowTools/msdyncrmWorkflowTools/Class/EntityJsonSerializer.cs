@@ -31,26 +31,26 @@ namespace msdyncrmWorkflowTools
             }
 
             var parsedUrl = common.ParseRecordUrl(serializingRecordUrl);
-            var objectTypeCode = parsedUrl.ObjectTypeCode;
-            var objectId = parsedUrl.Id;
-            var entityName = parsedUrl.EntityName;
+            //var objectTypeCode = parsedUrl.ObjectTypeCode;
+            //var objectId = parsedUrl.Id;
+            //var entityName = parsedUrl.EntityName;
 
-            common.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={objectId}");
+            common.Trace($"ObjectTypeCode={parsedUrl.EntityName}--ParentId={parsedUrl.Id}");
 
             #endregion
 
             #region "Clone Execution"
 
             var retrievedObject =
-                common.Service.Retrieve(entityName, new Guid(objectId), new ColumnSet(allColumns: true));
+                common.Service.Retrieve(parsedUrl.EntityName, new Guid(parsedUrl.Id), new ColumnSet(allColumns: true));
             common.Trace("retrieved object OK");
 
             //var newEntity = new Entity(entityName);
             var primaryIdAttribute = string.Empty;
             var primaryNameAttribute = string.Empty;
-            var attributesToClone = common.GetEntityAttributesToClone(entityName, ref primaryIdAttribute, ref primaryNameAttribute);
+            var attributesToClone = common.GetEntityAttributesToClone(parsedUrl.EntityName, ref primaryIdAttribute, ref primaryNameAttribute);
 
-            var json = Utility.SerializeEntity(entityName, primaryIdAttribute, objectId, retrievedObject, attributesToClone);
+            var json = Utility.SerializeEntity(parsedUrl.EntityName, primaryIdAttribute, parsedUrl.Id, retrievedObject, attributesToClone);
             common.Trace("json object OK");
             OutputJson.Set(executionContext, json);
 

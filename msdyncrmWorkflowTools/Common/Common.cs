@@ -224,6 +224,20 @@ namespace msdyncrmWorkflowTools
         }
 
         /// <summary>
+        /// The value of an option set (choice) field on a record.
+        /// </summary>
+        /// <returns>The option value, or 0 when the field is empty.</returns>
+        public int GetOptionSetValue(EntityReference record, string attributeName)
+        {
+            var entity = Service.Retrieve(record.LogicalName, record.Id, new ColumnSet(attributeName));
+            var value = entity.GetAttributeValue<OptionSetValue>(attributeName);
+
+            Trace($"{record.LogicalName}.{attributeName} = {(value == null ? "(empty)" : value.Value.ToString())}");
+
+            return value?.Value ?? 0;
+        }
+
+        /// <summary>
         /// Labels of an option set (choice) or multi-select option set attribute, by value, in the user's language.
         /// </summary>
         public Dictionary<int, string> GetOptionSetLabels(string entityName, string attributeName)
@@ -508,6 +522,25 @@ namespace msdyncrmWorkflowTools
 
             request.Target = entityReference;
             Service.Execute(request);
+        }
+
+        /// <summary>
+        /// The selected values of a multi-select option set field on a record; empty when none are selected.
+        /// </summary>
+        public OptionSetValueCollection GetMultiSelectOptionSet(EntityReference record, string attributeName)
+        {
+            var entity = Service.Retrieve(record.LogicalName, record.Id, new ColumnSet(attributeName));
+
+            return entity.GetAttributeValue<OptionSetValueCollection>(attributeName) ?? new OptionSetValueCollection();
+        }
+
+        /// <summary>
+        /// The labels of the given option set values, comma separated, in the user's language (the number when an
+        /// option has no label).
+        /// </summary>
+        public string GetOptionSetNames(string entityName, string attributeName, IEnumerable<OptionSetValue> values)
+        {
+            return Utility.JoinOptionSetLabels(values, GetOptionSetLabels(entityName, attributeName));
         }
 
         /// <summary>
@@ -1239,7 +1272,7 @@ namespace msdyncrmWorkflowTools
             #endregion
         }
 
-        public void SalesLiteratureToEmail(string fileName, string salesLiteratureId, string emailid)
+        public void SalesLiteratureToEmail(string fileName, Guid salesLiteratureId, Guid emailId)
         {
             if (fileName == "*")
             {
@@ -1252,7 +1285,7 @@ namespace msdyncrmWorkflowTools
             var fileNamePattern = $"%{fileName}%";
             Trace($"Sales literature items: file name like '{fileNamePattern}', sales literature {salesLiteratureId}");
 
-            var attachmentFiles = Service.RetrieveMultiple(Queries.SalesLiteratureItems(fileNamePattern, new Guid(salesLiteratureId)));
+            var attachmentFiles = Service.RetrieveMultiple(Queries.SalesLiteratureItems(fileNamePattern, salesLiteratureId));
 
             if (attachmentFiles.Entities.Count == 0)
             {
@@ -1269,7 +1302,7 @@ namespace msdyncrmWorkflowTools
             {
                 var attachment = new Entity("activitymimeattachment")
                 {
-                    ["objectid"] = new EntityReference("email", new Guid(emailid)),
+                    ["objectid"] = new EntityReference("email", emailId),
                     ["objecttypecode"] = "email",
                     ["attachmentnumber"] = i
                 };
@@ -1398,6 +1431,21 @@ namespace msdyncrmWorkflowTools
         #endregion
 
         #region Sales and marketing
+
+        public Guid CreateOpportunityProduct(EntityReference opportunity,
+            EntityReference existingProduct, EntityReference uom, decimal quantity)
+        {
+            var opportunityProduct = new Entity("opportunityproduct")
+            {
+                ["opportunityid"] = new EntityReference(opportunity.LogicalName, opportunity.Id),
+                ["productid"] = new EntityReference(existingProduct.LogicalName, existingProduct.Id),
+                ["uomid"] = new EntityReference(uom.LogicalName, uom.Id),
+                ["quantity"] = quantity
+            };
+
+            return Service.Create(opportunityProduct);
+        }
+
         /// <summary>
         /// Whether a record (account, contact or lead) is a member of a marketing list.
         /// </summary>

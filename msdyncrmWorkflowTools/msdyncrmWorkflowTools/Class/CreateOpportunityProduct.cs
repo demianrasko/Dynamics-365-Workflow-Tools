@@ -1,5 +1,6 @@
 ﻿// Not in the Power Platform build: it needs Dynamics 365 tables (opportunity, product and uom).
 #if !POWERPLATFORM
+using System;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
@@ -39,15 +40,8 @@ namespace msdyncrmWorkflowTools
                 throw new InvalidPluginExecutionException("Opportunity, Existing Product and Unit are required.");
             }
 
-            var opportunityProduct = new Entity("opportunityproduct")
-            {
-                ["opportunityid"] = new EntityReference(opportunity.LogicalName, opportunity.Id),
-                ["productid"] = new EntityReference(existingProduct.LogicalName, existingProduct.Id),
-                ["uomid"] = new EntityReference(uom.LogicalName, uom.Id),
-                ["quantity"] = quantity
-            };
+            var id = common.CreateOpportunityProduct(opportunity, existingProduct, uom, quantity);
 
-            var id = common.Service.Create(opportunityProduct);
             common.Trace($"Opportunity product {id} created");
         }
     }

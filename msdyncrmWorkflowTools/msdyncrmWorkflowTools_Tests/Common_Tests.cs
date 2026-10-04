@@ -162,6 +162,27 @@ namespace msdyncrmWorkflowTools_Tests
         #region Multi-select option sets
 
         [TestMethod]
+        public void GetMultiSelectOptionSet_ReturnsTheValuesOrAnEmptyCollection()
+        {
+            service.OnRetrieve = (name, id, columns) => new Entity(name, id) { ["new_colors"] = Options(2, 5) };
+
+            CollectionAssert.AreEqual(new[] { 2, 5 }, common.GetMultiSelectOptionSet(new EntityReference("account", RecordId), "new_colors").Select(v => v.Value).ToArray());
+            Assert.AreEqual(0, common.GetMultiSelectOptionSet(new EntityReference("account", RecordId), "new_sizes").Count);
+        }
+
+        [TestMethod]
+        public void GetOptionSetNames_UsesTheOptionLabels()
+        {
+            var options = new OptionMetadataCollection { new OptionMetadata(new Label("Red", 1033), 1), new OptionMetadata(new Label("Blue", 1033), 2) };
+            service.OnExecute = r => new RetrieveAttributeResponse
+            {
+                Results = { ["AttributeMetadata"] = new MultiSelectPicklistAttributeMetadata { OptionSet = new OptionSetMetadata(options) } }
+            };
+
+            Assert.AreEqual("Blue,Red,3", common.GetOptionSetNames("account", "new_colors", Options(2, 1, 3)));
+        }
+
+        [TestMethod]
         public void SetMultiSelectOptionSets_ReplacesTheValues()
         {
             var values = Options(1, 2);
@@ -372,6 +393,47 @@ namespace msdyncrmWorkflowTools_Tests
         #region Other requests
 
         [TestMethod]
+        public void GetOptionSetValue_ReturnsTheValueOrZero()
+        {
+            service.OnRetrieve = (name, id, columns) => new Entity(name, id) { ["industrycode"] = new OptionSetValue(7) };
+
+            Assert.AreEqual(7, common.GetOptionSetValue(new EntityReference("account", RecordId), "industrycode"));
+            Assert.AreEqual("industrycode", service.Retrieved.Single().Columns.Single());
+            Assert.AreEqual(0, common.GetOptionSetValue(new EntityReference("account", RecordId), "missingcode"));
+        }
+
+        [TestMethod]
+        public void CreateOpportunityProduct_CreatesTheLineWithTheGivenValues()
+        {
+            var opportunity = new EntityReference("opportunity", Guid.NewGuid());
+            var product = new EntityReference("product", Guid.NewGuid());
+            var unit = new EntityReference("uom", Guid.NewGuid());
+
+            var id = common.CreateOpportunityProduct(opportunity, product, unit, 2.5m);
+
+            var line = service.Created.Single();
+            Assert.AreNotEqual(Guid.Empty, id);
+            Assert.AreEqual("opportunityproduct", line.LogicalName);
+            Assert.AreEqual(opportunity, line.GetAttributeValue<EntityReference>("opportunityid"));
+            Assert.AreEqual(product, line.GetAttributeValue<EntityReference>("productid"));
+            Assert.AreEqual(unit, line.GetAttributeValue<EntityReference>("uomid"));
+            Assert.AreEqual(2.5m, line.GetAttributeValue<decimal>("quantity"));
+        }
+
+        [TestMethod]
+        public void CreateOpportunityProduct_SendsOnlyTheLookupIds()
+        {
+            var opportunity = new EntityReference("opportunity", Guid.NewGuid()) { Name = "Big deal" };
+
+            common.CreateOpportunityProduct(opportunity, new EntityReference("product", Guid.NewGuid()) { Name = "Widget" }, new EntityReference("uom", Guid.NewGuid()), 1m);
+
+            var line = service.Created.Single();
+            Assert.IsNull(line.GetAttributeValue<EntityReference>("opportunityid").Name);
+            Assert.IsNull(line.GetAttributeValue<EntityReference>("productid").Name);
+            Assert.AreNotSame(opportunity, line["opportunityid"]);
+        }
+
+        [TestMethod]
         public void CreateTeam_SendsTheTeamTypeAsAnOptionSetValue()
         {
             common.CreateTeam("Sales", 1, new EntityReference("systemuser", UserId), new EntityReference("businessunit", Guid.NewGuid()));
@@ -454,6 +516,38 @@ namespace msdyncrmWorkflowTools_Tests
             var request = (AddMemberListRequest)service.Executed.Single();
             Assert.AreEqual(listId, request.ListId);
             Assert.AreEqual(RecordId, request.EntityId);
+        }
+
+        [TestMethod]
+        public void SalesLiteratureToEmail_AttachesEachItemToTheEmail()
+        {
+            var emailId = Guid.NewGuid();
+            service.OnRetrieveMultiple = query => Collection(
+                new Entity("salesliteratureitem") { ["title"] = "Brochure", ["filename"] = "brochure.pdf", ["documentbody"] = "QUJD", ["mimetype"] = "application/pdf" },
+                new Entity("salesliteratureitem") { ["filename"] = "price list.xlsx" });
+
+            common.SalesLiteratureToEmail("*", Guid.NewGuid(), emailId);
+
+            Assert.AreEqual(2, service.Created.Count);
+            Assert.IsTrue(service.Created.All(a => a.LogicalName == "activitymimeattachment" && a.GetAttributeValue<EntityReference>("objectid").Id == emailId));
+            CollectionAssert.AreEqual(new[] { 1, 2 }, service.Created.Select(a => a.GetAttributeValue<int>("attachmentnumber")).ToArray());
+            Assert.AreEqual("Brochure", service.Created[0]["subject"]);
+            Assert.AreEqual("QUJD", service.Created[0]["body"]);
+            Assert.IsFalse(service.Created[1].Contains("subject"));
+        }
+
+        [TestMethod]
+        public void SalesLiteratureToEmail_FiltersOnTheFileNamePattern()
+        {
+            var salesLiteratureId = Guid.NewGuid();
+
+            common.SalesLiteratureToEmail("price*", salesLiteratureId, Guid.NewGuid());
+
+            var query = (QueryExpression)service.Queries.Single();
+            var conditions = query.Criteria.Conditions.Concat(query.LinkEntities.SelectMany(l => l.LinkCriteria.Conditions)).ToList();
+            Assert.IsTrue(conditions.Any(c => c.Values.Contains("%price%%")), "file name pattern");
+            Assert.IsTrue(conditions.Any(c => c.Values.Contains(salesLiteratureId)), "sales literature id");
+            Assert.AreEqual(0, service.Created.Count, "no items, nothing attached");
         }
 
         [TestMethod]

@@ -31,19 +31,18 @@ namespace msdyncrmWorkflowTools
             }
 
             var parsedUrl = common.ParseRecordUrl(recordUrl);
-            var parentObjectTypeCode=parsedUrl.ObjectTypeCode;
-            var parentId = parsedUrl.Id;
+            //var parentObjectTypeCode=parsedUrl.ObjectTypeCode;
+            //var parentId = parsedUrl.Id;
+            //var entityName = parsedUrl.EntityName;
 
-            var entityName = parsedUrl.EntityName;
-
-            common.Trace($"ParentObjectTypeCode={parentObjectTypeCode}--ParentId={parentId}");
+            common.Trace($"ParentObjectTypeCode={parsedUrl.EntityName}--ParentId={parsedUrl.Id}");
             #endregion
 
             #region "Disassociate Execution"
 
             var relatedEntities = new EntityReferenceCollection
             {
-                new EntityReference(entityName, new Guid(parentId))
+                new EntityReference(parsedUrl.EntityName, new Guid(parsedUrl.Id))
             };
 
             var relationship = new Relationship(relationshipName);

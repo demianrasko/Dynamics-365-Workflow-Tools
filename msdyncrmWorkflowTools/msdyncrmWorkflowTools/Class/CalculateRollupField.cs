@@ -35,10 +35,10 @@ namespace msdyncrmWorkflowTools
             common.Trace($"_ParentRecordURL={parentRecordUrl}");
             var parsedUrl = common.ParseRecordUrl(parentRecordUrl);
 
-            var parentObjectTypeCode = parsedUrl.ObjectTypeCode;
-            var parentId = parsedUrl.Id;
+            //var parentObjectTypeCode = parsedUrl.ObjectTypeCode;
+            //var parentId = parsedUrl.Id;
 
-            common.Trace($"ParentObjectTypeCode={parentObjectTypeCode}--ParentId={parentId}");
+            common.Trace($"ParentObjectTypeCode={parsedUrl.EntityName}--ParentId={parsedUrl.Id}");
             #endregion
 
             #region "CalculateRollupField Execution"
@@ -46,7 +46,7 @@ namespace msdyncrmWorkflowTools
             var request = new CalculateRollupFieldRequest
             {
                 FieldName = fieldName,
-                Target = new EntityReference(parentEntityName, new Guid(parentId))
+                Target = new EntityReference(parentEntityName, new Guid(parsedUrl.Id))
             };
 
             common.Service.Execute(request);

@@ -41,18 +41,18 @@ namespace msdyncrmWorkflowTools
             }
 
             var parsedUrl = common.ParseRecordUrl(recordUrl);
-            var parentObjectTypeCode=parsedUrl.ObjectTypeCode;
-            var entityName = parsedUrl.EntityName;
-            var parentId = parsedUrl.Id;
+            //var parentObjectTypeCode=parsedUrl.ObjectTypeCode;
+            //var entityName = parsedUrl.EntityName;
+            //var parentId = parsedUrl.Id;
 
-            common.Trace($"ParentObjectTypeCode={parentObjectTypeCode}--ParentId={parentId}");
+            common.Trace($"ParentObjectTypeCode={parsedUrl.EntityName}--ParentId={parsedUrl.Id}");
             #endregion
 
             #region "Associate Execution"
 
             try
             {
-                common.AssociateEntity(common.Context.PrimaryEntityName, common.Context.PrimaryEntityId, relationshipName, relationshipEntityName, entityName, parentId);
+                common.AssociateEntity(common.Context.PrimaryEntityName, common.Context.PrimaryEntityId, relationshipName, relationshipEntityName, parsedUrl.EntityName, parsedUrl.Id);
             }
             catch (FaultException<OrganizationServiceFault> ex) when (ex.Detail.ErrorCode == DuplicateRecordErrorCode)
             {

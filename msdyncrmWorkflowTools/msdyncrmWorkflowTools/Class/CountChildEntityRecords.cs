@@ -44,22 +44,22 @@ namespace msdyncrmWorkflowTools
                 throw new InvalidPluginExecutionException("Record URL (Parent) is required.");
             }
             var parsedUrl = common.ParseRecordUrl(recordUrl);
-            var parentObjectTypeCode = parsedUrl.ObjectTypeCode;
-            var parenEntityName = parsedUrl.EntityName;
-            var parentEntityId = parsedUrl.Id;
+            //var parentObjectTypeCode = parsedUrl.ObjectTypeCode;
+            //var parenEntityName = parsedUrl.EntityName;
+            //var parentEntityId = parsedUrl.Id;
 
-            common.Trace($"ParentObjectTypeCode={parentObjectTypeCode}--ParentId={parentEntityId}");
+            common.Trace($"ParentObjectTypeCode={parsedUrl.EntityName}--ParentId={parsedUrl.Id}");
             #endregion
 
             #region "Process"
 
             var filterExpressionXml = FilterExpressionXml.Get(executionContext);
             var query = string.IsNullOrWhiteSpace(filterExpressionXml)
-                ? Queries.ChildRecords(childEntityName, parentLookupName, new Guid(parentEntityId))
-                : common.FetchXmlToQueryExpression(Queries.ChildRecordsFetchXml(childEntityName, parentLookupName, new Guid(parentEntityId), filterExpressionXml));
+                ? Queries.ChildRecords(childEntityName, parentLookupName, new Guid(parsedUrl.Id))
+                : common.FetchXmlToQueryExpression(Queries.ChildRecordsFetchXml(childEntityName, parentLookupName, new Guid(parsedUrl.Id), filterExpressionXml));
 
             var count = common.CountRecords(query);
-            common.Trace($"{childEntityName} records with {parentLookupName} = {parentEntityId}: {count}");
+            common.Trace($"{childEntityName} records with {parentLookupName} = {parsedUrl.Id}: {count}");
 
             Result.Set(executionContext, count);
             #endregion
