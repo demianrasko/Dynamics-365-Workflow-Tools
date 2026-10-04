@@ -1,10 +1,7 @@
-﻿using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Query;
+﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 using System;
 using System.Activities;
-using System.Linq;
 
 namespace msdyncrmWorkflowTools.Class
 {
@@ -24,90 +21,18 @@ namespace msdyncrmWorkflowTools.Class
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
-            var cloningRecordUrl = ClonningRecordURL.Get(executionContext);
+            var process = Process.Get(executionContext) ?? throw new InvalidPluginExecutionException("Process is required.");
+            var stageName = ProcessStage.Get(executionContext);
 
-            if (string.IsNullOrEmpty(cloningRecordUrl))
+            if (string.IsNullOrEmpty(stageName))
             {
-                throw new InvalidPluginExecutionException("Record URL is required.");
+                throw new InvalidPluginExecutionException("Process Stage Name is required.");
             }
 
-            var parsedUrl = common.ParseRecordUrl(cloningRecordUrl);
-            var objectTypeCode = parsedUrl.ObjectTypeCode;
-            var objectId = parsedUrl.Id;
-            var entityName = parsedUrl.EntityName;
+            var parsedUrl = common.ParseRecordUrl(ClonningRecordURL.Get(executionContext));
+            common.Trace($"ObjectTypeCode={parsedUrl.ObjectTypeCode}--ParentId={parsedUrl.Id}");
 
-            common.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={objectId}");
-
-            var process = Process.Get(executionContext);
-            var processStage = ProcessStage.Get(executionContext);
-
-            #endregion
-
-            #region "SetProcessStage Execution"
-
-            Guid? stageId = null;
-            if (processStage != null)
-            {
-                common.Trace($"[Dynamics.ChangeBPFandPhase.Execute] Process stage: {processStage}");
-
-                var queryStage = new QueryExpression("processstage")
-                {
-                    ColumnSet = new ColumnSet()
-                };
-                queryStage.Criteria.AddCondition(new ConditionExpression("stagename", ConditionOperator.Equal, processStage));
-
-                queryStage.Criteria.AddCondition(new ConditionExpression("processid", ConditionOperator.Equal, process.Id));
-
-                common.Trace("[Dynamics.ChangeBPFandPhase.Execute] Fetching the requested Stage.");
-                var stageReference = common.Service.RetrieveMultiple(queryStage).Entities.FirstOrDefault();
-                if (stageReference == null)
-                {
-                    throw new InvalidPluginExecutionException($"{nameof(Process)} stage {processStage} not found");
-                }
-
-                stageId = stageReference.Id;
-            }
-
-            //*************************
-            var request = new RetrieveProcessInstancesRequest
-            {
-                EntityId = new Guid(objectId),
-                EntityLogicalName = entityName
-            };
-
-            var response = (RetrieveProcessInstancesResponse)common.Service.Execute(request);
-
-            // Declare variables to store values returned in response
-            var processOpp1Id = Guid.Empty;
-            var procInstanceLogicalName = string.Empty;
-
-            if (response.Processes.Entities.Count > 0)
-            {
-                var activeProcessInstance = response.Processes.Entities[0];
-
-                processOpp1Id = activeProcessInstance.Id; // Id of the active process instance, which will be used
-                                                           // later to retrieve the active path of the process instance
-
-                common.Trace("Current active process instance for the Opportunity record: '{0}'", activeProcessInstance["name"].ToString());
-
-                // Get the BPF underlying entity logical name
-                const string uniqueProcessNameAttribute = "uniquename";
-                var processEntity = common.Service.Retrieve("workflow", process.Id, new ColumnSet(uniqueProcessNameAttribute));
-                procInstanceLogicalName = processEntity.Attributes[uniqueProcessNameAttribute].ToString();
-            }
-            else
-            {
-                throw new InvalidPluginExecutionException("No business process flow instance was found for this record.");
-            }
-
-            common.Trace("Starting the update");
-            var processInstanceToUpdate= new Entity(procInstanceLogicalName, processOpp1Id);
-            processInstanceToUpdate.Attributes.Add("activestageid", new EntityReference("processstage", stageId.Value));
-            common.Trace("Starting the update2");
-            common.Service.Update(processInstanceToUpdate);
-            common.Trace("Starting the update3");
-            #endregion
+            common.SetProcessStage(new EntityReference(parsedUrl.EntityName, new Guid(parsedUrl.Id)), process, stageName);
         }
     }
 }

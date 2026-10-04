@@ -213,6 +213,20 @@ namespace msdyncrmWorkflowTools
             return query;
         }
 
+        /// <summary>The stage of a business process flow with the given name.</summary>
+        public static QueryExpression ProcessStage(Guid processId, string stageName)
+        {
+            var query = new QueryExpression("processstage")
+            {
+                ColumnSet = new ColumnSet("processstageid"),
+                TopCount = 1
+            };
+            query.Criteria.AddCondition("processid", ConditionOperator.Equal, processId);
+            query.Criteria.AddCondition("stagename", ConditionOperator.Equal, stageName);
+
+            return query;
+        }
+
         /// <summary>Active queue items in a queue, newest first; optionally only those not assigned to a worker.</summary>
         /// <param name="top">Maximum number of records; 0 or less means no limit.</param>
         public static QueryExpression QueueItems(Guid queueId, bool onlyUnassigned, int top = 0)

@@ -799,6 +799,80 @@ namespace msdyncrmWorkflowTools
             Trace($"Multi-select option set '{attributeName}' on {target.LogicalName} {target.Id} set to {values.Count} value(s).");
         }
 
+        /// <summary>
+        /// Moves a record's business process flow instance to the named stage.
+        /// </summary>
+        /// <param name="record">The record the process runs on.</param>
+        /// <param name="process">The business process flow (workflow) the stage belongs to.</param>
+        /// <param name="stageName">The stage name, as shown in the process.</param>
+        public void SetProcessStage(EntityReference record, EntityReference process, string stageName)
+        {
+            var stageId = GetProcessStageId(process.Id, stageName);
+            var instance = GetProcessInstance(record, process.Id);
+            var instanceEntityName = GetProcessEntityName(process.Id);
+
+            Trace($"Moving {instanceEntityName} {instance.Id} to stage '{stageName}' ({stageId}).");
+
+            Service.Update(new Entity(instanceEntityName, instance.Id)
+            {
+                ["activestageid"] = new EntityReference("processstage", stageId)
+            });
+        }
+
+        /// <summary>
+        /// The id of the stage named <paramref name="stageName"/> in a business process flow.
+        /// </summary>
+        /// <exception cref="InvalidPluginExecutionException">The process has no stage with that name.</exception>
+        public Guid GetProcessStageId(Guid processId, string stageName)
+        {
+            var stage = Service.RetrieveMultiple(Queries.ProcessStage(processId, stageName)).Entities.FirstOrDefault();
+
+            if (stage == null)
+            {
+                throw new InvalidPluginExecutionException($"Process stage '{stageName}' was not found in process {processId}.");
+            }
+
+            return stage.Id;
+        }
+
+        /// <summary>
+        /// The record's instance of a business process flow. When the instances do not say which process they
+        /// belong to, the record's active instance (the first one returned) is used.
+        /// </summary>
+        /// <exception cref="InvalidPluginExecutionException">The record has no instance of the process.</exception>
+        public Entity GetProcessInstance(EntityReference record, Guid processId)
+        {
+            var request = new RetrieveProcessInstancesRequest
+            {
+                EntityId = record.Id,
+                EntityLogicalName = record.LogicalName
+            };
+
+            var response = (RetrieveProcessInstancesResponse)Service.Execute(request);
+            var instances = response.Processes.Entities;
+
+            var instance = instances.Any(i => i.Contains("processid"))
+                ? instances.FirstOrDefault(i => i.GetAttributeValue<EntityReference>("processid")?.Id == processId)
+                : instances.FirstOrDefault();
+
+            if (instance == null)
+            {
+                throw new InvalidPluginExecutionException($"No instance of process {processId} was found for {record.LogicalName} {record.Id}.");
+            }
+
+            Trace($"Process instance: '{instance.GetAttributeValue<string>("name")}' ({instance.Id})");
+
+            return instance;
+        }
+
+        /// <summary>
+        /// The logical name of the entity that stores a business process flow's instances (the process unique name).
+        /// </summary>
+        public string GetProcessEntityName(Guid processId)
+        {
+            return Service.Retrieve("workflow", processId, new ColumnSet("uniquename")).GetAttributeValue<string>("uniquename");
+        }
+
         public bool IsMemberOfTeam(Guid teamId, Guid userId)
         {
             var query = new QueryExpression
