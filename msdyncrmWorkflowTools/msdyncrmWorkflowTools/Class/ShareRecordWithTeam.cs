@@ -132,54 +132,5 @@ namespace msdyncrmWorkflowTools
 
             #endregion
         }
-
-        //private uint GetMask(CodeActivityContext executionContext)
-        //{
-        //    var shareAppend = ShareAppend.Get(executionContext);
-        //    var shareAppendTo = ShareAppendTo.Get(executionContext);
-        //    var shareAssign = ShareAssign.Get(executionContext);
-        //    var shareDelete = ShareDelete.Get(executionContext);
-        //    var shareRead = ShareRead.Get(executionContext);
-        //    var shareShare = ShareShare.Get(executionContext);
-        //    var shareWrite = ShareWrite.Get(executionContext);
-
-        //    uint mask = 0;
-        //    if (shareAppend)
-        //    {
-        //        mask |= (uint)AccessRights.AppendAccess;
-        //    }
-
-        //    if (shareAppendTo)
-        //    {
-        //        mask |= (uint)AccessRights.AppendToAccess;
-        //    }
-
-        //    if (shareAssign)
-        //    {
-        //        mask |= (uint)AccessRights.AssignAccess;
-        //    }
-
-        //    if (shareDelete)
-        //    {
-        //        mask |= (uint)AccessRights.DeleteAccess;
-        //    }
-
-        //    if (shareRead)
-        //    {
-        //        mask |= (uint)AccessRights.ReadAccess;
-        //    }
-
-        //    if (shareShare)
-        //    {
-        //        mask |= (uint)AccessRights.ShareAccess;
-        //    }
-
-        //    if (shareWrite)
-        //    {
-        //        mask |= (uint)AccessRights.WriteAccess;
-        //    }
-
-        //    return mask;
-        //}
     }
 }

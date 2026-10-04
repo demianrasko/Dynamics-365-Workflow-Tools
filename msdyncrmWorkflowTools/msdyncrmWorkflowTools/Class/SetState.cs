@@ -34,11 +34,10 @@ namespace msdyncrmWorkflowTools
             var request = new OrganizationRequest
             {
                 RequestName = "SetState",
-                ["EntityMoniker"] = moniker
+                ["EntityMoniker"] = moniker,
+                ["State"] = new OptionSetValue(stateValue),
+                ["Status"] = new OptionSetValue(statusValue)
             };
-
-            request["State"] = new OptionSetValue(stateValue);
-            request["Status"] = new OptionSetValue(statusValue);
 
             common.service.Execute(request);
 
