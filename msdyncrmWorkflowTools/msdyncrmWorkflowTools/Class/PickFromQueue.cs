@@ -40,7 +40,7 @@ namespace msdyncrmWorkflowTools.Class
             #endregion
 
             // active, unassigned queue items, newest first; only the requested quantity is used
-            var queueItems = common.service.RetrieveMultiple(Queries.QueueItems(sourceQueue.Id, onlyUnassigned: true, top: Math.Max(quantity, 1)));
+            var queueItems = common.Service.RetrieveMultiple(Queries.QueueItems(sourceQueue.Id, onlyUnassigned: true, top: Math.Max(quantity, 1)));
 
             //no pending queue items
             if (queueItems.Entities.Count == 0)
@@ -55,11 +55,11 @@ namespace msdyncrmWorkflowTools.Class
                 var request = new PickFromQueueRequest
                 {
                     QueueItemId = queItem.Id,
-                    WorkerId = common.context.InitiatingUserId, 
+                    WorkerId = common.Context.InitiatingUserId, 
                     RemoveQueueItem = removeItems
                 };
 
-                common.service.Execute(request);
+                common.Service.Execute(request);
                 count++;
 
                 //only pick the defined Quantity

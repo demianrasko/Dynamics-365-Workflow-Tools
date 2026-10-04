@@ -46,7 +46,7 @@ namespace msdyncrmWorkflowTools.Class
                 NewProcess = process
             };
 
-            common.service.Execute(request);
+            common.Service.Execute(request);
 
             #endregion
         }

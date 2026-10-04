@@ -33,7 +33,7 @@ namespace msdyncrmWorkflowTools.Class
             common.Trace($"marketingList: {marketingList.Id.ToString()} ");
             #endregion
 
-            var isMember = CheckIsMemberOfMarketingList(common.service, marketingList.Id, context.PrimaryEntityId);
+            var isMember = CheckIsMemberOfMarketingList(common.Service, marketingList.Id, context.PrimaryEntityId);
 
             MemberOfMarketingList.Set(executionContext, isMember);
         }

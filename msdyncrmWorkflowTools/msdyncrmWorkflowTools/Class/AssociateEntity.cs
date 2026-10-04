@@ -52,7 +52,7 @@ namespace msdyncrmWorkflowTools
 
             try
             {
-                common.AssociateEntity(common.context.PrimaryEntityName, common.context.PrimaryEntityId, relationshipName, relationshipEntityName, entityName, parentId);
+                common.AssociateEntity(common.Context.PrimaryEntityName, common.Context.PrimaryEntityId, relationshipName, relationshipEntityName, entityName, parentId);
             }
             catch (FaultException<OrganizationServiceFault> ex) when (ex.Detail.ErrorCode == DuplicateRecordErrorCode)
             {

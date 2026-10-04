@@ -28,13 +28,13 @@ namespace msdyncrmWorkflowTools
             common.Trace($"TeamId: {teamReference.Id.ToString()} ");
             #endregion
 
-            var userId = common.context.InitiatingUserId.ToString();
+            var userId = common.Context.InitiatingUserId.ToString();
             if (userReference != null)
             {
                 userId = userReference.Id.ToString();
             }
 
-            var givenTeams = common.service.RetrieveMultiple(Queries.TeamMembership(teamReference.Id, new Guid(userId)));
+            var givenTeams = common.Service.RetrieveMultiple(Queries.TeamMembership(teamReference.Id, new Guid(userId)));
 
             var userInTeam = (givenTeams.Entities.Count > 0);
 

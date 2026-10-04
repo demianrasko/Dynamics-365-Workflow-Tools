@@ -24,7 +24,7 @@ namespace msdyncrmWorkflowTools.Class
 
             #region "SendEmail Execution"
 
-            if (common.service.Execute(
+            if (common.Service.Execute(
                     new SendEmailRequest
                     {
                         EmailId = email.Id,

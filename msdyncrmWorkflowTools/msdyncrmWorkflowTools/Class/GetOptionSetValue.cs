@@ -20,10 +20,10 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var sourceEntityReference = GetSourceEntityReference(common, executionContext, common.service);
+            var sourceEntityReference = GetSourceEntityReference(common, executionContext, common.Service);
             var attributeName = GetAttributeName(common, executionContext);
 
-            var value= GetValue(sourceEntityReference, attributeName, common, common.service);
+            var value= GetValue(sourceEntityReference, attributeName, common, common.Service);
 
             SelectedValue.Set(executionContext, value);
         }

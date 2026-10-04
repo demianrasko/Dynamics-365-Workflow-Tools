@@ -35,7 +35,7 @@ namespace msdyncrmWorkflowTools.Class
                 EntityName = "list",
             };
 
-            common.service.Execute(request);
+            common.Service.Execute(request);
         }
     }
 }

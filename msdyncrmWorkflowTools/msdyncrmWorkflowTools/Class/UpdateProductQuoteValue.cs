@@ -35,7 +35,7 @@ namespace msdyncrmWorkflowTools
             common.Trace($"quotedetail: {quoteProduct.Id} Discountamount: {discountAmount} Fieldname: {fieldName}");
             #endregion
 
-            common.service.Update(new Entity(quoteProduct.LogicalName, quoteProduct.Id)
+            common.Service.Update(new Entity(quoteProduct.LogicalName, quoteProduct.Id)
             {
                 [fieldName] = new Money(discountAmount)
             });

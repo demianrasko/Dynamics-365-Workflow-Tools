@@ -33,7 +33,7 @@ namespace msdyncrmWorkflowTools
 
             var boolValue = false;
 
-            var organizationColl = common.service.RetrieveMultiple(Queries.OrganizationSetting(orgDbSetting));
+            var organizationColl = common.Service.RetrieveMultiple(Queries.OrganizationSetting(orgDbSetting));
 
             var stringValue = organizationColl.Entities[0].Attributes[orgDbSetting].ToString();
 

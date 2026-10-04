@@ -39,7 +39,7 @@ namespace msdyncrmWorkflowTools
             var region = Region.Get(executionContext);
             #endregion
 
-            var res=Utility.TranslateText(textToTranslate, language, authenticationKey, region, common.tracingService) ?? string.Empty;
+            var res=Utility.TranslateText(textToTranslate, language, authenticationKey, region, common.TracingService) ?? string.Empty;
 
             TranslatedText.Set(executionContext, res);
         }

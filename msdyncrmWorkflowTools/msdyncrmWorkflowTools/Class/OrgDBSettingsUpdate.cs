@@ -31,7 +31,7 @@ namespace msdyncrmWorkflowTools
 
             var boolValue = false;
 
-            var organizationColl = common.service.RetrieveMultiple(Queries.OrganizationSetting(orgDbSetting));
+            var organizationColl = common.Service.RetrieveMultiple(Queries.OrganizationSetting(orgDbSetting));
 
             if (organizationColl == null || organizationColl.Entities.Count <= 0)
             {
@@ -54,7 +54,7 @@ namespace msdyncrmWorkflowTools
             common.Trace(
                 $"{nameof(OrgDBSettingsUpdate)}.Execute - Previous value orgDBSetting. NumericValue = {numericValue}, BoolValue = {boolValue}, StringValue = {value}");
 
-            common.service.Update(organizationColl.Entities[0]);
+            common.Service.Update(organizationColl.Entities[0]);
 
             common.Trace("OrgDBSettingsUpdate.Execute -  Update Ok");
             #endregion

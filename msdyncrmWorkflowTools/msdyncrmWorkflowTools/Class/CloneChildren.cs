@@ -113,7 +113,7 @@ namespace msdyncrmWorkflowTools
                     update.Attributes.Add(_oldParentFieldName, null);
                 }
 
-                common.service.Update(update);
+                common.Service.Update(update);
             }
         }
     }

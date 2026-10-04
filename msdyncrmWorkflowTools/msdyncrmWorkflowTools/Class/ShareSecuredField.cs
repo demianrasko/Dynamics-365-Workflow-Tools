@@ -64,7 +64,7 @@ namespace msdyncrmWorkflowTools
 
             #region "Clone Execution"
 
-            ExecuteCore(executionContext, common.context, common.service, entityName, new Guid (objectId));
+            ExecuteCore(executionContext, common.Context, common.Service, entityName, new Guid (objectId));
 
             common.Trace("OK");
 

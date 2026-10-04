@@ -31,13 +31,13 @@ namespace msdyncrmWorkflowTools
         {
             var sourceAttributes = GetSourceAttributes(executionContext, common);
             var targetAttributes = GetTargetAttributes(executionContext, common);
-            var sourceEntityReference = GetSourceEntityReference(executionContext, common.service);
-            var targetEntityReference = GetTargetEntityReference(executionContext, common.service);
-            var targetEntity = BuildTargetEntity(sourceEntityReference, targetEntityReference, sourceAttributes, targetAttributes,common,common.service, executionContext);
+            var sourceEntityReference = GetSourceEntityReference(executionContext, common.Service);
+            var targetEntityReference = GetTargetEntityReference(executionContext, common.Service);
+            var targetEntity = BuildTargetEntity(sourceEntityReference, targetEntityReference, sourceAttributes, targetAttributes,common,common.Service, executionContext);
 
             if (targetEntity != null)
             {
-                common.service.Update(targetEntity);
+                common.Service.Update(targetEntity);
                 common.Trace("Target entity record updated correctly.");
             }
             else

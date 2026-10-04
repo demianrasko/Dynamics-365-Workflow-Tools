@@ -33,7 +33,7 @@ namespace msdyncrmWorkflowTools.Class
                 WorkflowId = process.Id
             };
 
-            common.service.Execute(request);
+            common.Service.Execute(request);
 
             #endregion
         }

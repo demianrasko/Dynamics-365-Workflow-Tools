@@ -27,7 +27,7 @@ namespace msdyncrmWorkflowTools
             common.Trace($"RoleId: {roleReference.Id.ToString()} ");
             #endregion
 
-            var userId = User.Get(executionContext)?.Id ?? common.context.InitiatingUserId;
+            var userId = User.Get(executionContext)?.Id ?? common.Context.InitiatingUserId;
             common.Trace($"Checking association between user {userId} and role.");
 
             var systemUserLink = new LinkEntity
@@ -71,7 +71,7 @@ namespace msdyncrmWorkflowTools
             };
 
             // Retrieve matching roles.
-            var matchEntities = common.service.RetrieveMultiple(linkQuery);
+            var matchEntities = common.Service.RetrieveMultiple(linkQuery);
 
             // if an entity is returned then the user is a member
             // of the role

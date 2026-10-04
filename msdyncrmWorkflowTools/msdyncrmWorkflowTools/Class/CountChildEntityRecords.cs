@@ -21,7 +21,7 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("Record URL (Parent)")]
         [ReferenceTarget("")]
-        public InArgument<string> RecordURL { get; set; }
+        public InArgument<string> RecordUrl { get; set; }
 
         [Input("FetchXML Filter (Child)")]
         [ReferenceTarget("")]
@@ -34,30 +34,32 @@ namespace msdyncrmWorkflowTools
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
-            var _childEntityName = ChildEntityName.Get(executionContext);
-            var _parentLookupName = ParentLookupName.Get(executionContext);
-            var _recordURL = RecordURL.Get(executionContext);
-            common.Trace($"ChildEntityName={_childEntityName}--ParentLookupName={_parentLookupName}--RecordURL={_recordURL}");
-            if (string.IsNullOrEmpty(_recordURL))
+            var childEntityName = ChildEntityName.Get(executionContext);
+            var parentLookupName = ParentLookupName.Get(executionContext);
+            var recordUrl = RecordUrl.Get(executionContext);
+            common.Trace($"ChildEntityName={childEntityName}--ParentLookupName={parentLookupName}--RecordURL={recordUrl}");
+
+            if (string.IsNullOrEmpty(recordUrl))
             {
                 throw new InvalidPluginExecutionException("Record URL (Parent) is required.");
             }
-            var parsedUrl = Utility.ParseRecordUrl(_recordURL);
-            var ParentObjectTypeCode = parsedUrl.ObjectTypeCode;
-            var ParenEntityName = common.GetEntityNameFromCode(ParentObjectTypeCode);
-            var ParentEntityId = parsedUrl.Id;
-            common.Trace($"ParentObjectTypeCode={ParentObjectTypeCode}--ParentId={ParentEntityId}");
+            var parsedUrl = Utility.ParseRecordUrl(recordUrl);
+            var parentObjectTypeCode = parsedUrl.ObjectTypeCode;
+            var parenEntityName = common.GetEntityNameFromCode(parentObjectTypeCode);
+            var parentEntityId = parsedUrl.Id;
+
+            common.Trace($"ParentObjectTypeCode={parentObjectTypeCode}--ParentId={parentEntityId}");
             #endregion
 
             #region "Process"
 
             var filterExpressionXml = FilterExpressionXml.Get(executionContext);
             var query = string.IsNullOrWhiteSpace(filterExpressionXml)
-                ? Queries.ChildRecords(_childEntityName, _parentLookupName, new Guid(ParentEntityId))
-                : common.FetchXmlToQueryExpression(Queries.ChildRecordsFetchXml(_childEntityName, _parentLookupName, new Guid(ParentEntityId), filterExpressionXml));
+                ? Queries.ChildRecords(childEntityName, parentLookupName, new Guid(parentEntityId))
+                : common.FetchXmlToQueryExpression(Queries.ChildRecordsFetchXml(childEntityName, parentLookupName, new Guid(parentEntityId), filterExpressionXml));
 
             var count = common.CountRecords(query);
-            common.Trace($"{_childEntityName} records with {_parentLookupName} = {ParentEntityId}: {count}");
+            common.Trace($"{childEntityName} records with {parentLookupName} = {parentEntityId}: {count}");
 
             Result.Set(executionContext, count);
             #endregion

@@ -43,7 +43,7 @@ namespace msdyncrmWorkflowTools
             #region "Associate Execution"
 
             var intersectEntityName = common.GetIntersectEntityName(relationshipName);
-            var relations = common.GetAssociations(common.context.PrimaryEntityName, common.context.PrimaryEntityId, intersectEntityName, entityName, parentId);
+            var relations = common.GetAssociations(common.Context.PrimaryEntityName, common.Context.PrimaryEntityId, intersectEntityName, entityName, parentId);
 
             Result.Set(executionContext, relations.Entities.Count > 0);
 

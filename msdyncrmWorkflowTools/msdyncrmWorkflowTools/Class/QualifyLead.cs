@@ -65,7 +65,7 @@ namespace msdyncrmWorkflowTools
                 ColumnSet = new ColumnSet("basecurrencyid")
             };
 
-            var result = common.service.RetrieveMultiple(query);
+            var result = common.Service.RetrieveMultiple(query);
             var currencyId = (EntityReference)result.Entities[0]["basecurrencyid"];
 
             var request = new QualifyLeadRequest
@@ -88,7 +88,7 @@ namespace msdyncrmWorkflowTools
             request.Status = new OptionSetValue(leadStatus);
             request.LeadId = new EntityReference("lead", lead.Id);
 
-            common.service.Execute(request);
+            common.Service.Execute(request);
             common.Trace("  Executed OK.");
 
             #endregion

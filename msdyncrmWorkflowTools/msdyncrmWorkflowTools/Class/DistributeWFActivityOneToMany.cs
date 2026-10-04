@@ -23,7 +23,7 @@ namespace msdyncrmWorkflowTools
             }
 
             // every child record whose lookup points at the workflow's primary record
-            var recordIds = common.GetOneToManyRelatedIds(relationshipName, common.context.PrimaryEntityId);
+            var recordIds = common.GetOneToManyRelatedIds(relationshipName, common.Context.PrimaryEntityId);
             common.Trace($"Running workflow {workflow.Id} for {recordIds.Count} records related through {relationshipName}");
 
             common.ExecuteWorkflow(workflow.Id, recordIds);

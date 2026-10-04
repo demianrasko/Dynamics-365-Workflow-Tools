@@ -64,7 +64,7 @@ namespace msdyncrmWorkflowTools.Class
                 EntityId = idToAdd
             };
 
-            common.service.Execute(request);
+            common.Service.Execute(request);
         }
     }
 }

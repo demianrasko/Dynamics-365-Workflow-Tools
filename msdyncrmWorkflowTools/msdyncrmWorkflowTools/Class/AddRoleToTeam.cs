@@ -36,14 +36,14 @@ namespace msdyncrmWorkflowTools
 
             var entRoleId = roleId.Value;
 
-            if (IsAssociate(common.service, teamReference.Id, entRoleId))
+            if (IsAssociate(common.Service, teamReference.Id, entRoleId))
             {
                 return;
             }
 
             common.Trace("Associate | RoleId: {0} - TeamID: {1} ", entRoleId, teamReference.Id);
 
-            common.service.Associate(
+            common.Service.Associate(
                 "team",
                 teamReference.Id,
                 new Relationship("teamroles_association"),

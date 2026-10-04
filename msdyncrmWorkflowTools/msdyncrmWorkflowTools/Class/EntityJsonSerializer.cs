@@ -42,7 +42,7 @@ namespace msdyncrmWorkflowTools
             #region "Clone Execution"
 
             var retrievedObject =
-                common.service.Retrieve(entityName, new Guid(objectId), new ColumnSet(allColumns: true));
+                common.Service.Retrieve(entityName, new Guid(objectId), new ColumnSet(allColumns: true));
             common.Trace("retrieved object OK");
 
             //var newEntity = new Entity(entityName);

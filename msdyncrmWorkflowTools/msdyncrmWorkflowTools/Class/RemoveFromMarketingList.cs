@@ -62,7 +62,7 @@ namespace msdyncrmWorkflowTools.Class
                 EntityId = idToRemove
             };
 
-            common.service.Execute(request);
+            common.Service.Execute(request);
         }
     }
 }

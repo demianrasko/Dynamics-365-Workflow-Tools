@@ -45,7 +45,7 @@ namespace msdyncrmWorkflowTools
                 ["quantity"] = quantity
             };
 
-            var id = common.service.Create(opportunityProduct);
+            var id = common.Service.Create(opportunityProduct);
             common.Trace($"Opportunity product {id} created");
         }
     }

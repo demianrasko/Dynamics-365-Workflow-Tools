@@ -20,7 +20,7 @@ namespace msdyncrmWorkflowTools.Class
 
             #endregion
 
-            common.service.Execute(new CopyDynamicListToStaticRequest { ListId = marketingList.Id });
+            common.Service.Execute(new CopyDynamicListToStaticRequest { ListId = marketingList.Id });
         }
     }
 }

@@ -109,7 +109,7 @@ namespace msdyncrmWorkflowTools
 
             common.Trace("Executing Query...");
 
-            var results = common.service.RetrieveMultiple(qe);
+            var results = common.Service.RetrieveMultiple(qe);
 
             common.Trace($"Executed Query Ok, {results.Entities.Count} records ...");
 

@@ -28,7 +28,7 @@ namespace msdyncrmWorkflowTools.Class
                 throw new InvalidPluginExecutionException("Remove From All Marketing Lists only supports account, contact or lead records.");
             }
 
-            if (!DoesCrmRecordExist(common.service, context.PrimaryEntityName, context.PrimaryEntityId))
+            if (!DoesCrmRecordExist(common.Service, context.PrimaryEntityName, context.PrimaryEntityId))
             {
                 return;
             }
@@ -53,7 +53,7 @@ namespace msdyncrmWorkflowTools.Class
                     }
             };
 
-            var listMembers = common.service.RetrieveMultiple(query).Entities;
+            var listMembers = common.Service.RetrieveMultiple(query).Entities;
 
             foreach (var member in listMembers)
             {
@@ -66,7 +66,7 @@ namespace msdyncrmWorkflowTools.Class
                     ListId = list.Id
                 };
 
-                common.service.Execute(request);
+                common.Service.Execute(request);
             }
         }
 

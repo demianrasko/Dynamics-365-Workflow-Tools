@@ -16,20 +16,20 @@ namespace msdyncrmWorkflowTools
 {
     public class Common
     {
-        public ITracingService tracingService;
-        public IWorkflowContext context;
-        public IOrganizationServiceFactory serviceFactory;
-        public IOrganizationService service;
+        public ITracingService TracingService;
+        public IWorkflowContext Context;
+        public IOrganizationServiceFactory ServiceFactory;
+        public IOrganizationService Service;
 
         /// <summary>
         /// Used by the workflow activities: pulls the tracing service, workflow context and organization service from the execution context.
         /// </summary>
         public Common(CodeActivityContext executionContext)
         {
-            tracingService = executionContext.GetExtension<ITracingService>();
-            context = executionContext.GetExtension<IWorkflowContext>();
-            serviceFactory = executionContext.GetExtension<IOrganizationServiceFactory>();
-            service = serviceFactory.CreateOrganizationService(context.UserId);
+            TracingService = executionContext.GetExtension<ITracingService>();
+            Context = executionContext.GetExtension<IWorkflowContext>();
+            ServiceFactory = executionContext.GetExtension<IOrganizationServiceFactory>();
+            Service = ServiceFactory.CreateOrganizationService(Context.UserId);
         }
 
         /// <summary>
@@ -37,9 +37,9 @@ namespace msdyncrmWorkflowTools
         /// </summary>
         public Common(IOrganizationService service, ITracingService tracingService = null, IWorkflowContext context = null)
         {
-            this.service = service;
-            this.tracingService = tracingService ?? new NullTracingService();
-            this.context = context;
+            Service = service;
+            TracingService = tracingService ?? new NullTracingService();
+            Context = context;
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace msdyncrmWorkflowTools
         /// </summary>
         public void Trace(string message)
         {
-            tracingService.Trace("{0}", message);
+            TracingService.Trace("{0}", message);
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace msdyncrmWorkflowTools
         /// </summary>
         public void Trace(string format, params object[] args)
         {
-            tracingService.Trace(format, args);
+            TracingService.Trace(format, args);
         }
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace msdyncrmWorkflowTools
                 ClientVersionStamp = null
             };
 
-            var response = (RetrieveMetadataChangesResponse)service.Execute(request);
+            var response = (RetrieveMetadataChangesResponse)Service.Execute(request);
 
             var entityMetadata = response.EntityMetadata[0];
 
@@ -109,7 +109,7 @@ namespace msdyncrmWorkflowTools
         {
             Trace($"Associations: {primaryEntityName} {primaryEntityId} via {intersectEntityName} to {entityName} {parentId}");
 
-            return service.RetrieveMultiple(Queries.Associations(primaryEntityName, primaryEntityId, intersectEntityName, entityName, new Guid(parentId)));
+            return Service.RetrieveMultiple(Queries.Associations(primaryEntityName, primaryEntityId, intersectEntityName, entityName, new Guid(parentId)));
         }
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace msdyncrmWorkflowTools
 
             try
             {
-                response = (RetrieveRelationshipResponse)service.Execute(new RetrieveRelationshipRequest { Name = relationshipName, RetrieveAsIfPublished = false });
+                response = (RetrieveRelationshipResponse)Service.Execute(new RetrieveRelationshipRequest { Name = relationshipName, RetrieveAsIfPublished = false });
             }
             catch (FaultException<OrganizationServiceFault>)
             {
@@ -151,7 +151,7 @@ namespace msdyncrmWorkflowTools
 
             while (true)
             {
-                var page = service.RetrieveMultiple(query);
+                var page = Service.RetrieveMultiple(query);
                 count += page.Entities.Count;
 
                 if (!page.MoreRecords)
@@ -169,7 +169,7 @@ namespace msdyncrmWorkflowTools
         /// </summary>
         public QueryExpression FetchXmlToQueryExpression(string fetchXml)
         {
-            var response = (FetchXmlToQueryExpressionResponse)service.Execute(new FetchXmlToQueryExpressionRequest { FetchXml = fetchXml });
+            var response = (FetchXmlToQueryExpressionResponse)Service.Execute(new FetchXmlToQueryExpressionRequest { FetchXml = fetchXml });
             return response.Query;
         }
 
@@ -178,7 +178,7 @@ namespace msdyncrmWorkflowTools
         /// </summary>
         public Dictionary<int, string> GetOptionSetLabels(string entityName, string attributeName)
         {
-            var response = (RetrieveAttributeResponse)service.Execute(new RetrieveAttributeRequest
+            var response = (RetrieveAttributeResponse)Service.Execute(new RetrieveAttributeRequest
             {
                 EntityLogicalName = entityName,
                 LogicalName = attributeName,
@@ -209,7 +209,7 @@ namespace msdyncrmWorkflowTools
 
             while (true)
             {
-                var page = service.RetrieveMultiple(query);
+                var page = Service.RetrieveMultiple(query);
                 ids.AddRange(page.Entities.Select(e => e.Id));
 
                 if (!page.MoreRecords)
@@ -229,7 +229,7 @@ namespace msdyncrmWorkflowTools
         {
             foreach (var recordId in recordIds)
             {
-                service.Execute(new ExecuteWorkflowRequest { EntityId = recordId, WorkflowId = workflowId });
+                Service.Execute(new ExecuteWorkflowRequest { EntityId = recordId, WorkflowId = workflowId });
             }
         }
 
@@ -238,7 +238,7 @@ namespace msdyncrmWorkflowTools
         /// </summary>
         public List<Guid> GetOneToManyRelatedIds(string relationshipName, Guid parentId)
         {
-            var response = (RetrieveRelationshipResponse)service.Execute(new RetrieveRelationshipRequest { Name = relationshipName, RetrieveAsIfPublished = false });
+            var response = (RetrieveRelationshipResponse)Service.Execute(new RetrieveRelationshipRequest { Name = relationshipName, RetrieveAsIfPublished = false });
 
             if (!(response.RelationshipMetadata is OneToManyRelationshipMetadata relationship))
             {
@@ -254,7 +254,7 @@ namespace msdyncrmWorkflowTools
         /// </summary>
         public List<Guid> GetManyToManyRelatedIds(string relationshipName, string primaryEntityName, Guid primaryEntityId)
         {
-            var response = (RetrieveRelationshipResponse)service.Execute(new RetrieveRelationshipRequest { Name = relationshipName, RetrieveAsIfPublished = false });
+            var response = (RetrieveRelationshipResponse)Service.Execute(new RetrieveRelationshipRequest { Name = relationshipName, RetrieveAsIfPublished = false });
 
             if (!(response.RelationshipMetadata is ManyToManyRelationshipMetadata relationship))
             {
@@ -282,14 +282,14 @@ namespace msdyncrmWorkflowTools
 
         public List<string> GetEntityAttributesToClone(string entityName, ref string primaryIdAttribute, ref string primaryNameAttribute)
         {
-            var atts = new List<string>();
+            var attributes = new List<string>();
             var request = new RetrieveEntityRequest()
             {
                 EntityFilters = EntityFilters.Attributes,
                 LogicalName = entityName
             };
 
-            var response = (RetrieveEntityResponse)service.Execute(request);
+            var response = (RetrieveEntityResponse)Service.Execute(request);
             primaryIdAttribute = response.EntityMetadata.PrimaryIdAttribute;
 
             foreach (var attMetadata in response.EntityMetadata.Attributes)
@@ -299,20 +299,22 @@ namespace msdyncrmWorkflowTools
                     primaryNameAttribute = attMetadata.LogicalName;
                 }
 
-                if (attMetadata.IsValidForCreate != null && 
+                if (attMetadata.IsValidForCreate != null &&
+                    attMetadata.IsValidForUpdate != null &&
+                    attMetadata.IsPrimaryId != null &&
                     ((!attMetadata.IsValidForCreate.Value && 
                       !attMetadata.IsValidForUpdate.Value)
-                    || attMetadata.IsPrimaryId.Value))
+                     || attMetadata.IsPrimaryId.Value))
                 {
                     continue;
                 }
 
-                atts.Add(attMetadata.AttributeTypeName.Value.ToLower() == "partylisttype"
+                attributes.Add(attMetadata.AttributeTypeName.Value.ToLower() == "partylisttype"
                     ? $"partylist-{attMetadata.LogicalName}"
                     : attMetadata.LogicalName);
             }
 
-            return atts;
+            return attributes;
         }
 
         public Guid CloneRecord(string entityName, string objectId, string fieldstoIgnore, string prefix)
@@ -326,7 +328,7 @@ namespace msdyncrmWorkflowTools
             fieldstoIgnore = fieldstoIgnore.ToLower();
             Trace($"{nameof(fieldstoIgnore)}={fieldstoIgnore}");
 
-            var retrievedObject = service.Retrieve(entityName, new Guid(objectId), new ColumnSet(allColumns: true));
+            var retrievedObject = Service.Retrieve(entityName, new Guid(objectId), new ColumnSet(allColumns: true));
             Trace("retrieved object OK");
 
             var newEntity = new Entity(entityName);
@@ -362,7 +364,7 @@ namespace msdyncrmWorkflowTools
                         throw new InvalidPluginExecutionException($"Unsupported party list attribute '{att2}'.");
                     }
 
-                    var returnCollection = service.RetrieveMultiple(
+                    var returnCollection = Service.RetrieveMultiple(
                         Queries.ActivityParties(new Guid(objectId), int.Parse(participationTypeMask)));
 
                     Trace("attribute:{0}", att2);
@@ -393,12 +395,12 @@ namespace msdyncrmWorkflowTools
             }
 
             Trace("creating cloned object...");
-            var id = service.Create(newEntity);
+            var id = Service.Create(newEntity);
             Trace("created cloned object OK");
 
             if (newEntity.Attributes.Contains("statuscode") && newEntity.Attributes.Contains("statecode"))
             {
-                var record = service.Retrieve(entityName, id, new ColumnSet("statuscode", "statecode"));
+                var record = Service.Retrieve(entityName, id, new ColumnSet("statuscode", "statecode"));
 
                 if (retrievedObject.Attributes["statuscode"] != record.Attributes["statuscode"] ||
                     retrievedObject.Attributes["statecode"] != record.Attributes["statecode"])
@@ -407,7 +409,7 @@ namespace msdyncrmWorkflowTools
                     setStatusEnt.Attributes.Add("statuscode", retrievedObject.Attributes["statuscode"]);
                     setStatusEnt.Attributes.Add("statecode", retrievedObject.Attributes["statecode"]);
 
-                    service.Update(setStatusEnt);
+                    Service.Update(setStatusEnt);
                 }
             }
 
@@ -420,21 +422,24 @@ namespace msdyncrmWorkflowTools
         {
             var request = new DeleteRecordChangeHistoryRequest();
 
-            var objt = new EntityReference(logicalName, new Guid(id));
+            var entityReference = new EntityReference(logicalName, new Guid(id));
 
-            request.Target = objt;
-            service.Execute(request);
+            request.Target = entityReference;
+            Service.Execute(request);
         }
 
-        public EntityReference retrieveUserBUDefaultTeam(string systemuserid)
+        public EntityReference RetrieveUserBuDefaultTeam(string systemUserId)
         {
-            var teamres = new EntityReference("team");
+            // TODO: Cleanup after testing
+            //var teamReference = new EntityReference("team");
 
-            var team = service.RetrieveMultiple(Queries.DefaultTeamForUser(new Guid(systemuserid)));
+            var team = Service.RetrieveMultiple(Queries.DefaultTeamForUser(new Guid(systemUserId)));
 
-            teamres.Id = team.Entities[0].Id;
-            return teamres;
+            //teamReference.Id = team.Entities[0].Id;
+
+            return team?.Entities[0].ToEntityReference();
         }
+
         /*
         public void QRCode(string entityname, string recordid, string QRInfo, string noteSubject, string noteText, string fileName)
         {
@@ -509,44 +514,47 @@ namespace msdyncrmWorkflowTools
              Annotation.Attributes["notetext"] = noteText;
              Annotation.Attributes["filename"] =fileName;
              service.Create(Annotation);
-             
-    *
-
         }*/
 
-        public bool SendEmailToUsersInRole(EntityReference securityRoleLookup, EntityReference email)
+        public bool SendEmailToUsersInRole(EntityReference securityRoleLookup, EntityReference emailReference)
         {
-            var userList = service.RetrieveMultiple(Queries.UsersInRole(securityRoleLookup.Id));
+            var userList = Service.RetrieveMultiple(Queries.UsersInRole(securityRoleLookup.Id));
             Trace("Retrieved Data");
 
-            var emailEnt = new Entity("email", email.Id);
+            var email = new Entity("emailReference", emailReference.Id);
 
             var to = new EntityCollection();
 
             foreach (var user in userList.Entities)
             {
-                // Id of the user
                 var userId = user.Id;
 
-                var to1 = new Entity("activityparty");
-                to1["partyid"] = new EntityReference("systemuser", userId);
+                var to1 = new Entity("activityparty")
+                {
+                    ["partyid"] = new EntityReference("systemuser", userId)
+                };
 
                 to.Entities.Add(to1);
             }
-            emailEnt["to"] = to;
 
-            service.Update(emailEnt);
+            email["to"] = to;
 
-            var request = new SendEmailRequest();
-            request.EmailId = email.Id;
+            Service.Update(email);
 
-            var response = (SendEmailResponse)service.Execute(request);
+            var request = new SendEmailRequest
+            {
+                EmailId = emailReference.Id
+            };
+
+            var response = (SendEmailResponse)Service.Execute(request);
+
+            //TODO: Investigate
             return true;
         }
 
         public bool SendEmailFromTemplateToUsersInRole(EntityReference securityRoleLookup, EntityReference emailTemplateLookup)
         {
-            var userList = service.RetrieveMultiple(Queries.UsersInRole(securityRoleLookup.Id));
+            var userList = Service.RetrieveMultiple(Queries.UsersInRole(securityRoleLookup.Id));
             Trace("Retrieved Data");
 
             foreach (var user in userList.Entities)
@@ -556,7 +564,7 @@ namespace msdyncrmWorkflowTools
                     Trace("user creating email");
                     var sent = SendEmailFromTemplate(emailTemplateLookup, user.Id);
                 }
-                catch (System.Exception ex)
+                catch (Exception ex)
                 {
                     Trace($"error:{ex.ToString()}");
                 }
@@ -567,13 +575,24 @@ namespace msdyncrmWorkflowTools
         public bool SendEmailFromTemplate(EntityReference template, Guid userId)
         {
             var toEntities = new List<Entity>();
-            var activityParty = new Entity();
-            activityParty.LogicalName = "activityparty";
-            activityParty.Attributes["partyid"] = new EntityReference("systemuser", userId);
+            var activityParty = new Entity
+            {
+                LogicalName = "activityparty",
+                Attributes =
+                {
+                    ["partyid"] = new EntityReference("systemuser", userId)
+                }
+            };
+            
             toEntities.Add(activityParty);
 
-            var email = new Entity("email");
-            email.Attributes["to"] = toEntities.ToArray();
+            var email = new Entity("email")
+            {
+                Attributes =
+                {
+                    ["to"] = toEntities.ToArray()
+                }
+            };
 
             var request = new SendEmailFromTemplateRequest
             {
@@ -587,8 +606,9 @@ namespace msdyncrmWorkflowTools
                 RegardingType = "systemuser"
             };
 
-            var response = (SendEmailFromTemplateResponse)service.Execute(request);
+            var response = (SendEmailFromTemplateResponse)Service.Execute(request);
 
+            // TODO: Investigate
             return true;
         }
 
@@ -607,7 +627,8 @@ namespace msdyncrmWorkflowTools
                         }
             };
 
-            var appmodules = service.RetrieveMultiple(query).Entities;
+            var appmodules = Service.RetrieveMultiple(query).Entities;
+
             return appmodules.First()["appmoduleid"].ToString();
         }
 
@@ -634,8 +655,7 @@ namespace msdyncrmWorkflowTools
                         }
             };
 
-            //get the results
-            var retrievedUsers = service.RetrieveMultiple(query);
+            var retrievedUsers = Service.RetrieveMultiple(query);
 
             return retrievedUsers.Entities.Count > 0;
         }
@@ -651,7 +671,7 @@ namespace msdyncrmWorkflowTools
         /// <returns>The role id in the principal's business unit, or null if <paramref name="roleId"/> does not exist.</returns>
         public Guid? GetRoleIdInBusinessUnit(EntityReference principal, Guid roleId)
         {
-            var principalRecord = service.Retrieve(principal.LogicalName, principal.Id, new ColumnSet("businessunitid"));
+            var principalRecord = Service.Retrieve(principal.LogicalName, principal.Id, new ColumnSet("businessunitid"));
             var businessUnit = (EntityReference)principalRecord.Attributes["businessunitid"];
 
             var roleQuery = new QueryExpression
@@ -672,7 +692,7 @@ namespace msdyncrmWorkflowTools
                 }
             };
 
-            var givenRoles = service.RetrieveMultiple(roleQuery);
+            var givenRoles = Service.RetrieveMultiple(roleQuery);
 
             if (givenRoles.Entities.Count <= 0)
             {
@@ -708,7 +728,7 @@ namespace msdyncrmWorkflowTools
                 }
             };
 
-            var businessUnitRoles = service.RetrieveMultiple(businessUnitRoleQuery);
+            var businessUnitRoles = Service.RetrieveMultiple(businessUnitRoleQuery);
 
             return (Guid)businessUnitRoles.Entities[0].Attributes["roleid"];
         }
@@ -736,7 +756,7 @@ namespace msdyncrmWorkflowTools
 
             if (principal != null)
             {
-                service.Execute(new GrantAccessRequest
+                Service.Execute(new GrantAccessRequest
                 {
                     Target = target,
                     PrincipalAccess = new PrincipalAccess { Principal = principal, AccessMask = accessMask }
@@ -755,7 +775,7 @@ namespace msdyncrmWorkflowTools
 
             if (principal != null)
             {
-                service.Execute(new RevokeAccessRequest { Target = target, Revokee = principal });
+                Service.Execute(new RevokeAccessRequest { Target = target, Revokee = principal });
             }
 
             Trace("Revoked Permissions--- OK");
@@ -771,7 +791,7 @@ namespace msdyncrmWorkflowTools
                       OptionSetName = attributeName,
                       Value = optionValue
                   };
-                service.Execute(request);
+                Service.Execute(request);
             }
             else
             {
@@ -783,22 +803,24 @@ namespace msdyncrmWorkflowTools
                        EntityLogicalName = entityName,
                        Value = optionValue
                    };
-                service.Execute(request);
+                Service.Execute(request);
             }
         }
 
-        public void SalesLiteratureToEmail(string _FileName, string salesLiteratureId, string emailid)
+        public void SalesLiteratureToEmail(string fileName, string salesLiteratureId, string emailid)
         {
-            if (_FileName == "*")
+            if (fileName == "*")
             {
-                _FileName = string.Empty;
+                fileName = string.Empty;
             }
-            _FileName = _FileName.Replace("*", "%");
+
+            fileName = fileName.Replace("*", "%");
 
             #region "Query Attachments"
-            var fileNamePattern = $"%{_FileName}%";
+            var fileNamePattern = $"%{fileName}%";
             Trace($"Sales literature items: file name like '{fileNamePattern}', sales literature {salesLiteratureId}");
-            var attachmentFiles = service.RetrieveMultiple(Queries.SalesLiteratureItems(fileNamePattern, new Guid(salesLiteratureId)));
+            
+            var attachmentFiles = Service.RetrieveMultiple(Queries.SalesLiteratureItems(fileNamePattern, new Guid(salesLiteratureId)));
 
             if (attachmentFiles.Entities.Count == 0)
             {
@@ -810,32 +832,43 @@ namespace msdyncrmWorkflowTools
 
             #region "Add Attachments to Email"
             var i = 1;
+
             foreach (var file in attachmentFiles.Entities)
             {
-                var _Attachment = new Entity("activitymimeattachment");
-                _Attachment["objectid"] = new EntityReference("email", new Guid(emailid));
-                _Attachment["objecttypecode"] = "email";
-                _Attachment["attachmentnumber"] = i;
+                var attachment = new Entity("activitymimeattachment")
+                {
+                    ["objectid"] = new EntityReference("email", new Guid(emailid)),
+                    ["objecttypecode"] = "email",
+                    ["attachmentnumber"] = i
+                };
+
                 i++;
 
-                if (file.Attributes.Contains("title"))
+                if (file.TryGetAttributeValue("title", out string title))
                 {
-                    _Attachment["subject"] = file.Attributes["title"].ToString();
+                    attachment["subject"] = title;
                 }
+
+                //if (file.Attributes.Contains("title"))
+                //{
+                //    attachment["subject"] = file.Attributes["title"].ToString();
+                //}
+
                 if (file.Attributes.Contains("filename"))
                 {
-                    _Attachment["filename"] = file.Attributes["filename"].ToString();
+                    attachment["filename"] = file.Attributes["filename"].ToString();
                 }
                 if (file.Attributes.Contains("documentbody"))
                 {
-                    _Attachment["body"] = file.Attributes["documentbody"].ToString();
+                    attachment["body"] = file.Attributes["documentbody"].ToString();
                 }
+                
                 if (file.Attributes.Contains("mimetype"))
                 {
-                    _Attachment["mimetype"] = file.Attributes["mimetype"].ToString();
+                    attachment["mimetype"] = file.Attributes["mimetype"].ToString();
                 }
 
-                service.Create(_Attachment);
+                Service.Create(attachment);
             }
 
             #endregion
@@ -852,11 +885,11 @@ namespace msdyncrmWorkflowTools
                       Value = optionValue,
                       Label = new Label(optionText, languageCode)
                   };
-                var insertOptionValue = ((InsertOptionValueResponse)service.Execute(request)).NewOptionValue;
+
+                var insertOptionValue = ((InsertOptionValueResponse)Service.Execute(request)).NewOptionValue;
             }
             else
             {
-                // Create a request.
                 var request =
                    new InsertOptionValueRequest
                    {
@@ -865,7 +898,8 @@ namespace msdyncrmWorkflowTools
                        Value = optionValue,
                        Label = new Label(optionText, languageCode)
                    };
-                var insertOptionValue = ((InsertOptionValueResponse)service.Execute(request)).NewOptionValue;
+
+                var insertOptionValue = ((InsertOptionValueResponse)Service.Execute(request)).NewOptionValue;
             }
             return true;
         }
@@ -878,27 +912,27 @@ namespace msdyncrmWorkflowTools
             team.Attributes.Add("teamtype", new OptionSetValue(teamType));
             team.Attributes.Add("businessunitid",  businessUnit);
 
-            var _teamId = service.Create(team);
+            var teamId = Service.Create(team);
 
-            return _teamId;
+            return teamId;
         }
-        public void AssociateEntity(string PrimaryEntityName, Guid PrimaryEntityId, string _relationshipName, string _relationshipEntityName, string entityName, string ParentId)
+        public void AssociateEntity(string primaryEntityName, Guid primaryEntityId, string relationshipName, string relationshipEntityName, string entityName, string parentId)
         {
             try
             {
-                var relations = GetAssociations(PrimaryEntityName, PrimaryEntityId, _relationshipEntityName, entityName, ParentId);
+                var relations = GetAssociations(primaryEntityName, primaryEntityId, relationshipEntityName, entityName, parentId);
 
                 if (relations.Entities.Count == 0)
                 {
                     var relatedEntities = new EntityReferenceCollection();
-                    relatedEntities.Add(new EntityReference(entityName, new Guid(ParentId)));
-                    var relationship = new Relationship(_relationshipName);
-                    if (PrimaryEntityName == entityName)
+                    relatedEntities.Add(new EntityReference(entityName, new Guid(parentId)));
+                    var relationship = new Relationship(relationshipName);
+                    if (primaryEntityName == entityName)
                     {
                         relationship.PrimaryEntityRole = EntityRole.Referencing;
                     }
 
-                    service.Associate(PrimaryEntityName, PrimaryEntityId, relationship, relatedEntities);
+                    Service.Associate(primaryEntityName, primaryEntityId, relationship, relatedEntities);
                 }
             }
             catch (Exception ex)
@@ -918,7 +952,7 @@ namespace msdyncrmWorkflowTools
             #region "Query Attachments"
 
             Trace($"Attachments: {(retrieveActivityMimeAttachment ? "activitymimeattachment" : "annotation")} of {parentId}, file name like '{fileName}', top {topRecords}");
-            var attachmentFiles = service.RetrieveMultiple(
+            var attachmentFiles = Service.RetrieveMultiple(
                 Queries.EntityAttachments(retrieveActivityMimeAttachment, fileName, new Guid(parentId), topRecords ?? 0));
 
             if (attachmentFiles.Entities.Count == 0)
@@ -938,31 +972,31 @@ namespace msdyncrmWorkflowTools
             {
                 Trace("Entities Count: {0} ", i);
 
-                var _Attachment = new Entity("activitymimeattachment");
-                _Attachment["objectid"] = new EntityReference("email", email.Id);
-                _Attachment["objecttypecode"] = "email";
-                _Attachment["attachmentnumber"] = i;
+                var attachment = new Entity("activitymimeattachment");
+                attachment["objectid"] = new EntityReference("email", email.Id);
+                attachment["objecttypecode"] = "email";
+                attachment["attachmentnumber"] = i;
                 i++;
 
                 if (file.Attributes.Contains("subject"))
                 {
-                    _Attachment["subject"] = file.Attributes["subject"].ToString();
+                    attachment["subject"] = file.Attributes["subject"].ToString();
                 }
                 if (file.Attributes.Contains("filename"))
                 {
-                    _Attachment["filename"] = file.Attributes["filename"].ToString();
+                    attachment["filename"] = file.Attributes["filename"].ToString();
                 }
                 if (file.Attributes.Contains("documentbody"))
                 {
-                    _Attachment["body"] = file.Attributes["documentbody"].ToString();
+                    attachment["body"] = file.Attributes["documentbody"].ToString();
                 }
                 else if (file.Attributes.Contains("body"))
                 {
-                    _Attachment["body"] = file.Attributes["body"].ToString();
+                    attachment["body"] = file.Attributes["body"].ToString();
                 }
                 if (file.Attributes.Contains("mimetype"))
                 {
-                    _Attachment["mimetype"] = file.Attributes["mimetype"].ToString();
+                    attachment["mimetype"] = file.Attributes["mimetype"].ToString();
                 }
 
                 if (mostRecent)
@@ -975,7 +1009,7 @@ namespace msdyncrmWorkflowTools
                     {
                         Trace("not already attached");
 
-                        service.Create(_Attachment);
+                        Service.Create(attachment);
 
                         if (!file.Contains("filename"))
                         {
@@ -992,7 +1026,7 @@ namespace msdyncrmWorkflowTools
                 else
                 {
                     Trace("Is Not Most Recent");
-                    service.Create(_Attachment);
+                    Service.Create(attachment);
                 }
             }
 
@@ -1012,62 +1046,66 @@ namespace msdyncrmWorkflowTools
             {
                 Name = relationshipName
             };
-            var response = (RetrieveRelationshipResponse)service.Execute(request);
+            
+            var response = (RetrieveRelationshipResponse)Service.Execute(request);
             var rel = (OneToManyRelationshipMetadata)response.RelationshipMetadata;
             var childEntityType = rel.ReferencingEntity;
             var childEntityFieldName = rel.ReferencingAttribute;
 
             //2) retrieve all child records
-            var querybyattribute = new QueryByAttribute(childEntityType);
-            querybyattribute.ColumnSet = new ColumnSet(childEntityFieldName);
-            querybyattribute.Attributes.AddRange(childEntityFieldName);
-            querybyattribute.Values.AddRange(new Guid(parentEntityId));
-            var retrieved = service.RetrieveMultiple(querybyattribute);
+            var query = new QueryByAttribute(childEntityType)
+            {
+                ColumnSet = new ColumnSet(childEntityFieldName)
+            };
+
+            query.Attributes.AddRange(childEntityFieldName);
+            query.Values.AddRange(new Guid(parentEntityId));
+            
+            var retrieved = Service.RetrieveMultiple(query);
 
             return retrieved;
         }
 
-        public void UpdateChildRecords(string relationshipName, string parentEntityType, string parentEntityId, string parentFieldNameToUpdate, string setValueToUpdate, string childFieldNameToUpdate, bool _UpdateonlyActive)
+        public void UpdateChildRecords(string relationshipName, string parentEntityType, string parentEntityId, string parentFieldNameToUpdate, string setValueToUpdate, string childFieldNameToUpdate, bool updateonlyActive)
         {
             //1) Get child lookup field name
             var req = new RetrieveRelationshipRequest()
             {
                 Name = relationshipName
             };
-            var res = (RetrieveRelationshipResponse)service.Execute(req);
+
+            var res = (RetrieveRelationshipResponse)Service.Execute(req);
             var rel = (OneToManyRelationshipMetadata)res.RelationshipMetadata;
             var childEntityType = rel.ReferencingEntity;
             var childEntityFieldName = rel.ReferencingAttribute;
 
             //2) retrieve all child records
-            var querybyattribute = new QueryByAttribute(childEntityType);
-            querybyattribute.ColumnSet = new ColumnSet(childEntityFieldName);
-
-            if (!_UpdateonlyActive)
+            var query = new QueryByAttribute(childEntityType)
             {
-                querybyattribute.Attributes.AddRange(childEntityFieldName);
-                querybyattribute.Values.AddRange(new Guid(parentEntityId));
+                ColumnSet = new ColumnSet(childEntityFieldName)
+            };
+
+            if (!updateonlyActive)
+            {
+                query.Attributes.AddRange(childEntityFieldName);
+                query.Values.AddRange(new Guid(parentEntityId));
             }
             else
             {
-                querybyattribute.Attributes.AddRange(childEntityFieldName, "statecode");
-                querybyattribute.Values.AddRange(new Guid(parentEntityId), 0);
+                query.Attributes.AddRange(childEntityFieldName, "statecode");
+                query.Values.AddRange(new Guid(parentEntityId), 0);
             }
-            var retrieved = service.RetrieveMultiple(querybyattribute);
+            
+            var retrieved = Service.RetrieveMultiple(query);
 
-            //2') retrieve parent fielv value
-            var valueToUpdate = new object();
+            //2') retrieve parent field value
+            object valueToUpdate;
+
             if (!string.IsNullOrEmpty(parentFieldNameToUpdate))
             {
-                var retrievedEntity = (Entity)service.Retrieve(parentEntityType, new Guid(parentEntityId), new ColumnSet(parentFieldNameToUpdate));
-                if (retrievedEntity.Attributes.Contains(parentFieldNameToUpdate))
-                {
-                    valueToUpdate = retrievedEntity.Attributes[parentFieldNameToUpdate];
-                }
-                else
-                {
-                    valueToUpdate = null;
-                }
+                var retrievedEntity = Service.Retrieve(parentEntityType, new Guid(parentEntityId), new ColumnSet(parentFieldNameToUpdate));
+
+                valueToUpdate = retrievedEntity.Attributes.Contains(parentFieldNameToUpdate) ? retrievedEntity.Attributes[parentFieldNameToUpdate] : null;
             }
             else
             {
@@ -1081,68 +1119,68 @@ namespace msdyncrmWorkflowTools
                 if (childEntityType.ToLower() == "dynamicpropertyinstance")
                 {
                     //pending...
-                    var req2 = new UpdateProductPropertiesRequest();
+                    var request = new UpdateProductPropertiesRequest();
                     // req2.
                     break;
                 }
 
-                var reqAtt = new RetrieveAttributeRequest();
-                reqAtt.EntityLogicalName = childEntityType;
-                reqAtt.LogicalName = childFieldNameToUpdate;
-                var resAtt = (RetrieveAttributeResponse)service.Execute(reqAtt);
+                var attributeRequest = new RetrieveAttributeRequest
+                {
+                    EntityLogicalName = childEntityType,
+                    LogicalName = childFieldNameToUpdate
+                };
 
-                //var valueToUpdateBool = false;
-                var meta = resAtt.AttributeMetadata;
+                var attributeResponse = (RetrieveAttributeResponse)Service.Execute(attributeRequest);
 
-                var entUpdate = new Entity(childEntityType)
+                var metadata = attributeResponse.AttributeMetadata;
+
+                var entity = new Entity(childEntityType)
                 {
                     Id = child.Id
                 };
 
-                if (meta.AttributeType.Value.ToString() == "Boolean")
-                {
-                    // valueToUpdate is an object, so compare its text (== "1" compared references and missed "1" read from a field)
-                    var text = Convert.ToString(valueToUpdate, CultureInfo.InvariantCulture);
-                    var isTrue = valueToUpdate is bool flag
-                        ? flag
-                        : text == "1" || string.Equals(text, "true", StringComparison.OrdinalIgnoreCase);
-
-                    entUpdate.Attributes.Add(childFieldNameToUpdate, isTrue);
-                }
-                else
-                {
-                    if (meta.AttributeType.Value.ToString() == "Picklist" || meta.AttributeType.Value.ToString() == "Status")
+                if (metadata.AttributeType != null)
+                    switch (metadata.AttributeType.Value.ToString())
                     {
-                        if (valueToUpdate == null)
+                        case "Boolean":
                         {
-                            entUpdate.Attributes.Add(childFieldNameToUpdate, null);
+                            // valueToUpdate is an object, so compare its text (== "1" compared references and missed "1" read from a field)
+                            var text = Convert.ToString(valueToUpdate, CultureInfo.InvariantCulture);
+                            var isTrue = valueToUpdate is bool flag
+                                ? flag
+                                : text == "1" || string.Equals(text, "true", StringComparison.OrdinalIgnoreCase);
+
+                            entity.Attributes.Add(childFieldNameToUpdate, isTrue);
+                            break;
                         }
-                        else
+                        case "Picklist":
+                        case "Status":
                         {
-                            if (valueToUpdate is OptionSetValue)
+                            if (valueToUpdate == null)
                             {
-                                valueToUpdate = ((OptionSetValue)valueToUpdate).Value;
+                                entity.Attributes.Add(childFieldNameToUpdate, null);
                             }
-                            var opt = new OptionSetValue(Convert.ToInt32(valueToUpdate));
-                            entUpdate.Attributes.Add(childFieldNameToUpdate, opt);
-                        }
-                    }
-                    else
-                    {
-                        //if (meta.AttributeType.Value.ToString() == "EntityReference")
-                        //{
-                        //    EntityReference valueRef = (EntityReference)valueToUpdate;
-                        //    EntityReference entR = new EntityReference(valueRef.LogicalName,new Guid(valueRef.Id.ToString()));
-                        //    entUpdate.Attributes.Add(childFieldNameToUpdate, entR);
-                        //}
-                        //else
-                        {
-                            entUpdate.Attributes.Add(childFieldNameToUpdate, valueToUpdate);
-                        }
-                    }
-                }
+                            else
+                            {
+                                if (valueToUpdate is OptionSetValue value)
+                                {
+                                    valueToUpdate = value.Value;
+                                }
 
-                service.Update(entUpdate);
+                                var opt = new OptionSetValue(Convert.ToInt32(valueToUpdate));
+                                entity.Attributes.Add(childFieldNameToUpdate, opt);
+                            }
+
+                            break;
+                        }
+                        default:
+                        {
+                            entity.Attributes.Add(childFieldNameToUpdate, valueToUpdate);
+                            break;
+                        }
+                    }
+
+                Service.Update(entity);
             }
         }
     }

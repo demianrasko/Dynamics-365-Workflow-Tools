@@ -45,7 +45,7 @@ namespace msdyncrmWorkflowTools
             {
                 Target = new EntityReference("goal", new Guid (id))
             };
-            common.service.Execute(request);
+            common.Service.Execute(request);
 
             #endregion
         }

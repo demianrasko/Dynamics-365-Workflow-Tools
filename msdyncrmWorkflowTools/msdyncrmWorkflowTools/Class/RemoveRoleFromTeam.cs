@@ -34,7 +34,7 @@ namespace msdyncrmWorkflowTools
 
             var entRoleId = roleId.Value;
 
-            common.service.Disassociate(
+            common.Service.Disassociate(
                 "team",
                 teamReference.Id,
                 new Relationship("teamroles_association"), 

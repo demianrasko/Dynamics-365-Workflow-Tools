@@ -60,7 +60,7 @@ namespace msdyncrmWorkflowTools.Class
                 queryStage.Criteria.AddCondition(new ConditionExpression("processid", ConditionOperator.Equal, process.Id));
 
                 common.Trace("[Dynamics.ChangeBPFandPhase.Execute] Fetching the requested Stage.");
-                var stageReference = common.service.RetrieveMultiple(queryStage).Entities.FirstOrDefault();
+                var stageReference = common.Service.RetrieveMultiple(queryStage).Entities.FirstOrDefault();
                 if (stageReference == null)
                 {
                     throw new InvalidPluginExecutionException($"{nameof(Process)} stage {processStage} not found");
@@ -76,7 +76,7 @@ namespace msdyncrmWorkflowTools.Class
                 EntityLogicalName = entityName
             };
 
-            var response = (RetrieveProcessInstancesResponse)common.service.Execute(request);
+            var response = (RetrieveProcessInstancesResponse)common.Service.Execute(request);
 
             // Declare variables to store values returned in response
             var processOpp1Id = Guid.Empty;
@@ -93,7 +93,7 @@ namespace msdyncrmWorkflowTools.Class
 
                 // Get the BPF underlying entity logical name
                 const string uniqueProcessNameAttribute = "uniquename";
-                var processEntity = common.service.Retrieve("workflow", process.Id, new ColumnSet(uniqueProcessNameAttribute));
+                var processEntity = common.Service.Retrieve("workflow", process.Id, new ColumnSet(uniqueProcessNameAttribute));
                 procInstanceLogicalName = processEntity.Attributes[uniqueProcessNameAttribute].ToString();
             }
             else
@@ -105,7 +105,7 @@ namespace msdyncrmWorkflowTools.Class
             var processInstanceToUpdate= new Entity(procInstanceLogicalName, processOpp1Id);
             processInstanceToUpdate.Attributes.Add("activestageid", new EntityReference("processstage", stageId.Value));
             common.Trace("Starting the update2");
-            common.service.Update(processInstanceToUpdate);
+            common.Service.Update(processInstanceToUpdate);
             common.Trace("Starting the update3");
             #endregion
         }

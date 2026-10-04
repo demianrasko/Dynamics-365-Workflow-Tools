@@ -39,7 +39,7 @@ namespace msdyncrmWorkflowTools.Class
             teamLink.LinkCriteria.AddCondition(teamCondition);
             userQuery.LinkEntities.Add(teamLink);
 
-            var retrievedUsers = common.service.RetrieveMultiple(userQuery);
+            var retrievedUsers = common.Service.RetrieveMultiple(userQuery);
 
             if (retrievedUsers.Entities.Count == 0)
             {
@@ -65,7 +65,7 @@ namespace msdyncrmWorkflowTools.Class
             }
             emailEnt["to"] = to;
 
-            common.service.Update(emailEnt);
+            common.Service.Update(emailEnt);
 
             #endregion
         }

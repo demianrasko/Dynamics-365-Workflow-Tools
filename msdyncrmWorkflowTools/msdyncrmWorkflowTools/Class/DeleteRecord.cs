@@ -56,7 +56,7 @@ namespace msdyncrmWorkflowTools.Class
                 {
                     throw new InvalidPluginExecutionException("ERROR: Delete Record URL to be deleted missing.");
                 }
-                common.service.Delete(entityName, new Guid (objectId));
+                common.Service.Delete(entityName, new Guid (objectId));
             }
             else
             {
@@ -67,7 +67,7 @@ namespace msdyncrmWorkflowTools.Class
                 }
 
                 common.Trace("Deleting record by Guid: {0}-{1}", entityTypeName, entityGuid);
-                common.service.Delete(entityTypeName, new Guid (entityGuid));
+                common.Service.Delete(entityTypeName, new Guid (entityGuid));
             }
 
             #endregion

@@ -34,7 +34,7 @@ namespace msdyncrmWorkflowTools
                 ["quoteid"] = quote
             };
 
-            common.service.Execute(new WinQuoteRequest
+            common.Service.Execute(new WinQuoteRequest
             {
                 QuoteClose = quoteClose,
                 Status = new OptionSetValue(-1)

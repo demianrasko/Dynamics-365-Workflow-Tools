@@ -25,7 +25,7 @@ namespace msdyncrmWorkflowTools
                 throw new InvalidPluginExecutionException("Opportunity is required.");
             }
 
-            var response = (GenerateQuoteFromOpportunityResponse)common.service.Execute(new GenerateQuoteFromOpportunityRequest
+            var response = (GenerateQuoteFromOpportunityResponse)common.Service.Execute(new GenerateQuoteFromOpportunityRequest
             {
                 OpportunityId = opportunity.Id,
                 ColumnSet = new ColumnSet("quoteid", "name")

@@ -27,8 +27,8 @@ namespace msdyncrmWorkflowTools
 
             var moniker = new EntityReference
             {
-                LogicalName = common.context.PrimaryEntityName,
-                Id = common.context.PrimaryEntityId
+                LogicalName = common.Context.PrimaryEntityName,
+                Id = common.Context.PrimaryEntityId
             };
 
             var request = new OrganizationRequest
@@ -39,7 +39,7 @@ namespace msdyncrmWorkflowTools
                 ["Status"] = new OptionSetValue(statusValue)
             };
 
-            common.service.Execute(request);
+            common.Service.Execute(request);
 
             #endregion
         }

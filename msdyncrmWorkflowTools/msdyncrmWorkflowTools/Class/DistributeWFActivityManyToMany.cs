@@ -23,7 +23,7 @@ namespace msdyncrmWorkflowTools
             }
 
             // every record associated with the workflow's primary record through the N:N relationship
-            var recordIds = common.GetManyToManyRelatedIds(relationshipName, common.context.PrimaryEntityName, common.context.PrimaryEntityId);
+            var recordIds = common.GetManyToManyRelatedIds(relationshipName, common.Context.PrimaryEntityName, common.Context.PrimaryEntityId);
             common.Trace($"Running workflow {workflow.Id} for {recordIds.Count} records related through {relationshipName}");
 
             common.ExecuteWorkflow(workflow.Id, recordIds);

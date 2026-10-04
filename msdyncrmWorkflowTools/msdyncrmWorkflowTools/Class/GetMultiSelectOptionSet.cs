@@ -43,8 +43,8 @@ namespace msdyncrmWorkflowTools
             var retrieveOptionsNames = RetrieveOptionsNames.Get(executionContext);
             common.Trace($"Source Record URL:'{sourceRecordUrl}' Attribute name:'{attributeName}' Retrieve names:'{retrieveOptionsNames}'");
 
-            var sourceEntityReference = new DynamicUrlParser(sourceRecordUrl).ToEntityReference(common.service);
-            var sourceEntity = common.service.Retrieve(sourceEntityReference.LogicalName, sourceEntityReference.Id, new ColumnSet(attributeName));
+            var sourceEntityReference = new DynamicUrlParser(sourceRecordUrl).ToEntityReference(common.Service);
+            var sourceEntity = common.Service.Retrieve(sourceEntityReference.LogicalName, sourceEntityReference.Id, new ColumnSet(attributeName));
             common.Trace("Source record has been retrieved correctly. Id:{0}", sourceEntity.Id);
 
             var optionSetValues = sourceEntity.GetAttributeValue<OptionSetValueCollection>(attributeName);

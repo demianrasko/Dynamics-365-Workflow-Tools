@@ -40,7 +40,7 @@ namespace msdyncrmWorkflowTools
                 Target = target
             };
 
-            common.service.Execute(request);
+            common.Service.Execute(request);
 
             #endregion
         }

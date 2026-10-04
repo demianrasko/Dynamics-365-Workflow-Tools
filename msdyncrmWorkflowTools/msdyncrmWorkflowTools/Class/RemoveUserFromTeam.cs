@@ -32,7 +32,7 @@ namespace msdyncrmWorkflowTools
                 MemberIds = new[] { userReference.Id}
             };
 
-            common.service.Execute(request);
+            common.Service.Execute(request);
         }
     }
 }

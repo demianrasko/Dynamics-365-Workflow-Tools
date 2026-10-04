@@ -68,7 +68,7 @@ namespace msdyncrmWorkflowTools
                     Query = new FetchExpression(xml)
                 };
 
-                var returnCollection = ((RetrieveMultipleResponse)common.service.Execute(request)).EntityCollection;
+                var returnCollection = ((RetrieveMultipleResponse)common.Service.Execute(request)).EntityCollection;
 
                 foreach (var c in returnCollection.Entities)
                 {

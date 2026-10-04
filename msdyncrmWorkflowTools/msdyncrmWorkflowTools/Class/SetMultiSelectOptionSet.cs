@@ -28,13 +28,13 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var sourceEntityReference = GetTargetEntityReference(executionContext,common, common.service);
+            var sourceEntityReference = GetTargetEntityReference(executionContext,common, common.Service);
             var attributeName = GetAttributeName(executionContext,common);
             var newValues = GetNewAttributeValues(executionContext, common);
-            var existingValues = GetExistingAttributeValues(sourceEntityReference, attributeName,executionContext, common, common.service);
+            var existingValues = GetExistingAttributeValues(sourceEntityReference, attributeName,executionContext, common, common.Service);
 
-            //UpdateRecord(sourceEntityReference, attributeName, values,common.service,common);
-            UpdateRecord(sourceEntityReference, attributeName, newValues, existingValues, common.service, common);
+            //UpdateRecord(sourceEntityReference, attributeName, values,common.Service,common);
+            UpdateRecord(sourceEntityReference, attributeName, newValues, existingValues, common.Service, common);
         }
 
         private EntityReference GetTargetEntityReference(CodeActivityContext executionContext, Common common, IOrganizationService organizationService)

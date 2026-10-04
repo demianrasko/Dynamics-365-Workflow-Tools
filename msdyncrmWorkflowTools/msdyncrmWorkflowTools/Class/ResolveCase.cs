@@ -44,7 +44,7 @@ namespace msdyncrmWorkflowTools.Class
                 ["description"] = description
             };
 
-            common.service.Execute(new CloseIncidentRequest
+            common.Service.Execute(new CloseIncidentRequest
             {
                 IncidentResolution = incidentResolution,
                 Status = new OptionSetValue(5)

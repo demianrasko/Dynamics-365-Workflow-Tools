@@ -35,7 +35,7 @@ namespace msdyncrmWorkflowTools
 
             var entRoleId = roleId.Value;
 
-            common.service.Associate(
+            common.Service.Associate(
                 "systemuser",
                 userReference.Id,
                 new Relationship("systemuserroles_association"),

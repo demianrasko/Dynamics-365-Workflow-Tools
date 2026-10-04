@@ -122,7 +122,7 @@ namespace msdyncrmWorkflowTools
 
             newSettings.Attributes.Add("issendasallowed", isSendAsAllowed);
 
-            common.service.Update(newSettings);
+            common.Service.Update(newSettings);
         }
     }
 }

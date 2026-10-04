@@ -19,7 +19,7 @@ namespace msdyncrmWorkflowTools
         {
             var recordId = GetRecordIdFromURL(executionContext);
 
-            var locatioColl = GetSharepointLocation(common.service, recordId);
+            var locatioColl = GetSharepointLocation(common.Service, recordId);
 
             string absoluteURL;
             absoluteURL = GetAbsoluteURLFromLocation(common, locatioColl);
@@ -36,7 +36,7 @@ namespace msdyncrmWorkflowTools
                 {
                     Target = new EntityReference(locatioColl[0].LogicalName, locatioColl[0].Id)
                 };
-                var response = (RetrieveAbsoluteAndSiteCollectionUrlResponse)common.service.Execute(request);
+                var response = (RetrieveAbsoluteAndSiteCollectionUrlResponse)common.Service.Execute(request);
 
                 absoluteURL = response.AbsoluteUrl.ToString();
                 common.Trace($"Absolute URL of document location record is '{{0}}'.{response.AbsoluteUrl.ToString()}");

@@ -34,7 +34,7 @@ namespace msdyncrmWorkflowTools.Class
                 TargetListId = targetList.Id
             };
 
-            common.service.Execute(request);
+            common.Service.Execute(request);
         }
     }
 }

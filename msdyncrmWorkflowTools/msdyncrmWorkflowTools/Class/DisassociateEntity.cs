@@ -48,7 +48,7 @@ namespace msdyncrmWorkflowTools
 
             var relationship = new Relationship(relationshipName);
 
-            common.service.Disassociate(common.context.PrimaryEntityName, common.context.PrimaryEntityId, relationship,relatedEntities);
+            common.Service.Disassociate(common.Context.PrimaryEntityName, common.Context.PrimaryEntityId, relationship,relatedEntities);
 
             #endregion
         }
