@@ -559,7 +559,7 @@ namespace msdyncrmWorkflowTools
             var userList = Service.RetrieveMultiple(Queries.UsersInRole(securityRoleLookup.Id));
             Trace("Retrieved Data");
 
-            // keep sending to the remaining users when one fails, then report every failure
+            // keep sending to the remaining users when one fails; failures are traced, not thrown
             var failures = new List<string>();
 
             foreach (var user in userList.Entities)
@@ -578,8 +578,7 @@ namespace msdyncrmWorkflowTools
 
             if (failures.Count > 0)
             {
-                throw new InvalidPluginExecutionException(
-                    $"The email could not be sent to {failures.Count} of {userList.Entities.Count} users. {string.Join("; ", failures)}");
+                Trace($"The email could not be sent to {failures.Count} of {userList.Entities.Count} users. {string.Join("; ", failures)}");
             }
 
             return true;
