@@ -98,8 +98,7 @@ namespace msdyncrmWorkflowTools.Class
             }
             else
             {
-                common.Trace("No process instances found for the opportunity record; aborting the sample.");
-                Environment.Exit(1);
+                throw new InvalidPluginExecutionException("No business process flow instance was found for this record.");
             }
 
             common.Trace("Starting the update");
