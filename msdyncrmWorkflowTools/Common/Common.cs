@@ -352,6 +352,16 @@ namespace msdyncrmWorkflowTools
         }
 
         /// <summary>
+        /// The first record a FetchXML query returns (only one record is read), or null when there is none.
+        /// </summary>
+        public Entity RetrieveFirstWithFetchXml(string fetchXml)
+        {
+            var xml = Utility.HasFetchTop(fetchXml) ? fetchXml : Utility.CreateXml(fetchXml, null, 1, 1);
+
+            return Service.RetrieveMultiple(new FetchExpression(xml)).Entities.FirstOrDefault();
+        }
+
+        /// <summary>
         /// Returns every record a FetchXML query returns, reading the next page only when the caller needs more
         /// records (so stopping early, e.g. with Take, stops the paging). A fetch with a top attribute is run once,
         /// unpaged, because Dataverse does not allow top together with paging.

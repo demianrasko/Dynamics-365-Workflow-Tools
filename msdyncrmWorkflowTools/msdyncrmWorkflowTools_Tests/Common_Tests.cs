@@ -336,6 +336,17 @@ namespace msdyncrmWorkflowTools_Tests
         }
 
         [TestMethod]
+        public void RetrieveFirstWithFetchXml_ReadsOneRecord()
+        {
+            var first = new Entity("account", Guid.NewGuid());
+            service.OnRetrieveMultiple = query => Page(true, "c", first);
+
+            Assert.AreSame(first, common.RetrieveFirstWithFetchXml("<fetch><entity name='account' /></fetch>"));
+            StringAssert.Contains(((FetchExpression)service.Queries.Single()).Query, "count=\"1\"");
+            Assert.IsNull(new Common(new FakeOrganizationService()).RetrieveFirstWithFetchXml("<fetch top='1'><entity name='account' /></fetch>"));
+        }
+
+        [TestMethod]
         public void RetrieveAllIds_ReadsEveryPage()
         {
             var ids = new[] { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() };

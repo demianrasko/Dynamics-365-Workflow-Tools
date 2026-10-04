@@ -1,10 +1,7 @@
 ﻿using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Messages;
-using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
 using System;
 using System.Activities;
-using System.Linq;
 
 namespace msdyncrmWorkflowTools
 {
@@ -25,72 +22,31 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
             var fetchXml = FetchXML.Get(executionContext);
+
             if (string.IsNullOrEmpty(fetchXml))
             {
                 throw new InvalidPluginExecutionException("FetchXML is required.");
             }
 
-            common.Trace($"_FetchXML={fetchXml}");
-            #endregion
-
-            #region "CalculateAgregateDate Execution"
-
-           // string pagingCookie = null;
-            const int pageNumber = 1;
-            const int fetchCount = 1;
-            var date = new DateTime(1753, 1, 1);
-
-            Ok.Set(executionContext, false);
-
             fetchXml = fetchXml.Replace("{PARENT_GUID}", common.Context.PrimaryEntityId.ToString());
+            common.Trace($"FetchXML={fetchXml}");
 
-            common.Trace(fetchXml);
-            var xml = Utility.CreateXml(fetchXml, null, pageNumber, fetchCount);
+            // the date is the first attribute in the fetch, read from the first record
+            var record = common.RetrieveFirstWithFetchXml(fetchXml);
+            var value = record == null ? null : Utility.GetFirstFetchValue(record, Utility.GetFirstFetchAttributeKey(fetchXml));
 
-            var request = new RetrieveMultipleRequest
+            if (value is DateTime date)
             {
-                Query = new FetchExpression(xml)
-            };
-
-            var returnCollection = ((RetrieveMultipleResponse)common.Service.Execute(request)).EntityCollection;
-
-            common.Trace($"Count {returnCollection.Entities.Count}");
-
-            if (returnCollection.Entities.Count > 0)
-            {
-                if (returnCollection.Entities[0].Attributes.Count > 0)
-                {
-                    try
-                    {
-                        var value = returnCollection.Entities[0].Attributes.First().Value;
-                        common.Trace($"Attribute {returnCollection.Entities[0].Attributes.First().Key} - {value}");
-
-                        switch (value)
-                        {
-                            case DateTime time:
-                                date = time;
-                                break;
-                            case AliasedValue aliasedValue:
-                                date = (DateTime)aliasedValue.Value;
-                                break;
-                        }
-
-                        Ok.Set(executionContext, true);
-                        common.Trace($"date {date}");
-                    }
-                    catch (Exception e)
-                    {
-                        // Deliberately not rethrown: the "Ok" output stays false and the workflow decides what to do.
-                        common.Trace(Utility.HandleExceptions(e));
-                    }
-                }
+                common.Trace($"Date={date}");
+                Value.Set(executionContext, date);
+                Ok.Set(executionContext, true);
+                return;
             }
 
-            Value.Set(executionContext, date);
-            common.Trace("Calculate Aggregate Date --- Done");
-            #endregion
+            common.Trace(record == null ? "No record found." : $"The first attribute is not a date: '{value}'");
+            Value.Set(executionContext, new DateTime(1753, 1, 1));
+            Ok.Set(executionContext, false);
         }
     }
 }

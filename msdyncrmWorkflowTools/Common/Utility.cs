@@ -563,6 +563,18 @@ namespace msdyncrmWorkflowTools
         }
 
         /// <summary>
+        /// A record's value for the fetch's first attribute (see <see cref="GetFirstFetchAttributeKey"/>), unwrapped
+        /// from AliasedValue. When the key is null, the record's first returned attribute is used.
+        /// </summary>
+        /// <returns>The value, or null when the record does not have it.</returns>
+        public static object GetFirstFetchValue(Entity record, string key)
+        {
+            var value = key != null ? record.GetAttributeValue<object>(key) : record.Attributes.FirstOrDefault().Value;
+
+            return value is AliasedValue aliasedValue ? aliasedValue.Value : value;
+        }
+
+        /// <summary>
         /// A numeric attribute value (number, Money or an AliasedValue wrapping one) as a decimal; null for
         /// anything else, including a missing value.
         /// </summary>

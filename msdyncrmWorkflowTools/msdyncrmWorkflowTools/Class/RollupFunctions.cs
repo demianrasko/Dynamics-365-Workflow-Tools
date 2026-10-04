@@ -47,7 +47,7 @@ namespace msdyncrmWorkflowTools
             // the calculations use the first attribute in the fetch
             var key = Utility.GetFirstFetchAttributeKey(fetchXml);
             var values = records
-                .Select(r => Utility.ToDecimal(key != null ? r.GetAttributeValue<object>(key) : r.Attributes.FirstOrDefault().Value))
+                .Select(r => Utility.ToDecimal(Utility.GetFirstFetchValue(r, key)))
                 .ToList();
 
             var result = Utility.CalculateRollup(values);

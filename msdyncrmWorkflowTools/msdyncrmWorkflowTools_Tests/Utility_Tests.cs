@@ -361,5 +361,16 @@ namespace msdyncrmWorkflowTools_Tests
             Assert.IsNull(Utility.FormatConcatenationValue(record, "missing", string.Empty));
             Assert.AreEqual("Contoso", Utility.FormatConcatenationValue(record, null, string.Empty));
         }
+
+        [TestMethod]
+        public void GetFirstFetchValue_ReadsTheKeyOrTheFirstAttribute()
+        {
+            var created = new System.DateTime(2026, 1, 2);
+            var record = new Entity("account") { ["accountid"] = System.Guid.NewGuid(), ["o.createdon"] = new AliasedValue("opportunity", "createdon", created) };
+
+            Assert.AreEqual(created, Utility.GetFirstFetchValue(record, "o.createdon"));
+            Assert.IsNull(Utility.GetFirstFetchValue(record, "missing"));
+            Assert.AreEqual(record["accountid"], Utility.GetFirstFetchValue(record, null));
+        }
     }
 }
