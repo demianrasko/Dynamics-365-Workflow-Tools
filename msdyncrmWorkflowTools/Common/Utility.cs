@@ -1,6 +1,5 @@
 ﻿using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Query;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -332,81 +331,6 @@ namespace msdyncrmWorkflowTools
             }
 
             return sReturn;
-        }
-
-        /// <summary>
-        /// Finds the copy of a security role that belongs to a team's or user's business unit.
-        /// Roles are copied into every business unit and a principal can only hold the copy from its own
-        /// business unit, so this reads the role's root role and returns the role with that root in the
-        /// principal's business unit.
-        /// </summary>
-        /// <param name="service">Organization service.</param>
-        /// <param name="tracingService">Tracing service.</param>
-        /// <param name="principal">The team or systemuser whose business unit is used.</param>
-        /// <param name="roleId">Any copy of the role (usually the one picked in the workflow).</param>
-        /// <returns>The role id in the principal's business unit, or null if <paramref name="roleId"/> does not exist.</returns>
-        public static Guid? GetRoleIdInBusinessUnit(IOrganizationService service, ITracingService tracingService, EntityReference principal, Guid roleId)
-        {
-            var principalRecord = service.Retrieve(principal.LogicalName, principal.Id, new ColumnSet("businessunitid"));
-            var businessUnit = (EntityReference)principalRecord.Attributes["businessunitid"];
-
-            var roleQuery = new QueryExpression
-            {
-                EntityName = "role",
-                ColumnSet = new ColumnSet("parentrootroleid"),
-                Criteria = new FilterExpression
-                {
-                    Conditions =
-                    {
-                        new ConditionExpression
-                        {
-                            AttributeName = "roleid",
-                            Operator = ConditionOperator.Equal,
-                            Values = { roleId }
-                        }
-                    }
-                }
-            };
-
-            var givenRoles = service.RetrieveMultiple(roleQuery);
-
-            if (givenRoles.Entities.Count <= 0)
-            {
-                return null;
-            }
-
-            var givenRole = givenRoles.Entities[0];
-            var rootRole = (EntityReference)givenRole.Attributes["parentrootroleid"];
-
-            tracingService.Trace("Role {0} is retrieved.", givenRole.Id);
-
-            var businessUnitRoleQuery = new QueryExpression
-            {
-                EntityName = "role",
-                ColumnSet = new ColumnSet("roleid"),
-                Criteria = new FilterExpression
-                {
-                    Conditions =
-                    {
-                        new ConditionExpression
-                        {
-                            AttributeName = "parentrootroleid",
-                            Operator = ConditionOperator.Equal,
-                            Values = { rootRole.Id }
-                        },
-                        new ConditionExpression
-                        {
-                            AttributeName = "businessunitid",
-                            Operator = ConditionOperator.Equal,
-                            Values = { businessUnit.Id }
-                        }
-                    }
-                }
-            };
-
-            var businessUnitRoles = service.RetrieveMultiple(businessUnitRoleQuery);
-
-            return (Guid)businessUnitRoles.Entities[0].Attributes["roleid"];
         }
 
         #region Attribute values

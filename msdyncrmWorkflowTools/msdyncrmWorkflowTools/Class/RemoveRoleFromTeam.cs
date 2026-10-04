@@ -25,7 +25,7 @@ namespace msdyncrmWorkflowTools
             common.Trace($"RoleId: {roleReference.Id.ToString()} - TeamID: {teamReference.Id.ToString()} ");
             #endregion
 
-            var roleId = Utility.GetRoleIdInBusinessUnit(common.service, common.tracingService, new EntityReference("team", teamReference.Id), roleReference.Id);
+            var roleId = common.GetRoleIdInBusinessUnit(new EntityReference("team", teamReference.Id), roleReference.Id);
 
             if (roleId == null)
             {
