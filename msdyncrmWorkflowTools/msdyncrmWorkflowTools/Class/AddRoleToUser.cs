@@ -34,70 +34,14 @@ namespace msdyncrmWorkflowTools
                 $"RoleId: {roleReference.Id.ToString()} - UserID: {userReference.Id.ToString()} ");
             #endregion
 
-            var systemUser = objCommon.service.Retrieve("systemuser", userReference.Id, new ColumnSet("businessunitid"));
+            var roleId = Utility.GetRoleIdInBusinessUnit(objCommon.service, objCommon.tracingService, new EntityReference("systemuser", userReference.Id), roleReference.Id);
 
-            var businessUnit = (EntityReference)systemUser.Attributes["businessunitid"];
-
-            var query = new QueryExpression
-            {
-                EntityName = "role",
-                ColumnSet = new ColumnSet( "parentrootroleid"),
-                Criteria = new FilterExpression
-                {
-                    Conditions =
-                {
-
-                    new ConditionExpression
-                    {
-                        AttributeName = "roleid",
-                        Operator = ConditionOperator.Equal,
-                        Values = {roleReference.Id}
-                    }
-                }
-                }
-            };
-
-            var givenRoles = objCommon.service.RetrieveMultiple(query);
-
-            if (givenRoles.Entities.Count <= 0)
+            if (roleId == null)
             {
                 return;
             }
 
-            var givenRole = givenRoles.Entities[0].ToEntity<Entity>();
-            var entRootRole = (EntityReference)givenRole.Attributes["parentrootroleid"];
-
-            objCommon.tracingService.Trace("Role {0} is retrieved.", givenRole);
-
-            var query2 = new QueryExpression
-            {
-                EntityName = "role",
-                ColumnSet = new ColumnSet("roleid"),
-                Criteria = new FilterExpression
-                {
-                    Conditions =
-                    {
-
-                        new ConditionExpression
-                        {
-                            AttributeName = "parentrootroleid",
-                            Operator = ConditionOperator.Equal,
-                            Values = { entRootRole.Id}
-                        },
-                        new ConditionExpression
-                        {
-                            AttributeName = "businessunitid",
-                            Operator = ConditionOperator.Equal,
-                            Values = { businessUnit.Id}
-                        }
-                    }
-                }
-            };
-
-            var givenRoles2 = objCommon.service.RetrieveMultiple(query2);
-
-            var givenRole2 = givenRoles2.Entities[0].ToEntity<Entity>();
-            var entRoleId = (Guid)givenRole2.Attributes["roleid"];
+            var entRoleId = roleId.Value;
             
             objCommon.service.Associate(
                 "systemuser",

@@ -216,7 +216,7 @@ namespace msdyncrmWorkflowTools
                                                     <attribute name = 'partyid'/>
                                                         <filter type = 'and' >
                                                             <condition attribute = 'activityid' operator= 'eq' value = '" + objectId + @"' />
-                                                            <condition attribute = 'participationtypemask' operator= 'eq' value = '" + GetParticipation(att2) + @"' />
+                                                            <condition attribute = 'participationtypemask' operator= 'eq' value = '" + Utility.GetParticipation(att2) + @"' />
                                                          </filter>
                                                 </entity>
                                             </fetch> ";
@@ -280,43 +280,6 @@ namespace msdyncrmWorkflowTools
             return id;
         }
 
-        protected string GetParticipation(string attributeName)
-        {
-            var sReturn = string.Empty;
-
-            switch (attributeName)
-            {
-                case "from":
-                    sReturn = "1";
-                    break;
-                case "to":
-                    sReturn = "2";
-                    break;
-                case "cc":
-                    sReturn = "3";
-                    break;
-                case "bcc":
-                    sReturn = "4";
-                    break;
-                case "organizer":
-                    sReturn = "7";
-                    break;
-                case "requiredattendees":
-                    sReturn = "5";
-                    break;
-                case "optionalattendees":
-                    sReturn = "6";
-                    break;
-                case "customer":
-                    sReturn = "11";
-                    break;
-                case "resources":
-                    sReturn = "10";
-                    break;
-            }
-
-            return sReturn;
-        }
 
 
         public void QueryValues()

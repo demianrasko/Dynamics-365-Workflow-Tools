@@ -82,5 +82,20 @@ namespace msdyncrmWorkflowTools_Tests
 
             Assert.AreEqual("<fetch><entity name=\"account\" /></fetch>", xml);
         }
+
+        [TestMethod]
+        public void GetParticipation_MapsKnownAttributes()
+        {
+            Assert.AreEqual("1", Utility.GetParticipation("from"));
+            Assert.AreEqual("2", Utility.GetParticipation("to"));
+            Assert.AreEqual("5", Utility.GetParticipation("requiredattendees"));
+            Assert.AreEqual("11", Utility.GetParticipation("customer"));
+        }
+
+        [TestMethod]
+        public void GetParticipation_UnknownAttributeReturnsEmpty()
+        {
+            Assert.AreEqual(string.Empty, Utility.GetParticipation("subject"));
+        }
     }
 }
