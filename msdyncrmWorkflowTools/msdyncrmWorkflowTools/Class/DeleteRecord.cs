@@ -42,9 +42,9 @@ namespace msdyncrmWorkflowTools.Class
             {
                 var urlParts = deleteRecordUrl.Split("?".ToArray());
                 var urlParams = urlParts[1].Split("&".ToCharArray());
-                var objectTypeCode = urlParams[0].Replace("etc=", "");
+                var objectTypeCode = urlParams[0].Replace("etc=", string.Empty);
                 entityName = objCommon.GetEntityNameFromCode(objectTypeCode, objCommon.service);
-                objectId = urlParams[1].Replace("id=", "");
+                objectId = urlParams[1].Replace("id=", string.Empty);
                 objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
             }
 
@@ -69,7 +69,7 @@ namespace msdyncrmWorkflowTools.Class
             else
             {
                 objCommon.tracingService.Trace("Record type to be deleted: "+ entityTypeName+" and ID:"+ entityGuid);
-                if (string.IsNullOrEmpty(entityTypeName) || entityGuid == null || entityGuid == "")
+                if (string.IsNullOrEmpty(entityTypeName) || entityGuid == null || entityGuid == string.Empty)
                 {
                     throw new InvalidOperationException("ERROR: Entity Type name or GUID to be deleted missing.");
                 }

@@ -12,9 +12,9 @@ namespace msdyncrmWorkflowTools_Tests
         public void StringFunctions1()
         {
             var classObj = new msdyncrmWorkflowTools_Class(objService.service);
-            string capitalizedText = "", paddedText = "", replacedText = "", subStringText = "", regexText = "", uppercaseText = "", lowercaseText = "";
+            string capitalizedText = string.Empty, paddedText = string.Empty, replacedText = string.Empty, subStringText = string.Empty, regexText = string.Empty, uppercaseText = string.Empty, lowercaseText = string.Empty;
             var regexSuccess = false;
-            var withoutSpaces = "";
+            var withoutSpaces = string.Empty;
 
             var test = classObj.StringFunctions(true, "Demian", "w", true, 150, true,
                 "w", "w", 150, 0, true, "w",
@@ -25,7 +25,7 @@ namespace msdyncrmWorkflowTools_Tests
             Assert.AreEqual(paddedText, "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwDemian");
             Assert.AreEqual(replacedText, "Demian");
             Assert.AreEqual(subStringText, "Demian");
-            Assert.AreEqual(regexText, "");
+            Assert.AreEqual(regexText, string.Empty);
             Assert.AreEqual(uppercaseText, "DEMIAN");
             Assert.AreEqual(lowercaseText, "demian");
             Assert.AreEqual(regexSuccess, false);
@@ -34,9 +34,9 @@ namespace msdyncrmWorkflowTools_Tests
         public void StringFunctions2()
         {
             var classObj = new msdyncrmWorkflowTools_Class(objService.service);
-            string capitalizedText = "", paddedText = "", replacedText = "", subStringText = "", regexText = "", uppercaseText = "", lowercaseText = "";
+            string capitalizedText = string.Empty, paddedText = string.Empty, replacedText = string.Empty, subStringText = string.Empty, regexText = string.Empty, uppercaseText = string.Empty, lowercaseText = string.Empty;
             var regexSuccess = false;
-            var withoutSpaces = "";
+            var withoutSpaces = string.Empty;
 
             var test = classObj.StringFunctions(true, "Demian", "w", true, 10, true,
                 "w", "w", 150, 0, true, "w",
@@ -47,7 +47,7 @@ namespace msdyncrmWorkflowTools_Tests
             Assert.AreEqual(paddedText, "wwwwDemian");
             Assert.AreEqual(replacedText, "Demian");
             Assert.AreEqual(subStringText, "Demian");
-            Assert.AreEqual(regexText, "");
+            Assert.AreEqual(regexText, string.Empty);
             Assert.AreEqual(uppercaseText, "DEMIAN");
             Assert.AreEqual(lowercaseText, "demian");
             Assert.AreEqual(regexSuccess, false);

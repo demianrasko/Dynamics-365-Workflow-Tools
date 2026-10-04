@@ -67,40 +67,40 @@ namespace msdyncrmWorkflowTools
             #region "Read Parameters"
 
             var _relationshipName = RelationshipName.Get(executionContext);
-            if (_relationshipName == null || _relationshipName == "")
+            if (_relationshipName == null || _relationshipName == string.Empty)
             {
                 return;
             }
 
             var _newParentFieldName = NewParentFieldNameToUpdate.Get(executionContext);
-            if (_newParentFieldName == null || _newParentFieldName == "")
+            if (_newParentFieldName == null || _newParentFieldName == string.Empty)
             {
                 return;
             }
 
             var _source = SourceRecordUrl.Get(executionContext);
-            if (_source == null || _source == "")
+            if (_source == null || _source == string.Empty)
             {
                 return;
             }
 
             var urlParts = _source.Split("?".ToArray());
             var urlParams = urlParts[1].Split("&".ToCharArray());
-            var parentObjectTypeCode = urlParams[0].Replace("etc=", "");
+            var parentObjectTypeCode = urlParams[0].Replace("etc=", string.Empty);
             var parentEntityName = objCommon.GetEntityNameFromCode(parentObjectTypeCode, objCommon.service);
-            var parentId = urlParams[1].Replace("id=", "");
+            var parentId = urlParams[1].Replace("id=", string.Empty);
             objCommon.tracingService.Trace("ObjectTypeCode=" + parentObjectTypeCode + "--ParentId=" + parentId);
 
             var _destination = TargetRecordUrl.Get(executionContext);
-            if (_destination == null || _destination == "")
+            if (_destination == null || _destination == string.Empty)
             {
                 return;
             }
             var destinationUrlParts = _destination.Split("?".ToArray());
             var destinationUrlParams = destinationUrlParts[1].Split("&".ToCharArray());
-            var destinationObjectTypeCode = destinationUrlParams[0].Replace("etc=", "");
+            var destinationObjectTypeCode = destinationUrlParams[0].Replace("etc=", string.Empty);
             var destinationEntityName = objCommon.GetEntityNameFromCode(destinationObjectTypeCode, objCommon.service);
-            var destinationId = destinationUrlParams[1].Replace("id=", "");
+            var destinationId = destinationUrlParams[1].Replace("id=", string.Empty);
             objCommon.tracingService.Trace("ObjectTypeCode=" + destinationObjectTypeCode + "--ParentId=" + destinationId);
 
 

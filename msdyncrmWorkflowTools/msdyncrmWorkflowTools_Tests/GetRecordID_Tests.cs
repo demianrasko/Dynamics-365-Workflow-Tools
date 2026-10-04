@@ -18,8 +18,8 @@ namespace msdyncrmWorkflowTools_Tests
         public void GetRecordID2()
         {
             var classObj = new msdyncrmWorkflowTools_Class(objService.service);
-            var objectID = classObj.GetRecordID("");
-            Assert.AreEqual(objectID, "");
+            var objectID = classObj.GetRecordID(string.Empty);
+            Assert.AreEqual(objectID, string.Empty);
         }
     }
 }

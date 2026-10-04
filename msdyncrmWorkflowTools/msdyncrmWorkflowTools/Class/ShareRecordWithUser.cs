@@ -94,8 +94,8 @@ namespace msdyncrmWorkflowTools
 
             var urlParts = sharingRecordUrl.Split("?".ToArray());
             var urlParams = urlParts[1].Split("&".ToCharArray());
-            var objectTypeCode = urlParams[0].Replace("etc=", "");
-            var objectId = urlParams[1].Replace("id=", "");
+            var objectTypeCode = urlParams[0].Replace("etc=", string.Empty);
+            var objectId = urlParams[1].Replace("id=", string.Empty);
 
             objCommon.tracingService.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={objectId}");
 

@@ -42,7 +42,7 @@ namespace msdyncrmWorkflowTools
             var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
             var res=commonClass.JsonParser(json, jsonPath);
 
-            if (res == null) res = "";
+            if (res == null) res = string.Empty;
 
             JSONResult.Set(executionContext, res);
             

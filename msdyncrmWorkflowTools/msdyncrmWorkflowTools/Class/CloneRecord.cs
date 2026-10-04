@@ -41,7 +41,7 @@ namespace msdyncrmWorkflowTools
 
         protected string getParticipation(string attributeName)
         {
-            var sReturn = "";
+            var sReturn = string.Empty;
             switch (attributeName)
             {
                 case "from":
@@ -129,15 +129,15 @@ Customer
 
             #region "Read Parameters"
             var _ClonningRecordURL = ClonningRecordURL.Get(executionContext);
-            if (_ClonningRecordURL == null || _ClonningRecordURL == "")
+            if (_ClonningRecordURL == null || _ClonningRecordURL == string.Empty)
             {
                 return;
             }
             var urlParts = _ClonningRecordURL.Split("?".ToArray());
             var urlParams = urlParts[1].Split("&".ToCharArray());
-            var objectTypeCode = urlParams[0].Replace("etc=", "");
+            var objectTypeCode = urlParams[0].Replace("etc=", string.Empty);
             var entityName = objCommon.GetEntityNameFromCode(objectTypeCode, objCommon.service);
-            var objectId = urlParams[1].Replace("id=", "");
+            var objectId = urlParams[1].Replace("id=", string.Empty);
             objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
 
             var prefix = Prefix.Get(executionContext);

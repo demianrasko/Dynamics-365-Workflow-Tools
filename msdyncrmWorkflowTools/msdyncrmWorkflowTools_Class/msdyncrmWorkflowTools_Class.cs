@@ -85,9 +85,9 @@ namespace msdyncrmWorkflowTools
 
         public string JsonParser(string Json, string JsonPath)
         {
-            if (JsonPath == null) JsonPath = "";
+            if (JsonPath == null) JsonPath = string.Empty;
             var o = JObject.Parse(Json);
-            var name = "";
+            var name = string.Empty;
             if (o.SelectToken(JsonPath) != null)
             {
                 name = o.SelectToken(JsonPath).ToString();
@@ -332,15 +332,15 @@ namespace msdyncrmWorkflowTools
         public string GetRecordID(string recordURL)
         {
 
-            if (recordURL == null || recordURL == "")
+            if (recordURL == null || recordURL == string.Empty)
             {
-                return "";
+                return string.Empty;
             }
             var urlParts = recordURL.Split("?".ToArray());
             var urlParams = urlParts[1].Split("&".ToCharArray());
-            var objectTypeCode = urlParams[0].Replace("etc=", "");
+            var objectTypeCode = urlParams[0].Replace("etc=", string.Empty);
             //  entityName =  GetEntityNameFromCode(objectTypeCode, service);
-            var objectId = urlParams[1].Replace("id=", "");
+            var objectId = urlParams[1].Replace("id=", string.Empty);
             return objectId;
         }
 
@@ -526,7 +526,7 @@ namespace msdyncrmWorkflowTools
             var authToken = authTokenSource.GetAccessToken();
             HttpRequestMessage request;
 
-            if (sourceLanguage == "")
+            if (sourceLanguage == string.Empty)
             {
                 uri = "https://api.microsofttranslator.com/v2/Http.svc/Detect?text=" + text;
                 request = new HttpRequestMessage(HttpMethod.Get, uri);
@@ -601,7 +601,7 @@ namespace msdyncrmWorkflowTools
         public void SalesLiteratureToEmail(string _FileName, string salesLiteratureId, string emailid)
         {
             if (_FileName == "*")
-                _FileName = "";
+                _FileName = string.Empty;
             _FileName = _FileName.Replace("*", "%");
 
             #region "Query Attachments"
@@ -850,7 +850,7 @@ namespace msdyncrmWorkflowTools
 
                         if (!file.Contains("filename"))
                         {
-                            file["filename"] = "";
+                            file["filename"] = string.Empty;
                         }
 
                         attachedFiles.Add(file);
@@ -1005,7 +1005,7 @@ namespace msdyncrmWorkflowTools
 
             //2') retrieve parent fielv value
             var valueToUpdate = new object();
-            if (parentFieldNameToUpdate != null && parentFieldNameToUpdate != "")
+            if (parentFieldNameToUpdate != null && parentFieldNameToUpdate != string.Empty)
             {
                 var retrievedEntity = (Entity)service.Retrieve(parentEntityType, new Guid(parentEntityId), new ColumnSet(parentFieldNameToUpdate));
                 if (retrievedEntity.Attributes.Contains(parentFieldNameToUpdate))

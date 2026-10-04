@@ -40,8 +40,8 @@ namespace msdyncrmWorkflowTools.Class
 
             var urlParts = cloningRecordUrl.Split("?".ToArray());
             var urlParams = urlParts[1].Split("&".ToCharArray());
-            var objectTypeCode = urlParams[0].Replace("etc=", "");
-            var objectId = urlParams[1].Replace("id=", "");
+            var objectTypeCode = urlParams[0].Replace("etc=", string.Empty);
+            var objectId = urlParams[1].Replace("id=", string.Empty);
             var entityName = objCommon.GetEntityNameFromCode(objectTypeCode, objCommon.service);
 
             objCommon.tracingService.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={objectId}");
@@ -98,7 +98,7 @@ namespace msdyncrmWorkflowTools.Class
 
             // Declare variables to store values returned in response
             var processOpp1Id = Guid.Empty;
-            var procInstanceLogicalName = "";
+            var procInstanceLogicalName = string.Empty;
 
             if (procOpp1Resp.Processes.Entities.Count > 0)
             {

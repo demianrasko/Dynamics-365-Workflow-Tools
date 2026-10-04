@@ -38,7 +38,7 @@ namespace msdyncrmWorkflowTools
             objCommon.tracingService.Trace("_FieldName=" + _FieldName);
             var _ParentRecordURL = ParentRecordURL.Get(executionContext);
 
-            if (_ParentRecordURL == null || _ParentRecordURL == "")
+            if (_ParentRecordURL == null || _ParentRecordURL == string.Empty)
             {
                 return;
             }
@@ -46,8 +46,8 @@ namespace msdyncrmWorkflowTools
             var urlParts = _ParentRecordURL.Split("?".ToArray());
             var urlParams=urlParts[1].Split("&".ToCharArray());
             
-            var ParentObjectTypeCode=urlParams[0].Replace("etc=","");
-            var ParentId = urlParams[1].Replace("id=", "");
+            var ParentObjectTypeCode=urlParams[0].Replace("etc=",string.Empty);
+            var ParentId = urlParams[1].Replace("id=", string.Empty);
             objCommon.tracingService.Trace("ParentObjectTypeCode=" + ParentObjectTypeCode + "--ParentId=" + ParentId);
             #endregion
 

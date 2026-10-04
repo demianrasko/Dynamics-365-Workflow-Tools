@@ -38,15 +38,15 @@ namespace msdyncrmWorkflowTools
             #region "Read Parameters"
             var _relationshipName = RelationshipName.Get(executionContext);
             var _recordURL = RecordURL.Get(executionContext);
-            if (_recordURL == null || _recordURL == "")
+            if (_recordURL == null || _recordURL == string.Empty)
             {
                 return;
             }
             var urlParts = _recordURL.Split("?".ToArray());
             var urlParams=urlParts[1].Split("&".ToCharArray());
-            var ParentObjectTypeCode=urlParams[0].Replace("etc=","");
+            var ParentObjectTypeCode=urlParams[0].Replace("etc=",string.Empty);
             var entityName = objCommon.GetEntityNameFromCode(ParentObjectTypeCode, objCommon.service);
-            var ParentId = urlParams[1].Replace("id=", "");
+            var ParentId = urlParams[1].Replace("id=", string.Empty);
             objCommon.tracingService.Trace("ParentObjectTypeCode=" + ParentObjectTypeCode + "--ParentId=" + ParentId);
             #endregion
 

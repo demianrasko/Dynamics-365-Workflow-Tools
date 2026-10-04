@@ -56,15 +56,15 @@ namespace msdyncrmWorkflowTools
 
             #region "Read Parameters"
             var _RecordURL = RecordURL.Get(executionContext);
-            if (_RecordURL == null || _RecordURL == "")
+            if (_RecordURL == null || _RecordURL == string.Empty)
             {
                 return;
             }
             var urlParts = _RecordURL.Split("?".ToArray());
             var urlParams = urlParts[1].Split("&".ToCharArray());
-            var objectTypeCode = urlParams[0].Replace("etc=", "");
+            var objectTypeCode = urlParams[0].Replace("etc=", string.Empty);
             var entityName = objCommon.GetEntityNameFromCode(objectTypeCode, objCommon.service);
-            var objectId = urlParams[1].Replace("id=", "");
+            var objectId = urlParams[1].Replace("id=", string.Empty);
             objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
 
             #endregion

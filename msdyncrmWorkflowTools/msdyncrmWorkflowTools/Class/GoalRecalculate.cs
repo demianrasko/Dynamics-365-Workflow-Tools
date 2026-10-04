@@ -42,7 +42,7 @@ namespace msdyncrmWorkflowTools
 
 
             #region "GoalRequest Execution"
-            var id = "";
+            var id = string.Empty;
             if (_goal != null)
             {
                 id = _goal.Id.ToString();

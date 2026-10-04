@@ -77,7 +77,7 @@ namespace msdyncrmWorkflowTools_Tests
         {
             var classObj = new msdyncrmWorkflowTools_Class(objService.service);
             var json = @"{""values"": [{""Author"": ""Lisa Simpson"",""Response Date"": ""2018-02-21T08:13:34.284Z""}	],	""SurveyId"": ""5114FA48-1DE6-E711-80E3-005056B37A5C""}";
-            var jsonpath = "";
+            var jsonpath = string.Empty;
             var res = classObj.JsonParser(json, jsonpath);
 
             Assert.AreEqual(res, "{\r\n  \"values\": [\r\n    {\r\n      \"Author\": \"Lisa Simpson\",\r\n      \"Response Date\": \"2018-02-21T08:13:34.284Z\"\r\n    }\r\n  ],\r\n  \"SurveyId\": \"5114FA48-1DE6-E711-80E3-005056B37A5C\"\r\n}");

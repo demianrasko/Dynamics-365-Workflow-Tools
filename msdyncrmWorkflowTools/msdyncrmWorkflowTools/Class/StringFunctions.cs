@@ -113,7 +113,7 @@ namespace msdyncrmWorkflowTools
 
             #region "Read Parameters"
             var inputText = InputText.Get(executionContext);
-            if (inputText == null) inputText = "";
+            if (inputText == null) inputText = string.Empty;
             var capitalizeAllWords = CapitalizeAllWords.Get(executionContext);
 
             var padCharacter = PadCharacter.Get(executionContext);
@@ -122,7 +122,7 @@ namespace msdyncrmWorkflowTools
 
             var replaceOldValue = ReplaceOldValue.Get(executionContext);
             var replaceNewValue = ReplaceNewValue.Get(executionContext);
-            if (replaceNewValue == null) replaceNewValue = "";
+            if (replaceNewValue == null) replaceNewValue = string.Empty;
             var caseSensitive = CaseSensitive.Get(executionContext);
 
             var fromLefttoRight = FromLefttoRight.Get(executionContext);
@@ -141,7 +141,7 @@ namespace msdyncrmWorkflowTools
             var lowercaseText = string.Empty;
 
             var regexSuccess = false;
-            var withoutSpaces = "";
+            var withoutSpaces = string.Empty;
             var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
 
             commonClass.StringFunctions(capitalizeAllWords, inputText, padCharacter, padontheLeft, finalLengthwithPadding, caseSensitive,
