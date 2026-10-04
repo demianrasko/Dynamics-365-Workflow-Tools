@@ -272,18 +272,15 @@ namespace msdyncrmWorkflowTools
                 return ids.ToList();
             }
 
-            if (relationship.Entity1LogicalName == primaryEntityName)
-            {
-                return RetrieveAllIds(Queries.ManyToManyRelated(relationship.Entity2LogicalName, relationship.Entity2IntersectAttribute, relationship.Entity2IntersectAttribute, intersect, relationship.Entity1IntersectAttribute, primaryEntityId));
-            }
-
-            return RetrieveAllIds(Queries.ManyToManyRelated(relationship.Entity1LogicalName, relationship.Entity1IntersectAttribute, relationship.Entity1IntersectAttribute, intersect, relationship.Entity2IntersectAttribute, primaryEntityId));
+            return RetrieveAllIds(relationship.Entity1LogicalName == primaryEntityName 
+                ? Queries.ManyToManyRelated(relationship.Entity2LogicalName, relationship.Entity2IntersectAttribute, relationship.Entity2IntersectAttribute, intersect, relationship.Entity1IntersectAttribute, primaryEntityId) 
+                : Queries.ManyToManyRelated(relationship.Entity1LogicalName, relationship.Entity1IntersectAttribute, relationship.Entity1IntersectAttribute, intersect, relationship.Entity2IntersectAttribute, primaryEntityId));
         }
 
         public List<string> GetEntityAttributesToClone(string entityName, ref string primaryIdAttribute, ref string primaryNameAttribute)
         {
             var attributes = new List<string>();
-            var request = new RetrieveEntityRequest()
+            var request = new RetrieveEntityRequest
             {
                 EntityFilters = EntityFilters.Attributes,
                 LogicalName = entityName
@@ -337,61 +334,66 @@ namespace msdyncrmWorkflowTools
 
             var attributesToClone = GetEntityAttributesToClone(entityName, ref primaryIdAttribute, ref primaryNameAttribute);
 
-            foreach (var att in attributesToClone)
+            foreach (var attribute in attributesToClone)
             {
                 if (!string.IsNullOrEmpty(fieldstoIgnore))
                 {
-                    if (Array.IndexOf(fieldstoIgnore.Split(';'), att) >= 0 || Array.IndexOf(fieldstoIgnore.Split(','), att) >= 0)
+                    if (Array.IndexOf(fieldstoIgnore.Split(';'), attribute) >= 0 || Array.IndexOf(fieldstoIgnore.Split(','), attribute) >= 0)
                     {
                         continue;
                     }
                 }
 
-                if ((!retrievedObject.Attributes.Contains(att) || att == "statuscode" || att == "statecode")
-                    && !att.StartsWith("partylist-"))
+                if ((!retrievedObject.Attributes.Contains(attribute) || attribute == "statuscode" || attribute == "statecode")
+                    && !attribute.StartsWith("partylist-"))
                 {
                     continue;
                 }
 
-                EntityCollection arrPartiesNew = new EntityCollection();
-                if (att.StartsWith("partylist-"))
-                {
-                    var att2 = att.Replace("partylist-", string.Empty);
+                var newPartyList = new EntityCollection();
 
-                    var participationTypeMask = Utility.GetParticipation(att2);
+                if (attribute.StartsWith("partylist-"))
+                {
+                    var attribute2 = attribute.Replace("partylist-", string.Empty);
+
+                    var participationTypeMask = Utility.GetParticipation(attribute2);
                     if (string.IsNullOrEmpty(participationTypeMask))
                     {
-                        throw new InvalidPluginExecutionException($"Unsupported party list attribute '{att2}'.");
+                        throw new InvalidPluginExecutionException($"Unsupported party list attribute '{attribute2}'.");
                     }
 
                     var returnCollection = Service.RetrieveMultiple(
                         Queries.ActivityParties(new Guid(objectId), int.Parse(participationTypeMask)));
 
-                    Trace("attribute:{0}", att2);
+                    Trace("attribute:{0}", attribute2);
 
                     foreach (var ent in returnCollection.Entities)
                     {
                         var partyid = (EntityReference)ent.Attributes["partyid"];
 
                         // one activityparty per party (re-using one entity threw "same key" for a second party)
-                        var party = new Entity("activityparty");
-                        party.Attributes.Add("partyid", new EntityReference(partyid.LogicalName, partyid.Id));
-                        Trace("attribute:{0}:{1}:{2}", att2, partyid.LogicalName, partyid.Id.ToString());
-                        arrPartiesNew.Entities.Add(party);
+                        var party = new Entity("activityparty")
+                        {
+                            ["partyid"] = new EntityReference(partyid.LogicalName, partyid.Id)
+                        };
+                       
+                        Trace("attribute:{0}:{1}:{2}", attribute2, partyid.LogicalName, partyid.Id.ToString());
+                        
+                        newPartyList.Entities.Add(party);
                     }
 
-                    newEntity.Attributes.Add(att2, arrPartiesNew);
+                    newEntity.Attributes.Add(attribute2, newPartyList);
                     continue;
                 }
 
-                Trace("attribute:{0}", att);
+                Trace("attribute:{0}", attribute);
 
-                if (att == primaryNameAttribute && prefix != null)
+                if (attribute == primaryNameAttribute && prefix != null)
                 {
-                    retrievedObject.Attributes[att] = prefix + retrievedObject.Attributes[att];
+                    retrievedObject.Attributes[attribute] = prefix + retrievedObject.Attributes[attribute];
                 }
 
-                newEntity.Attributes.Add(att, retrievedObject.Attributes[att]);
+                newEntity.Attributes.Add(attribute, retrievedObject.Attributes[attribute]);
             }
 
             Trace("creating cloned object...");
@@ -521,7 +523,7 @@ namespace msdyncrmWorkflowTools
             var userList = Service.RetrieveMultiple(Queries.UsersInRole(securityRoleLookup.Id));
             Trace("Retrieved Data");
 
-            var email = new Entity("emailReference", emailReference.Id);
+            var email = new Entity("email", emailReference.Id);
 
             var to = new EntityCollection();
 
@@ -557,18 +559,29 @@ namespace msdyncrmWorkflowTools
             var userList = Service.RetrieveMultiple(Queries.UsersInRole(securityRoleLookup.Id));
             Trace("Retrieved Data");
 
+            // keep sending to the remaining users when one fails, then report every failure
+            var failures = new List<string>();
+
             foreach (var user in userList.Entities)
             {
                 try
                 {
-                    Trace("user creating email");
-                    var sent = SendEmailFromTemplate(emailTemplateLookup, user.Id);
+                    Trace($"Sending template email to user {user.Id}");
+                    SendEmailFromTemplate(emailTemplateLookup, user.Id);
                 }
-                catch (Exception ex)
+                catch (FaultException<OrganizationServiceFault> ex)
                 {
-                    Trace($"error:{ex.ToString()}");
+                    Trace("{0}", Utility.HandleExceptions(ex));
+                    failures.Add($"{user.Id}: {ex.Detail.Message}");
                 }
             }
+
+            if (failures.Count > 0)
+            {
+                throw new InvalidPluginExecutionException(
+                    $"The email could not be sent to {failures.Count} of {userList.Entities.Count} users. {string.Join("; ", failures)}");
+            }
+
             return true;
         }
 
