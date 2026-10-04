@@ -97,7 +97,7 @@ namespace msdyncrmWorkflowTools
         private void ShareSecuredFieldCore(IOrganizationService service, string entityName, string attributeName, Guid objectId, Guid principalId, bool allowRead, bool allowUpdate, bool shareWithTeam = true)
         {
             // Create the request
-            var attributeRequest = new RetrieveAttributeRequest
+            var request = new RetrieveAttributeRequest
             {
                 EntityLogicalName = entityName,
                 LogicalName = attributeName,
@@ -105,15 +105,15 @@ namespace msdyncrmWorkflowTools
             };
 
             // Execute the request
-            var attributeResponse = (RetrieveAttributeResponse)service.Execute(attributeRequest);
+            var response = (RetrieveAttributeResponse)service.Execute(request);
 
-            if (attributeResponse.AttributeMetadata != null && attributeResponse.AttributeMetadata.IsSecured != null && attributeResponse.AttributeMetadata.IsSecured.HasValue && attributeResponse.AttributeMetadata.IsSecured.Value)
+            if (response.AttributeMetadata != null && response.AttributeMetadata.IsSecured != null && response.AttributeMetadata.IsSecured.HasValue && response.AttributeMetadata.IsSecured.Value)
             {
                 // Create the query for retrieve User Shared Attribute permissions.
                 var queryPOAA = new QueryExpression("principalobjectattributeaccess");
                 queryPOAA.ColumnSet = new ColumnSet(new string[] { "readaccess", "updateaccess" });
                 queryPOAA.Criteria.FilterOperator = LogicalOperator.And;
-                queryPOAA.Criteria.Conditions.Add(new ConditionExpression("attributeid", ConditionOperator.Equal, attributeResponse.AttributeMetadata.MetadataId));
+                queryPOAA.Criteria.Conditions.Add(new ConditionExpression("attributeid", ConditionOperator.Equal, response.AttributeMetadata.MetadataId));
                 queryPOAA.Criteria.Conditions.Add(new ConditionExpression("objectid", ConditionOperator.Equal, objectId));
                 queryPOAA.Criteria.Conditions.Add(new ConditionExpression("principalid", ConditionOperator.Equal, principalId));
 
@@ -142,7 +142,7 @@ namespace msdyncrmWorkflowTools
                     {
                         // Create POAA entity for user
                         var poaa = new Entity("principalobjectattributeaccess");
-                        poaa["attributeid"] = attributeResponse.AttributeMetadata.MetadataId;
+                        poaa["attributeid"] = response.AttributeMetadata.MetadataId;
                         poaa["objectid"] = new EntityReference(entityName, objectId);
                         poaa["readaccess"] = allowRead;
                         poaa["updateaccess"] = allowUpdate;

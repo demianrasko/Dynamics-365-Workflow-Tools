@@ -26,13 +26,13 @@ namespace msdyncrmWorkflowTools
             common.Trace($"UserID: {userReference.Id.ToString()} - TeamID: {teamReference.Id.ToString()} ");
             #endregion
 
-            var req = new RemoveMembersTeamRequest
+            var request = new RemoveMembersTeamRequest
             {
                 TeamId = teamReference.Id,
                 MemberIds = new[] { userReference.Id}
             };
 
-            common.service.Execute(req);
+            common.service.Execute(request);
         }
     }
 }

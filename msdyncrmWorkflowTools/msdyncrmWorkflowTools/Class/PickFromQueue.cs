@@ -52,14 +52,14 @@ namespace msdyncrmWorkflowTools.Class
             foreach (var queItem in queueItems.Entities)
             {
                 //pick from Queue
-                var pickFromQueueRequest = new PickFromQueueRequest
+                var request = new PickFromQueueRequest
                 {
                     QueueItemId = queItem.Id,
                     WorkerId = common.context.InitiatingUserId, 
                     RemoveQueueItem = removeItems
                 };
 
-                common.service.Execute(pickFromQueueRequest);
+                common.service.Execute(request);
                 count++;
 
                 //only pick the defined Quantity

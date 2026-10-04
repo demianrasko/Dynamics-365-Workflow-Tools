@@ -52,12 +52,12 @@ namespace msdyncrmWorkflowTools
             common.Trace(fetchXml);
             var xml = Utility.CreateXml(fetchXml, null, pageNumber, fetchCount);
 
-            var fetchRequest1 = new RetrieveMultipleRequest
+            var request = new RetrieveMultipleRequest
             {
                 Query = new FetchExpression(xml)
             };
 
-            var returnCollection = ((RetrieveMultipleResponse)common.service.Execute(fetchRequest1)).EntityCollection;
+            var returnCollection = ((RetrieveMultipleResponse)common.service.Execute(request)).EntityCollection;
 
             common.Trace($"Count {returnCollection.Entities.Count}");
 

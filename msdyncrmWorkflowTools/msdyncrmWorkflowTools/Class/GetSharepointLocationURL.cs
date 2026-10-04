@@ -32,14 +32,14 @@ namespace msdyncrmWorkflowTools
             string absoluteURL;
             if (locatioColl.Entities.Count > 0)
             {
-                var retrieveRequest = new RetrieveAbsoluteAndSiteCollectionUrlRequest
+                var request = new RetrieveAbsoluteAndSiteCollectionUrlRequest
                 {
                     Target = new EntityReference(locatioColl[0].LogicalName, locatioColl[0].Id)
                 };
-                var retriveResponse = (RetrieveAbsoluteAndSiteCollectionUrlResponse)common.service.Execute(retrieveRequest);
+                var response = (RetrieveAbsoluteAndSiteCollectionUrlResponse)common.service.Execute(request);
 
-                absoluteURL = retriveResponse.AbsoluteUrl.ToString();
-                common.Trace($"Absolute URL of document location record is '{{0}}'.{retriveResponse.AbsoluteUrl.ToString()}");
+                absoluteURL = response.AbsoluteUrl.ToString();
+                common.Trace($"Absolute URL of document location record is '{{0}}'.{response.AbsoluteUrl.ToString()}");
             }
             else
             {

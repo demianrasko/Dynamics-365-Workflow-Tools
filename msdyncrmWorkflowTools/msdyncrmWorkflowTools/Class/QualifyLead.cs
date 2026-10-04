@@ -68,7 +68,7 @@ namespace msdyncrmWorkflowTools
             var result = common.service.RetrieveMultiple(query);
             var currencyId = (EntityReference)result.Entities[0]["basecurrencyid"];
 
-            var qualifyIntoOpportunityReq = new QualifyLeadRequest
+            var request = new QualifyLeadRequest
             {
                 CreateOpportunity = createOpportunity,
                 CreateAccount = createAccount,
@@ -78,17 +78,17 @@ namespace msdyncrmWorkflowTools
 
             if (existingAccount != null)
             {
-                qualifyIntoOpportunityReq.OpportunityCustomerId = new EntityReference("account", existingAccount.Id);
+                request.OpportunityCustomerId = new EntityReference("account", existingAccount.Id);
             }
             else if (existingContact != null)
             {
-                qualifyIntoOpportunityReq.OpportunityCustomerId = new EntityReference("contact", existingContact.Id);
+                request.OpportunityCustomerId = new EntityReference("contact", existingContact.Id);
             }
 
-            qualifyIntoOpportunityReq.Status = new OptionSetValue(leadStatus);
-            qualifyIntoOpportunityReq.LeadId = new EntityReference("lead", lead.Id);
+            request.Status = new OptionSetValue(leadStatus);
+            request.LeadId = new EntityReference("lead", lead.Id);
 
-            common.service.Execute(qualifyIntoOpportunityReq);
+            common.service.Execute(request);
             common.Trace("  Executed OK.");
 
             #endregion

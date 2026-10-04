@@ -41,10 +41,10 @@ namespace msdyncrmWorkflowTools
 
             #region "CalculateRollupField Execution"
             var ParentEntityName = common.GetEntityNameFromCode(ParentObjectTypeCode);
-            var calculateRollup = new CalculateRollupFieldRequest();
-            calculateRollup.FieldName = _FieldName;
-            calculateRollup.Target = new EntityReference(ParentEntityName, new Guid(ParentId));
-            var resp = (CalculateRollupFieldResponse)common.service.Execute(calculateRollup);
+            var request = new CalculateRollupFieldRequest();
+            request.FieldName = _FieldName;
+            request.Target = new EntityReference(ParentEntityName, new Guid(ParentId));
+            var response = (CalculateRollupFieldResponse)common.service.Execute(request);
             #endregion
         }
     }

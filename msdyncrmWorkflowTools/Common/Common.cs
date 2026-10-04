@@ -418,12 +418,12 @@ namespace msdyncrmWorkflowTools
 
         public void DeleteRecordAuditHistory(string logicalName, string id)
         {
-            var delRequest = new DeleteRecordChangeHistoryRequest();
+            var request = new DeleteRecordChangeHistoryRequest();
 
             var objt = new EntityReference(logicalName, new Guid(id));
 
-            delRequest.Target = objt;
-            service.Execute(delRequest);
+            request.Target = objt;
+            service.Execute(request);
         }
 
         public EntityReference retrieveUserBUDefaultTeam(string systemuserid)
@@ -537,10 +537,10 @@ namespace msdyncrmWorkflowTools
 
             service.Update(emailEnt);
 
-            var req = new SendEmailRequest();
-            req.EmailId = email.Id;
+            var request = new SendEmailRequest();
+            request.EmailId = email.Id;
 
-            var res = (SendEmailResponse)service.Execute(req);
+            var response = (SendEmailResponse)service.Execute(request);
             return true;
         }
 
@@ -575,7 +575,7 @@ namespace msdyncrmWorkflowTools
             var email = new Entity("email");
             email.Attributes["to"] = toEntities.ToArray();
 
-            var emailUsingTemplateReq = new SendEmailFromTemplateRequest
+            var request = new SendEmailFromTemplateRequest
             {
                 Target = email,
 
@@ -587,7 +587,7 @@ namespace msdyncrmWorkflowTools
                 RegardingType = "systemuser"
             };
 
-            var emailUsingTemplateResp = (SendEmailFromTemplateResponse)service.Execute(emailUsingTemplateReq);
+            var response = (SendEmailFromTemplateResponse)service.Execute(request);
 
             return true;
         }
@@ -765,25 +765,25 @@ namespace msdyncrmWorkflowTools
         {
             if (globalOptionSet)
             {
-                var deleteOptionValueRequest =
+                var request =
                   new DeleteOptionValueRequest
                   {
                       OptionSetName = attributeName,
                       Value = optionValue
                   };
-                service.Execute(deleteOptionValueRequest);
+                service.Execute(request);
             }
             else
             {
                 // Create a request.
-                var insertOptionValueRequest =
+                var request =
                    new DeleteOptionValueRequest
                    {
                        AttributeLogicalName = attributeName,
                        EntityLogicalName = entityName,
                        Value = optionValue
                    };
-                service.Execute(insertOptionValueRequest);
+                service.Execute(request);
             }
         }
 
@@ -845,19 +845,19 @@ namespace msdyncrmWorkflowTools
         {
             if (globalOptionSet)
             {
-                var insertOptionValueRequest =
+                var request =
                   new InsertOptionValueRequest
                   {
                       OptionSetName = attributeName,
                       Value = optionValue,
                       Label = new Label(optionText, languageCode)
                   };
-                var insertOptionValue = ((InsertOptionValueResponse)service.Execute(insertOptionValueRequest)).NewOptionValue;
+                var insertOptionValue = ((InsertOptionValueResponse)service.Execute(request)).NewOptionValue;
             }
             else
             {
                 // Create a request.
-                var insertOptionValueRequest =
+                var request =
                    new InsertOptionValueRequest
                    {
                        AttributeLogicalName = attributeName,
@@ -865,7 +865,7 @@ namespace msdyncrmWorkflowTools
                        Value = optionValue,
                        Label = new Label(optionText, languageCode)
                    };
-                var insertOptionValue = ((InsertOptionValueResponse)service.Execute(insertOptionValueRequest)).NewOptionValue;
+                var insertOptionValue = ((InsertOptionValueResponse)service.Execute(request)).NewOptionValue;
             }
             return true;
         }
@@ -1008,12 +1008,12 @@ namespace msdyncrmWorkflowTools
         public EntityCollection GetChildRecords(string relationshipName, string parentEntityId)
         {
             //1) Get child lookup field name
-            var req = new RetrieveRelationshipRequest()
+            var request = new RetrieveRelationshipRequest()
             {
                 Name = relationshipName
             };
-            var res = (RetrieveRelationshipResponse)service.Execute(req);
-            var rel = (OneToManyRelationshipMetadata)res.RelationshipMetadata;
+            var response = (RetrieveRelationshipResponse)service.Execute(request);
+            var rel = (OneToManyRelationshipMetadata)response.RelationshipMetadata;
             var childEntityType = rel.ReferencingEntity;
             var childEntityFieldName = rel.ReferencingAttribute;
 

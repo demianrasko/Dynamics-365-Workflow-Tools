@@ -41,11 +41,11 @@ namespace msdyncrmWorkflowTools
                 id = _goalguid;
             }
 
-            var recalculateRequest = new RecalculateRequest()
+            var request = new RecalculateRequest()
             {
                 Target = new EntityReference("goal", new Guid (id))
             };
-            common.service.Execute(recalculateRequest);
+            common.service.Execute(request);
 
             #endregion
         }

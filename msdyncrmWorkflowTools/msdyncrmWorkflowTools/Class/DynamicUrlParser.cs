@@ -71,12 +71,12 @@ namespace msdyncrmWorkflowTools
                 Properties = propertyExpression
             };
 
-            var retrieveMetadataChangesRequest = new RetrieveMetadataChangesRequest()
+            var request = new RetrieveMetadataChangesRequest()
             {
                 Query = entityQueryExpression
             };
 
-            var response = (RetrieveMetadataChangesResponse)service.Execute(retrieveMetadataChangesRequest);
+            var response = (RetrieveMetadataChangesResponse)service.Execute(request);
 
             return response.EntityMetadata.Count == 1 ? response.EntityMetadata[0].LogicalName : null;
         }

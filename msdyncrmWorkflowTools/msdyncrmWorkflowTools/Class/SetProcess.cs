@@ -40,13 +40,13 @@ namespace msdyncrmWorkflowTools.Class
 
             #region "SetProcess Execution"
 
-            var req = new SetProcessRequest
+            var request = new SetProcessRequest
             {
                 Target = new EntityReference(entityName, new Guid(objectId)),
                 NewProcess = process
             };
 
-            common.service.Execute(req);
+            common.service.Execute(request);
 
             #endregion
         }

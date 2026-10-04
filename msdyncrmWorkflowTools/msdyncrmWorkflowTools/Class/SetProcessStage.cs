@@ -70,21 +70,21 @@ namespace msdyncrmWorkflowTools.Class
             }
 
             //*************************
-            var procOpp1Req = new RetrieveProcessInstancesRequest
+            var request = new RetrieveProcessInstancesRequest
             {
                 EntityId = new Guid(objectId),
                 EntityLogicalName = entityName
             };
 
-            var procOpp1Resp = (RetrieveProcessInstancesResponse)common.service.Execute(procOpp1Req);
+            var response = (RetrieveProcessInstancesResponse)common.service.Execute(request);
 
             // Declare variables to store values returned in response
             var processOpp1Id = Guid.Empty;
             var procInstanceLogicalName = string.Empty;
 
-            if (procOpp1Resp.Processes.Entities.Count > 0)
+            if (response.Processes.Entities.Count > 0)
             {
-                var activeProcessInstance = procOpp1Resp.Processes.Entities[0];
+                var activeProcessInstance = response.Processes.Entities[0];
 
                 processOpp1Id = activeProcessInstance.Id; // Id of the active process instance, which will be used
                                                            // later to retrieve the active path of the process instance

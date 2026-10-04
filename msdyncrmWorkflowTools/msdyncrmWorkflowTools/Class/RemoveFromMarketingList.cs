@@ -56,13 +56,13 @@ namespace msdyncrmWorkflowTools.Class
 
             common.Trace($"idToRemove: {idToRemove.ToString()} ");
 
-            var removeRequest = new RemoveMemberListRequest
+            var request = new RemoveMemberListRequest
             {
                 ListId = marketingList.Id,
                 EntityId = idToRemove
             };
 
-            common.service.Execute(removeRequest);
+            common.service.Execute(request);
         }
     }
 }

@@ -35,12 +35,12 @@ namespace msdyncrmWorkflowTools
 
             var target = new EntityReference(entityName, new Guid(parentId));
 
-            var calcReq = new CalculatePriceRequest
+            var request = new CalculatePriceRequest
             {
                 Target = target
             };
 
-            common.service.Execute(calcReq);
+            common.service.Execute(request);
 
             #endregion
         }

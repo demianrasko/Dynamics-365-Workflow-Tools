@@ -58,13 +58,13 @@ namespace msdyncrmWorkflowTools.Class
             }
             common.Trace($"idToAdd: {idToAdd.ToString()} ");
 
-            var addRequest = new AddMemberListRequest
+            var request = new AddMemberListRequest
             {
                 ListId = marketingList.Id,
                 EntityId = idToAdd
             };
 
-            common.service.Execute(addRequest);
+            common.service.Execute(request);
         }
     }
 }

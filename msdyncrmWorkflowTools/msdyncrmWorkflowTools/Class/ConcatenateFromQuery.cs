@@ -84,12 +84,12 @@ namespace msdyncrmWorkflowTools
                 fetchXml = fetchXml.Replace("{PARENT_GUID}", context.PrimaryEntityId.ToString());
 
                 var xml = Utility.CreateXml(fetchXml, pagingCookie, pageNumber, fetchCount);
-                var fetchRequest1 = new RetrieveMultipleRequest
+                var request = new RetrieveMultipleRequest
                 {
                     Query = new FetchExpression(xml)
                 };
 
-                var returnCollection = ((RetrieveMultipleResponse) common.service.Execute(fetchRequest1)).EntityCollection;
+                var returnCollection = ((RetrieveMultipleResponse) common.service.Execute(request)).EntityCollection;
                 var attributeNamesSentToTrace = false;
 
                 foreach (var entity in returnCollection.Entities)
