@@ -1,0 +1,45 @@
+name: Build and test
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Set up NuGet
+        uses: NuGet/setup-nuget@v2
+
+      - name: Restore packages
+        run: nuget restore msdyncrmWorkflowTools\msdyncrmWorkflowTools.sln
+
+      - name: Build (Release)
+        run: msbuild msdyncrmWorkflowTools\msdyncrmWorkflowTools.sln /p:Configuration=Release /m /nologo /v:m
+
+      - name: Run tests
+        shell: pwsh
+        run: |
+          $vstest = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -find "**\vstest.console.exe" | Select-Object -First 1
+          & $vstest msdyncrmWorkflowTools\msdyncrmWorkflowTools_Tests\bin\Release\msdyncrmWorkflowTools_Tests.dll /Logger:trx /ResultsDirectory:TestResults
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: TestResults
+
+      - name: Upload workflow assembly
+        uses: actions/upload-artifact@v4
+        with:
+          name: msdyncrmWorkflowTools
+          path: msdyncrmWorkflowTools\msdyncrmWorkflowTools\bin\Release\msdyncrmWorkflowTools.dll
