@@ -28,12 +28,14 @@ namespace msdyncrmWorkflowTools
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
-            var _ClonningRecordURL = ClonningRecordURL.Get(executionContext);
-            if (string.IsNullOrEmpty(_ClonningRecordURL))
+            var recordUrl = ClonningRecordURL.Get(executionContext);
+
+            if (string.IsNullOrEmpty(recordUrl))
             {
                 throw new InvalidPluginExecutionException("Cloning Record URL is required.");
             }
-            var parsedUrl = common.ParseRecordUrl(_ClonningRecordURL);
+
+            var parsedUrl = common.ParseRecordUrl(recordUrl);
             common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
 
             var prefix = Prefix.Get(executionContext);

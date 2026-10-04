@@ -28,9 +28,8 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "ApplyRoutingRuleRequest Execution"
-            var entityName = parsedUrl.EntityName;
 
-            var target = new EntityReference(entityName, parsedUrl.Id);
+            var target = new EntityReference(parsedUrl.EntityName, parsedUrl.Id);
 
             var request = new CalculatePriceRequest
             {

@@ -45,16 +45,16 @@ namespace msdyncrmWorkflowTools
         public InArgument<int> UILanguageId { get; set; }
         //Specify Unique identifier of the language in which to view the user interface (UI). 0 for ignore
 
+        //specify the default calendar view values: Day
+        /*
+            0: Show the day by default.
+            2: Show the month by default.
+            1: Show the week by default
+        */
         [RequiredArgument]
         [Input("DefaultCalendarView")]
         [Default("0")]
         public InArgument<int> DefaultCalendarView { get; set; }
- //specify the default calendar view values: Day
-        /*
-0: Show the day by default.
-2: Show the month by default.
-1: Show the week by default
-            */
 
         [RequiredArgument]
         [Input("IsSendAsAllowed")]
