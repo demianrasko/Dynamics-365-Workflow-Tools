@@ -1,6 +1,4 @@
 ﻿using System.Activities;
-using System.ServiceModel;
-using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
 
@@ -53,25 +51,18 @@ namespace msdyncrmWorkflowTools
 
             #region "Process"
 
-            try
-            {
-                var fetchXml = @"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='true'>
-                                    <entity name='{0}'>                                                                           
-                                    <filter type='and'>
-                                        <condition attribute='{1}' operator='eq' value='{2}' />                                                                                 
-                                        </filter>
-                                    </entity>
-                                </fetch>";
-                fetchXml = string.Format(fetchXml, _childEntityName, _parentLookupName, ParentEntityId);
-                objCommon.Trace(string.Format("FetchXML: {0} ", fetchXml));
-                var results = objCommon.service.RetrieveMultiple(new FetchExpression(fetchXml));
+            var fetchXml = @"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='true'>
+                                <entity name='{0}'>                                                                           
+                                <filter type='and'>
+                                    <condition attribute='{1}' operator='eq' value='{2}' />                                                                                 
+                                    </filter>
+                                </entity>
+                            </fetch>";
+            fetchXml = string.Format(fetchXml, _childEntityName, _parentLookupName, ParentEntityId);
+            objCommon.Trace(string.Format("FetchXML: {0} ", fetchXml));
+            var results = objCommon.service.RetrieveMultiple(new FetchExpression(fetchXml));
 
-                Result.Set(executionContext, results.Entities.Count);
-            }
-            catch (FaultException<OrganizationServiceFault> ex)
-            {
-                throw ex;
-            }
+            Result.Set(executionContext, results.Entities.Count);
             #endregion
         }
     }

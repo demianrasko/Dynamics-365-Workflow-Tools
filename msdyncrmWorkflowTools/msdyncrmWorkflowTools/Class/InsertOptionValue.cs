@@ -1,6 +1,4 @@
 ﻿using System.Activities;
-using System.ServiceModel;
-using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
@@ -59,26 +57,9 @@ namespace msdyncrmWorkflowTools
 
             #region "Insert Option Value"
 
-            try
-            {
-                objCommon.InsertOptionValue(_GlobalOptionSet,_AttributeName, _EntityName, _OptionText, _OptionValue, _LanguageCode);
+            objCommon.InsertOptionValue(_GlobalOptionSet,_AttributeName, _EntityName, _OptionText, _OptionValue, _LanguageCode);
 
-                
-            }
-            catch (FaultException<OrganizationServiceFault> ex)
-            {
-                objCommon.Trace("Error : {0} - {1}", ex.Message, ex.StackTrace);
-                //throw ex;
-                // if (ex.Detail.ErrorCode != 2147220937)//ignore if the error is a duplicate insert
-                //{
-                // throw ex;
-                //}
-            }
-            catch (System.Exception ex)
-            {
-                objCommon.Trace("Error : {0} - {1}", ex.Message, ex.StackTrace);
-                //throw ex;
-            }
+            
             #endregion
 
         }

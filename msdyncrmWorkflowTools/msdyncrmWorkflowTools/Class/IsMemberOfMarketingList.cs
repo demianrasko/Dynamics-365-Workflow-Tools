@@ -65,7 +65,7 @@ namespace msdyncrmWorkflowTools.Class
         {
             if (entityName != "account" && entityName != "contact" && entityName != "lead")
             {
-                throw new Exception("Entity type error. Must be account, contact or lead.");
+                throw new InvalidPluginExecutionException("Entity type error. Must be account, contact or lead.");
             }
         }
     }

@@ -32,7 +32,7 @@ namespace msdyncrmWorkflowTools.Class
             objCommon.Trace($"sourceQueue: {sourceQueue.Id.ToString()} ");
 
             var countOnlyUnassigned = CountOnlyUnassigned.Get(executionContext);
-            objCommon.Trace("countOnlyUnassigned: {0} ");
+            objCommon.Trace("countOnlyUnassigned: {0}", countOnlyUnassigned);
 
 
             #endregion

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Activities;
+﻿using System.Activities;
 using System.ServiceModel;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
@@ -8,6 +7,9 @@ namespace msdyncrmWorkflowTools
 {
     public class AssociateEntity : WorkflowActivityBase
     {
+        /// <summary>Dataverse "Cannot insert duplicate key" (0x80040237): the association already exists.</summary>
+        private const int DuplicateRecordErrorCode = -2147220937;
+
         #region "Parameter Definition"
         [RequiredArgument]
         [Input("Relationship Name")]
@@ -54,19 +56,10 @@ namespace msdyncrmWorkflowTools
             {
                 objCommon.AssociateEntity(objCommon.context.PrimaryEntityName, objCommon.context.PrimaryEntityId, relationshipName, relationshipEntityName, entityName, parentId);
             }
-            catch (FaultException<OrganizationServiceFault> ex)
+            catch (FaultException<OrganizationServiceFault> ex) when (ex.Detail.ErrorCode == DuplicateRecordErrorCode)
             {
-                objCommon.Trace("Error : {0} - {1}", ex.Message, ex.StackTrace);
-                //throw ex;
-                // if (ex.Detail.ErrorCode != 2147220937)//ignore if the error is a duplicate insert
-                //{
-                // throw ex;
-                //}
-            }
-            catch (Exception ex)
-            {
-                objCommon.Trace("Error : {0} - {1}", ex.Message, ex.StackTrace);
-                //throw ex;
+                // The records are already associated: nothing to do. Every other error goes to WorkflowActivityBase.
+                objCommon.Trace("The records are already associated: {0}", ex.Message);
             }
             #endregion
         }

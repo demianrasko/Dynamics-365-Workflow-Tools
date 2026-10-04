@@ -1,5 +1,4 @@
-﻿using System;
-using System.Activities;
+﻿using System.Activities;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
@@ -30,41 +29,41 @@ namespace msdyncrmWorkflowTools
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
 
-            var sourceEntityReference = GetTargetEntityReference(executionContext,objCommon.tracingService, objCommon.service);
-            var attributeName = GetAttributeName(executionContext,objCommon.tracingService);
-            var newValues = GetNewAttributeValues(executionContext, objCommon.tracingService);
-            var existingValues = GetExistingAttributeValues(sourceEntityReference, attributeName,executionContext, objCommon.tracingService, objCommon.service);
+            var sourceEntityReference = GetTargetEntityReference(executionContext,objCommon, objCommon.service);
+            var attributeName = GetAttributeName(executionContext,objCommon);
+            var newValues = GetNewAttributeValues(executionContext, objCommon);
+            var existingValues = GetExistingAttributeValues(sourceEntityReference, attributeName,executionContext, objCommon, objCommon.service);
 
 
-            //UpdateRecord(sourceEntityReference, attributeName, values,objCommon.service,objCommon.tracingService);
-            UpdateRecord(sourceEntityReference, attributeName, newValues, existingValues, objCommon.service, objCommon.tracingService);
+            //UpdateRecord(sourceEntityReference, attributeName, values,objCommon.service,objCommon);
+            UpdateRecord(sourceEntityReference, attributeName, newValues, existingValues, objCommon.service, objCommon);
 
         }
 
-        private EntityReference GetTargetEntityReference(CodeActivityContext executionContext, ITracingService tracingService, IOrganizationService organizationService)
+        private EntityReference GetTargetEntityReference(CodeActivityContext executionContext, Common objCommon, IOrganizationService organizationService)
         {
-            var sourceRecordUrl = TargetRecordUrl.Get<string>(executionContext) ?? throw new ArgumentNullException("Source URL is empty");
-            tracingService.Trace("Source Record URL:'{0}'", sourceRecordUrl);
+            var sourceRecordUrl = TargetRecordUrl.Get<string>(executionContext) ?? throw new InvalidPluginExecutionException("Source URL is empty");
+            objCommon.Trace("Source Record URL:'{0}'", sourceRecordUrl);
 
             return new DynamicUrlParser(sourceRecordUrl).ToEntityReference(organizationService);
         }
 
-        private string GetAttributeName(CodeActivityContext executionContext, ITracingService tracingService)
+        private string GetAttributeName(CodeActivityContext executionContext, Common objCommon)
         {
-            var attributeName = AttributeName.Get<string>(executionContext) ?? throw new ArgumentNullException("Attribute Name is empty");
-            tracingService.Trace("Attribute name:'{0}'", attributeName);
+            var attributeName = AttributeName.Get<string>(executionContext) ?? throw new InvalidPluginExecutionException("Attribute Name is empty");
+            objCommon.Trace("Attribute name:'{0}'", attributeName);
             return attributeName;
         }
 
-        private OptionSetValueCollection GetNewAttributeValues(CodeActivityContext executionContext, ITracingService tracingService)
+        private OptionSetValueCollection GetNewAttributeValues(CodeActivityContext executionContext, Common objCommon)
         {
-            var attributeValues = AttributeValues.Get<string>(executionContext) ?? throw new ArgumentNullException("Attribute Values is empty");
+            var attributeValues = AttributeValues.Get<string>(executionContext) ?? throw new InvalidPluginExecutionException("Attribute Values is empty");
 
-            tracingService.Trace($"Attribute Values:'{attributeValues}'");
+            objCommon.Trace($"Attribute Values:'{attributeValues}'");
 
             if (string.IsNullOrEmpty(attributeValues))
             {
-                tracingService.Trace("No values found. Setting attribute to null");
+                objCommon.Trace("No values found. Setting attribute to null");
                 return new OptionSetValueCollection();
             }
 
@@ -72,7 +71,7 @@ namespace msdyncrmWorkflowTools
 
             if (values.Length == 0)
             {
-                tracingService.Trace("No values found in array. Setting attribute to null");
+                objCommon.Trace("No values found in array. Setting attribute to null");
                 return new OptionSetValueCollection();
             }
 
@@ -82,20 +81,20 @@ namespace msdyncrmWorkflowTools
             {
                 if (int.TryParse(value, out var intValue))
                 {
-                    tracingService.Trace("Value '{0}' added correctly", value);
+                    objCommon.Trace("Value '{0}' added correctly", value);
                     optionSetValueCollection.Add(new OptionSetValue(intValue));
                 }
                 else
                 {
-                    tracingService.Trace("Value '{0}' couldn't be parsed", value);
+                    objCommon.Trace("Value '{0}' couldn't be parsed", value);
                 }
             }
 
             return optionSetValueCollection;
         }
-        private OptionSetValueCollection GetExistingAttributeValues(EntityReference targetEntityReference, string attributeName, CodeActivityContext executionContext, ITracingService tracingService, IOrganizationService organizationService)
+        private OptionSetValueCollection GetExistingAttributeValues(EntityReference targetEntityReference, string attributeName, CodeActivityContext executionContext, Common objCommon, IOrganizationService organizationService)
         {
-            tracingService.Trace("Retrieving existing values");
+            objCommon.Trace("Retrieving existing values");
 
             var attributeValues = KeepExistingValues.Get<bool>(executionContext);
 
@@ -106,7 +105,7 @@ namespace msdyncrmWorkflowTools
 
             var record = organizationService.Retrieve(targetEntityReference.LogicalName, targetEntityReference.Id, new ColumnSet(attributeName));
 
-            tracingService.Trace("Existing values have been retrieved correctly");
+            objCommon.Trace("Existing values have been retrieved correctly");
 
             if (record.Contains(attributeName))
             {
@@ -116,27 +115,27 @@ namespace msdyncrmWorkflowTools
             return null;
         }
 
-        private void UpdateRecord(EntityReference targetEntityReference, string attributeName, OptionSetValueCollection newValues, OptionSetValueCollection existingValues, IOrganizationService organizationService, ITracingService tracingService)
+        private void UpdateRecord(EntityReference targetEntityReference, string attributeName, OptionSetValueCollection newValues, OptionSetValueCollection existingValues, IOrganizationService organizationService, Common objCommon)
         {
             if (targetEntityReference == null || attributeName == null || newValues == null)
             {
-                throw new ArgumentNullException(
+                throw new InvalidPluginExecutionException(
                     $"Unexpected null parameters when trying to update record. Record reference '{targetEntityReference}' - attibute name '{attributeName}' - values '{newValues}'");
             }
             
             var targetEntity = new Entity(targetEntityReference.LogicalName, targetEntityReference.Id)
                 {
-                    [attributeName] = MergeOptionSetCollections(newValues, existingValues, tracingService)
+                    [attributeName] = MergeOptionSetCollections(newValues, existingValues, objCommon)
                 };
 
             organizationService.Update(targetEntity);
 
-            tracingService.Trace("Multi-select option set attribute '{0}' has been updated correctly for the record type '{1}' with id '{2}'", attributeName, targetEntityReference.LogicalName, targetEntityReference.Id);
+            objCommon.Trace("Multi-select option set attribute '{0}' has been updated correctly for the record type '{1}' with id '{2}'", attributeName, targetEntityReference.LogicalName, targetEntityReference.Id);
         }
 
-        private static OptionSetValueCollection MergeOptionSetCollections(OptionSetValueCollection newValues, OptionSetValueCollection existingValues, ITracingService tracingService)
+        private static OptionSetValueCollection MergeOptionSetCollections(OptionSetValueCollection newValues, OptionSetValueCollection existingValues, Common objCommon)
         {
-            tracingService.Trace("Merging new and exiting multi-select optionset values");
+            objCommon.Trace("Merging new and exiting multi-select optionset values");
 
             switch (existingValues)
             {
@@ -159,7 +158,7 @@ namespace msdyncrmWorkflowTools
                 }
             }
 
-            tracingService.Trace("New and exiting multi-select optionset values have been merged correctly. Total options: {0} ", existingValues.Count);
+            objCommon.Trace("New and exiting multi-select optionset values have been merged correctly. Total options: {0} ", existingValues.Count);
             
             return existingValues;
         }

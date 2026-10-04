@@ -1,5 +1,4 @@
 ﻿using System.Activities;
-using System.ServiceModel;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 
@@ -49,26 +48,9 @@ namespace msdyncrmWorkflowTools
 
             #region "Associate Execution"
 
-            try
-            {
-                var createdTeamId= objCommon.CreateTeam(_teamName,_teamType, _administrator, _businessUnit);
-                createdTeam.Set(executionContext, new EntityReference("team", createdTeamId));
+            var createdTeamId= objCommon.CreateTeam(_teamName,_teamType, _administrator, _businessUnit);
+            createdTeam.Set(executionContext, new EntityReference("team", createdTeamId));
 
-            }
-            catch (FaultException<OrganizationServiceFault> ex)
-            {
-                objCommon.Trace("Error : {0} - {1}", ex.Message, ex.StackTrace);
-                //throw ex;
-                // if (ex.Detail.ErrorCode != 2147220937)//ignore if the error is a duplicate insert
-                //{
-                // throw ex;
-                //}
-            }
-            catch (System.Exception ex)
-            {
-                objCommon.Trace("Error : {0} - {1}", ex.Message, ex.StackTrace);
-                //throw ex;
-            }
             #endregion
 
         }

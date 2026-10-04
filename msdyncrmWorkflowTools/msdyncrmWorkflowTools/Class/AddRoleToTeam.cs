@@ -29,35 +29,27 @@ namespace msdyncrmWorkflowTools
             objCommon.Trace("RoleId: {0} - TeamID: {1} ", roleReference.Id, teamReference.Id);
             #endregion
 
-            try
+            var roleId = Utility.GetRoleIdInBusinessUnit(objCommon.service, objCommon.tracingService, new EntityReference("team", teamReference.Id), roleReference.Id);
+
+            if (roleId == null)
             {
-                var roleId = Utility.GetRoleIdInBusinessUnit(objCommon.service, objCommon.tracingService, new EntityReference("team", teamReference.Id), roleReference.Id);
-
-                if (roleId == null)
-                {
-                    return;
-                }
-
-                var entRoleId = roleId.Value;
-
-                if (IsAssociate(objCommon.service, teamReference.Id, entRoleId))
-                {
-                    return;
-                }
-                
-                objCommon.Trace("Associate | RoleId: {0} - TeamID: {1} ", entRoleId, teamReference.Id);
-
-                objCommon.service.Associate(
-                    "team",
-                    teamReference.Id,
-                    new Relationship("teamroles_association"),
-                    new EntityReferenceCollection { new EntityReference("role", entRoleId) });
+                return;
             }
-            catch (Exception ex)
+
+            var entRoleId = roleId.Value;
+
+            if (IsAssociate(objCommon.service, teamReference.Id, entRoleId))
             {
-                objCommon.Trace("Message: {0} \nStackTrace: {1}", ex.Message, ex.StackTrace);
-                throw;
+                return;
             }
+            
+            objCommon.Trace("Associate | RoleId: {0} - TeamID: {1} ", entRoleId, teamReference.Id);
+
+            objCommon.service.Associate(
+                "team",
+                teamReference.Id,
+                new Relationship("teamroles_association"),
+                new EntityReferenceCollection { new EntityReference("role", entRoleId) });
         }
 
         private static bool IsAssociate(IOrganizationService organizationService, Guid teamId, Guid rolesId)

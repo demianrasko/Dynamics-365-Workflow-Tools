@@ -45,7 +45,7 @@ namespace msdyncrmWorkflowTools
             }
             catch (Exception ex)
             {
-                throw new Exception($"Url '{url}' is incorrectly formated for a Dynamics CRM Dynamics Url", ex);
+                throw new InvalidPluginExecutionException($"Url '{url}' is incorrectly formated for a Dynamics CRM Dynamics Url", ex);
             }
         }
 

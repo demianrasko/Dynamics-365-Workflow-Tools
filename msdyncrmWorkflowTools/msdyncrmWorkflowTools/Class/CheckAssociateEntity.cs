@@ -1,6 +1,4 @@
 ﻿using System.Activities;
-using System.ServiceModel;
-using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
@@ -45,25 +43,15 @@ namespace msdyncrmWorkflowTools
 
             #region "Associate Execution"
 
-            try
-            {
-                var relations = objCommon.GetAssociations(objCommon.context.PrimaryEntityName, objCommon.context.PrimaryEntityId,_relationshipName, entityName, ParentId);
+            var relations = objCommon.GetAssociations(objCommon.context.PrimaryEntityName, objCommon.context.PrimaryEntityId,_relationshipName, entityName, ParentId);
 
-                if (relations.Entities.Count > 0)
-                {
-                    Result.Set(executionContext, true);
-                }
-                else
-                {
-                    Result.Set(executionContext, false);
-                }
-            }
-            catch (FaultException<OrganizationServiceFault> ex)
+            if (relations.Entities.Count > 0)
             {
-                if (ex.Detail.ErrorCode != 2147220937)//ignore if the error is a duplicate insert
-                {
-                    throw ex;
-                }
+                Result.Set(executionContext, true);
+            }
+            else
+            {
+                Result.Set(executionContext, false);
             }
             #endregion
 

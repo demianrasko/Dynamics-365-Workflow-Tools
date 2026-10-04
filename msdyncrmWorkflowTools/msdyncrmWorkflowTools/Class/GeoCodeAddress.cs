@@ -48,7 +48,7 @@ namespace msdyncrmWorkflowTools
             
 
             var locationsRequest = CreateRequest(address, bingMapsKey);
-            var locationsResponse = MakeRequest(locationsRequest, objCommon.tracingService);
+            var locationsResponse = MakeRequest(locationsRequest);
 
             if (locationsResponse != null)
             {
@@ -66,30 +66,22 @@ namespace msdyncrmWorkflowTools
             return (UrlRequest);
         }
 
-        public  Response MakeRequest(string requestUrl, ITracingService tracingService)
+        public  Response MakeRequest(string requestUrl)
         {
-            try
+            var request = WebRequest.Create(requestUrl) as HttpWebRequest;
+            using (var response = request.GetResponse() as HttpWebResponse)
             {
-                var request = WebRequest.Create(requestUrl) as HttpWebRequest;
-                using (var response = request.GetResponse() as HttpWebResponse)
-                {
-                    if (response.StatusCode != HttpStatusCode.OK)
-                        throw new Exception(string.Format(
-                        "Server error (HTTP {0}: {1}).",
-                        response.StatusCode,
-                        response.StatusDescription));
+                if (response.StatusCode != HttpStatusCode.OK)
+                    throw new InvalidPluginExecutionException(string.Format(
+                    "Bing Maps server error (HTTP {0}: {1}).",
+                    response.StatusCode,
+                    response.StatusDescription));
 
-                    var jsonSerializer = new DataContractJsonSerializer(typeof(Response));
-                    var objResponse = jsonSerializer.ReadObject(response.GetResponseStream());
-                    var jsonResponse
-                    = objResponse as Response;
-                    return jsonResponse;
-                }
-            }
-            catch (Exception e)
-            {
-                tracingService.Trace("{0}", e.Message);
-                return null;
+                var jsonSerializer = new DataContractJsonSerializer(typeof(Response));
+                var objResponse = jsonSerializer.ReadObject(response.GetResponseStream());
+                var jsonResponse
+                = objResponse as Response;
+                return jsonResponse;
             }
         }
 

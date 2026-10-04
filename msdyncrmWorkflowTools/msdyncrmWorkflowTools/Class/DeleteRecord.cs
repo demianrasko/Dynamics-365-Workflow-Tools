@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Activities;
+using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools.Class
@@ -54,7 +55,7 @@ namespace msdyncrmWorkflowTools.Class
 
                 if (string.IsNullOrEmpty(deleteRecordUrl) )
                 {
-                    throw new InvalidOperationException("ERROR: Delete Record URL to be deleted missing.");
+                    throw new InvalidPluginExecutionException("ERROR: Delete Record URL to be deleted missing.");
                 }
                 objCommon.service.Delete(entityName, new Guid (objectId));
             }
@@ -63,7 +64,7 @@ namespace msdyncrmWorkflowTools.Class
                 objCommon.Trace("Record type to be deleted: "+ entityTypeName+" and ID:"+ entityGuid);
                 if (string.IsNullOrEmpty(entityTypeName) || entityGuid == null || entityGuid == string.Empty)
                 {
-                    throw new InvalidOperationException("ERROR: Entity Type name or GUID to be deleted missing.");
+                    throw new InvalidPluginExecutionException("ERROR: Entity Type name or GUID to be deleted missing.");
                 }
 
                 objCommon.Trace("Deleting record by Guid: {0}-{1}", entityTypeName, entityGuid);

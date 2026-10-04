@@ -85,7 +85,8 @@ namespace msdyncrmWorkflowTools
                     }
                     catch (Exception e)
                     {
-                        objCommon.Trace(e.ToString());
+                        // Deliberately not rethrown: the "Ok" output stays false and the workflow decides what to do.
+                        objCommon.Trace(Utility.HandleExceptions(e));
                     }
                 }
             }

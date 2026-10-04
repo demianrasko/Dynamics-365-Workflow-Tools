@@ -1,6 +1,4 @@
-﻿using System;
-using System.Activities;
-using Microsoft.Xrm.Sdk;
+﻿using System.Activities;
 using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
 
@@ -37,45 +35,38 @@ namespace msdyncrmWorkflowTools
 
             var boolValue = false;
 
-            try
+            var fetch =
+                $"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false'><entity name='organization'><attribute name='{orgDbSetting}'/><order attribute='name' descending='false' /></entity></fetch>";
+
+            objCommon.Trace("OrgDBSettingsUpdate.Execute - Fetch = " + fetch);
+
+            var organizationColl = objCommon.service.RetrieveMultiple(new FetchExpression(fetch));
+
+            if (organizationColl == null || organizationColl.Entities.Count <= 0)
             {
-                var fetch =
-                    $"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false'><entity name='organization'><attribute name='{orgDbSetting}'/><order attribute='name' descending='false' /></entity></fetch>";
-
-                objCommon.Trace("OrgDBSettingsUpdate.Execute - Fetch = " + fetch);
-
-                var organizationColl = objCommon.service.RetrieveMultiple(new FetchExpression(fetch));
-
-                if (organizationColl == null || organizationColl.Entities.Count <= 0)
-                {
-                    
-                    return;
-                }
-
-                if (int.TryParse(value, out var numericValue))
-                {
-                    organizationColl.Entities[0].Attributes[orgDbSetting] = numericValue;
-                }
-                else if (bool.TryParse(value, out boolValue))
-                {
-                    organizationColl.Entities[0].Attributes[orgDbSetting] = boolValue;
-                }
-                else
-                {
-                    organizationColl.Entities[0].Attributes[orgDbSetting] = value;
-                }
-
-                objCommon.Trace(
-                    $"{nameof(OrgDBSettingsUpdate)}.Execute - Previous value orgDBSetting. NumericValue = {numericValue}, BoolValue = {boolValue}, StringValue = {value}");
-
-                objCommon.service.Update(organizationColl.Entities[0]);
-
-                objCommon.Trace("OrgDBSettingsUpdate.Execute -  Update Ok");
+                
+                return;
             }
-            catch (Exception e)
+
+            if (int.TryParse(value, out var numericValue))
             {
-                throw new InvalidPluginExecutionException($"[OrgDBSettingsUpdate] ERROR: {e}");
+                organizationColl.Entities[0].Attributes[orgDbSetting] = numericValue;
             }
+            else if (bool.TryParse(value, out boolValue))
+            {
+                organizationColl.Entities[0].Attributes[orgDbSetting] = boolValue;
+            }
+            else
+            {
+                organizationColl.Entities[0].Attributes[orgDbSetting] = value;
+            }
+
+            objCommon.Trace(
+                $"{nameof(OrgDBSettingsUpdate)}.Execute - Previous value orgDBSetting. NumericValue = {numericValue}, BoolValue = {boolValue}, StringValue = {value}");
+
+            objCommon.service.Update(organizationColl.Entities[0]);
+
+            objCommon.Trace("OrgDBSettingsUpdate.Execute -  Update Ok");
             #endregion
         }
     }

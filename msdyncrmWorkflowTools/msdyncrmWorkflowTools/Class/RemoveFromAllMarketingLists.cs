@@ -25,7 +25,7 @@ namespace msdyncrmWorkflowTools.Class
 
             if (entityName != "account" && entityName != "contact" && entityName != "lead")
             {
-                throw new Exception("MSG_UNSUPPORTED_MARKETING_LIST_MEMBER_TYPE");
+                throw new InvalidPluginExecutionException("Remove From All Marketing Lists only supports account, contact or lead records.");
             }
             
             if (!DoesCrmRecordExist(objCommon.service, context.PrimaryEntityName, context.PrimaryEntityId))

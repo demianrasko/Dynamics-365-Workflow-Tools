@@ -61,23 +61,13 @@ namespace msdyncrmWorkflowTools.Class
                 queryStage.Criteria.AddCondition(new ConditionExpression("processid", ConditionOperator.Equal, process.Id));
 
                 objCommon.Trace("[Dynamics.ChangeBPFandPhase.Execute] Fetching the requested Stage.");
-                try
+                stageReference = objCommon.service.RetrieveMultiple(queryStage).Entities.FirstOrDefault();
+                if (stageReference == null)
                 {
-                    stageReference = objCommon.service.RetrieveMultiple(queryStage).Entities.FirstOrDefault();
-                    if (stageReference == null)
-                    {
-                        throw new InvalidPluginExecutionException(nameof(Process) + " stage " + processStage + " not found");
-                    }
+                    throw new InvalidPluginExecutionException(nameof(Process) + " stage " + processStage + " not found");
+                }
 
-                    stageId = stageReference.Id;
-                }
-                catch (Exception e)
-                {
-                    objCommon.Trace(
-                        $"[Dynamics.ChangeBPFandPhase.Execute] Error trying to retrieve the requested stage. Exception: {e}");
-                    throw new InvalidPluginExecutionException(
-                        $"An error occurred while trying to fetch process stage {processStage}. Exception message: {e.Message}. Inner Exception: {e}");
-                }
+                stageId = stageReference.Id;
             }
 
             //*************************
