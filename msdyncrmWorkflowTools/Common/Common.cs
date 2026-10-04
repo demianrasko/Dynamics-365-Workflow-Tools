@@ -889,34 +889,41 @@ namespace msdyncrmWorkflowTools
 
         public Guid CreateTeam(string teamName, int teamType, EntityReference administrator, EntityReference businessUnit)
         {
-            var team = new Entity("team");
-            team.Attributes.Add("administratorid", administrator);
-            team.Attributes.Add("name", teamName);
-            team.Attributes.Add("teamtype", new OptionSetValue(teamType));
-            team.Attributes.Add("businessunitid",  businessUnit);
+            var team = new Entity("team")
+            {
+                ["administratorid"] = administrator,
+                ["name"] = teamName,
+                ["teamtype"] = new OptionSetValue(teamType),
+                ["businessunitid"] = businessUnit
+            };
 
-            var teamId = Service.Create(team);
-
-            return teamId;
+            return Service.Create(team);
         }
+
         public void AssociateEntity(string primaryEntityName, Guid primaryEntityId, string relationshipName, string relationshipEntityName, string entityName, string parentId)
         {
             try
             {
                 var relations = GetAssociations(primaryEntityName, primaryEntityId, relationshipEntityName, entityName, parentId);
 
-                if (relations.Entities.Count == 0)
+                if (relations.Entities.Count != 0)
                 {
-                    var relatedEntities = new EntityReferenceCollection();
-                    relatedEntities.Add(new EntityReference(entityName, new Guid(parentId)));
-                    var relationship = new Relationship(relationshipName);
-                    if (primaryEntityName == entityName)
-                    {
-                        relationship.PrimaryEntityRole = EntityRole.Referencing;
-                    }
-
-                    Service.Associate(primaryEntityName, primaryEntityId, relationship, relatedEntities);
+                    return;
                 }
+
+                var relatedEntities = new EntityReferenceCollection
+                {
+                    new EntityReference(entityName, new Guid(parentId))
+                };
+
+                var relationship = new Relationship(relationshipName);
+
+                if (primaryEntityName == entityName)
+                {
+                    relationship.PrimaryEntityRole = EntityRole.Referencing;
+                }
+
+                Service.Associate(primaryEntityName, primaryEntityId, relationship, relatedEntities);
             }
             catch (Exception ex)
             {
@@ -955,10 +962,12 @@ namespace msdyncrmWorkflowTools
             {
                 Trace("Entities Count: {0} ", i);
 
-                var attachment = new Entity("activitymimeattachment");
-                attachment["objectid"] = new EntityReference("email", email.Id);
-                attachment["objecttypecode"] = "email";
-                attachment["attachmentnumber"] = i;
+                var attachment = new Entity("activitymimeattachment")
+                {
+                    ["objectid"] = new EntityReference("email", email.Id),
+                    ["objecttypecode"] = "email",
+                    ["attachmentnumber"] = i
+                };
                 i++;
 
                 if (file.TryGetAttributeValue("subject", out string subject))
@@ -1027,7 +1036,6 @@ namespace msdyncrmWorkflowTools
         /// <returns></returns>
         public EntityCollection GetChildRecords(string relationshipName, string parentEntityId)
         {
-            //1) Get child lookup field name
             var request = new RetrieveRelationshipRequest()
             {
                 Name = relationshipName
@@ -1038,7 +1046,6 @@ namespace msdyncrmWorkflowTools
             var childEntityType = rel.ReferencingEntity;
             var childEntityFieldName = rel.ReferencingAttribute;
 
-            //2) retrieve all child records
             var query = new QueryByAttribute(childEntityType)
             {
                 ColumnSet = new ColumnSet(childEntityFieldName),
