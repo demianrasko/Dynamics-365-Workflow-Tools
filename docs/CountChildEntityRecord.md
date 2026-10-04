@@ -11,3 +11,14 @@ An fill the parameters:
 Finally, you can use the int Result of the app as you need:
 
 ![](CountChildEntityRecord3.gif)
+
+The fourth parameter, **FetchXML Filter (Child)**, is optional. It takes only the filter and its conditions (not a whole
+FetchXML query); they are combined with the parent lookup condition. For example:
+
+```xml
+<filter type="and">
+  <condition attribute="new_xyzt" operator="null" />
+</filter>
+```
+
+Thanks to [Augustandre23](https://github.com/Augustandre23) for this note (demianrasko/Dynamics-365-Workflow-Tools#259).
