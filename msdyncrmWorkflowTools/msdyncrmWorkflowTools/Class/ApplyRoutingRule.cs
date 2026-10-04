@@ -37,7 +37,7 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "ApplyRoutingRuleRequest Execution"
-            var entityName = objCommon.GetEntityNameFromCode(parentObjectTypeCode, objCommon.service);
+            var entityName = objCommon.GetEntityNameFromCode(parentObjectTypeCode);
             
             var request = new ApplyRoutingRuleRequest
             {

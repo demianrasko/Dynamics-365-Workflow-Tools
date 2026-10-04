@@ -11,19 +11,16 @@ namespace msdyncrmWorkflowTools
     public class CalculateAgregateDate : CodeActivity
     {
         #region "Parameter Definition"
-
         [RequiredArgument]
         [Input("FetchXML")]
         [Default("")]
         public InArgument<string> FetchXML { get; set; }
-
 
         [Output("Value")]
         public OutArgument<DateTime> Value { get; set; }
 
         [Output("Ok")]
         public OutArgument<bool> Ok { get; set; }
-
         #endregion
 
         protected override void Execute(CodeActivityContext executionContext)
@@ -49,7 +46,7 @@ namespace msdyncrmWorkflowTools
 
             #region "CalculateAgregateDate Execution"
 
-            string pagingCookie = null;
+           // string pagingCookie = null;
             const int pageNumber = 1;
             const int fetchCount = 1;
             var date = new DateTime(1753, 1, 1);

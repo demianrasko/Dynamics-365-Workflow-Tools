@@ -29,7 +29,7 @@ namespace msdyncrmWorkflowTools.Class
             }
             var parsedUrl = Utility.ParseRecordUrl(_RecordURL);
             var objectTypeCode = parsedUrl.ObjectTypeCode;
-            var entityName = objCommon.GetEntityNameFromCode(objectTypeCode, objCommon.service);
+            var entityName = objCommon.GetEntityNameFromCode(objectTypeCode);
             var objectId = parsedUrl.Id;
             objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
 

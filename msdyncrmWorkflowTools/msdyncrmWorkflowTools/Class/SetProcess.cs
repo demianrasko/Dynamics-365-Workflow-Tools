@@ -36,7 +36,7 @@ namespace msdyncrmWorkflowTools.Class
             var parsedUrl = Utility.ParseRecordUrl(cloningRecordUrl);
             var objectTypeCode = parsedUrl.ObjectTypeCode;
             var objectId = parsedUrl.Id;
-            var entityName = objCommon.GetEntityNameFromCode(objectTypeCode, objCommon.service);
+            var entityName = objCommon.GetEntityNameFromCode(objectTypeCode);
 
             objCommon.tracingService.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={objectId}");
 

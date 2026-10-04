@@ -42,7 +42,7 @@ namespace msdyncrmWorkflowTools
             var parsedUrl = Utility.ParseRecordUrl(serializingRecordUrl);
             var objectTypeCode = parsedUrl.ObjectTypeCode;
             var objectId = parsedUrl.Id;
-            var entityName = objCommon.GetEntityNameFromCode(objectTypeCode, objCommon.service);
+            var entityName = objCommon.GetEntityNameFromCode(objectTypeCode);
 
             objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
 
@@ -57,8 +57,7 @@ namespace msdyncrmWorkflowTools
             //var newEntity = new Entity(entityName);
             var primaryIdAttribute = string.Empty;
             var primaryNameAttribute = string.Empty;
-            var attributesToClone = objCommon.GetEntityAttributesToClone(entityName, objCommon.service,
-                ref primaryIdAttribute, ref primaryNameAttribute);
+            var attributesToClone = objCommon.GetEntityAttributesToClone(entityName, ref primaryIdAttribute, ref primaryNameAttribute);
 
             var sJson = new StringBuilder("{\"" + entityName + "\": {");
 

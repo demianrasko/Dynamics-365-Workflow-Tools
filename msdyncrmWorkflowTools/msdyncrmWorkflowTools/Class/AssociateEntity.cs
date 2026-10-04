@@ -48,7 +48,7 @@ namespace msdyncrmWorkflowTools
 
             var parsedUrl = Utility.ParseRecordUrl(recordUrl);
             var parentObjectTypeCode=parsedUrl.ObjectTypeCode;
-            var entityName = objCommon.GetEntityNameFromCode(parentObjectTypeCode, objCommon.service);
+            var entityName = objCommon.GetEntityNameFromCode(parentObjectTypeCode);
             var parentId = parsedUrl.Id;
 
             objCommon.tracingService.Trace($"ParentObjectTypeCode={parentObjectTypeCode}--ParentId={parentId}");

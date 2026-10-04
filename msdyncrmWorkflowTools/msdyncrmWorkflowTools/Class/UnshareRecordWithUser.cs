@@ -56,7 +56,7 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "ApplyRoutingRuteamReferenceleRequest Execution"
-            var entityName = objCommon.GetEntityNameFromCode(objectTypeCode, objCommon.service);
+            var entityName = objCommon.GetEntityNameFromCode(objectTypeCode);
 
             var refObject = new EntityReference(entityName, new Guid(objectId));
 

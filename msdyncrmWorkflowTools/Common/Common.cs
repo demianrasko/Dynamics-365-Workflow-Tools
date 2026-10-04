@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Activities;
 using System.Collections.Generic;
-using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Net;
@@ -81,9 +80,8 @@ namespace msdyncrmWorkflowTools
         /// Query the Metadata to get the Entity Schema Name from the Object Type Code
         /// </summary>
         /// <param name="objectTypeCode"></param>
-        /// <param name="service"></param>
         /// <returns>Entity Schema Name</returns>
-        public string GetEntityNameFromCode(string objectTypeCode, IOrganizationService service)
+        public string GetEntityNameFromCode(string objectTypeCode)
         {
             var entityFilter = new MetadataFilterExpression(LogicalOperator.And);
             entityFilter.Conditions.Add(new MetadataConditionExpression("ObjectTypeCode", MetadataConditionOperator.Equals, Convert.ToInt32(objectTypeCode)));
@@ -133,8 +131,7 @@ namespace msdyncrmWorkflowTools
             return relations;
         }
 
-        public List<string> GetEntityAttributesToClone(string entityName, IOrganizationService service,
-            ref string primaryIdAttribute, ref string primaryNameAttribute)
+        public List<string> GetEntityAttributesToClone(string entityName, ref string primaryIdAttribute, ref string primaryNameAttribute)
         {
             var atts = new List<string>();
             var request = new RetrieveEntityRequest()
@@ -187,7 +184,7 @@ namespace msdyncrmWorkflowTools
             var primaryIdAttribute = string.Empty;
             var primaryNameAttribute = string.Empty;
             
-            var attributesToClone = GetEntityAttributesToClone(entityName, service, ref primaryIdAttribute, ref primaryNameAttribute);
+            var attributesToClone = GetEntityAttributesToClone(entityName, ref primaryIdAttribute, ref primaryNameAttribute);
 
             foreach (var att in attributesToClone)
             {
@@ -466,7 +463,7 @@ namespace msdyncrmWorkflowTools
                 try
                 {
                     tracingService.Trace("user creating email");
-                    var sent = SendEmailFromTemplate(service, emailTemplateLookup, user.Id);
+                    var sent = SendEmailFromTemplate(emailTemplateLookup, user.Id);
 
 
                 }
@@ -480,7 +477,7 @@ namespace msdyncrmWorkflowTools
 
 
 
-        public bool SendEmailFromTemplate(IOrganizationService service, EntityReference template, Guid userId)
+        public bool SendEmailFromTemplate(EntityReference template, Guid userId)
         {
 
             var toEntities = new List<Entity>();
@@ -1237,11 +1234,13 @@ namespace msdyncrmWorkflowTools
                 reqAtt.LogicalName = childFieldNameToUpdate;
                 var resAtt = (RetrieveAttributeResponse)service.Execute(reqAtt);
 
-                var valueToUpdateBool = false;
+                //var valueToUpdateBool = false;
                 var meta = resAtt.AttributeMetadata;
 
-                var entUpdate = new Entity(childEntityType);
-                entUpdate.Id = child.Id;
+                var entUpdate = new Entity(childEntityType)
+                {
+                    Id = child.Id
+                };
 
                 if (meta.AttributeType.Value.ToString() == "Boolean")
                 {
