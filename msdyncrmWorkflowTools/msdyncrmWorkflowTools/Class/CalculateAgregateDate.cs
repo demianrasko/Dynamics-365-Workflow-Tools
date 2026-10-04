@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Activities;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Xml;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Query;

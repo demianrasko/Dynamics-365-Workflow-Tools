@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Activities;
-using System.Linq;
 using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools.Class

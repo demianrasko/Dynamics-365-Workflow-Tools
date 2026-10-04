@@ -1,5 +1,4 @@
 ﻿using System.Activities;
-using System.Linq;
 using System.ServiceModel;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
