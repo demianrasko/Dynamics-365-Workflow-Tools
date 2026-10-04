@@ -51,10 +51,9 @@ namespace msdyncrmWorkflowTools.Class
             int? topRecords = TopRecords.Get(executionContext);
 
             // Extract values from URL
-            var urlParts = mainRecordURL.Split("?".ToArray());
-            var urlParams = urlParts[1].Split("&".ToCharArray());
-            var parentObjectTypeCode = urlParams[0].Replace("etc=", string.Empty);
-            var parentId = urlParams[1].Replace("id=", string.Empty);
+            var parsedUrl = Utility.ParseRecordUrl(mainRecordURL);
+            var parentObjectTypeCode = parsedUrl.ObjectTypeCode;
+            var parentId = parsedUrl.Id;
 
             objCommon.tracingService.Trace("ParentObjectTypeCode=" + parentObjectTypeCode + "--ParentId=" + parentId);
 

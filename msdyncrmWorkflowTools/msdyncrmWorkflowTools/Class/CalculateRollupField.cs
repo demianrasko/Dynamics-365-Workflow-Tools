@@ -43,11 +43,10 @@ namespace msdyncrmWorkflowTools
                 return;
             }
             objCommon.tracingService.Trace("_ParentRecordURL=" + _ParentRecordURL);
-            var urlParts = _ParentRecordURL.Split("?".ToArray());
-            var urlParams=urlParts[1].Split("&".ToCharArray());
+            var parsedUrl = Utility.ParseRecordUrl(_ParentRecordURL);
             
-            var ParentObjectTypeCode=urlParams[0].Replace("etc=",string.Empty);
-            var ParentId = urlParams[1].Replace("id=", string.Empty);
+            var ParentObjectTypeCode=parsedUrl.ObjectTypeCode;
+            var ParentId = parsedUrl.Id;
             objCommon.tracingService.Trace("ParentObjectTypeCode=" + ParentObjectTypeCode + "--ParentId=" + ParentId);
             #endregion
 

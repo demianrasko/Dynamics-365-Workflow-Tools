@@ -576,12 +576,7 @@ namespace msdyncrmWorkflowTools
             {
                 return string.Empty;
             }
-            var urlParts = recordURL.Split("?".ToArray());
-            var urlParams = urlParts[1].Split("&".ToCharArray());
-            var objectTypeCode = urlParams[0].Replace("etc=", string.Empty);
-            //  entityName =  GetEntityNameFromCode(objectTypeCode, service);
-            var objectId = urlParams[1].Replace("id=", string.Empty);
-            return objectId;
+            return Utility.ParseRecordUrl(recordURL).Id;
         }
 
         public string GetAppModuleId(string appModuleUniqueName)

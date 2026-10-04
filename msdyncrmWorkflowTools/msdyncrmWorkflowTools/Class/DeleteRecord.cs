@@ -40,11 +40,10 @@ namespace msdyncrmWorkflowTools.Class
 
             if (deleteRecordUrl != null)
             {
-                var urlParts = deleteRecordUrl.Split("?".ToArray());
-                var urlParams = urlParts[1].Split("&".ToCharArray());
-                var objectTypeCode = urlParams[0].Replace("etc=", string.Empty);
+                var parsedUrl = Utility.ParseRecordUrl(deleteRecordUrl);
+                var objectTypeCode = parsedUrl.ObjectTypeCode;
                 entityName = objCommon.GetEntityNameFromCode(objectTypeCode, objCommon.service);
-                objectId = urlParams[1].Replace("id=", string.Empty);
+                objectId = parsedUrl.Id;
                 objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
             }
 

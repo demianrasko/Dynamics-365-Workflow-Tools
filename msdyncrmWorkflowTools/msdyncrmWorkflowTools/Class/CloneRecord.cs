@@ -133,11 +133,10 @@ Customer
             {
                 return;
             }
-            var urlParts = _ClonningRecordURL.Split("?".ToArray());
-            var urlParams = urlParts[1].Split("&".ToCharArray());
-            var objectTypeCode = urlParams[0].Replace("etc=", string.Empty);
+            var parsedUrl = Utility.ParseRecordUrl(_ClonningRecordURL);
+            var objectTypeCode = parsedUrl.ObjectTypeCode;
             var entityName = objCommon.GetEntityNameFromCode(objectTypeCode, objCommon.service);
-            var objectId = urlParams[1].Replace("id=", string.Empty);
+            var objectId = parsedUrl.Id;
             objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
 
             var prefix = Prefix.Get(executionContext);

@@ -57,9 +57,8 @@ namespace msdyncrmWorkflowTools
         {
             var _recordURL = RecordURL.Get<string>(executionContext);
 
-            var urlParts = _recordURL.Split("?".ToArray());
-            var urlParams = urlParts[1].Split("&".ToCharArray());
-            var recordId = urlParams[1].Replace("id=", string.Empty);
+            var parsedUrl = Utility.ParseRecordUrl(_recordURL);
+            var recordId = parsedUrl.Id;
             return recordId;
         }
 

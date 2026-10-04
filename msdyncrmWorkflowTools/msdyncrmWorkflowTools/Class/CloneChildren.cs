@@ -84,11 +84,10 @@ namespace msdyncrmWorkflowTools
                 return;
             }
 
-            var urlParts = _source.Split("?".ToArray());
-            var urlParams = urlParts[1].Split("&".ToCharArray());
-            var parentObjectTypeCode = urlParams[0].Replace("etc=", string.Empty);
+            var parsedUrl = Utility.ParseRecordUrl(_source);
+            var parentObjectTypeCode = parsedUrl.ObjectTypeCode;
             var parentEntityName = objCommon.GetEntityNameFromCode(parentObjectTypeCode, objCommon.service);
-            var parentId = urlParams[1].Replace("id=", string.Empty);
+            var parentId = parsedUrl.Id;
             objCommon.tracingService.Trace("ObjectTypeCode=" + parentObjectTypeCode + "--ParentId=" + parentId);
 
             var _destination = TargetRecordUrl.Get(executionContext);
@@ -96,11 +95,10 @@ namespace msdyncrmWorkflowTools
             {
                 return;
             }
-            var destinationUrlParts = _destination.Split("?".ToArray());
-            var destinationUrlParams = destinationUrlParts[1].Split("&".ToCharArray());
-            var destinationObjectTypeCode = destinationUrlParams[0].Replace("etc=", string.Empty);
+            var parsedDestinationUrl = Utility.ParseRecordUrl(_destination);
+            var destinationObjectTypeCode = parsedDestinationUrl.ObjectTypeCode;
             var destinationEntityName = objCommon.GetEntityNameFromCode(destinationObjectTypeCode, objCommon.service);
-            var destinationId = destinationUrlParams[1].Replace("id=", string.Empty);
+            var destinationId = parsedDestinationUrl.Id;
             objCommon.tracingService.Trace("ObjectTypeCode=" + destinationObjectTypeCode + "--ParentId=" + destinationId);
 
 
