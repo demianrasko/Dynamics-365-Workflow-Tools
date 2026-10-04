@@ -42,11 +42,11 @@ namespace msdyncrmWorkflowTools
         {
             var query = new QueryExpression(EntityNames.ActivityParty)
             {
-                ColumnSet = new ColumnSet("partyid"),
+                ColumnSet = new ColumnSet(AttributeNames.PartyId),
                 Distinct = true
             };
-            query.Criteria.AddCondition("activityid", ConditionOperator.Equal, activityId);
-            query.Criteria.AddCondition("participationtypemask", ConditionOperator.Equal, participationTypeMask);
+            query.Criteria.AddCondition(AttributeNames.ActivityId, ConditionOperator.Equal, activityId);
+            query.Criteria.AddCondition(AttributeNames.ParticipationTypeMask, ConditionOperator.Equal, participationTypeMask);
 
             return query;
         }
@@ -56,19 +56,19 @@ namespace msdyncrmWorkflowTools
         {
             var query = new QueryExpression(EntityNames.Team)
             {
-                ColumnSet = new ColumnSet("name", "businessunitid", "teamid", "teamtype"),
+                ColumnSet = new ColumnSet(AttributeNames.Name, AttributeNames.BusinessUnitId, AttributeNames.TeamId, AttributeNames.TeamType),
                 Distinct = true
             };
-            query.AddOrder("name", OrderType.Ascending);
-            query.Criteria.AddCondition("teamtype", ConditionOperator.Equal, 0);
-            query.Criteria.AddCondition("isdefault", ConditionOperator.Equal, true);
+            query.AddOrder(AttributeNames.Name, OrderType.Ascending);
+            query.Criteria.AddCondition(AttributeNames.TeamType, ConditionOperator.Equal, 0);
+            query.Criteria.AddCondition(AttributeNames.IsDefault, ConditionOperator.Equal, true);
 
-            var businessUnit = query.AddLink(EntityNames.BusinessUnit, "businessunitid", "businessunitid", JoinOperator.Inner);
+            var businessUnit = query.AddLink(EntityNames.BusinessUnit, AttributeNames.BusinessUnitId, AttributeNames.BusinessUnitId, JoinOperator.Inner);
             businessUnit.EntityAlias = "ae";
 
-            var user = businessUnit.AddLink(EntityNames.SystemUser, "businessunitid", "businessunitid", JoinOperator.Inner);
+            var user = businessUnit.AddLink(EntityNames.SystemUser, AttributeNames.BusinessUnitId, AttributeNames.BusinessUnitId, JoinOperator.Inner);
             user.EntityAlias = "af";
-            user.LinkCriteria.AddCondition("systemuserid", ConditionOperator.Equal, systemUserId);
+            user.LinkCriteria.AddCondition(AttributeNames.SystemUserId, ConditionOperator.Equal, systemUserId);
 
             return query;
         }
@@ -78,15 +78,15 @@ namespace msdyncrmWorkflowTools
         {
             var query = new QueryExpression(EntityNames.SystemUser)
             {
-                ColumnSet = new ColumnSet("systemuserid"),
+                ColumnSet = new ColumnSet(AttributeNames.SystemUserId),
                 Distinct = true
             };
-            query.Criteria.AddCondition("accessmode", ConditionOperator.Equal, 0);
+            query.Criteria.AddCondition(AttributeNames.AccessMode, ConditionOperator.Equal, 0);
 
-            var userRoles = query.AddLink(EntityNames.SystemUserRoles, "systemuserid", "systemuserid");
-            var role = userRoles.AddLink(EntityNames.Role, "roleid", "roleid");
+            var userRoles = query.AddLink(EntityNames.SystemUserRoles, AttributeNames.SystemUserId, AttributeNames.SystemUserId);
+            var role = userRoles.AddLink(EntityNames.Role, AttributeNames.RoleId, AttributeNames.RoleId);
             role.EntityAlias = "aa";
-            role.LinkCriteria.AddCondition("roleid", ConditionOperator.Equal, roleId);
+            role.LinkCriteria.AddCondition(AttributeNames.RoleId, ConditionOperator.Equal, roleId);
 
             return query;
         }
@@ -96,10 +96,10 @@ namespace msdyncrmWorkflowTools
         {
             var query = new QueryExpression(EntityNames.SalesLiteratureItem)
             {
-                ColumnSet = new ColumnSet("filename", "salesliteratureitemid", "title", "documentbody", "mimetype")
+                ColumnSet = new ColumnSet(AttributeNames.FileName, AttributeNames.SalesLiteratureItemId, AttributeNames.Title, AttributeNames.DocumentBody, AttributeNames.MimeType)
             };
-            query.Criteria.AddCondition("filename", ConditionOperator.Like, fileNamePattern);
-            query.Criteria.AddCondition("salesliteratureid", ConditionOperator.Equal, salesLiteratureId);
+            query.Criteria.AddCondition(AttributeNames.FileName, ConditionOperator.Like, fileNamePattern);
+            query.Criteria.AddCondition(AttributeNames.SalesLiteratureId, ConditionOperator.Equal, salesLiteratureId);
 
             return query;
         }
@@ -119,24 +119,24 @@ namespace msdyncrmWorkflowTools
             {
                 query = new QueryExpression(EntityNames.ActivityMimeAttachment)
                 {
-                    ColumnSet = new ColumnSet("filename", "attachmentid", "subject", "body", "mimetype")
+                    ColumnSet = new ColumnSet(AttributeNames.FileName, AttributeNames.AttachmentId, AttributeNames.Subject, AttributeNames.Body, AttributeNames.MimeType)
                 };
-                query.Criteria.AddCondition("activityid", ConditionOperator.Equal, parentId);
+                query.Criteria.AddCondition(AttributeNames.ActivityId, ConditionOperator.Equal, parentId);
             }
             else
             {
                 query = new QueryExpression(EntityNames.Annotation)
                 {
-                    ColumnSet = new ColumnSet("filename", "annotationid", "subject", "documentbody", "mimetype")
+                    ColumnSet = new ColumnSet(AttributeNames.FileName, AttributeNames.AnnotationId, AttributeNames.Subject, AttributeNames.DocumentBody, AttributeNames.MimeType)
                 };
-                query.AddOrder("createdon", OrderType.Descending);
-                query.Criteria.AddCondition("isdocument", ConditionOperator.Equal, true);
-                query.Criteria.AddCondition("objectid", ConditionOperator.Equal, parentId);
+                query.AddOrder(AttributeNames.CreatedOn, OrderType.Descending);
+                query.Criteria.AddCondition(AttributeNames.IsDocument, ConditionOperator.Equal, true);
+                query.Criteria.AddCondition(AttributeNames.ObjectId, ConditionOperator.Equal, parentId);
             }
 
             if (!string.IsNullOrEmpty(fileNamePattern))
             {
-                query.Criteria.AddCondition("filename", ConditionOperator.Like, fileNamePattern);
+                query.Criteria.AddCondition(AttributeNames.FileName, ConditionOperator.Like, fileNamePattern);
             }
 
             if (top > 0)
@@ -152,15 +152,15 @@ namespace msdyncrmWorkflowTools
         {
             var query = new QueryExpression(EntityNames.Team)
             {
-                ColumnSet = new ColumnSet("teamid"),
+                ColumnSet = new ColumnSet(AttributeNames.TeamId),
                 Distinct = true
             };
-            query.Criteria.AddCondition("teamid", ConditionOperator.Equal, teamId);
+            query.Criteria.AddCondition(AttributeNames.TeamId, ConditionOperator.Equal, teamId);
 
-            var membership = query.AddLink(EntityNames.TeamMembership, "teamid", "teamid");
-            var user = membership.AddLink(EntityNames.SystemUser, "systemuserid", "systemuserid");
+            var membership = query.AddLink(EntityNames.TeamMembership, AttributeNames.TeamId, AttributeNames.TeamId);
+            var user = membership.AddLink(EntityNames.SystemUser, AttributeNames.SystemUserId, AttributeNames.SystemUserId);
             user.EntityAlias = "ag";
-            user.LinkCriteria.AddCondition("systemuserid", ConditionOperator.Equal, systemUserId);
+            user.LinkCriteria.AddCondition(AttributeNames.SystemUserId, ConditionOperator.Equal, systemUserId);
 
             return query;
         }
@@ -170,9 +170,9 @@ namespace msdyncrmWorkflowTools
         {
             var query = new QueryExpression(EntityNames.ListMember)
             {
-                ColumnSet = new ColumnSet("listid")
+                ColumnSet = new ColumnSet(AttributeNames.ListId)
             };
-            query.Criteria.AddCondition("entityid", ConditionOperator.Equal, memberId);
+            query.Criteria.AddCondition(AttributeNames.EntityId, ConditionOperator.Equal, memberId);
 
             return query;
         }
@@ -182,11 +182,11 @@ namespace msdyncrmWorkflowTools
         {
             var query = new QueryExpression(EntityNames.ListMember)
             {
-                ColumnSet = new ColumnSet("listmemberid"),
+                ColumnSet = new ColumnSet(AttributeNames.ListMemberId),
                 TopCount = 1
             };
-            query.Criteria.AddCondition("listid", ConditionOperator.Equal, listId);
-            query.Criteria.AddCondition("entityid", ConditionOperator.Equal, memberId);
+            query.Criteria.AddCondition(AttributeNames.ListId, ConditionOperator.Equal, listId);
+            query.Criteria.AddCondition(AttributeNames.EntityId, ConditionOperator.Equal, memberId);
 
             return query;
         }
@@ -216,12 +216,12 @@ namespace msdyncrmWorkflowTools
         {
             var query = new QueryExpression(EntityNames.PrincipalObjectAttributeAccess)
             {
-                ColumnSet = new ColumnSet("readaccess", "updateaccess"),
+                ColumnSet = new ColumnSet(AttributeNames.ReadAccess, AttributeNames.UpdateAccess),
                 TopCount = 1
             };
-            query.Criteria.AddCondition("attributeid", ConditionOperator.Equal, attributeId);
-            query.Criteria.AddCondition("objectid", ConditionOperator.Equal, objectId);
-            query.Criteria.AddCondition("principalid", ConditionOperator.Equal, principalId);
+            query.Criteria.AddCondition(AttributeNames.AttributeId, ConditionOperator.Equal, attributeId);
+            query.Criteria.AddCondition(AttributeNames.ObjectId, ConditionOperator.Equal, objectId);
+            query.Criteria.AddCondition(AttributeNames.PrincipalId, ConditionOperator.Equal, principalId);
 
             return query;
         }
@@ -231,11 +231,11 @@ namespace msdyncrmWorkflowTools
         {
             var query = new QueryExpression(EntityNames.ProcessStage)
             {
-                ColumnSet = new ColumnSet("processstageid"),
+                ColumnSet = new ColumnSet(AttributeNames.ProcessStageId),
                 TopCount = 1
             };
-            query.Criteria.AddCondition("processid", ConditionOperator.Equal, processId);
-            query.Criteria.AddCondition("stagename", ConditionOperator.Equal, stageName);
+            query.Criteria.AddCondition(AttributeNames.ProcessId, ConditionOperator.Equal, processId);
+            query.Criteria.AddCondition(AttributeNames.StageName, ConditionOperator.Equal, stageName);
 
             return query;
         }
@@ -251,8 +251,8 @@ namespace msdyncrmWorkflowTools
                 ColumnSet = new ColumnSet(false),
                 TopCount = 1
             };
-            query.Criteria.AddCondition(isTeam ? "teamid" : "systemuserid", ConditionOperator.Equal, principal.Id);
-            query.Criteria.AddCondition("roleid", ConditionOperator.Equal, roleId);
+            query.Criteria.AddCondition(isTeam ? AttributeNames.TeamId : AttributeNames.SystemUserId, ConditionOperator.Equal, principal.Id);
+            query.Criteria.AddCondition(AttributeNames.RoleId, ConditionOperator.Equal, roleId);
 
             return query;
         }
@@ -265,13 +265,13 @@ namespace msdyncrmWorkflowTools
         {
             var query = new QueryExpression(EntityNames.Role)
             {
-                ColumnSet = new ColumnSet("roleid"),
+                ColumnSet = new ColumnSet(AttributeNames.RoleId),
                 TopCount = 1
             };
-            query.Criteria.AddCondition("parentrootroleid", ConditionOperator.Equal, rootRoleId);
+            query.Criteria.AddCondition(AttributeNames.ParentRootRoleId, ConditionOperator.Equal, rootRoleId);
 
-            var userRoles = query.AddLink(EntityNames.SystemUserRoles, "roleid", "roleid");
-            userRoles.LinkCriteria.AddCondition("systemuserid", ConditionOperator.Equal, systemUserId);
+            var userRoles = query.AddLink(EntityNames.SystemUserRoles, AttributeNames.RoleId, AttributeNames.RoleId);
+            userRoles.LinkCriteria.AddCondition(AttributeNames.SystemUserId, ConditionOperator.Equal, systemUserId);
 
             return query;
         }
@@ -281,11 +281,11 @@ namespace msdyncrmWorkflowTools
         {
             var query = new QueryExpression(EntityNames.SystemUser)
             {
-                ColumnSet = new ColumnSet("systemuserid")
+                ColumnSet = new ColumnSet(AttributeNames.SystemUserId)
             };
 
-            var membership = query.AddLink(EntityNames.TeamMembership, "systemuserid", "systemuserid");
-            membership.LinkCriteria.AddCondition("teamid", ConditionOperator.Equal, teamId);
+            var membership = query.AddLink(EntityNames.TeamMembership, AttributeNames.SystemUserId, AttributeNames.SystemUserId);
+            membership.LinkCriteria.AddCondition(AttributeNames.TeamId, ConditionOperator.Equal, teamId);
 
             return query;
         }
@@ -296,17 +296,17 @@ namespace msdyncrmWorkflowTools
         {
             var query = new QueryExpression(EntityNames.QueueItem)
             {
-                ColumnSet = new ColumnSet("enteredon", "objecttypecode", "objectid", "queueid")
+                ColumnSet = new ColumnSet(AttributeNames.EnteredOn, AttributeNames.ObjectTypeCode, AttributeNames.ObjectId, AttributeNames.QueueId)
             };
-            query.AddOrder("enteredon", OrderType.Descending);
-            query.Criteria.AddCondition("statecode", ConditionOperator.Equal, 0);
+            query.AddOrder(AttributeNames.EnteredOn, OrderType.Descending);
+            query.Criteria.AddCondition(AttributeNames.StateCode, ConditionOperator.Equal, 0);
 
             if (onlyUnassigned)
             {
-                query.Criteria.AddCondition("workerid", ConditionOperator.Null);
+                query.Criteria.AddCondition(AttributeNames.WorkerId, ConditionOperator.Null);
             }
 
-            query.Criteria.AddCondition("queueid", ConditionOperator.Equal, queueId);
+            query.Criteria.AddCondition(AttributeNames.QueueId, ConditionOperator.Equal, queueId);
 
             if (top > 0)
             {
@@ -336,7 +336,7 @@ namespace msdyncrmWorkflowTools
                 ColumnSet = new ColumnSet(attributeName),
                 TopCount = 1
             };
-            query.AddOrder("name", OrderType.Ascending);
+            query.AddOrder(AttributeNames.Name, OrderType.Ascending);
 
             return query;
         }
@@ -348,10 +348,10 @@ namespace msdyncrmWorkflowTools
         {
             var query = new QueryExpression(EntityNames.SharePointDocumentLocation)
             {
-                ColumnSet = new ColumnSet("absoluteurl", "sharepointdocumentlocationid", "relativeurl")
+                ColumnSet = new ColumnSet(AttributeNames.AbsoluteUrl, AttributeNames.SharePointDocumentLocationId, AttributeNames.RelativeUrl)
             };
 
-            query.Criteria.AddCondition("regardingobjectid", ConditionOperator.Equal, regardingObjectId);
+            query.Criteria.AddCondition(AttributeNames.RegardingObjectId, ConditionOperator.Equal, regardingObjectId);
 
             return query;
         }

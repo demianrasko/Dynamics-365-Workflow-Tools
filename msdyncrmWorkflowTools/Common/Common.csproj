@@ -77,6 +77,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common.cs" />
+    <Compile Include="AttributeNames.cs" />
     <Compile Include="EntityNames.cs" />
     <Compile Include="Queries.cs" />
     <Compile Include="Utility.cs" />

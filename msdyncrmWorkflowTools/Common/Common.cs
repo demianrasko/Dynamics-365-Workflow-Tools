@@ -107,19 +107,19 @@ namespace msdyncrmWorkflowTools
             var query = new QueryExpression
             {
                 EntityName = EntityNames.AppModule,
-                ColumnSet = new ColumnSet("appmoduleid", "uniquename"),
+                ColumnSet = new ColumnSet(AttributeNames.AppModuleId, AttributeNames.UniqueName),
                 Criteria =
                         {
                             Conditions =
                             {
-                                new ConditionExpression ("uniquename", ConditionOperator.Equal, appModuleUniqueName)
+                                new ConditionExpression (AttributeNames.UniqueName, ConditionOperator.Equal, appModuleUniqueName)
                             }
                         }
             };
 
             var collection = Service.RetrieveMultiple(query).Entities;
 
-            return collection.First()["appmoduleid"].ToString();
+            return collection.First()[AttributeNames.AppModuleId].ToString();
         }
 
         public string GetAppRecordUrl(string recordUrl, string appModuleUniqueName)
@@ -559,7 +559,7 @@ namespace msdyncrmWorkflowTools
                     }
                 }
 
-                if ((!retrievedObject.Attributes.Contains(attribute) || attribute == "statuscode" || attribute == "statecode")
+                if ((!retrievedObject.Attributes.Contains(attribute) || attribute == AttributeNames.StatusCode || attribute == AttributeNames.StateCode)
                     && !attribute.StartsWith("partylist-"))
                 {
                     continue;
@@ -584,12 +584,12 @@ namespace msdyncrmWorkflowTools
 
                     foreach (var ent in returnCollection.Entities)
                     {
-                        var partyid = (EntityReference)ent.Attributes["partyid"];
+                        var partyid = (EntityReference)ent.Attributes[AttributeNames.PartyId];
 
                         // one activityparty per party (re-using one entity threw "same key" for a second party)
                         var party = new Entity(EntityNames.ActivityParty)
                         {
-                            ["partyid"] = new EntityReference(partyid.LogicalName, partyid.Id)
+                            [AttributeNames.PartyId] = new EntityReference(partyid.LogicalName, partyid.Id)
                         };
 
                         Trace("attribute:{0}:{1}:{2}", attribute2, partyid.LogicalName, partyid.Id.ToString());
@@ -624,16 +624,16 @@ namespace msdyncrmWorkflowTools
             var id = Service.Create(newEntity);
             Trace("created cloned object OK");
 
-            if (newEntity.Attributes.Contains("statuscode") && newEntity.Attributes.Contains("statecode"))
+            if (newEntity.Attributes.Contains(AttributeNames.StatusCode) && newEntity.Attributes.Contains(AttributeNames.StateCode))
             {
-                var record = Service.Retrieve(entityName, id, new ColumnSet("statuscode", "statecode"));
+                var record = Service.Retrieve(entityName, id, new ColumnSet(AttributeNames.StatusCode, AttributeNames.StateCode));
 
-                if (retrievedObject.Attributes["statuscode"] != record.Attributes["statuscode"] ||
-                    retrievedObject.Attributes["statecode"] != record.Attributes["statecode"])
+                if (retrievedObject.Attributes[AttributeNames.StatusCode] != record.Attributes[AttributeNames.StatusCode] ||
+                    retrievedObject.Attributes[AttributeNames.StateCode] != record.Attributes[AttributeNames.StateCode])
                 {
                     var setStatusEnt = new Entity(entityName, id);
-                    setStatusEnt.Attributes.Add("statuscode", retrievedObject.Attributes["statuscode"]);
-                    setStatusEnt.Attributes.Add("statecode", retrievedObject.Attributes["statecode"]);
+                    setStatusEnt.Attributes.Add(AttributeNames.StatusCode, retrievedObject.Attributes[AttributeNames.StatusCode]);
+                    setStatusEnt.Attributes.Add(AttributeNames.StateCode, retrievedObject.Attributes[AttributeNames.StateCode]);
 
                     Service.Update(setStatusEnt);
                 }
@@ -905,7 +905,7 @@ namespace msdyncrmWorkflowTools
 
             if (updateonlyActive)
             {
-                query.AddAttributeValue("statecode", 0);
+                query.AddAttributeValue(AttributeNames.StateCode, 0);
             }
 
             var retrieved = Service.RetrieveMultiple(query);
@@ -1072,8 +1072,8 @@ namespace msdyncrmWorkflowTools
                 {
                     if (allowRead || allowUpdate)
                     {
-                        existing["readaccess"] = allowRead;
-                        existing["updateaccess"] = allowUpdate;
+                        existing[AttributeNames.ReadAccess] = allowRead;
+                        existing[AttributeNames.UpdateAccess] = allowUpdate;
 
                         Service.Update(existing);
                     }
@@ -1092,11 +1092,11 @@ namespace msdyncrmWorkflowTools
 
                 Service.Create(new Entity(EntityNames.PrincipalObjectAttributeAccess)
                 {
-                    ["attributeid"] = attribute.MetadataId.Value,
-                    ["objectid"] = record,
-                    ["principalid"] = principal,
-                    ["readaccess"] = allowRead,
-                    ["updateaccess"] = allowUpdate
+                    [AttributeNames.AttributeId] = attribute.MetadataId.Value,
+                    [AttributeNames.ObjectId] = record,
+                    [AttributeNames.PrincipalId] = principal,
+                    [AttributeNames.ReadAccess] = allowRead,
+                    [AttributeNames.UpdateAccess] = allowUpdate
                 });
             }
         }
@@ -1105,10 +1105,10 @@ namespace msdyncrmWorkflowTools
         {
             var team = new Entity(EntityNames.Team)
             {
-                ["administratorid"] = administrator,
-                ["name"] = teamName,
-                ["teamtype"] = new OptionSetValue(teamType),
-                ["businessunitid"] = businessUnit
+                [AttributeNames.AdministratorId] = administrator,
+                [AttributeNames.Name] = teamName,
+                [AttributeNames.TeamType] = new OptionSetValue(teamType),
+                [AttributeNames.BusinessUnitId] = businessUnit
             };
 
             return Service.Create(team);
@@ -1235,20 +1235,20 @@ namespace msdyncrmWorkflowTools
         /// <returns>The role id in the principal's business unit, or null if <paramref name="roleId"/> does not exist.</returns>
         public Guid? GetRoleIdInBusinessUnit(EntityReference principal, Guid roleId)
         {
-            var principalRecord = Service.Retrieve(principal.LogicalName, principal.Id, new ColumnSet("businessunitid"));
-            var businessUnit = (EntityReference)principalRecord.Attributes["businessunitid"];
+            var principalRecord = Service.Retrieve(principal.LogicalName, principal.Id, new ColumnSet(AttributeNames.BusinessUnitId));
+            var businessUnit = (EntityReference)principalRecord.Attributes[AttributeNames.BusinessUnitId];
 
             var roleQuery = new QueryExpression
             {
                 EntityName = EntityNames.Role,
-                ColumnSet = new ColumnSet("parentrootroleid"),
+                ColumnSet = new ColumnSet(AttributeNames.ParentRootRoleId),
                 Criteria = new FilterExpression
                 {
                     Conditions =
                     {
                         new ConditionExpression
                         {
-                            AttributeName = "roleid",
+                            AttributeName = AttributeNames.RoleId,
                             Operator = ConditionOperator.Equal,
                             Values = { roleId }
                         }
@@ -1264,27 +1264,27 @@ namespace msdyncrmWorkflowTools
             }
 
             var givenRole = givenRoles.Entities[0];
-            var rootRole = (EntityReference)givenRole.Attributes["parentrootroleid"];
+            var rootRole = (EntityReference)givenRole.Attributes[AttributeNames.ParentRootRoleId];
 
             Trace("Role {0} is retrieved.", givenRole.Id);
 
             var businessUnitRoleQuery = new QueryExpression
             {
                 EntityName = EntityNames.Role,
-                ColumnSet = new ColumnSet("roleid"),
+                ColumnSet = new ColumnSet(AttributeNames.RoleId),
                 Criteria = new FilterExpression
                 {
                     Conditions =
                     {
                         new ConditionExpression
                         {
-                            AttributeName = "parentrootroleid",
+                            AttributeName = AttributeNames.ParentRootRoleId,
                             Operator = ConditionOperator.Equal,
                             Values = { rootRole.Id }
                         },
                         new ConditionExpression
                         {
-                            AttributeName = "businessunitid",
+                            AttributeName = AttributeNames.BusinessUnitId,
                             Operator = ConditionOperator.Equal,
                             Values = { businessUnit.Id }
                         }
@@ -1294,7 +1294,7 @@ namespace msdyncrmWorkflowTools
 
             var businessUnitRoles = Service.RetrieveMultiple(businessUnitRoleQuery);
 
-            return (Guid)businessUnitRoles.Entities[0].Attributes["roleid"];
+            return (Guid)businessUnitRoles.Entities[0].Attributes[AttributeNames.RoleId];
         }
         #endregion
 
@@ -1307,7 +1307,7 @@ namespace msdyncrmWorkflowTools
                 LogicalName = EntityNames.ActivityParty,
                 Attributes =
                 {
-                    ["partyid"] = new EntityReference(EntityNames.SystemUser, userId)
+                    [AttributeNames.PartyId] = new EntityReference(EntityNames.SystemUser, userId)
                 }
             };
 
@@ -1317,7 +1317,7 @@ namespace msdyncrmWorkflowTools
             {
                 Attributes =
                 {
-                    ["to"] = toEntities.ToArray()
+                    [AttributeNames.To] = toEntities.ToArray()
                 }
             };
 
@@ -1388,7 +1388,7 @@ namespace msdyncrmWorkflowTools
             {
                 to.Entities.Add(new Entity(EntityNames.ActivityParty)
                 {
-                    ["partyid"] = new EntityReference(EntityNames.SystemUser, userId)
+                    [AttributeNames.PartyId] = new EntityReference(EntityNames.SystemUser, userId)
                 });
             }
 
@@ -1396,7 +1396,7 @@ namespace msdyncrmWorkflowTools
 
             Service.Update(new Entity(EntityNames.Email, emailId)
             {
-                ["to"] = to
+                [AttributeNames.To] = to
             });
         }
 
@@ -1457,26 +1457,26 @@ namespace msdyncrmWorkflowTools
 
                 var attachment = new Entity(EntityNames.ActivityMimeAttachment)
                 {
-                    ["objectid"] = new EntityReference(EntityNames.Email, email.Id),
-                    ["objecttypecode"] = EntityNames.Email,
-                    ["attachmentnumber"] = i
+                    [AttributeNames.ObjectId] = new EntityReference(EntityNames.Email, email.Id),
+                    [AttributeNames.ObjectTypeCode] = EntityNames.Email,
+                    [AttributeNames.AttachmentNumber] = i
                 };
                 i++;
 
-                Utility.CopyAttributeValue(file, "subject", attachment);
-                Utility.CopyAttributeValue(file, "filename", attachment);
-                Utility.CopyAttributeValue(file, "mimetype", attachment);
+                Utility.CopyAttributeValue(file, AttributeNames.Subject, attachment);
+                Utility.CopyAttributeValue(file, AttributeNames.FileName, attachment);
+                Utility.CopyAttributeValue(file, AttributeNames.MimeType, attachment);
 
-                if (!Utility.CopyAttributeValue(file, "documentbody", attachment, "body"))
+                if (!Utility.CopyAttributeValue(file, AttributeNames.DocumentBody, attachment, AttributeNames.Body))
                 {
-                    Utility.CopyAttributeValue(file, "body", attachment);
+                    Utility.CopyAttributeValue(file, AttributeNames.Body, attachment);
                 }
 
                 if (mostRecent)
                 {
                     Trace("Is Most Recent");
 
-                    var alreadyAttached = attachedFiles.Where(f => f["filename"].ToString() == file.GetAttributeValue<string>("filename")).FirstOrDefault();
+                    var alreadyAttached = attachedFiles.Where(f => f[AttributeNames.FileName].ToString() == file.GetAttributeValue<string>(AttributeNames.FileName)).FirstOrDefault();
 
                     if (alreadyAttached == null)
                     {
@@ -1484,9 +1484,9 @@ namespace msdyncrmWorkflowTools
 
                         Service.Create(attachment);
 
-                        if (!file.Contains("filename"))
+                        if (!file.Contains(AttributeNames.FileName))
                         {
-                            file["filename"] = string.Empty;
+                            file[AttributeNames.FileName] = string.Empty;
                         }
 
                         attachedFiles.Add(file);
@@ -1534,17 +1534,17 @@ namespace msdyncrmWorkflowTools
             {
                 var attachment = new Entity(EntityNames.ActivityMimeAttachment)
                 {
-                    ["objectid"] = new EntityReference(EntityNames.Email, emailId),
-                    ["objecttypecode"] = EntityNames.Email,
-                    ["attachmentnumber"] = i
+                    [AttributeNames.ObjectId] = new EntityReference(EntityNames.Email, emailId),
+                    [AttributeNames.ObjectTypeCode] = EntityNames.Email,
+                    [AttributeNames.AttachmentNumber] = i
                 };
 
                 i++;
 
-                Utility.CopyAttributeValue(file, "title", attachment, "subject");
-                Utility.CopyAttributeValue(file, "filename", attachment);
-                Utility.CopyAttributeValue(file, "documentbody", attachment, "body");
-                Utility.CopyAttributeValue(file, "mimetype", attachment);
+                Utility.CopyAttributeValue(file, AttributeNames.Title, attachment, AttributeNames.Subject);
+                Utility.CopyAttributeValue(file, AttributeNames.FileName, attachment);
+                Utility.CopyAttributeValue(file, AttributeNames.DocumentBody, attachment, AttributeNames.Body);
+                Utility.CopyAttributeValue(file, AttributeNames.MimeType, attachment);
 
                 Service.Create(attachment);
             }
@@ -1620,7 +1620,7 @@ namespace msdyncrmWorkflowTools
 
             Service.Update(new Entity(instanceEntityName, instance.Id)
             {
-                ["activestageid"] = new EntityReference(EntityNames.ProcessStage, stageId)
+                [AttributeNames.ActiveStageId] = new EntityReference(EntityNames.ProcessStage, stageId)
             });
         }
 
@@ -1656,8 +1656,8 @@ namespace msdyncrmWorkflowTools
             var response = (RetrieveProcessInstancesResponse)Service.Execute(request);
             var instances = response.Processes.Entities;
 
-            var instance = instances.Any(i => i.Contains("processid"))
-                ? instances.FirstOrDefault(i => i.GetAttributeValue<EntityReference>("processid")?.Id == processId)
+            var instance = instances.Any(i => i.Contains(AttributeNames.ProcessId))
+                ? instances.FirstOrDefault(i => i.GetAttributeValue<EntityReference>(AttributeNames.ProcessId)?.Id == processId)
                 : instances.FirstOrDefault();
 
             if (instance == null)
@@ -1675,7 +1675,7 @@ namespace msdyncrmWorkflowTools
         /// </summary>
         public string GetProcessEntityName(Guid processId)
         {
-            return Service.Retrieve(EntityNames.Workflow, processId, new ColumnSet("uniquename")).GetAttributeValue<string>("uniquename");
+            return Service.Retrieve(EntityNames.Workflow, processId, new ColumnSet(AttributeNames.UniqueName)).GetAttributeValue<string>(AttributeNames.UniqueName);
         }
         #endregion
 
@@ -1778,7 +1778,7 @@ namespace msdyncrmWorkflowTools
                 CreateAccount = createAccount,
                 CreateContact = createContact,
                 CreateOpportunity = createOpportunity,
-                OpportunityCurrencyId = (EntityReference)GetOrganizationSetting("basecurrencyid"),
+                OpportunityCurrencyId = (EntityReference)GetOrganizationSetting(AttributeNames.BaseCurrencyId),
                 Status = new OptionSetValue(status)
             };
 
@@ -1831,7 +1831,7 @@ namespace msdyncrmWorkflowTools
             var response = (GenerateQuoteFromOpportunityResponse)Service.Execute(new GenerateQuoteFromOpportunityRequest
             {
                 OpportunityId = opportunityId,
-                ColumnSet = new ColumnSet("quoteid", "name")
+                ColumnSet = new ColumnSet(AttributeNames.QuoteId, AttributeNames.Name)
             });
 
             Trace($"Quote {response.Entity.Id} created from opportunity {opportunityId}");
@@ -1852,8 +1852,8 @@ namespace msdyncrmWorkflowTools
             {
                 QuoteClose = new Entity(EntityNames.QuoteClose)
                 {
-                    ["subject"] = subject,
-                    ["quoteid"] = quote
+                    [AttributeNames.Subject] = subject,
+                    [AttributeNames.QuoteId] = quote
                 },
                 Status = new OptionSetValue(-1)
             });
@@ -1870,9 +1870,9 @@ namespace msdyncrmWorkflowTools
             {
                 IncidentResolution = new Entity(EntityNames.IncidentResolution)
                 {
-                    ["incidentid"] = new EntityReference(EntityNames.Incident, incidentId),
-                    ["subject"] = subject,
-                    ["description"] = description
+                    [AttributeNames.IncidentId] = new EntityReference(EntityNames.Incident, incidentId),
+                    [AttributeNames.Subject] = subject,
+                    [AttributeNames.Description] = description
                 },
                 Status = new OptionSetValue(5)
             });
@@ -1883,10 +1883,10 @@ namespace msdyncrmWorkflowTools
         {
             var opportunityProduct = new Entity(EntityNames.OpportunityProduct)
             {
-                ["opportunityid"] = new EntityReference(opportunity.LogicalName, opportunity.Id),
-                ["productid"] = new EntityReference(existingProduct.LogicalName, existingProduct.Id),
-                ["uomid"] = new EntityReference(uom.LogicalName, uom.Id),
-                ["quantity"] = quantity
+                [AttributeNames.OpportunityId] = new EntityReference(opportunity.LogicalName, opportunity.Id),
+                [AttributeNames.ProductId] = new EntityReference(existingProduct.LogicalName, existingProduct.Id),
+                [AttributeNames.UomId] = new EntityReference(uom.LogicalName, uom.Id),
+                [AttributeNames.Quantity] = quantity
             };
 
             return Service.Create(opportunityProduct);
@@ -1946,7 +1946,7 @@ namespace msdyncrmWorkflowTools
 
             foreach (var membership in memberships)
             {
-                RemoveFromMarketingList(membership.GetAttributeValue<EntityReference>("listid").Id, member.Id);
+                RemoveFromMarketingList(membership.GetAttributeValue<EntityReference>(AttributeNames.ListId).Id, member.Id);
             }
 
             Trace($"Removed {member.LogicalName} {member.Id} from {memberships.Count} marketing list(s).");

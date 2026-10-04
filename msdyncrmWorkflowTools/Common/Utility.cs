@@ -324,31 +324,31 @@ namespace msdyncrmWorkflowTools
 
             switch (attributeName)
             {
-                case "from":
+                case AttributeNames.From:
                     sReturn = "1";
                     break;
-                case "to":
+                case AttributeNames.To:
                     sReturn = "2";
                     break;
-                case "cc":
+                case AttributeNames.Cc:
                     sReturn = "3";
                     break;
-                case "bcc":
+                case AttributeNames.Bcc:
                     sReturn = "4";
                     break;
-                case "organizer":
+                case AttributeNames.Organizer:
                     sReturn = "7";
                     break;
-                case "requiredattendees":
+                case AttributeNames.RequiredAttendees:
                     sReturn = "5";
                     break;
-                case "optionalattendees":
+                case AttributeNames.OptionalAttendees:
                     sReturn = "6";
                     break;
-                case "customer":
+                case AttributeNames.Customer:
                     sReturn = "11";
                     break;
-                case "resources":
+                case AttributeNames.Resources:
                     sReturn = "10";
                     break;
             }
@@ -522,7 +522,7 @@ namespace msdyncrmWorkflowTools
         {
             var settings = new Entity(EntityNames.UserSettings)
             {
-                ["systemuserid"] = userId
+                [AttributeNames.SystemUserId] = userId
             };
 
             if (pagingLimit != 0)
@@ -533,35 +533,35 @@ namespace msdyncrmWorkflowTools
                         $"PagingLimit must be 25, 50, 75, 100 or 250 (or 0 to leave it unchanged), not {pagingLimit}.");
                 }
 
-                settings["paginglimit"] = pagingLimit;
+                settings[AttributeNames.PagingLimit] = pagingLimit;
             }
 
             if (advancedFindStartupMode == 1 || advancedFindStartupMode == 2)
             {
-                settings["advancedfindstartupmode"] = advancedFindStartupMode;
+                settings[AttributeNames.AdvancedFindStartupMode] = advancedFindStartupMode;
             }
 
             if (timeZoneCode != 0)
             {
-                settings["timezonecode"] = timeZoneCode;
+                settings[AttributeNames.TimeZoneCode] = timeZoneCode;
             }
 
             if (helpLanguageId != 0)
             {
-                settings["helplanguageid"] = helpLanguageId;
+                settings[AttributeNames.HelpLanguageId] = helpLanguageId;
             }
 
             if (uiLanguageId != 0)
             {
-                settings["uilanguageid"] = uiLanguageId;
+                settings[AttributeNames.UILanguageId] = uiLanguageId;
             }
 
             if (defaultCalendarView >= 0 && defaultCalendarView <= 2)
             {
-                settings["defaultcalendarview"] = defaultCalendarView;
+                settings[AttributeNames.DefaultCalendarView] = defaultCalendarView;
             }
 
-            settings["issendasallowed"] = isSendAsAllowed;
+            settings[AttributeNames.IsSendAsAllowed] = isSendAsAllowed;
 
             return settings;
         }
