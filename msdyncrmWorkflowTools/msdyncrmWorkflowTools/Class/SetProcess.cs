@@ -34,7 +34,7 @@ namespace msdyncrmWorkflowTools.Class
             #endregion
 
             #region "Read Parameters"
-            var _ClonningRecordURL = this.ClonningRecordURL.Get(executionContext);
+            var _ClonningRecordURL = ClonningRecordURL.Get(executionContext);
             if (_ClonningRecordURL == null || _ClonningRecordURL == "")
             {
                 return;
@@ -46,7 +46,7 @@ namespace msdyncrmWorkflowTools.Class
             var objectId = urlParams[1].Replace("id=", "");
             objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
 
-            var process = this.Process.Get(executionContext);
+            var process = Process.Get(executionContext);
             
 
             #endregion

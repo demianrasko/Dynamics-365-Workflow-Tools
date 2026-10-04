@@ -37,7 +37,7 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var user = this.User.Get(executionContext);
+            var user = User.Get(executionContext);
             
 
             #endregion
@@ -46,7 +46,7 @@ namespace msdyncrmWorkflowTools
             var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
             var team = commonClass.retrieveUserBUDefaultTeam(user.Id.ToString());
             
-            this.DefaultTeam.Set(executionContext, team);
+            DefaultTeam.Set(executionContext, team);
             
         }
     }

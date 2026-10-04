@@ -34,10 +34,10 @@ namespace msdyncrmWorkflowTools.Class
             #endregion
 
             #region "Read Parameters"
-            var marketingList = this.MarketingList.Get(executionContext);
+            var marketingList = MarketingList.Get(executionContext);
             objCommon.tracingService.Trace(String.Format("marketingList: {0} ", marketingList.Id.ToString()));
 
-            var campaign = this.Campaign.Get(executionContext);
+            var campaign = Campaign.Get(executionContext);
             objCommon.tracingService.Trace(String.Format("campaign: {0} ", campaign.Id.ToString()));
 
 

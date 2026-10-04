@@ -39,8 +39,8 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var _orgDBSetting = this.orgDBSetting.Get(executionContext).ToLower();
-            var _Value = this.Value.Get(executionContext);
+            var _orgDBSetting = orgDBSetting.Get(executionContext).ToLower();
+            var _Value = Value.Get(executionContext);
             #endregion
 
             #region "OrgDBSettings Update"

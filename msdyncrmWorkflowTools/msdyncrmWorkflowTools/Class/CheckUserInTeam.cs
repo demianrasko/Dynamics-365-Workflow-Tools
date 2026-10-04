@@ -34,10 +34,10 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var teamReference = this.Team.Get(executionContext);
+            var teamReference = Team.Get(executionContext);
             EntityReference userReference = null;
             
-            userReference = this.User.Get(executionContext);
+            userReference = User.Get(executionContext);
             
             objCommon.tracingService.Trace(String.Format("TeamId: {0} ", teamReference.Id.ToString()));
             #endregion
@@ -69,7 +69,7 @@ namespace msdyncrmWorkflowTools
             else
                 Console.WriteLine("User belong to this team.");
 
-            this.isUserInTeam.Set(executionContext, UserInTeam);
+            isUserInTeam.Set(executionContext, UserInTeam);
 
         }
     }

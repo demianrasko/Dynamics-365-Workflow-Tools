@@ -136,7 +136,7 @@ Customer
             #endregion
 
             #region "Read Parameters"
-            var _ClonningRecordURL = this.ClonningRecordURL.Get(executionContext);
+            var _ClonningRecordURL = ClonningRecordURL.Get(executionContext);
             if (_ClonningRecordURL == null || _ClonningRecordURL == "")
             {
                 return;
@@ -148,8 +148,8 @@ Customer
             var objectId = urlParams[1].Replace("id=", "");
             objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
 
-            var prefix = this.Prefix.Get(executionContext);
-            var fieldstoIgnore = this.FieldstoIgnore.Get(executionContext);
+            var prefix = Prefix.Get(executionContext);
+            var fieldstoIgnore = FieldstoIgnore.Get(executionContext);
             #endregion
 
             #region "Clone Execution"

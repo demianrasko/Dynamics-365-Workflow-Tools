@@ -54,7 +54,7 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var _ParentRecordURL = this.ParentRecordURL.Get(executionContext);
+            var _ParentRecordURL = ParentRecordURL.Get(executionContext);
             if (_ParentRecordURL == null || _ParentRecordURL == "")
             {
                 return;
@@ -66,11 +66,11 @@ namespace msdyncrmWorkflowTools
             var parentEntityId = urlParams[1].Replace("id=", "");
             objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + parentEntityId);
 
-            var _RelationshipName = this.RelationshipName.Get(executionContext);
-            var _ParentFieldNameToUpdate = this.ParentFieldNameToUpdate.Get(executionContext);
-            var _ValueToSet = this.ValueToSet.Get(executionContext);
-            var _ChildFieldNameToUpdate = this.ChildFieldNameToUpdate.Get(executionContext);
-            var _UpdateonlyActive = this.UpdateonlyActive.Get(executionContext);
+            var _RelationshipName = RelationshipName.Get(executionContext);
+            var _ParentFieldNameToUpdate = ParentFieldNameToUpdate.Get(executionContext);
+            var _ValueToSet = ValueToSet.Get(executionContext);
+            var _ChildFieldNameToUpdate = ChildFieldNameToUpdate.Get(executionContext);
+            var _UpdateonlyActive = UpdateonlyActive.Get(executionContext);
 
             objCommon.tracingService.Trace("RelationshipName=" + _RelationshipName + "--_ParentFieldNameToUpdate=" + _ParentFieldNameToUpdate);
             objCommon.tracingService.Trace("_ValueToSet=" + _ValueToSet + "--_ChildFieldNameToUpdate=" + _ChildFieldNameToUpdate);

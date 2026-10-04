@@ -62,12 +62,12 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var _GlobalOptionSet = this.GlobalOptionSet.Get(executionContext);
-            var _AttributeName = this.AttributeName.Get(executionContext);
-            var _EntityName = this.EntityName.Get(executionContext);
-            var _OptionText = this.OptionText.Get(executionContext);
-            var _OptionValue = this.OptionValue.Get(executionContext);
-            var _LanguageCode = this.LanguageCode.Get(executionContext);
+            var _GlobalOptionSet = GlobalOptionSet.Get(executionContext);
+            var _AttributeName = AttributeName.Get(executionContext);
+            var _EntityName = EntityName.Get(executionContext);
+            var _OptionText = OptionText.Get(executionContext);
+            var _OptionValue = OptionValue.Get(executionContext);
+            var _LanguageCode = LanguageCode.Get(executionContext);
 
             objCommon.tracingService.Trace("_AttributeName=" + _AttributeName + "--_EntityName=" + _EntityName+ "--_OptionText="+ _OptionText+ "--_LanguageCode="+ _LanguageCode.ToString());
             #endregion

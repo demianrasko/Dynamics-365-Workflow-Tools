@@ -43,7 +43,7 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var _orgDBSetting = this.orgDBSetting.Get(executionContext).ToLower();
+            var _orgDBSetting = orgDBSetting.Get(executionContext).ToLower();
             #endregion
 
             #region "OrgDBSettings Update"
@@ -74,9 +74,9 @@ namespace msdyncrmWorkflowTools
                 else
                     objCommon.tracingService.Trace("String Value");
 
-                this.StringValue.Set(executionContext, _StringValue);
-                this.NumericValue.Set(executionContext, _NumericValue);
-                this.BoolValue.Set(executionContext, _BoolValue);
+                StringValue.Set(executionContext, _StringValue);
+                NumericValue.Set(executionContext, _NumericValue);
+                BoolValue.Set(executionContext, _BoolValue);
 
             }
             catch (Exception e)

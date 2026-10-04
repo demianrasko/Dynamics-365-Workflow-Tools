@@ -45,8 +45,8 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var _relationshipName = this.RelationshipName.Get(executionContext);
-            var _recordURL = this.RecordURL.Get(executionContext);
+            var _relationshipName = RelationshipName.Get(executionContext);
+            var _recordURL = RecordURL.Get(executionContext);
             if (_recordURL == null || _recordURL == "")
             {
                 return;
@@ -68,11 +68,11 @@ namespace msdyncrmWorkflowTools
 
                 if (relations.Entities.Count > 0)
                 {
-                    this.Result.Set(executionContext, true);
+                    Result.Set(executionContext, true);
                 }
                 else
                 {
-                    this.Result.Set(executionContext, false);
+                    Result.Set(executionContext, false);
                 }
             }
             catch (FaultException<OrganizationServiceFault> ex)

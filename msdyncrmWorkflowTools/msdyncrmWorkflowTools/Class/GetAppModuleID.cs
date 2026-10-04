@@ -34,14 +34,14 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var appModuleUniqueName = this.AppModuleUniqueName.Get(executionContext);
+            var appModuleUniqueName = AppModuleUniqueName.Get(executionContext);
             #endregion
 
             var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
             
             var appModuleId = commonClass.GetAppModuleId(appModuleUniqueName);
                 
-            this.AppModuleId.Set(executionContext, appModuleId);
+            AppModuleId.Set(executionContext, appModuleId);
 
         }
         

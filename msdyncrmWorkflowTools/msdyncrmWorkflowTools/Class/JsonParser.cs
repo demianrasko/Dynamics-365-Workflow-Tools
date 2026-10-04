@@ -42,8 +42,8 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var json = this.JSON.Get(executionContext);
-            var jsonPath = this.JSONPath.Get(executionContext);
+            var json = JSON.Get(executionContext);
+            var jsonPath = JSONPath.Get(executionContext);
 
             #endregion
 
@@ -53,7 +53,7 @@ namespace msdyncrmWorkflowTools
 
             if (res == null) res = "";
 
-            this.JSONResult.Set(executionContext, res);
+            JSONResult.Set(executionContext, res);
             
         }
     }

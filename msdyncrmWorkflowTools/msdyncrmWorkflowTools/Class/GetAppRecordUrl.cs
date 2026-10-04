@@ -39,15 +39,15 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var recordURL = this.RecordURL.Get(executionContext);
-            var appModuleUniqueName = this.AppModuleUniqueName.Get(executionContext);
+            var recordURL = RecordURL.Get(executionContext);
+            var appModuleUniqueName = AppModuleUniqueName.Get(executionContext);
             #endregion
 
             var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
             
             var appRecordUrl = commonClass.GetAppRecordUrl(recordURL, appModuleUniqueName);
 
-            this.AppRecordUrl.Set(executionContext, appRecordUrl);
+            AppRecordUrl.Set(executionContext, appRecordUrl);
 
         }
         

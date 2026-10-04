@@ -54,18 +54,18 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var lead = this.Lead.Get(executionContext);
+            var lead = Lead.Get(executionContext);
             if (lead == null)
             {
                 return;
             }
 
-            var createAccount = this.CreateAccount.Get(executionContext);
-            var createContact = this.CreateContact.Get(executionContext);
-            var createOpportunity = this.CreateOpportunity.Get(executionContext);
-            var existingAccount = this.ExistingAccount.Get(executionContext);
-            var existingContact = this.ExistingContact.Get(executionContext);
-            var leadStatus = this.LeadStatus.Get(executionContext);
+            var createAccount = CreateAccount.Get(executionContext);
+            var createContact = CreateContact.Get(executionContext);
+            var createOpportunity = CreateOpportunity.Get(executionContext);
+            var existingAccount = ExistingAccount.Get(executionContext);
+            var existingContact = ExistingContact.Get(executionContext);
+            var leadStatus = LeadStatus.Get(executionContext);
 
             objCommon.tracingService.Trace("LeadID=" + lead.Id);
             #endregion

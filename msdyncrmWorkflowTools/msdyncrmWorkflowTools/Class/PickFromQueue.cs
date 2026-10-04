@@ -44,14 +44,14 @@ namespace msdyncrmWorkflowTools.Class
             #endregion
 
             #region "Read Parameters"
-            var sourceQueue = this.SourceQueue.Get(executionContext);
+            var sourceQueue = SourceQueue.Get(executionContext);
 
             objCommon.tracingService.Trace(String.Format("sourceQueue: {0} ", sourceQueue.Id.ToString()));
 
-            var removeItems = this.RemoveItems.Get(executionContext);
+            var removeItems = RemoveItems.Get(executionContext);
             objCommon.tracingService.Trace(String.Format("removeItems: {0} ", removeItems.ToString()));
 
-            var quantity = this.Quantity.Get(executionContext);
+            var quantity = Quantity.Get(executionContext);
             objCommon.tracingService.Trace(String.Format("quantity: {0} ", quantity.ToString()));
 
             #endregion

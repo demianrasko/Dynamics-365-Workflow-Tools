@@ -60,7 +60,7 @@ namespace msdyncrmWorkflowTools
         public string GetEntityLogicalName(IOrganizationService service)
         {
             var entityFilter = new MetadataFilterExpression(LogicalOperator.And);
-            entityFilter.Conditions.Add(new MetadataConditionExpression("ObjectTypeCode ", MetadataConditionOperator.Equals, this.EntityTypeCode));
+            entityFilter.Conditions.Add(new MetadataConditionExpression("ObjectTypeCode ", MetadataConditionOperator.Equals, EntityTypeCode));
             var propertyExpression = new MetadataPropertiesExpression { AllProperties = false };
             propertyExpression.PropertyNames.Add("LogicalName");
             var entityQueryExpression = new EntityQueryExpression()
@@ -85,7 +85,7 @@ namespace msdyncrmWorkflowTools
 
         public EntityReference ToEntityReference(IOrganizationService service)
         {
-            return new EntityReference(this.GetEntityLogicalName(service), this.Id);
+            return new EntityReference(GetEntityLogicalName(service), Id);
         }
     }
 }

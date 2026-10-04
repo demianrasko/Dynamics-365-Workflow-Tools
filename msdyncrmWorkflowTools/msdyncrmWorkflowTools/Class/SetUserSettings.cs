@@ -82,14 +82,14 @@ namespace msdyncrmWorkflowTools
 
             #region "Read Parameters"
 
-            var userReference = this.User.Get(executionContext);
-            var pagingLimit = this.PagingLimit.Get(executionContext);
-            var advancedFindStartupMode = this.AdvancedFindStartupMode.Get(executionContext);
-            var timeZoneCode = this.TimeZoneCode.Get(executionContext);
-            var helpLanguageId = this.HelpLanguageId.Get(executionContext);
-            var uiLanguageId = this.UILanguageId.Get(executionContext);
-            var defaultCalendarView = this.DefaultCalendarView.Get(executionContext);
-            var isSendAsAllowed = this.IsSendAsAllowed.Get(executionContext);
+            var userReference = User.Get(executionContext);
+            var pagingLimit = PagingLimit.Get(executionContext);
+            var advancedFindStartupMode = AdvancedFindStartupMode.Get(executionContext);
+            var timeZoneCode = TimeZoneCode.Get(executionContext);
+            var helpLanguageId = HelpLanguageId.Get(executionContext);
+            var uiLanguageId = UILanguageId.Get(executionContext);
+            var defaultCalendarView = DefaultCalendarView.Get(executionContext);
+            var isSendAsAllowed = IsSendAsAllowed.Get(executionContext);
             
 
             objCommon.tracingService.Trace(String.Format("UserID: {0} ", userReference.Id.ToString()));

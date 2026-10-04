@@ -41,7 +41,7 @@ namespace msdyncrmWorkflowTools.Class
             #endregion
 
             #region "Read Parameters"
-            var _deleteRecordURL = this.DeleteRecordURL.Get(executionContext);
+            var _deleteRecordURL = DeleteRecordURL.Get(executionContext);
             var entityName = "";
             var objectId = "";
             if (_deleteRecordURL != null)
@@ -53,9 +53,9 @@ namespace msdyncrmWorkflowTools.Class
                 objectId = urlParams[1].Replace("id=", "");
                 objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
             }
-            var _deleteUsingRecordURL = this.DeleteUsingRecordURL.Get(executionContext);
-            var _entityTypeName = this.EntityTypeName.Get(executionContext);
-            var _entityGuid = this.EntityGuid.Get(executionContext);
+            var _deleteUsingRecordURL = DeleteUsingRecordURL.Get(executionContext);
+            var _entityTypeName = EntityTypeName.Get(executionContext);
+            var _entityGuid = EntityGuid.Get(executionContext);
 
             #endregion
 

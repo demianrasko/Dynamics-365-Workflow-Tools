@@ -31,7 +31,7 @@ namespace msdyncrmWorkflowTools
             #endregion
              
             #region "Read Parameters"
-            var roleReference = this.Role.Get(executionContext);
+            var roleReference = Role.Get(executionContext);
 
             objCommon.tracingService.Trace(String.Format("RoleId: {0} ", roleReference.Id.ToString()));
             #endregion
@@ -94,7 +94,7 @@ namespace msdyncrmWorkflowTools
             else
                 Console.WriteLine("User belong to this role.");
 
-            this.isUserInRole.Set(executionContext, UserInRole);
+            isUserInRole.Set(executionContext, UserInRole);
 
 
 

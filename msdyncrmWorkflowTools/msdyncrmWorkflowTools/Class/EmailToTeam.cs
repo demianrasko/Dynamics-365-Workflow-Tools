@@ -40,8 +40,8 @@ namespace msdyncrmWorkflowTools.Class
             #region "Read Parameters"
 
            
-            var email = this.Email.Get(executionContext);
-            var team = this.Team.Get(executionContext);
+            var email = Email.Get(executionContext);
+            var team = Team.Get(executionContext);
 
             #endregion
 

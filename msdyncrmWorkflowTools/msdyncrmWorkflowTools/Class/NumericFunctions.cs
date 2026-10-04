@@ -44,22 +44,22 @@ namespace msdyncrmWorkflowTools.Class
             #endregion
 
             #region "Read Parameters"
-            var number1= this.Number1.Get(executionContext);
-            var number2 = this.Number2.Get(executionContext);
+            var number1= Number1.Get(executionContext);
+            var number2 = Number2.Get(executionContext);
             objCommon.tracingService.Trace(String.Format("number 1 / number 2: {0} / {1}", number1.ToString(), number2.ToString()));
 
             #endregion
 
-            this.Add.Set(executionContext, number1+number2);
-            this.Subtract.Set(executionContext, number1 - number2);
-            this.Multiply.Set(executionContext, number1 * number2);
+            Add.Set(executionContext, number1+number2);
+            Subtract.Set(executionContext, number1 - number2);
+            Multiply.Set(executionContext, number1 * number2);
             if (number2 != 0)
             {
-                this.Divide.Set(executionContext, number1 / number2);
+                Divide.Set(executionContext, number1 / number2);
             }
             else
             {
-                this.Divide.Set(executionContext, 0);
+                Divide.Set(executionContext, 0);
             }
 
         }

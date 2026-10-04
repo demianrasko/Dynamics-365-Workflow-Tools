@@ -42,10 +42,10 @@ namespace msdyncrmWorkflowTools.Class
             #endregion
 
             #region "Read Parameters"
-            var email = this.Email.Get(executionContext);
+            var email = Email.Get(executionContext);
             objCommon.tracingService.Trace(String.Format("email: {0} ", email.Id.ToString()));
 
-            var securityRoleLookup = this.SecurityRoleLookup.Get(executionContext);
+            var securityRoleLookup = SecurityRoleLookup.Get(executionContext);
             objCommon.tracingService.Trace(String.Format("securityRoleLookup: {0} ", securityRoleLookup.Id.ToString()));
 
 

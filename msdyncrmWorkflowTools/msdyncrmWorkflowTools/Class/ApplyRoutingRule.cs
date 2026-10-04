@@ -28,7 +28,7 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var _IncidentRecordURL= this.IncidentRecordURL.Get(executionContext);
+            var _IncidentRecordURL= IncidentRecordURL.Get(executionContext);
             if (_IncidentRecordURL == null || _IncidentRecordURL == "")
             {
                 return;

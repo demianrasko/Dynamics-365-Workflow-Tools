@@ -35,10 +35,10 @@ namespace msdyncrmWorkflowTools.Class
             #endregion
 
             #region "Read Parameters"
-            var _RecordID = this.RecordID.Get(executionContext);
+            var _RecordID = RecordID.Get(executionContext);
           
             
-            var process = this.Process.Get(executionContext);
+            var process = Process.Get(executionContext);
 
 
             #endregion

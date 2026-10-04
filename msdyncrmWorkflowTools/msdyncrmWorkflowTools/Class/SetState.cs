@@ -39,8 +39,8 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var _state= this.State.Get(executionContext);
-            var _status = this.Status.Get(executionContext);
+            var _state= State.Get(executionContext);
+            var _status = Status.Get(executionContext);
 
                     
             #endregion

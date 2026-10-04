@@ -36,7 +36,7 @@ namespace msdyncrmWorkflowTools
 
             var value= GetValue(sourceEntityReference, attributeName, objCommon.tracingService, objCommon.service);
 
-            this.SelectedValue.Set(executionContext, value);
+            SelectedValue.Set(executionContext, value);
         }
 
         private EntityReference GetSourceEntityReference(ITracingService tracingService, CodeActivityContext executionContext, IOrganizationService organizationService)

@@ -49,9 +49,9 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var _relationshipName = this.RelationshipName.Get(executionContext);
-            var _relationshipEntityName = this.RelationshipEntityName.Get(executionContext);
-            var _recordURL = this.RecordURL.Get(executionContext);
+            var _relationshipName = RelationshipName.Get(executionContext);
+            var _relationshipEntityName = RelationshipEntityName.Get(executionContext);
+            var _recordURL = RecordURL.Get(executionContext);
             if (_recordURL == null || _recordURL == "")
             {
                 return;

@@ -42,7 +42,7 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var _TexttoEncrypt = this.TexttoEncrypt.Get(executionContext);
+            var _TexttoEncrypt = TexttoEncrypt.Get(executionContext);
            
 
             objCommon.tracingService.Trace(String.Format("_TexttoEncrypt: {0} ",_TexttoEncrypt));
@@ -54,8 +54,8 @@ namespace msdyncrmWorkflowTools
             var _SHA512HashValue = SHA512Hash(_TexttoEncrypt);
 
 
-            this.MD5HashValue.Set(executionContext, _MD5HashValue);
-            this.SHA512HashValue.Set(executionContext, _SHA512HashValue);
+            MD5HashValue.Set(executionContext, _MD5HashValue);
+            SHA512HashValue.Set(executionContext, _SHA512HashValue);
 
 
 

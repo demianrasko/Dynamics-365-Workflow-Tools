@@ -49,7 +49,7 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var _FetchXML = this.FetchXML.Get(executionContext);
+            var _FetchXML = FetchXML.Get(executionContext);
             if (_FetchXML == null || _FetchXML == "")
             {
                 return;
@@ -113,7 +113,7 @@ namespace msdyncrmWorkflowTools
                 foreach (var obj in objNumbers)
                 {
                     _count++;
-                    var number = this.GetValue(obj);
+                    var number = GetValue(obj);
 
                     _sum += number;
                     if (number < _min || _count == 1) _min = number;
@@ -127,11 +127,11 @@ namespace msdyncrmWorkflowTools
                 }
             }
             
-            this.Count.Set(executionContext, _count);
-            this.Sum.Set(executionContext, _sum);
-            this.Average.Set(executionContext, _average);
-            this.Min.Set(executionContext, _min);
-            this.Max.Set(executionContext, _max);
+            Count.Set(executionContext, _count);
+            Sum.Set(executionContext, _sum);
+            Average.Set(executionContext, _average);
+            Min.Set(executionContext, _min);
+            Max.Set(executionContext, _max);
 
             #endregion
 

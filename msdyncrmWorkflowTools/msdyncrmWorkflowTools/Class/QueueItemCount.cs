@@ -43,11 +43,11 @@ namespace msdyncrmWorkflowTools.Class
             #endregion
 
             #region "Read Parameters"
-            var sourceQueue = this.SourceQueue.Get(executionContext);
+            var sourceQueue = SourceQueue.Get(executionContext);
 
             objCommon.tracingService.Trace(String.Format("sourceQueue: {0} ", sourceQueue.Id.ToString()));
 
-            var countOnlyUnassigned = this.CountOnlyUnassigned.Get(executionContext);
+            var countOnlyUnassigned = CountOnlyUnassigned.Get(executionContext);
             objCommon.tracingService.Trace(String.Format("countOnlyUnassigned: {0} ", countOnlyUnassigned.ToString()));
 
 
@@ -76,7 +76,7 @@ namespace msdyncrmWorkflowTools.Class
             if (queueItemsCount.Entities.Count == 0)
             {
                 //no pending queuitems
-                this.ItemsCount.Set(executionContext, 0);
+                ItemsCount.Set(executionContext, 0);
                 return;
             }
 
@@ -85,7 +85,7 @@ namespace msdyncrmWorkflowTools.Class
             {
                 var aggregate2 = (Int32)((AliasedValue)c["queueitem_count"]).Value;
                 System.Console.WriteLine("Count of all queueItemsCount: " + aggregate2);
-                this.ItemsCount.Set(executionContext, aggregate2);
+                ItemsCount.Set(executionContext, aggregate2);
 
             }
             

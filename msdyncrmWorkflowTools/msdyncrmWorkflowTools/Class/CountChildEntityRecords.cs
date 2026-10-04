@@ -50,9 +50,9 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var _childEntityName = this.ChildEntityName.Get(executionContext);
-            var _parentLookupName = this.ParentLookupName.Get(executionContext);
-            var _recordURL = this.RecordURL.Get(executionContext);
+            var _childEntityName = ChildEntityName.Get(executionContext);
+            var _parentLookupName = ParentLookupName.Get(executionContext);
+            var _recordURL = RecordURL.Get(executionContext);
             objCommon.tracingService.Trace("ChildEntityName=" + _childEntityName + "--ParentLookupName=" + _parentLookupName + "--RecordURL=" + _recordURL);
             if (_recordURL == null || _recordURL == "")
             {
@@ -82,7 +82,7 @@ namespace msdyncrmWorkflowTools
                 objCommon.tracingService.Trace(String.Format("FetchXML: {0} ", fetchXml));
                 var results = objCommon.service.RetrieveMultiple(new FetchExpression(fetchXml));
 
-                this.Result.Set(executionContext, results.Entities.Count);
+                Result.Set(executionContext, results.Entities.Count);
             }
             catch (FaultException<OrganizationServiceFault> ex)
             {

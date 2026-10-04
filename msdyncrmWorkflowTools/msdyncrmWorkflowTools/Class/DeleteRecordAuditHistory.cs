@@ -34,7 +34,7 @@ namespace msdyncrmWorkflowTools.Class
             #region "Read Parameters"
 
 
-            var _RecordURL = this.RecordURL.Get(executionContext);
+            var _RecordURL = RecordURL.Get(executionContext);
             if (_RecordURL == null || _RecordURL == "")
             {
                 return;

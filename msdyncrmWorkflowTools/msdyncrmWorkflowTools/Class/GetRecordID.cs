@@ -36,7 +36,7 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var recordURL = this.RecordURL.Get(executionContext);
+            var recordURL = RecordURL.Get(executionContext);
 
 
             #endregion
@@ -45,7 +45,7 @@ namespace msdyncrmWorkflowTools
             var recordID=commonClass.GetRecordID(recordURL);
                 
            
-            this.RecordID.Set(executionContext, recordID);
+            RecordID.Set(executionContext, recordID);
 
         }
         

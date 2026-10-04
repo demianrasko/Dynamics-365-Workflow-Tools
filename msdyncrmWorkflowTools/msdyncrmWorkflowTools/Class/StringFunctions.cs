@@ -124,23 +124,23 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var inputText = this.InputText.Get(executionContext);
+            var inputText = InputText.Get(executionContext);
             if (inputText == null) inputText = "";
-            var capitalizeAllWords = this.CapitalizeAllWords.Get(executionContext);
+            var capitalizeAllWords = CapitalizeAllWords.Get(executionContext);
 
-            var padCharacter = this.PadCharacter.Get(executionContext);
-            var padontheLeft = this.PadontheLeft.Get(executionContext);
-            var finalLengthwithPadding = this.FinalLengthwithPadding.Get(executionContext);
+            var padCharacter = PadCharacter.Get(executionContext);
+            var padontheLeft = PadontheLeft.Get(executionContext);
+            var finalLengthwithPadding = FinalLengthwithPadding.Get(executionContext);
 
-            var replaceOldValue = this.ReplaceOldValue.Get(executionContext);
-            var replaceNewValue = this.ReplaceNewValue.Get(executionContext);
+            var replaceOldValue = ReplaceOldValue.Get(executionContext);
+            var replaceNewValue = ReplaceNewValue.Get(executionContext);
             if (replaceNewValue == null) replaceNewValue = "";
-            var caseSensitive = this.CaseSensitive.Get(executionContext);
+            var caseSensitive = CaseSensitive.Get(executionContext);
 
-            var fromLefttoRight = this.FromLefttoRight.Get(executionContext);
-            var startIndex = this.StartIndex.Get(executionContext);
-            var subStringLength = this.SubStringLength.Get(executionContext);
-            var regularExpression = this.RegularExpression.Get(executionContext);
+            var fromLefttoRight = FromLefttoRight.Get(executionContext);
+            var startIndex = StartIndex.Get(executionContext);
+            var subStringLength = SubStringLength.Get(executionContext);
+            var regularExpression = RegularExpression.Get(executionContext);
 
             #endregion
 
@@ -155,19 +155,19 @@ namespace msdyncrmWorkflowTools
                 
             
 
-            this.CapitalizedText.Set(executionContext, capitalizedText);
-            this.TextLength.Set(executionContext, capitalizedText.Length);
-            this.PaddedText.Set(executionContext, paddedText);
-            this.ReplacedText.Set(executionContext, replacedText);
-            this.SubstringText.Set(executionContext, subStringText);
-            this.TrimmedText.Set(executionContext, inputText.Trim());
-            this.RegexSuccess.Set(executionContext, regexSuccess);
-            this.RegexText.Set(executionContext, regexText);
+            CapitalizedText.Set(executionContext, capitalizedText);
+            TextLength.Set(executionContext, capitalizedText.Length);
+            PaddedText.Set(executionContext, paddedText);
+            ReplacedText.Set(executionContext, replacedText);
+            SubstringText.Set(executionContext, subStringText);
+            TrimmedText.Set(executionContext, inputText.Trim());
+            RegexSuccess.Set(executionContext, regexSuccess);
+            RegexText.Set(executionContext, regexText);
 
-            this.UppercaseText.Set(executionContext, uppercaseText);
-            this.LowercaseText.Set(executionContext, lowercaseText);
+            UppercaseText.Set(executionContext, uppercaseText);
+            LowercaseText.Set(executionContext, lowercaseText);
 
-            this.WithoutSpaces.Set(executionContext, withoutSpaces);
+            WithoutSpaces.Set(executionContext, withoutSpaces);
 
         }
         

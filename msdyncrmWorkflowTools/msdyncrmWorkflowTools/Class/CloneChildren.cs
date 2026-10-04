@@ -71,19 +71,19 @@ namespace msdyncrmWorkflowTools
 
             #region "Read Parameters"
 
-            var _relationshipName = this.RelationshipName.Get(executionContext);
+            var _relationshipName = RelationshipName.Get(executionContext);
             if (_relationshipName == null || _relationshipName == "")
             {
                 return;
             }
 
-            var _newParentFieldName = this.NewParentFieldNameToUpdate.Get(executionContext);
+            var _newParentFieldName = NewParentFieldNameToUpdate.Get(executionContext);
             if (_newParentFieldName == null || _newParentFieldName == "")
             {
                 return;
             }
 
-            var _source = this.SourceRecordUrl.Get(executionContext);
+            var _source = SourceRecordUrl.Get(executionContext);
             if (_source == null || _source == "")
             {
                 return;
@@ -96,7 +96,7 @@ namespace msdyncrmWorkflowTools
             var parentId = urlParams[1].Replace("id=", "");
             objCommon.tracingService.Trace("ObjectTypeCode=" + parentObjectTypeCode + "--ParentId=" + parentId);
 
-            var _destination = this.TargetRecordUrl.Get(executionContext);
+            var _destination = TargetRecordUrl.Get(executionContext);
             if (_destination == null || _destination == "")
             {
                 return;
@@ -110,9 +110,9 @@ namespace msdyncrmWorkflowTools
 
 
             //Optional
-            var _oldParentFieldName = this.OldParentFieldNameToUpdate.Get(executionContext);
-            var prefix = this.Prefix.Get(executionContext);
-            var fieldstoIgnore = this.FieldstoIgnore.Get(executionContext);
+            var _oldParentFieldName = OldParentFieldNameToUpdate.Get(executionContext);
+            var prefix = Prefix.Get(executionContext);
+            var fieldstoIgnore = FieldstoIgnore.Get(executionContext);
 
             #endregion
 

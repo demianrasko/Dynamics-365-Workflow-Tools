@@ -87,7 +87,7 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var _SharingRecordURL = this.SharingRecordURL.Get(executionContext);
+            var _SharingRecordURL = SharingRecordURL.Get(executionContext);
             if (_SharingRecordURL == null || _SharingRecordURL == "")
             {
                 return;
@@ -98,7 +98,7 @@ namespace msdyncrmWorkflowTools
             var objectId = urlParams[1].Replace("id=", "");
             objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
 
-            var teamReference = this.Team.Get(executionContext);
+            var teamReference = Team.Get(executionContext);
             principals.Clear();
 
             if (teamReference != null) principals.Add(teamReference);

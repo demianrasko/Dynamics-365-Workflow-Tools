@@ -54,10 +54,10 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var _teamName = this.TeamName.Get(executionContext);
-            var _teamType = this.TeamType.Get(executionContext);
-            var _administrator= this.Administrator.Get(executionContext);
-            var _businessUnit= this.BusinessUnit.Get(executionContext);
+            var _teamName = TeamName.Get(executionContext);
+            var _teamType = TeamType.Get(executionContext);
+            var _administrator= Administrator.Get(executionContext);
+            var _businessUnit= BusinessUnit.Get(executionContext);
 
             objCommon.tracingService.Trace("_teamName=" + _teamName );
             #endregion
@@ -69,7 +69,7 @@ namespace msdyncrmWorkflowTools
             {
                 var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service);
                 var createdTeamId= commonClass.CreateTeam(_teamName,_teamType, _administrator, _businessUnit);
-                this.createdTeam.Set(executionContext, new EntityReference("team", createdTeamId));
+                createdTeam.Set(executionContext, new EntityReference("team", createdTeamId));
 
             }
             catch (FaultException<OrganizationServiceFault> ex)

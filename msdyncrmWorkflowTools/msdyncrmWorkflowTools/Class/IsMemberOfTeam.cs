@@ -42,8 +42,8 @@ namespace msdyncrmWorkflowTools.Class
             #region "Read Parameters"
 
            
-            var user = this.User.Get(executionContext);
-            var team = this.Team.Get(executionContext);
+            var user = User.Get(executionContext);
+            var team = Team.Get(executionContext);
 
             #endregion
 
@@ -53,7 +53,7 @@ namespace msdyncrmWorkflowTools.Class
 
             var isMember = commonClass.IsMemberOfTeam(team.Id, user.Id);
 
-            this.Result.Set(executionContext, isMember);
+            Result.Set(executionContext, isMember);
             
             #endregion
 

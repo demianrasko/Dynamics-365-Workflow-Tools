@@ -41,7 +41,7 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var _SerializingRecordURL = this.SerializingRecordURL.Get(executionContext);
+            var _SerializingRecordURL = SerializingRecordURL.Get(executionContext);
             if (_SerializingRecordURL == null || _SerializingRecordURL == "")
             {
                 return;
@@ -112,7 +112,7 @@ namespace msdyncrmWorkflowTools
             }
             sJson.Append("}}");
             objCommon.tracingService.Trace("json object OK");
-            this.OutputJson.Set(executionContext, sJson.ToString());
+            OutputJson.Set(executionContext, sJson.ToString());
 
             #endregion
 

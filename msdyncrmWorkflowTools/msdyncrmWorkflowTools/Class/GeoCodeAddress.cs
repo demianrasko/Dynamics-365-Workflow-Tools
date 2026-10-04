@@ -53,8 +53,8 @@ namespace msdyncrmWorkflowTools
             #region "Read Parameters"
             
 
-            var address = this.Address.Get(executionContext);
-            var bingMapsKey = this.BingMapsKey.Get(executionContext);
+            var address = Address.Get(executionContext);
+            var bingMapsKey = BingMapsKey.Get(executionContext);
             
             #endregion
             
@@ -64,8 +64,8 @@ namespace msdyncrmWorkflowTools
 
             if (locationsResponse != null)
             {
-                this.Latitude.Set(executionContext, Convert.ToDecimal(locationsResponse.ResourceSets[0].Resources[0].GeocodePoints[0].Coordinates[0]));
-                this.Longitude.Set(executionContext, Convert.ToDecimal(locationsResponse.ResourceSets[0].Resources[0].GeocodePoints[0].Coordinates[1]));
+                Latitude.Set(executionContext, Convert.ToDecimal(locationsResponse.ResourceSets[0].Resources[0].GeocodePoints[0].Coordinates[0]));
+                Longitude.Set(executionContext, Convert.ToDecimal(locationsResponse.ResourceSets[0].Resources[0].GeocodePoints[0].Coordinates[1]));
             }        
 
         }

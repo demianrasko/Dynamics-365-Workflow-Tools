@@ -46,9 +46,9 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var _TextToTranslate = this.TextToTranslate.Get(executionContext);
-            var _Language = this.Language.Get(executionContext);
-            var _Authenticationkey = this.Authenticationkey.Get(executionContext);
+            var _TextToTranslate = TextToTranslate.Get(executionContext);
+            var _Language = Language.Get(executionContext);
+            var _Authenticationkey = Authenticationkey.Get(executionContext);
 
             #endregion
 
@@ -58,7 +58,7 @@ namespace msdyncrmWorkflowTools
 
             if (res == null) res = "";
 
-            this.TranslatedText.Set(executionContext, res);
+            TranslatedText.Set(executionContext, res);
             
         }
     }

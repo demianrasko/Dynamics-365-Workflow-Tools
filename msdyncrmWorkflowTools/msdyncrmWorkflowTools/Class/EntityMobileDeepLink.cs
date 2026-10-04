@@ -44,7 +44,7 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var _recordURL = this.RecordURL.Get(executionContext);
+            var _recordURL = RecordURL.Get(executionContext);
             if (_recordURL == null || _recordURL == "")
             {
                 return;
@@ -69,9 +69,9 @@ namespace msdyncrmWorkflowTools
             objCommon.tracingService.Trace("MobileDeepLinkNew: "+ recordURLNew);
             objCommon.tracingService.Trace("MobileDeepLinkDefaultView: "+ recordURLDefaultView);
 
-            this.MobileDeepLinkEdit.Set(executionContext, recordURLEdit);
-            this.MobileDeepLinkNew.Set(executionContext, recordURLNew);
-            this.MobileDeepLinkDefaultView.Set(executionContext, recordURLDefaultView);
+            MobileDeepLinkEdit.Set(executionContext, recordURLEdit);
+            MobileDeepLinkNew.Set(executionContext, recordURLNew);
+            MobileDeepLinkDefaultView.Set(executionContext, recordURLDefaultView);
 
             objCommon.tracingService.Trace("returned object links OK");
 

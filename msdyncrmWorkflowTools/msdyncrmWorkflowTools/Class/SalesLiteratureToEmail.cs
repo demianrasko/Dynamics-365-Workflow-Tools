@@ -44,16 +44,16 @@ namespace msdyncrmWorkflowTools.Class
 
             #region "Read Parameters"
 
-            var salesLiterature = this.SalesLiterature.Get(executionContext);
+            var salesLiterature = SalesLiterature.Get(executionContext);
 
-            var _FileName = this.FileName.Get(executionContext);
+            var _FileName = FileName.Get(executionContext);
             if (_FileName == null || _FileName == "")
             {
                 return;
             }
             
 
-            var email = this.Email.Get(executionContext);
+            var email = Email.Get(executionContext);
 
             #endregion
 

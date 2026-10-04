@@ -41,9 +41,9 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var _FieldName = this.FieldName.Get(executionContext);
+            var _FieldName = FieldName.Get(executionContext);
             objCommon.tracingService.Trace("_FieldName=" + _FieldName);
-            var _ParentRecordURL = this.ParentRecordURL.Get(executionContext);
+            var _ParentRecordURL = ParentRecordURL.Get(executionContext);
 
             if (_ParentRecordURL == null || _ParentRecordURL == "")
             {

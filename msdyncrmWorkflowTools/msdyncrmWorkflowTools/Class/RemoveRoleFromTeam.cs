@@ -34,8 +34,8 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var roleReference = this.Role.Get(executionContext);
-            var teamReference = this.Team.Get(executionContext);
+            var roleReference = Role.Get(executionContext);
+            var teamReference = Team.Get(executionContext);
 
             objCommon.tracingService.Trace(String.Format("RoleId: {0} - TeamID: {1} ", roleReference.Id.ToString(), teamReference.Id.ToString()));
             #endregion

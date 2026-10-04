@@ -63,8 +63,8 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var date1 = this.Date1.Get(executionContext);
-            var date2 = this.Date2.Get(executionContext);
+            var date1 = Date1.Get(executionContext);
+            var date2 = Date2.Get(executionContext);
             
             #endregion
 
@@ -82,11 +82,11 @@ namespace msdyncrmWorkflowTools
                 ref DayOfWeek, ref DayOfYear, ref Day, ref Month, ref Year, ref WeekOfYear);
 
             
-            this.TotalDays.Set(executionContext, difference.TotalDays);
-            this.TotalHours.Set(executionContext, difference.TotalHours);
-            this.TotalMilliseconds.Set(executionContext, difference.TotalMilliseconds);
-            this.TotalMinutes.Set(executionContext, difference.TotalMinutes);
-            this.TotalSeconds.Set(executionContext, difference.TotalSeconds);
+            TotalDays.Set(executionContext, difference.TotalDays);
+            TotalHours.Set(executionContext, difference.TotalHours);
+            TotalMilliseconds.Set(executionContext, difference.TotalMilliseconds);
+            TotalMinutes.Set(executionContext, difference.TotalMinutes);
+            TotalSeconds.Set(executionContext, difference.TotalSeconds);
 
 
             this.DayOfWeek.Set(executionContext, DayOfWeek);

@@ -52,16 +52,16 @@ namespace msdyncrmWorkflowTools
             #region "Read Parameters"
             
 
-            var amount = this.Amount.Get(executionContext);
-            var fromCurrency= this.FromCurrency.Get(executionContext);
-            var toCurrency = this.ToCurrency.Get(executionContext);
+            var amount = Amount.Get(executionContext);
+            var fromCurrency= FromCurrency.Get(executionContext);
+            var toCurrency = ToCurrency.Get(executionContext);
 
             #endregion
             var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
             var result=commonClass.CurrencyConvert(amount,fromCurrency, toCurrency);
 
 
-            this.Result.Set(executionContext, result);
+            Result.Set(executionContext, result);
                     
 
         }

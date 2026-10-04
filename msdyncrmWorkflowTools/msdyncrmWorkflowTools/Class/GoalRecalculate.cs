@@ -33,8 +33,8 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var _goal = this.Goal.Get(executionContext);
-            var _goalguid = this.GoalGuid.Get(executionContext);
+            var _goal = Goal.Get(executionContext);
+            var _goalguid = GoalGuid.Get(executionContext);
             if (_goal == null)
             {
                 return;

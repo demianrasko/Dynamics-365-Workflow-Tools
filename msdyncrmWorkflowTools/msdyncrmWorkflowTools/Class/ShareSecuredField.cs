@@ -59,7 +59,7 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var _RecordURL = this.RecordURL.Get(executionContext);
+            var _RecordURL = RecordURL.Get(executionContext);
             if (_RecordURL == null || _RecordURL == "")
             {
                 return;
@@ -91,11 +91,11 @@ namespace msdyncrmWorkflowTools
 
             //string entityName = context.PrimaryEntityName;
             //Guid entityId = context.PrimaryEntityId;
-            var attributeName = this.AttributeName.Get(executionContext);
-            var userToShare = this.UserToShare.Get(executionContext);
-            var teamToShare = this.TeamToShare.Get(executionContext);
-            var allowRead = this.AllowRead.Get(executionContext);
-            var allowUpdate = this.AllowUpdate.Get(executionContext);
+            var attributeName = AttributeName.Get(executionContext);
+            var userToShare = UserToShare.Get(executionContext);
+            var teamToShare = TeamToShare.Get(executionContext);
+            var allowRead = AllowRead.Get(executionContext);
+            var allowUpdate = AllowUpdate.Get(executionContext);
 
             if (userToShare != null)
             {
