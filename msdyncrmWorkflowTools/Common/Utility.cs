@@ -442,6 +442,18 @@ namespace msdyncrmWorkflowTools
 
             return merged;
         }
+
+        /// <summary>
+        /// Splits a comma-separated list of field logical names, trimming spaces and dropping empty entries.
+        /// </summary>
+        public static string[] SplitAttributeNames(string attributeNames)
+        {
+            return (attributeNames ?? string.Empty)
+                .Split(',')
+                .Select(a => a.Trim())
+                .Where(a => a.Length > 0)
+                .ToArray();
+        }
         #endregion
 
         #region Rollups

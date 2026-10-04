@@ -809,18 +809,75 @@ namespace msdyncrmWorkflowTools
         /// <param name="keepExistingValues">Add <paramref name="values"/> to the current values instead of replacing them.</param>
         public void SetMultiSelectOptionSet(EntityReference target, string attributeName, OptionSetValueCollection values, bool keepExistingValues)
         {
-            if (keepExistingValues)
+            SetMultiSelectOptionSets(target, new Dictionary<string, OptionSetValueCollection> { [attributeName] = values }, keepExistingValues);
+        }
+
+        /// <summary>
+        /// Sets several multi-select option set fields on a record in one update, optionally keeping the values
+        /// they already have (read in one retrieve).
+        /// </summary>
+        /// <param name="target">The record to update.</param>
+        /// <param name="values">The values to set, by field logical name.</param>
+        /// <param name="keepExistingValues">Add the values to the current values instead of replacing them.</param>
+        public void SetMultiSelectOptionSets(EntityReference target, IDictionary<string, OptionSetValueCollection> values, bool keepExistingValues)
+        {
+            if (values.Count == 0)
             {
-                var record = Service.Retrieve(target.LogicalName, target.Id, new ColumnSet(attributeName));
-                values = Utility.MergeOptionSetValues(values, record.GetAttributeValue<OptionSetValueCollection>(attributeName));
+                Trace("No multi-select option set values to set.");
+                return;
             }
 
-            Service.Update(new Entity(target.LogicalName, target.Id)
-            {
-                [attributeName] = values
-            });
+            var existing = keepExistingValues
+                ? Service.Retrieve(target.LogicalName, target.Id, new ColumnSet(values.Keys.ToArray()))
+                : null;
 
-            Trace($"Multi-select option set '{attributeName}' on {target.LogicalName} {target.Id} set to {values.Count} value(s).");
+            var update = new Entity(target.LogicalName, target.Id);
+
+            foreach (var field in values)
+            {
+                update[field.Key] = existing == null
+                    ? field.Value
+                    : Utility.MergeOptionSetValues(field.Value, existing.GetAttributeValue<OptionSetValueCollection>(field.Key));
+
+                Trace($"Multi-select option set '{field.Key}' on {target.LogicalName} {target.Id}: {((OptionSetValueCollection)update[field.Key]).Count} value(s).");
+            }
+
+            Service.Update(update);
+        }
+
+        /// <summary>
+        /// Copies multi-select option set fields from one record to another: the n-th source field to the n-th
+        /// target field. Source fields that are empty or are not multi-select option sets are skipped.
+        /// </summary>
+        /// <param name="source">The record to copy from.</param>
+        /// <param name="sourceAttributes">Source field logical names.</param>
+        /// <param name="target">The record to copy to.</param>
+        /// <param name="targetAttributes">Target field logical names, in the same order as <paramref name="sourceAttributes"/>.</param>
+        /// <param name="keepExistingValues">Add the copied values to the target's current values instead of replacing them.</param>
+        public void MapMultiSelectOptionSets(EntityReference source, string[] sourceAttributes, EntityReference target, string[] targetAttributes, bool keepExistingValues)
+        {
+            if (sourceAttributes.Length != targetAttributes.Length)
+            {
+                throw new InvalidPluginExecutionException(
+                    $"The number of source attributes ({sourceAttributes.Length}) does not match the number of target attributes ({targetAttributes.Length}).");
+            }
+
+            var sourceRecord = Service.Retrieve(source.LogicalName, source.Id, new ColumnSet(sourceAttributes));
+            var values = new Dictionary<string, OptionSetValueCollection>();
+
+            for (var i = 0; i < sourceAttributes.Length; i++)
+            {
+                if (sourceRecord.GetAttributeValue<object>(sourceAttributes[i]) is OptionSetValueCollection sourceValues)
+                {
+                    values[targetAttributes[i]] = sourceValues;
+                }
+                else
+                {
+                    Trace($"Source attribute '{sourceAttributes[i]}' is empty or not a multi-select option set; skipped.");
+                }
+            }
+
+            SetMultiSelectOptionSets(target, values, keepExistingValues);
         }
 
         /// <summary>

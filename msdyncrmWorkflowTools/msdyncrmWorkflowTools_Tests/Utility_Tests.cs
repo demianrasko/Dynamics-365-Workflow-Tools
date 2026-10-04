@@ -307,5 +307,12 @@ namespace msdyncrmWorkflowTools_Tests
             Assert.AreEqual(0m, result.Average);
             Assert.AreEqual(0m, result.Min);
         }
+
+        [TestMethod]
+        public void SplitAttributeNames_TrimsAndDropsEmptyEntries()
+        {
+            CollectionAssert.AreEqual(new[] { "new_colors", "new_sizes" }, Utility.SplitAttributeNames(" new_colors, ,new_sizes "));
+            Assert.AreEqual(0, Utility.SplitAttributeNames(null).Length);
+        }
     }
 }
