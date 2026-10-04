@@ -1,8 +1,5 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.Xrm.Sdk;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using msdyncrmWorkflowTools;
-using Microsoft.Xrm.Tooling.Connector;
 
 namespace msdyncrmWorkflowTools_Tests
 {
