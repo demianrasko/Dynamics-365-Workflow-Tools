@@ -444,6 +444,84 @@ namespace msdyncrmWorkflowTools
         }
         #endregion
 
+        #region Rollups
+        /// <summary>
+        /// The key the first &lt;attribute&gt; of a fetch query has in the returned records: its alias when it
+        /// has one, "linkalias.name" inside an aliased link-entity, otherwise its name.
+        /// </summary>
+        /// <returns>The key, or null when the fetch has no attribute element or cannot be parsed.</returns>
+        public static string GetFirstFetchAttributeKey(string fetchXml)
+        {
+            System.Xml.Linq.XElement attribute;
+
+            try
+            {
+                attribute = System.Xml.Linq.XElement.Parse(fetchXml).Descendants("attribute").FirstOrDefault();
+            }
+            catch (XmlException)
+            {
+                return null;
+            }
+
+            if (attribute == null)
+            {
+                return null;
+            }
+
+            var alias = (string)attribute.Attribute("alias");
+
+            if (!string.IsNullOrEmpty(alias))
+            {
+                return alias;
+            }
+
+            var name = (string)attribute.Attribute("name");
+            var linkAlias = attribute.Parent?.Name.LocalName == "link-entity" ? (string)attribute.Parent.Attribute("alias") : null;
+
+            return string.IsNullOrEmpty(linkAlias) ? name : $"{linkAlias}.{name}";
+        }
+
+        /// <summary>
+        /// A numeric attribute value (number, Money or an AliasedValue wrapping one) as a decimal; null for
+        /// anything else, including a missing value.
+        /// </summary>
+        public static decimal? ToDecimal(object value)
+        {
+            switch (value)
+            {
+                case AliasedValue aliasedValue:
+                    return ToDecimal(aliasedValue.Value);
+                case Money money:
+                    return money.Value;
+                case decimal _:
+                case int _:
+                case long _:
+                case short _:
+                case float _:
+                case double _:
+                    return Convert.ToDecimal(value);
+                default:
+                    return null;
+            }
+        }
+
+        /// <summary>
+        /// Count (every record), and Sum, Average, Min and Max over the records that have a value.
+        /// </summary>
+        /// <param name="values">One entry per record; null where the record has no numeric value.</param>
+        public static RollupResult CalculateRollup(IList<decimal?> values)
+        {
+            var numbers = values.Where(v => v.HasValue).Select(v => v.Value).ToList();
+
+            return new RollupResult(
+                values.Count,
+                numbers.Sum(),
+                numbers.Count > 0 ? numbers.Average() : 0,
+                numbers.Count > 0 ? numbers.Min() : 0,
+                numbers.Count > 0 ? numbers.Max() : 0);
+        }
+        #endregion
+
         #region JSON
         public static string JsonParser(string Json, string JsonPath)
         {
@@ -903,5 +981,30 @@ namespace msdyncrmWorkflowTools
 
         /// <summary>The record id from the "id" parameter.</summary>
         public string Id { get; }
+    }
+
+    /// <summary>
+    /// The results of <see cref="Utility.CalculateRollup"/>.
+    /// </summary>
+    public sealed class RollupResult
+    {
+        public RollupResult(decimal count, decimal sum, decimal average, decimal min, decimal max)
+        {
+            Count = count;
+            Sum = sum;
+            Average = average;
+            Min = min;
+            Max = max;
+        }
+
+        public decimal Count { get; }
+
+        public decimal Sum { get; }
+
+        public decimal Average { get; }
+
+        public decimal Min { get; }
+
+        public decimal Max { get; }
     }
 }

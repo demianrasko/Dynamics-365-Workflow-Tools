@@ -223,6 +223,30 @@ namespace msdyncrmWorkflowTools
         }
 
         /// <summary>
+        /// Returns every record a FetchXML query returns, page by page.
+        /// </summary>
+        /// <param name="fetchXml">The fetch query, without paging attributes.</param>
+        /// <param name="pageSize">Records per page.</param>
+        public List<Entity> RetrieveAllWithFetchXml(string fetchXml, int pageSize = 250)
+        {
+            var records = new List<Entity>();
+            string pagingCookie = null;
+
+            for (var pageNumber = 1; ; pageNumber++)
+            {
+                var page = Service.RetrieveMultiple(new FetchExpression(Utility.CreateXml(fetchXml, pagingCookie, pageNumber, pageSize)));
+                records.AddRange(page.Entities);
+
+                if (!page.MoreRecords)
+                {
+                    return records;
+                }
+
+                pagingCookie = page.PagingCookie;
+            }
+        }
+
+        /// <summary>
         /// Starts an on-demand workflow for each record.
         /// </summary>
         public void ExecuteWorkflow(Guid workflowId, IEnumerable<Guid> recordIds)
