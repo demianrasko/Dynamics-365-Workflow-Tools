@@ -5,7 +5,6 @@ using Microsoft.Xrm.Sdk.Metadata;
 using Microsoft.Xrm.Sdk.Metadata.Query;
 using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Activities;
 using System.Collections.Generic;
@@ -15,7 +14,6 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.ServiceModel;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace msdyncrmWorkflowTools
@@ -437,25 +435,6 @@ namespace msdyncrmWorkflowTools
             return id;
         }
 
-        public void QueryValues()
-        {
-        }
-
-        public string JsonParser(string Json, string JsonPath)
-        {
-            if (JsonPath == null)
-            {
-                JsonPath = string.Empty;
-            }
-            var o = JObject.Parse(Json);
-            var name = string.Empty;
-            if (o.SelectToken(JsonPath) != null)
-            {
-                name = o.SelectToken(JsonPath).ToString();
-            }
-            return name;
-        }
-
         public void DeleteAudit(string entityname, string entityid)
         {
         }
@@ -636,15 +615,6 @@ namespace msdyncrmWorkflowTools
             return true;
         }
 
-        public string GetRecordID(string recordURL)
-        {
-            if (string.IsNullOrEmpty(recordURL))
-            {
-                return string.Empty;
-            }
-            return Utility.ParseRecordUrl(recordURL).Id;
-        }
-
         public string GetAppModuleId(string appModuleUniqueName)
         {
             var query = new QueryExpression
@@ -693,134 +663,52 @@ namespace msdyncrmWorkflowTools
             return retrievedUsers.Entities.Count > 0;
         }
 
-        public bool DateFunctions(DateTime date1, DateTime date2, ref TimeSpan difference,
-            ref int DayOfWeek, ref int DayOfYear, ref int Day, ref int Month, ref int Year, ref int WeekOfYear)
+        /// <summary>
+        /// The record a record URL points at, with the entity name looked up from the URL's type code.
+        /// </summary>
+        public EntityReference GetRecordReference(string recordUrl)
         {
-            difference = date1 - date2;
-            DayOfWeek = (int)date1.DayOfWeek;
-            DayOfYear = date1.DayOfYear;
-            Day = date1.Day;
-            Month = date1.Month;
-            Year = date1.Year;
-            var dfi = DateTimeFormatInfo.CurrentInfo;
-            var cal = dfi.Calendar;
-            WeekOfYear = cal.GetWeekOfYear(date1, dfi.CalendarWeekRule, dfi.FirstDayOfWeek);
+            var parsedUrl = Utility.ParseRecordUrl(recordUrl);
 
-            return true;
+            Trace($"ObjectTypeCode={parsedUrl.ObjectTypeCode}--ParentId={parsedUrl.Id}");
+
+            return new EntityReference(GetEntityNameFromCode(parsedUrl.ObjectTypeCode), new Guid(parsedUrl.Id));
         }
 
-        public bool StringFunctions(bool capitalizeAllWords, string inputText, string padCharacter, bool padOnTheLeft,
-            int finalLengthWithPadding, bool caseSensitive, string replaceOldValue, string replaceNewValue,
-            int subStringLength, int startIndex, bool fromLeftToRight, string regularExpression,
-            ref string capitalizedText, ref string paddedText, ref string replacedText, ref string subStringText, ref string regexText,
-                ref string uppercaseText, ref string lowercaseText, ref bool regexSuccess, ref string withoutSpaces)
+        /// <summary>
+        /// Grants a user or team access to the record a record URL points at. A null principal grants nothing.
+        /// </summary>
+        public void ShareRecord(string recordUrl, EntityReference principal, AccessRights accessMask)
         {
-            capitalizedText = string.Empty;
-            if (capitalizeAllWords)
-            {
-                // All words
-                capitalizedText = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(inputText);
-            }
-            else
-            {
-                // First Letter only
-                capitalizedText = inputText.Substring(0, 1).ToUpper() + inputText.Substring(1);
-            }
+            var target = GetRecordReference(recordUrl);
 
-            //padding
-            paddedText = string.Empty;
-            if (padCharacter == string.Empty)
-            {
-                padCharacter = " ";
-            }
+            Trace("Grant Request--- Start");
 
-            paddedText = padOnTheLeft ? inputText.PadLeft(finalLengthWithPadding, padCharacter.ToCharArray()[0]) : inputText.PadRight(finalLengthWithPadding, padCharacter.ToCharArray()[0]);
-
-            //replace string
-            replacedText = string.Empty;
-            if (!caseSensitive)
+            if (principal != null)
             {
-                if (!string.IsNullOrEmpty(inputText) && !string.IsNullOrEmpty(replaceOldValue))
+                service.Execute(new GrantAccessRequest
                 {
-                    replacedText = inputText.Replace(replaceOldValue, replaceNewValue);
-                }
-            }
-            else
-            {
-                replacedText = CompareAndReplace(inputText, replaceOldValue, replaceNewValue, StringComparison.CurrentCultureIgnoreCase);
+                    Target = target,
+                    PrincipalAccess = new PrincipalAccess { Principal = principal, AccessMask = accessMask }
+                });
             }
 
-            //substring
-            subStringText = string.Empty;
-            if (subStringLength <= 0 || startIndex < 0)
-            {
-                subStringText = string.Empty;
-            }
-            else
-            {
-                if (!fromLeftToRight)
-                {
-                    startIndex = inputText.Length - subStringLength - startIndex;
-                }
-
-                if (inputText.Length < subStringLength)
-                {
-                    subStringLength = inputText.Length;
-                }
-
-                if (startIndex < 0)
-                {
-                    startIndex = 0;
-                }
-
-                subStringText = inputText.Substring(startIndex, subStringLength);
-            }
-
-            //regex
-            regexText = string.Empty;
-            regexSuccess = false;
-            if (regularExpression != string.Empty)
-            {
-                var regex = new Regex(regularExpression);
-                var match = regex.Match(inputText);
-
-                if (match.Success)
-                {
-                    regexSuccess = true;
-                    regexText = match.Value;
-                }
-            }
-
-            uppercaseText = inputText.ToUpper();
-            lowercaseText = inputText.ToLower();
-
-            withoutSpaces = inputText.Replace(" ", string.Empty);
-
-            return true;
+            Trace("Grant Request--- end");
         }
 
-        private static string CompareAndReplace(string text, string old, string @new, StringComparison comparison)
+        /// <summary>
+        /// Removes a user's or team's shared access to the record a record URL points at. A null principal revokes nothing.
+        /// </summary>
+        public void UnshareRecord(string recordUrl, EntityReference principal)
         {
-            if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(old))
+            var target = GetRecordReference(recordUrl);
+
+            if (principal != null)
             {
-                return text;
+                service.Execute(new RevokeAccessRequest { Target = target, Revokee = principal });
             }
 
-            var result = new StringBuilder();
-            var oldLength = old.Length;
-            var pos = 0;
-            var next = text.IndexOf(old, comparison);
-
-            while (next > 0)
-            {
-                result.Append(text, pos, next - pos);
-                result.Append(@new);
-                pos = next + oldLength;
-                next = text.IndexOf(old, pos, comparison);
-            }
-
-            result.Append(text, pos, text.Length - pos);
-            return result.ToString();
+            Trace("Revoked Permissions--- OK");
         }
 
         public void DeleteOptionValue(bool globalOptionSet, string attributeName, string entityName, int optionValue)

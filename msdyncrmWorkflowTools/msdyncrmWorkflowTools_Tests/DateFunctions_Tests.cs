@@ -7,13 +7,9 @@ namespace msdyncrmWorkflowTools_Tests
     [TestClass]
     public class DateFunctions_Tests
     {
-        CrmService objService = new CrmService();
-
         [TestMethod]
         public void DateFunctions1()
         {
-            var classObj = new Common(objService.service);
-
             var difference = new TimeSpan();
             var DayOfWeek = 0;
             var DayOfYear = 0;
@@ -21,7 +17,7 @@ namespace msdyncrmWorkflowTools_Tests
             var Month = 0;
             var Year = 0;
             var WeekOfYear = 0;
-            classObj.DateFunctions(new DateTime(2017, 05, 05), new DateTime(2018, 01, 01), ref difference,
+            Utility.DateFunctions(new DateTime(2017, 05, 05), new DateTime(2018, 01, 01), ref difference,
                 ref DayOfWeek, ref DayOfYear, ref Day, ref Month, ref Year, ref WeekOfYear);
 
             Assert.AreEqual(difference.TotalMilliseconds, -20822400000);
@@ -44,8 +40,6 @@ namespace msdyncrmWorkflowTools_Tests
             System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("es-ES");
             try
             {
-                var classObj = new Common(objService.service);
-
                 var difference = new TimeSpan();
                 var DayOfWeek = 0;
                 var DayOfYear = 0;
@@ -53,7 +47,7 @@ namespace msdyncrmWorkflowTools_Tests
                 var Month = 0;
                 var Year = 0;
                 var WeekOfYear = 0;
-                classObj.DateFunctions(new DateTime(2019, 05, 05), new DateTime(2018, 01, 01), ref difference,
+                Utility.DateFunctions(new DateTime(2019, 05, 05), new DateTime(2018, 01, 01), ref difference,
                     ref DayOfWeek, ref DayOfYear, ref Day, ref Month, ref Year, ref WeekOfYear);
 
                 Assert.AreEqual(difference.TotalMilliseconds, 42249600000);

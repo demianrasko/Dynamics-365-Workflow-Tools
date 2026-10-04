@@ -67,7 +67,7 @@ namespace msdyncrmWorkflowTools
             var year = 0;
             var weekOfYear = 0;
 
-            common.DateFunctions(date1, date2, ref difference,
+            Utility.DateFunctions(date1, date2, ref difference,
                 ref dayOfWeek, ref dayOfYear, ref day, ref month, ref year, ref weekOfYear);
 
             TotalDays.Set(executionContext, difference.TotalDays);

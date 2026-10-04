@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net;
 using System.ServiceModel;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Xml;
 
 namespace msdyncrmWorkflowTools
@@ -221,6 +222,15 @@ namespace msdyncrmWorkflowTools
             return new RecordUrl(objectTypeCode, id);
         }
 
+        public static string GetRecordID(string recordURL)
+        {
+            if (string.IsNullOrEmpty(recordURL))
+            {
+                return string.Empty;
+            }
+            return ParseRecordUrl(recordURL).Id;
+        }
+
         /// <summary>
         /// Adds FetchXML paging attributes (paging-cookie, page, count) to a fetch query.
         /// A null cookie, or a page or count of 0, leaves that attribute out.
@@ -429,6 +439,21 @@ namespace msdyncrmWorkflowTools
         #endregion
 
         #region JSON
+        public static string JsonParser(string Json, string JsonPath)
+        {
+            if (JsonPath == null)
+            {
+                JsonPath = string.Empty;
+            }
+            var o = JObject.Parse(Json);
+            var name = string.Empty;
+            if (o.SelectToken(JsonPath) != null)
+            {
+                name = o.SelectToken(JsonPath).ToString();
+            }
+            return name;
+        }
+
         /// <summary>
         /// Serializes a record as <c>{"entityname": {"primaryid": "id", "attribute": value, ...}}</c>,
         /// the format the Entity JSON Serializer activity has always produced.
@@ -501,6 +526,138 @@ namespace msdyncrmWorkflowTools
                 default:
                     return value.ToString();
             }
+        }
+        #endregion
+
+        #region Text and dates
+        public static bool DateFunctions(DateTime date1, DateTime date2, ref TimeSpan difference,
+            ref int DayOfWeek, ref int DayOfYear, ref int Day, ref int Month, ref int Year, ref int WeekOfYear)
+        {
+            difference = date1 - date2;
+            DayOfWeek = (int)date1.DayOfWeek;
+            DayOfYear = date1.DayOfYear;
+            Day = date1.Day;
+            Month = date1.Month;
+            Year = date1.Year;
+            var dfi = DateTimeFormatInfo.CurrentInfo;
+            var cal = dfi.Calendar;
+            WeekOfYear = cal.GetWeekOfYear(date1, dfi.CalendarWeekRule, dfi.FirstDayOfWeek);
+
+            return true;
+        }
+
+        public static bool StringFunctions(bool capitalizeAllWords, string inputText, string padCharacter, bool padOnTheLeft,
+            int finalLengthWithPadding, bool caseSensitive, string replaceOldValue, string replaceNewValue,
+            int subStringLength, int startIndex, bool fromLeftToRight, string regularExpression,
+            ref string capitalizedText, ref string paddedText, ref string replacedText, ref string subStringText, ref string regexText,
+                ref string uppercaseText, ref string lowercaseText, ref bool regexSuccess, ref string withoutSpaces)
+        {
+            capitalizedText = string.Empty;
+            if (capitalizeAllWords)
+            {
+                // All words
+                capitalizedText = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(inputText);
+            }
+            else
+            {
+                // First Letter only
+                capitalizedText = inputText.Substring(0, 1).ToUpper() + inputText.Substring(1);
+            }
+
+            //padding
+            paddedText = string.Empty;
+            if (padCharacter == string.Empty)
+            {
+                padCharacter = " ";
+            }
+
+            paddedText = padOnTheLeft ? inputText.PadLeft(finalLengthWithPadding, padCharacter.ToCharArray()[0]) : inputText.PadRight(finalLengthWithPadding, padCharacter.ToCharArray()[0]);
+
+            //replace string
+            replacedText = string.Empty;
+            if (!caseSensitive)
+            {
+                if (!string.IsNullOrEmpty(inputText) && !string.IsNullOrEmpty(replaceOldValue))
+                {
+                    replacedText = inputText.Replace(replaceOldValue, replaceNewValue);
+                }
+            }
+            else
+            {
+                replacedText = CompareAndReplace(inputText, replaceOldValue, replaceNewValue, StringComparison.CurrentCultureIgnoreCase);
+            }
+
+            //substring
+            subStringText = string.Empty;
+            if (subStringLength <= 0 || startIndex < 0)
+            {
+                subStringText = string.Empty;
+            }
+            else
+            {
+                if (!fromLeftToRight)
+                {
+                    startIndex = inputText.Length - subStringLength - startIndex;
+                }
+
+                if (inputText.Length < subStringLength)
+                {
+                    subStringLength = inputText.Length;
+                }
+
+                if (startIndex < 0)
+                {
+                    startIndex = 0;
+                }
+
+                subStringText = inputText.Substring(startIndex, subStringLength);
+            }
+
+            //regex
+            regexText = string.Empty;
+            regexSuccess = false;
+            if (regularExpression != string.Empty)
+            {
+                var regex = new Regex(regularExpression);
+                var match = regex.Match(inputText);
+
+                if (match.Success)
+                {
+                    regexSuccess = true;
+                    regexText = match.Value;
+                }
+            }
+
+            uppercaseText = inputText.ToUpper();
+            lowercaseText = inputText.ToLower();
+
+            withoutSpaces = inputText.Replace(" ", string.Empty);
+
+            return true;
+        }
+
+        private static string CompareAndReplace(string text, string old, string @new, StringComparison comparison)
+        {
+            if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(old))
+            {
+                return text;
+            }
+
+            var result = new StringBuilder();
+            var oldLength = old.Length;
+            var pos = 0;
+            var next = text.IndexOf(old, comparison);
+
+            while (next > 0)
+            {
+                result.Append(text, pos, next - pos);
+                result.Append(@new);
+                pos = next + oldLength;
+                next = text.IndexOf(old, pos, comparison);
+            }
+
+            result.Append(text, pos, text.Length - pos);
+            return result.ToString();
         }
         #endregion
 

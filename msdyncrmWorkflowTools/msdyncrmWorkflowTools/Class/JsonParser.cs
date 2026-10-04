@@ -29,7 +29,7 @@ namespace msdyncrmWorkflowTools
 
             #endregion
 
-            var res=common.JsonParser(json, jsonPath);
+            var res=Utility.JsonParser(json, jsonPath);
 
             if (res == null)
             {
