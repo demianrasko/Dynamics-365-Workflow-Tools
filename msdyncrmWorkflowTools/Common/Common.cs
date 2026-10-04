@@ -1054,15 +1054,12 @@ namespace msdyncrmWorkflowTools
             //2) retrieve all child records
             var query = new QueryByAttribute(childEntityType)
             {
-                ColumnSet = new ColumnSet(childEntityFieldName)
+                ColumnSet = new ColumnSet(childEntityFieldName),
+                Attributes = { childEntityFieldName },
+                Values = { new Guid(parentEntityId) }
             };
 
-            query.Attributes.AddRange(childEntityFieldName);
-            query.Values.AddRange(new Guid(parentEntityId));
-            
-            var retrieved = Service.RetrieveMultiple(query);
-
-            return retrieved;
+            return Service.RetrieveMultiple(query);
         }
 
         public void UpdateChildRecords(string relationshipName, string parentEntityType, string parentEntityId, string parentFieldNameToUpdate, string setValueToUpdate, string childFieldNameToUpdate, bool updateonlyActive)
@@ -1081,20 +1078,16 @@ namespace msdyncrmWorkflowTools
             //2) retrieve all child records
             var query = new QueryByAttribute(childEntityType)
             {
-                ColumnSet = new ColumnSet(childEntityFieldName)
+                ColumnSet = new ColumnSet(childEntityFieldName),
+                Attributes = { childEntityFieldName },
+                Values = { new Guid(parentEntityId) }
             };
 
-            if (!updateonlyActive)
+            if (updateonlyActive)
             {
-                query.Attributes.AddRange(childEntityFieldName);
-                query.Values.AddRange(new Guid(parentEntityId));
+                query.AddAttributeValue("statecode", 0);
             }
-            else
-            {
-                query.Attributes.AddRange(childEntityFieldName, "statecode");
-                query.Values.AddRange(new Guid(parentEntityId), 0);
-            }
-            
+
             var retrieved = Service.RetrieveMultiple(query);
 
             //2') retrieve parent field value
