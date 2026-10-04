@@ -50,5 +50,5 @@ jobs:
       - name: Upload Power Platform workflow assembly
         uses: actions/upload-artifact@v7
         with:
-          name: msdyncrmWorkflowTools-PowerPlatform
-          path: msdyncrmWorkflowTools\msdyncrmWorkflowTools\bin\Release-PowerPlatform\msdyncrmWorkflowTools.dll
+          name: powerplatformWorkflowTools
+          path: msdyncrmWorkflowTools\msdyncrmWorkflowTools\bin\Release-PowerPlatform\powerplatformWorkflowTools.dll

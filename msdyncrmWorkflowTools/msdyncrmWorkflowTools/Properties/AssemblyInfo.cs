@@ -5,11 +5,16 @@ using System.Runtime.InteropServices;
 // La información general de un ensamblado se controla mediante el siguiente 
 // conjunto de atributos. Cambie estos atributos para modificar la información
 // asociada a un ensamblado.
+#if POWERPLATFORM
+[assembly: AssemblyTitle("powerplatformWorkflowTools")]
+[assembly: AssemblyProduct("powerplatformWorkflowTools")]
+#else
 [assembly: AssemblyTitle("msdyncrmWorkflowTools")]
+[assembly: AssemblyProduct("msdyncrmWorkflowTools")]
+#endif
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Demian Adolfo Raschkovan (MVP)")]
-[assembly: AssemblyProduct("msdyncrmWorkflowTools")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

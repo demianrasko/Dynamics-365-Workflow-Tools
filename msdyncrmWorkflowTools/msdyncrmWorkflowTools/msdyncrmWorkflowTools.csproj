@@ -43,11 +43,14 @@
   <!--
     Power Platform build for Dataverse environments without the Dynamics 365 apps:
       msbuild msdyncrmWorkflowTools.csproj /p:Configuration=Release /p:PowerPlatform=true
-    It defines POWERPLATFORM, which leaves out the activities wrapped in #if !POWERPLATFORM because they need
+    It builds powerplatformWorkflowTools.dll (the original Power Platform version's assembly name) and defines
+    POWERPLATFORM, which leaves out the activities wrapped in #if !POWERPLATFORM because they need
     Dynamics 365 tables, and builds into its own bin and obj folders.
   -->
   <PropertyGroup Condition=" '$(PowerPlatform)' == 'true' ">
     <DefineConstants>$(DefineConstants);POWERPLATFORM</DefineConstants>
+    <!-- the assembly name of the original Power Platform (CDS) version, so installs of it upgrade in place -->
+    <AssemblyName>powerplatformWorkflowTools</AssemblyName>
     <OutputPath>bin\$(Configuration)-PowerPlatform\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)-PowerPlatform\</IntermediateOutputPath>
   </PropertyGroup>

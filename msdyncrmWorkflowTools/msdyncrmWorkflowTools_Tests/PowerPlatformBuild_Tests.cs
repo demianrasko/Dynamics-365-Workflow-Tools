@@ -62,7 +62,7 @@ namespace msdyncrmWorkflowTools_Tests
         }
 
         /// <summary>
-        /// Loads msdyncrmWorkflowTools.dll from the workflow project's bin folder for the test's configuration plus
+        /// Loads msdyncrmWorkflowTools.dll (or powerplatformWorkflowTools.dll for the Power Platform build) from the workflow project's bin folder for the test's configuration plus
         /// <paramref name="suffix"/>. It's loaded from bytes so both builds, which share an identity, can be loaded side by side.
         /// </summary>
         private static Assembly LoadWorkflowAssembly(string suffix)
@@ -75,7 +75,8 @@ namespace msdyncrmWorkflowTools_Tests
                 Assert.Inconclusive($"The solution folder was not found above {testFolder.FullName}.");
             }
 
-            var path = Path.Combine(solutionFolder.FullName, "msdyncrmWorkflowTools", "bin", $"{testFolder.Name}{suffix}", "msdyncrmWorkflowTools.dll");
+            var assemblyName = string.IsNullOrEmpty(suffix) ? "msdyncrmWorkflowTools" : "powerplatformWorkflowTools";
+            var path = Path.Combine(solutionFolder.FullName, "msdyncrmWorkflowTools", "bin", $"{testFolder.Name}{suffix}", $"{assemblyName}.dll");
 
             if (!File.Exists(path))
             {
