@@ -1,4 +1,5 @@
-﻿using Microsoft.Xrm.Sdk.Workflow;
+﻿using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools
@@ -32,7 +33,7 @@ namespace msdyncrmWorkflowTools
             var _recordURL = RecordURL.Get(executionContext);
             if (_recordURL == null || _recordURL == string.Empty)
             {
-                return;
+                throw new InvalidPluginExecutionException("Record URL is required.");
             }
             var parsedUrl = Utility.ParseRecordUrl(_recordURL);
             var objectTypeCode = parsedUrl.ObjectTypeCode;

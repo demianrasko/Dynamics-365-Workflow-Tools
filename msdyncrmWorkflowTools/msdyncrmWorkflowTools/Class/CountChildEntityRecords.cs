@@ -1,4 +1,5 @@
-﻿using Microsoft.Xrm.Sdk.Query;
+﻿using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
 
@@ -39,7 +40,7 @@ namespace msdyncrmWorkflowTools
             common.Trace("ChildEntityName=" + _childEntityName + "--ParentLookupName=" + _parentLookupName + "--RecordURL=" + _recordURL);
             if (_recordURL == null || _recordURL == string.Empty)
             {
-                return;
+                throw new InvalidPluginExecutionException("Record URL (Parent) is required.");
             }
             var parsedUrl = Utility.ParseRecordUrl(_recordURL);
             var ParentObjectTypeCode = parsedUrl.ObjectTypeCode;

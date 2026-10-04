@@ -1,4 +1,5 @@
-﻿using Microsoft.Xrm.Sdk.Workflow;
+﻿using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools
@@ -39,7 +40,7 @@ namespace msdyncrmWorkflowTools
 
             if (string.IsNullOrEmpty(parentRecordUrl))
             {
-                return;
+                throw new InvalidPluginExecutionException("Parent Record URL is required.");
             }
             
             var parsedUrl = Utility.ParseRecordUrl(parentRecordUrl);

@@ -42,7 +42,7 @@ namespace msdyncrmWorkflowTools
             
             if (string.IsNullOrEmpty(fetchXml))
             {
-                return;
+                throw new InvalidPluginExecutionException("FetchXML is required.");
             }
             
             common.Trace("_FetchXML=" + fetchXml);

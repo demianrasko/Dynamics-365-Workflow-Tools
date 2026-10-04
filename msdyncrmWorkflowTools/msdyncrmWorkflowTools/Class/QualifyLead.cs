@@ -43,10 +43,10 @@ namespace msdyncrmWorkflowTools
         {
             #region "Read Parameters"
             var lead = Lead.Get(executionContext);
-            // TODO: Lead is required, so this test should be unnecessary
+            // [RequiredArgument] is only enforced in the designer; a dynamic value can still be empty at runtime.
             if (lead == null)
             {
-                return;
+                throw new InvalidPluginExecutionException("Lead is required.");
             }
 
             var createAccount = CreateAccount.Get(executionContext);

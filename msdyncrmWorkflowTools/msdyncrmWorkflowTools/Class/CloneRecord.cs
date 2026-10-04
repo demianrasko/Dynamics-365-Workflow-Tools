@@ -1,4 +1,5 @@
-﻿using Microsoft.Xrm.Sdk.Workflow;
+﻿using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools
@@ -45,7 +46,7 @@ namespace msdyncrmWorkflowTools
             var _ClonningRecordURL = ClonningRecordURL.Get(executionContext);
             if (_ClonningRecordURL == null || _ClonningRecordURL == string.Empty)
             {
-                return;
+                throw new InvalidPluginExecutionException("Clonning Record URL is required.");
             }
             var parsedUrl = Utility.ParseRecordUrl(_ClonningRecordURL);
             var objectTypeCode = parsedUrl.ObjectTypeCode;

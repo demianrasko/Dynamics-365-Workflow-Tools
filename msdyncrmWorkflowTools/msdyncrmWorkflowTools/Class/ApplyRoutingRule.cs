@@ -20,7 +20,7 @@ namespace msdyncrmWorkflowTools
             var incidentRecordUrl= IncidentRecordURL.Get(executionContext);
             if (string.IsNullOrEmpty(incidentRecordUrl))
             {
-                return;
+                throw new InvalidPluginExecutionException("Incident Record URL is required.");
             }
 
             var parsedUrl = Utility.ParseRecordUrl(incidentRecordUrl);

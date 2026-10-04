@@ -21,7 +21,7 @@ namespace msdyncrmWorkflowTools
 
             if (string.IsNullOrEmpty(targetRecordUrl))
             {
-                return;
+                throw new InvalidPluginExecutionException("Target Record URL is required.");
             }
             var parsedUrl = Utility.ParseRecordUrl(targetRecordUrl);
             var parentObjectTypeCode = parsedUrl.ObjectTypeCode;

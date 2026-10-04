@@ -31,7 +31,7 @@ namespace msdyncrmWorkflowTools
             
             if (string.IsNullOrEmpty(sharingRecordUrl))
             {
-                return;
+                throw new InvalidPluginExecutionException("Sharing Record URL is required.");
             }
 
             var parsedUrl = Utility.ParseRecordUrl(sharingRecordUrl);

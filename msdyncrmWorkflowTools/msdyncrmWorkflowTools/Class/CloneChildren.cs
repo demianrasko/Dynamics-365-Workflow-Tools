@@ -62,19 +62,19 @@ namespace msdyncrmWorkflowTools
             var _relationshipName = RelationshipName.Get(executionContext);
             if (_relationshipName == null || _relationshipName == string.Empty)
             {
-                return;
+                throw new InvalidPluginExecutionException("Relationship Name is required.");
             }
 
             var _newParentFieldName = NewParentFieldNameToUpdate.Get(executionContext);
             if (_newParentFieldName == null || _newParentFieldName == string.Empty)
             {
-                return;
+                throw new InvalidPluginExecutionException("New Parent Field Name is required.");
             }
 
             var _source = SourceRecordUrl.Get(executionContext);
             if (_source == null || _source == string.Empty)
             {
-                return;
+                throw new InvalidPluginExecutionException("Source Record URL is required.");
             }
 
             var parsedUrl = Utility.ParseRecordUrl(_source);
@@ -86,7 +86,7 @@ namespace msdyncrmWorkflowTools
             var _destination = TargetRecordUrl.Get(executionContext);
             if (_destination == null || _destination == string.Empty)
             {
-                return;
+                throw new InvalidPluginExecutionException("Target Record URL is required.");
             }
             var parsedDestinationUrl = Utility.ParseRecordUrl(_destination);
             var destinationObjectTypeCode = parsedDestinationUrl.ObjectTypeCode;

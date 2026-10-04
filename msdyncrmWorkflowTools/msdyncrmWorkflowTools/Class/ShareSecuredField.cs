@@ -56,7 +56,7 @@ namespace msdyncrmWorkflowTools
             var _RecordURL = RecordURL.Get(executionContext);
             if (_RecordURL == null || _RecordURL == string.Empty)
             {
-                return;
+                throw new InvalidPluginExecutionException("Record URL is required.");
             }
             var parsedUrl = Utility.ParseRecordUrl(_RecordURL);
             var objectTypeCode = parsedUrl.ObjectTypeCode;

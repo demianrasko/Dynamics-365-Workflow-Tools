@@ -1,11 +1,15 @@
 ﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
+using System.Linq;
 
 namespace msdyncrmWorkflowTools
 {
     public class SetUserSettings : WorkflowActivityBase
     {
+        /// <summary>The records-per-page values Dataverse accepts for paginglimit.</summary>
+        private static readonly int[] ValidPagingLimits = { 25, 50, 75, 100, 250 };
+
         [RequiredArgument]
         [Input("User")]
         [ReferenceTarget("systemuser")]
@@ -80,6 +84,12 @@ namespace msdyncrmWorkflowTools
             // TODO: Find a better way to do this
             if (pagingLimit != 0)
             {
+                if (!ValidPagingLimits.Contains(pagingLimit))
+                {
+                    throw new InvalidPluginExecutionException(
+                        $"PagingLimit must be 25, 50, 75, 100 or 250 (or 0 to leave it unchanged), not {pagingLimit}.");
+                }
+
                 newSettings.Attributes.Add("paginglimit", pagingLimit);
             }
 
@@ -103,6 +113,9 @@ namespace msdyncrmWorkflowTools
                 newSettings.Attributes.Add("uilanguageid", uiLanguageId);
             }
 
+            // TODO: Investigate DefaultCalendarView and IsSendAsAllowed. Both are written on every run:
+            // DefaultCalendarView defaults to 0 (Day), which passes the check below, and IsSendAsAllowed defaults
+            // to false, so a step meant to change another setting also resets the user's calendar view and Send As.
             if (defaultCalendarView == 0 || defaultCalendarView == 1 || defaultCalendarView == 2)
             {
                 newSettings.Attributes.Add("defaultcalendarview", defaultCalendarView);

@@ -32,7 +32,7 @@ namespace msdyncrmWorkflowTools
 
             if (_ParentRecordURL == null || _ParentRecordURL == string.Empty)
             {
-                return;
+                throw new InvalidPluginExecutionException("Parent Record URL is required.");
             }
             common.Trace("_ParentRecordURL=" + _ParentRecordURL);
             var parsedUrl = Utility.ParseRecordUrl(_ParentRecordURL);

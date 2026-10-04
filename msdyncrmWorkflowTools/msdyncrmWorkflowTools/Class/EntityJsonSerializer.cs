@@ -1,4 +1,5 @@
-﻿using Microsoft.Xrm.Sdk.Query;
+﻿using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
 using System;
 using System.Activities;
@@ -26,7 +27,7 @@ namespace msdyncrmWorkflowTools
 
             if (string.IsNullOrEmpty(serializingRecordUrl))
             {
-                return;
+                throw new InvalidPluginExecutionException("Serializing Record URL is required.");
             }
 
             var parsedUrl = Utility.ParseRecordUrl(serializingRecordUrl);

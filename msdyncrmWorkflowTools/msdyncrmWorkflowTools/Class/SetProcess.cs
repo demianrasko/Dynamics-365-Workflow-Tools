@@ -24,7 +24,7 @@ namespace msdyncrmWorkflowTools.Class
 
             if (string.IsNullOrEmpty(cloningRecordUrl))
             {
-                return;
+                throw new InvalidPluginExecutionException("Record URL is required.");
             }
 
             var parsedUrl = Utility.ParseRecordUrl(cloningRecordUrl);

@@ -30,7 +30,7 @@ namespace msdyncrmWorkflowTools.Class
             var fileName = FileName.Get(executionContext);
             if (string.IsNullOrEmpty(fileName))
             {
-                return;
+                throw new InvalidPluginExecutionException("File Name (use * for filter) is required.");
             }
 
             var email = Email.Get(executionContext);
