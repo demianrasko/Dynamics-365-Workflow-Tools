@@ -393,6 +393,55 @@ namespace msdyncrmWorkflowTools
 
             return true;
         }
+
+        /// <summary>
+        /// Parses a comma-separated list of option values (e.g. "1,3,7") into an OptionSetValueCollection.
+        /// Values that are not whole numbers are skipped and added to <paramref name="invalidValues"/> when given.
+        /// </summary>
+        /// <param name="values">The comma-separated values. Null or empty returns an empty collection.</param>
+        /// <param name="invalidValues">Optional list that receives the values that could not be parsed.</param>
+        public static OptionSetValueCollection ParseOptionSetValues(string values, ICollection<string> invalidValues = null)
+        {
+            var collection = new OptionSetValueCollection();
+
+            if (string.IsNullOrEmpty(values))
+            {
+                return collection;
+            }
+
+            foreach (var value in values.Split(','))
+            {
+                if (int.TryParse(value, out var number))
+                {
+                    collection.Add(new OptionSetValue(number));
+                }
+                else
+                {
+                    invalidValues?.Add(value);
+                }
+            }
+
+            return collection;
+        }
+
+        /// <summary>
+        /// The values of <paramref name="existingValues"/> followed by the values of <paramref name="newValues"/> it
+        /// does not already contain. Either collection may be null.
+        /// </summary>
+        public static OptionSetValueCollection MergeOptionSetValues(OptionSetValueCollection newValues, OptionSetValueCollection existingValues)
+        {
+            var merged = new OptionSetValueCollection();
+
+            foreach (var value in (existingValues ?? new OptionSetValueCollection()).Concat(newValues ?? new OptionSetValueCollection()))
+            {
+                if (!merged.Any(v => v.Value == value.Value))
+                {
+                    merged.Add(value);
+                }
+            }
+
+            return merged;
+        }
         #endregion
 
         #region JSON

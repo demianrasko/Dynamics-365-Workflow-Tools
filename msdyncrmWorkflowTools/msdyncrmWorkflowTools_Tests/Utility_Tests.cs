@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Xrm.Sdk;
 using msdyncrmWorkflowTools;
+using System.Linq;
 
 namespace msdyncrmWorkflowTools_Tests
 {
@@ -228,6 +229,41 @@ namespace msdyncrmWorkflowTools_Tests
 
             Assert.IsFalse(Utility.CopyAttributeValue(source, "documentbody", target, "body"));
             Assert.IsFalse(target.Contains("body"));
+        }
+
+        [TestMethod]
+        public void ParseOptionSetValues_SkipsAndReportsInvalidValues()
+        {
+            var invalid = new System.Collections.Generic.List<string>();
+
+            var values = Utility.ParseOptionSetValues("1, 3,x,7", invalid);
+
+            CollectionAssert.AreEqual(new[] { 1, 3, 7 }, values.Select(v => v.Value).ToArray());
+            CollectionAssert.AreEqual(new[] { "x" }, invalid);
+        }
+
+        [TestMethod]
+        public void ParseOptionSetValues_EmptyReturnsEmptyCollection()
+        {
+            Assert.AreEqual(0, Utility.ParseOptionSetValues(string.Empty).Count);
+        }
+
+        [TestMethod]
+        public void MergeOptionSetValues_KeepsExistingAndAddsNewWithoutDuplicates()
+        {
+            var existing = new OptionSetValueCollection { new OptionSetValue(1), new OptionSetValue(2) };
+            var added = new OptionSetValueCollection { new OptionSetValue(2), new OptionSetValue(5) };
+
+            var merged = Utility.MergeOptionSetValues(added, existing);
+
+            CollectionAssert.AreEqual(new[] { 1, 2, 5 }, merged.Select(v => v.Value).ToArray());
+        }
+
+        [TestMethod]
+        public void MergeOptionSetValues_HandlesNulls()
+        {
+            Assert.AreEqual(0, Utility.MergeOptionSetValues(null, null).Count);
+            Assert.AreEqual(1, Utility.MergeOptionSetValues(new OptionSetValueCollection { new OptionSetValue(4) }, null).Count);
         }
     }
 }

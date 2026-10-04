@@ -749,6 +749,7 @@ namespace msdyncrmWorkflowTools
                     {
                         existing["readaccess"] = allowRead;
                         existing["updateaccess"] = allowUpdate;
+
                         Service.Update(existing);
                     }
                     else
@@ -773,6 +774,29 @@ namespace msdyncrmWorkflowTools
                     ["updateaccess"] = allowUpdate
                 });
             }
+        }
+
+        /// <summary>
+        /// Sets a multi-select option set field on a record, optionally keeping the values it already has.
+        /// </summary>
+        /// <param name="target">The record to update.</param>
+        /// <param name="attributeName">Logical name of the multi-select option set field.</param>
+        /// <param name="values">The values to set; an empty collection clears the field unless existing values are kept.</param>
+        /// <param name="keepExistingValues">Add <paramref name="values"/> to the current values instead of replacing them.</param>
+        public void SetMultiSelectOptionSet(EntityReference target, string attributeName, OptionSetValueCollection values, bool keepExistingValues)
+        {
+            if (keepExistingValues)
+            {
+                var record = Service.Retrieve(target.LogicalName, target.Id, new ColumnSet(attributeName));
+                values = Utility.MergeOptionSetValues(values, record.GetAttributeValue<OptionSetValueCollection>(attributeName));
+            }
+
+            Service.Update(new Entity(target.LogicalName, target.Id)
+            {
+                [attributeName] = values
+            });
+
+            Trace($"Multi-select option set '{attributeName}' on {target.LogicalName} {target.Id} set to {values.Count} value(s).");
         }
 
         public bool IsMemberOfTeam(Guid teamId, Guid userId)
