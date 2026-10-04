@@ -783,28 +783,22 @@ namespace msdyncrmWorkflowTools
 
         public void DeleteOptionValue(bool globalOptionSet, string attributeName, string entityName, int optionValue)
         {
+            var request = new DeleteOptionValueRequest
+            {
+                Value = optionValue
+            };
+
             if (globalOptionSet)
             {
-                var request =
-                  new DeleteOptionValueRequest
-                  {
-                      OptionSetName = attributeName,
-                      Value = optionValue
-                  };
-                Service.Execute(request);
+                request.OptionSetName = attributeName;
             }
             else
             {
-                // Create a request.
-                var request =
-                   new DeleteOptionValueRequest
-                   {
-                       AttributeLogicalName = attributeName,
-                       EntityLogicalName = entityName,
-                       Value = optionValue
-                   };
-                Service.Execute(request);
+                request.AttributeLogicalName = attributeName;
+                request.EntityLogicalName = entityName;
             }
+
+            Service.Execute(request);
         }
 
         public void SalesLiteratureToEmail(string fileName, string salesLiteratureId, string emailid)
@@ -872,31 +866,24 @@ namespace msdyncrmWorkflowTools
 
         public bool InsertOptionValue(bool globalOptionSet, string attributeName, string entityName, string optionText, int optionValue, int languageCode)
         {
+            var request = new InsertOptionValueRequest
+            {
+                Value = optionValue,
+                Label = new Label(optionText, languageCode)
+            };
+
             if (globalOptionSet)
             {
-                var request =
-                  new InsertOptionValueRequest
-                  {
-                      OptionSetName = attributeName,
-                      Value = optionValue,
-                      Label = new Label(optionText, languageCode)
-                  };
-
-                var insertOptionValue = ((InsertOptionValueResponse)Service.Execute(request)).NewOptionValue;
+                request.OptionSetName = attributeName;
             }
             else
             {
-                var request =
-                   new InsertOptionValueRequest
-                   {
-                       AttributeLogicalName = attributeName,
-                       EntityLogicalName = entityName,
-                       Value = optionValue,
-                       Label = new Label(optionText, languageCode)
-                   };
-
-                var insertOptionValue = ((InsertOptionValueResponse)Service.Execute(request)).NewOptionValue;
+                request.AttributeLogicalName = attributeName;
+                request.EntityLogicalName = entityName;
             }
+
+            Service.Execute(request);
+
             return true;
         }
 
