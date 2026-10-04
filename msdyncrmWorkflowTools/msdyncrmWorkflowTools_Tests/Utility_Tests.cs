@@ -333,5 +333,33 @@ namespace msdyncrmWorkflowTools_Tests
         {
             Utility.GetMarketingListMember(null, null, null);
         }
+
+        [TestMethod]
+        public void HasFetchTop_ReadsTheRootAttribute()
+        {
+            Assert.IsTrue(Utility.HasFetchTop("<fetch top='10'><entity name='account' /></fetch>"));
+            Assert.IsFalse(Utility.HasFetchTop("<fetch><entity name='account'><attribute name='stop' /></entity></fetch>"));
+            Assert.IsFalse(Utility.HasFetchTop("not xml"));
+        }
+
+        [TestMethod]
+        public void FormatConcatenationValue_ConvertsLookupsMoneyChoicesAndAliases()
+        {
+            var record = new Entity("account")
+            {
+                ["parentaccountid"] = new EntityReference("account", System.Guid.NewGuid()) { Name = "Contoso" },
+                ["revenue"] = new Money(12.5m),
+                ["industrycode"] = new OptionSetValue(7),
+                ["c.fullname"] = new AliasedValue("contact", "fullname", "Ana Silva")
+            };
+            record.FormattedValues["industrycode"] = "Retail";
+
+            Assert.AreEqual("Contoso", Utility.FormatConcatenationValue(record, "parentaccountid", string.Empty));
+            Assert.AreEqual("12.50", Utility.FormatConcatenationValue(record, "revenue", "F2"));
+            Assert.AreEqual("Retail", Utility.FormatConcatenationValue(record, "industrycode", string.Empty));
+            Assert.AreEqual("Ana Silva", Utility.FormatConcatenationValue(record, "c.fullname", string.Empty));
+            Assert.IsNull(Utility.FormatConcatenationValue(record, "missing", string.Empty));
+            Assert.AreEqual("Contoso", Utility.FormatConcatenationValue(record, null, string.Empty));
+        }
     }
 }

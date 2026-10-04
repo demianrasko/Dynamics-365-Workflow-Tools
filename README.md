@@ -113,6 +113,11 @@ The quote and opportunity activities added since then are left out of the Power 
 - UpdateQuoteValue
 - WinQuote
 
+Cases and marketing list membership are not part of Dataverse either, so these are left out too:
+
+- ResolveCase (incident)
+- RemoveFromAllMarketingLists (listmember)
+
 To build the Power Platform version, which leaves these activities out, run `msbuild msdyncrmWorkflowTools\msdyncrmWorkflowTools\msdyncrmWorkflowTools.csproj /p:Configuration=Release /p:PowerPlatform=true`. The assembly is written to `bin\Release-PowerPlatform`.
 
 ![](docs/Home_wf1_61.gif)

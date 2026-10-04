@@ -16,7 +16,7 @@ namespace msdyncrmWorkflowTools_Tests
     [TestClass]
     public class PowerPlatformBuild_Tests
     {
-        private static readonly string[] Dynamics365Tables = { "lead", "list", "opportunity", "product", "quote", "quotedetail", "salesliterature", "uom" };
+        private static readonly string[] Dynamics365Tables = { "incident", "lead", "list", "opportunity", "product", "quote", "quotedetail", "salesliterature", "uom" };
 
         private static readonly string[] Dynamics365Activities =
         {
@@ -31,7 +31,9 @@ namespace msdyncrmWorkflowTools_Tests
             "msdyncrmWorkflowTools.Class.CopyMarketingListMembers",
             "msdyncrmWorkflowTools.Class.CopyToStaticList",
             "msdyncrmWorkflowTools.Class.IsMemberOfMarketingList",
+            "msdyncrmWorkflowTools.Class.RemoveFromAllMarketingLists",
             "msdyncrmWorkflowTools.Class.RemoveFromMarketingList",
+            "msdyncrmWorkflowTools.Class.ResolveCase",
             "msdyncrmWorkflowTools.Class.SalesLiteratureToEmail"
         };
 

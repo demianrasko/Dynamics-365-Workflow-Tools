@@ -42,7 +42,7 @@ namespace msdyncrmWorkflowTools
             fetchXml = fetchXml.Replace("{PARENT_GUID}", common.Context.PrimaryEntityId.ToString());
             common.Trace($"FetchXML={fetchXml}");
 
-            var records = common.RetrieveAllWithFetchXml(fetchXml);
+            var records = common.RetrieveAllWithFetchXml(fetchXml).ToList();
 
             // the calculations use the first attribute in the fetch
             var key = Utility.GetFirstFetchAttributeKey(fetchXml);

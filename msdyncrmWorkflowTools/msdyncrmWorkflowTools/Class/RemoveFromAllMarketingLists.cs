@@ -1,4 +1,6 @@
-﻿using Microsoft.Xrm.Sdk;
+﻿// Not in the Power Platform build: it needs Dynamics 365 tables (listmember).
+#if !POWERPLATFORM
+using Microsoft.Xrm.Sdk;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools.Class
@@ -11,3 +13,4 @@ namespace msdyncrmWorkflowTools.Class
         }
     }
 }
+#endif

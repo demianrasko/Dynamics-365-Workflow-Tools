@@ -288,12 +288,51 @@ namespace msdyncrmWorkflowTools_Tests
                 ? Page(true, "cookie-1", new Entity("account", Guid.NewGuid()))
                 : Page(false, null, new Entity("account", Guid.NewGuid()));
 
-            var records = common.RetrieveAllWithFetchXml("<fetch><entity name='account' /></fetch>");
+            var records = common.RetrieveAllWithFetchXml("<fetch><entity name='account' /></fetch>").ToList();
 
             Assert.AreEqual(2, records.Count);
             var second = ((FetchExpression)service.Queries[1]).Query;
             StringAssert.Contains(second, "page=\"2\"");
             StringAssert.Contains(second, "paging-cookie=\"cookie-1\"");
+        }
+
+        [TestMethod]
+        public void RetrieveAllWithFetchXml_StopsPagingWhenTheCallerStops()
+        {
+            service.OnRetrieveMultiple = query => Page(true, "c", new Entity("account", Guid.NewGuid()), new Entity("account", Guid.NewGuid()));
+
+            var records = common.RetrieveAllWithFetchXml("<fetch><entity name='account' /></fetch>").Take(3).ToList();
+
+            Assert.AreEqual(3, records.Count);
+            Assert.AreEqual(2, service.Queries.Count);
+        }
+
+        [TestMethod]
+        public void RetrieveAllWithFetchXml_TopIsRunOnceWithoutPaging()
+        {
+            const string fetch = "<fetch top='5'><entity name='account' /></fetch>";
+            service.OnRetrieveMultiple = query => Page(true, "c", new Entity("account", Guid.NewGuid()));
+
+            Assert.AreEqual(1, common.RetrieveAllWithFetchXml(fetch).Count());
+            Assert.AreEqual(fetch, ((FetchExpression)service.Queries.Single()).Query);
+        }
+
+        [TestMethod]
+        public void ConcatenateFromQuery_JoinsFormattedValuesUpToTheTop()
+        {
+            service.OnRetrieveMultiple = query => Collection(
+                new Entity("account") { ["revenue"] = new Money(1234.5m) },
+                new Entity("account"),
+                new Entity("account") { ["revenue"] = new Money(10m) },
+                new Entity("account") { ["revenue"] = new Money(99m) });
+
+            Assert.AreEqual("1,234.50; 10.00", common.ConcatenateFromQuery("<fetch><entity name='account' /></fetch>", "revenue", "; ", "N2", 2));
+        }
+
+        [TestMethod]
+        public void ConcatenateFromQuery_NoValuesIsNull()
+        {
+            Assert.IsNull(common.ConcatenateFromQuery("<fetch><entity name='account' /></fetch>", "name", ",", string.Empty, 0));
         }
 
         [TestMethod]

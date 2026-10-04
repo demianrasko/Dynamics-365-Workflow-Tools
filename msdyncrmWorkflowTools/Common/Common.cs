@@ -352,23 +352,30 @@ namespace msdyncrmWorkflowTools
         }
 
         /// <summary>
-        /// Returns every record a FetchXML query returns, page by page.
+        /// Returns every record a FetchXML query returns, reading the next page only when the caller needs more
+        /// records (so stopping early, e.g. with Take, stops the paging). A fetch with a top attribute is run once,
+        /// unpaged, because Dataverse does not allow top together with paging.
         /// </summary>
         /// <param name="fetchXml">The fetch query, without paging attributes.</param>
         /// <param name="pageSize">Records per page.</param>
-        public List<Entity> RetrieveAllWithFetchXml(string fetchXml, int pageSize = 250)
+        public IEnumerable<Entity> RetrieveAllWithFetchXml(string fetchXml, int pageSize = 250)
         {
-            var records = new List<Entity>();
+            var canPage = !Utility.HasFetchTop(fetchXml);
             string pagingCookie = null;
 
             for (var pageNumber = 1; ; pageNumber++)
             {
-                var page = Service.RetrieveMultiple(new FetchExpression(Utility.CreateXml(fetchXml, pagingCookie, pageNumber, pageSize)));
-                records.AddRange(page.Entities);
+                var xml = canPage ? Utility.CreateXml(fetchXml, pagingCookie, pageNumber, pageSize) : fetchXml;
+                var page = Service.RetrieveMultiple(new FetchExpression(xml));
 
-                if (!page.MoreRecords)
+                foreach (var record in page.Entities)
                 {
-                    return records;
+                    yield return record;
+                }
+
+                if (!canPage || !page.MoreRecords)
+                {
+                    yield break;
                 }
 
                 pagingCookie = page.PagingCookie;
@@ -1273,6 +1280,28 @@ namespace msdyncrmWorkflowTools
 
         #region Processes and workflows
         /// <summary>
+        /// Joins one value from each record a FetchXML query returns, e.g. "Contoso, Fabrikam, Litware".
+        /// </summary>
+        /// <param name="fetchXml">The fetch query; {PARENT_GUID} must already be replaced.</param>
+        /// <param name="attributeName">The attribute to join; empty uses each record's first attribute.</param>
+        /// <param name="separator">Text between the values.</param>
+        /// <param name="format">.NET format string for each value, e.g. "N2" or "yyyy-MM-dd"; empty for none.</param>
+        /// <param name="top">Maximum number of values; 0 or less for all.</param>
+        /// <returns>The joined values, or null when no record has a value.</returns>
+        public string ConcatenateFromQuery(string fetchXml, string attributeName, string separator, string format, int top)
+        {
+            var values = RetrieveAllWithFetchXml(fetchXml)
+                .Select(record => Utility.FormatConcatenationValue(record, attributeName, format))
+                .Where(value => value != null);
+
+            var list = (top > 0 ? values.Take(top) : values).ToList();
+
+            Trace($"{list.Count} value(s) to concatenate.");
+
+            return list.Count == 0 ? null : string.Join(separator, list);
+        }
+
+        /// <summary>
         /// Starts an on-demand workflow for each record.
         /// </summary>
         public void ExecuteWorkflow(Guid workflowId, IEnumerable<Guid> recordIds)
@@ -1471,84 +1500,6 @@ namespace msdyncrmWorkflowTools
 
             return response.AbsoluteUrl;
         }
-        #endregion
-
-        #region Commented out
-        /*
-        public void QRCode(string entityname, string recordid, string QRInfo, string noteSubject, string noteText, string fileName)
-        {
-            Trace("1");
-            QRCodeEncoder encoder = new QRCodeEncoder();
-            Trace("2");
-            Bitmap hi = encoder.Encode(QRInfo);
-            Trace("3");
-            string base64String = String.Empty;
-            Trace("4");
-            using (MemoryStream ms = new MemoryStream())
-            {
-                Trace("read stream");
-                hi.Save(ms, ImageFormat.Jpeg);
-            
-            
-                byte[] imageBytes = ms.ToArray();
-                base64String = Convert.ToBase64String(imageBytes);
-            }
-            Entity Annotation = new Entity("annotation");
-            Annotation.Attributes["objectid"] = new EntityReference(entityname, new Guid(recordid));
-            Annotation.Attributes["objecttypecode"] = entityname;
-            Annotation.Attributes["subject"] = noteSubject;
-            Annotation.Attributes["documentbody"] = base64String;
-            Annotation.Attributes["mimetype"] = @"image/jpeg";
-            Annotation.Attributes["notetext"] = noteText;
-            Annotation.Attributes["filename"] = fileName;
-            service.Create(Annotation);
-            /*
-
-            ------------
-
-
-             QRCodeGenerator qrGenerator = new QRCodeGenerator();
-             QRCodeData qrCodeData = qrGenerator.CreateQrCode(QRInfo, QRCodeGenerator.ECCLevel.Q);
-             QRCode qrCode = new QRCode(qrCodeData);
-             Bitmap qrCodeImage = qrCode.GetGraphic(20);
-             string base64String = String.Empty;
-             using (MemoryStream ms = new MemoryStream())
-             {
-                 switch (imageFormat)
-                 {
-                     case "jpg":
-                     case "jpeg":
-                         qrCodeImage.Save(ms, ImageFormat.Jpeg);
-                         break;
-                     case "bmp":
-                         qrCodeImage.Save(ms, ImageFormat.Bmp);
-                         break;
-                     case "gif":
-                         qrCodeImage.Save(ms, ImageFormat.Gif);
-                         break;
-                     case "png":
-                         qrCodeImage.Save(ms, ImageFormat.Png);
-                         break;
-
-                 }
-                 qrCodeImage.Save(ms, ImageFormat.Jpeg);
-                 byte[] imageBytes = ms.ToArray();
-                 base64String = Convert.ToBase64String(imageBytes);
-             }
-             if (noteSubject == "")
-             {
-                 noteSubject = "QR";
-             }
-             Entity Annotation = new Entity("annotation");
-             Annotation.Attributes["objectid"] = new EntityReference(entityname,new Guid(recordid));
-             Annotation.Attributes["objecttypecode"] = entityname;
-             Annotation.Attributes["subject"] = noteSubject;
-             Annotation.Attributes["documentbody"] = base64String;
-             Annotation.Attributes["mimetype"] = @"image/jpeg";
-             Annotation.Attributes["notetext"] = noteText;
-             Annotation.Attributes["filename"] =fileName;
-             service.Create(Annotation);
-        }*/
         #endregion
     }
 }

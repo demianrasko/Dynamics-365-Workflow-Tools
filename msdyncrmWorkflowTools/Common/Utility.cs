@@ -468,6 +468,65 @@ namespace msdyncrmWorkflowTools
 
         #region Rollups
         /// <summary>
+        /// Whether a fetch query has a top attribute (which cannot be combined with paging).
+        /// </summary>
+        public static bool HasFetchTop(string fetchXml)
+        {
+            try
+            {
+                return System.Xml.Linq.XElement.Parse(fetchXml).Attribute("top") != null;
+            }
+            catch (XmlException)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// One record's value for ConcatenateFromQuery: the named attribute (or the first attribute when no name is
+        /// given), unwrapped from AliasedValue; a lookup's name, a Money amount, a choice's label (its number when no
+        /// label was returned); then formatted with <paramref name="format"/>.
+        /// </summary>
+        /// <returns>The formatted value, or null when the record has no value.</returns>
+        public static string FormatConcatenationValue(Entity record, string attributeName, string format)
+        {
+            object value;
+
+            if (string.IsNullOrEmpty(attributeName))
+            {
+                value = record.Attributes.Count > 0 ? record.Attributes.First().Value : null;
+            }
+            else
+            {
+                value = record.Contains(attributeName) ? record[attributeName] : null;
+            }
+
+            if (value is AliasedValue aliasedValue)
+            {
+                value = aliasedValue.Value;
+            }
+
+            switch (value)
+            {
+                case null:
+                    return null;
+                case EntityReference reference:
+                    value = reference.Name;
+                    break;
+                case Money money:
+                    value = money.Value;
+                    break;
+                case OptionSetValue option:
+                    value = !string.IsNullOrEmpty(attributeName) && record.FormattedValues.ContainsKey(attributeName)
+                        ? (object)record.FormattedValues[attributeName]
+                        : option.Value;
+                    break;
+            }
+
+            return string.Format($"{{0:{format}}}", value);
+        }
+
+        /// <summary>
         /// The key the first &lt;attribute&gt; of a fetch query has in the returned records: its alias when it
         /// has one, "linkalias.name" inside an aliased link-entity, otherwise its name.
         /// </summary>

@@ -15,10 +15,6 @@ namespace msdyncrmWorkflowTools_ConsoleTest
             var classObj = new Common(service);
 
             //classObj.DeleteRecordAuditHistory("account", "475B158C-541C-E511-80D3-3863BB347BA8");
-            /*classObj.QRCode("account", "7DF24294-9EC4-E711-8116-5065F38A3A01", "www.demianrasko.com", "Demian QR Code", "www.demianrasko.com", "QrDemian.bmp");
-            classObj.QRCode("account", "7DF24294-9EC4-E711-8116-5065F38A3A01", "www.demianrasko.com", "Demian QR Code", "www.demianrasko.com", "QrDemian.gif");
-            classObj.QRCode("account", "7DF24294-9EC4-E711-8116-5065F38A3A01", "www.demianrasko.com", "Demian QR Code", "www.demianrasko.com", "QrDemian.png");
-            */
 
             //EntityReference team=classObj.retrieveUserBUDefaultTeam("A292B22E-C957-4B97-BED1-EA0A504954C7");
 
