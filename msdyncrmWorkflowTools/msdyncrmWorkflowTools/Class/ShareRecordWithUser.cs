@@ -70,11 +70,12 @@ namespace msdyncrmWorkflowTools
         [Default("False")]
         public InArgument<bool> ShareShare { get; set; }
 
-        List<EntityReference> principals = new List<EntityReference>();
         #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
+            var principals = new List<EntityReference>();
+
             #region "Read Parameters"
             var sharingRecordUrl = SharingRecordURL.Get(executionContext);
             if (string.IsNullOrEmpty(sharingRecordUrl))
@@ -89,8 +90,6 @@ namespace msdyncrmWorkflowTools
             common.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={objectId}");
 
             var user = User.Get(executionContext);
-            principals.Clear();
-
             if (user != null)
             {
                 principals.Add(user);

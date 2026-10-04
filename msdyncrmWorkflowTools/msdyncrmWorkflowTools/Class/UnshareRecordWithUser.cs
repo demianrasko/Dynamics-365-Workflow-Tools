@@ -21,11 +21,12 @@ namespace msdyncrmWorkflowTools
         [ReferenceTarget("systemuser")]
         public InArgument<EntityReference> User { get; set; }
 
-        List<EntityReference> principals = new List<EntityReference>();
         #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
+            var principals = new List<EntityReference>();
+
             #region "Read Parameters"
             var sharingRecordUrl = SharingRecordURL.Get(executionContext);
 
