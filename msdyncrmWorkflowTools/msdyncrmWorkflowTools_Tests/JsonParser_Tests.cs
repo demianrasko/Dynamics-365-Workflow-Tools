@@ -62,12 +62,22 @@ namespace msdyncrmWorkflowTools_Tests
         [TestMethod]
         public void JsonParser6()
         {
-            var classObj = new Common(objService.service);
-            var json = @"{""values"": [{""Author"": ""Lisa Simpson"",""Response Date"": ""2018-02-21T08:13:34.284Z""}	],	""SurveyId"": ""5114FA48-1DE6-E711-80E3-005056B37A5C""}";
-            var jsonpath = "values[0].['Response Date']";
-            var res = classObj.JsonParser(json, jsonpath);
+            // written for the es-ES culture (day/month dates, Monday-first ISO-style weeks)
+            var originalCulture = System.Threading.Thread.CurrentThread.CurrentCulture;
+            System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("es-ES");
+            try
+            {
+                var classObj = new Common(objService.service);
+                var json = @"{""values"": [{""Author"": ""Lisa Simpson"",""Response Date"": ""2018-02-21T08:13:34.284Z""}	],	""SurveyId"": ""5114FA48-1DE6-E711-80E3-005056B37A5C""}";
+                var jsonpath = "values[0].['Response Date']";
+                var res = classObj.JsonParser(json, jsonpath);
 
-            Assert.AreEqual(res, "21/02/2018 8:13:34");
+                Assert.AreEqual(res, "21/02/2018 8:13:34");
+            }
+            finally
+            {
+                System.Threading.Thread.CurrentThread.CurrentCulture = originalCulture;
+            }
         }
 
         [TestMethod]
