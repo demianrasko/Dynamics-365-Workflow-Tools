@@ -24,31 +24,28 @@ namespace msdyncrmWorkflowTools
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
-            var _relationshipName = RelationshipName.Get(executionContext);
-            var _recordURL = RecordURL.Get(executionContext);
-            if (_recordURL == null || _recordURL == string.Empty)
+            var relationshipName = RelationshipName.Get(executionContext);
+            var recordUrl = RecordURL.Get(executionContext);
+
+            if (string.IsNullOrEmpty(recordUrl))
             {
                 throw new InvalidPluginExecutionException("Record URL is required.");
             }
-            var parsedUrl = Utility.ParseRecordUrl(_recordURL);
-            var ParentObjectTypeCode=parsedUrl.ObjectTypeCode;
-            var entityName = common.GetEntityNameFromCode(ParentObjectTypeCode);
-            var ParentId = parsedUrl.Id;
-            common.Trace($"ParentObjectTypeCode={ParentObjectTypeCode}--ParentId={ParentId}");
+
+            var parsedUrl = Utility.ParseRecordUrl(recordUrl);
+            var parentObjectTypeCode=parsedUrl.ObjectTypeCode;
+            var entityName = common.GetEntityNameFromCode(parentObjectTypeCode);
+            var parentId = parsedUrl.Id;
+           
+            common.Trace($"ParentObjectTypeCode={parentObjectTypeCode}--ParentId={parentId}");
             #endregion
 
             #region "Associate Execution"
 
-            var relations = common.GetAssociations(common.context.PrimaryEntityName, common.context.PrimaryEntityId,_relationshipName, entityName, ParentId);
+            var relations = common.GetAssociations(common.context.PrimaryEntityName, common.context.PrimaryEntityId,relationshipName, entityName, parentId);
 
-            if (relations.Entities.Count > 0)
-            {
-                Result.Set(executionContext, true);
-            }
-            else
-            {
-                Result.Set(executionContext, false);
-            }
+            Result.Set(executionContext, relations.Entities.Count > 0);
+
             #endregion
         }
     }
