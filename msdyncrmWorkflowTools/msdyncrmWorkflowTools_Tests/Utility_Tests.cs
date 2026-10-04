@@ -137,5 +137,52 @@ namespace msdyncrmWorkflowTools_Tests
             StringAssert.Contains(text, "Message:\tinnermost");
             StringAssert.Contains(text, "Type:\tSystem.ArgumentException");
         }
+
+        [TestMethod]
+        public void AttributeValueToString_ConvertsDataverseTypes()
+        {
+            var id = System.Guid.NewGuid();
+
+            Assert.IsNull(Utility.AttributeValueToString(null));
+            Assert.AreEqual("3", Utility.AttributeValueToString(new OptionSetValue(3)));
+            Assert.AreEqual(id.ToString(), Utility.AttributeValueToString(new EntityReference("account", id)));
+            Assert.AreEqual(12.5m.ToString(), Utility.AttributeValueToString(new Money(12.5m)));
+            Assert.AreEqual("1,2", Utility.AttributeValueToString(new OptionSetValueCollection { new OptionSetValue(1), new OptionSetValue(2) }));
+            Assert.AreEqual("7", Utility.AttributeValueToString(new AliasedValue("account", "numberofemployees", 7)));
+            Assert.AreEqual("plain text", Utility.AttributeValueToString("plain text"));
+        }
+
+        [TestMethod]
+        public void SerializeEntity_ProducesValidJsonInTheExistingShape()
+        {
+            var id = System.Guid.NewGuid();
+            var parentId = System.Guid.NewGuid();
+            var record = new Entity("account", id);
+            record["name"] = "Contoso \"East\"\r\nBranch \\ HQ";
+            record["donotemail"] = true;
+            record["industrycode"] = new OptionSetValue(7);
+            record["revenue"] = new Money(1234.5m);
+            record["numberofemployees"] = 42;
+            record["parentaccountid"] = new EntityReference("Account", parentId) { Name = "Parent \"Co\"" };
+            record["createdon"] = new System.DateTime(2026, 10, 4, 5, 30, 0, System.DateTimeKind.Utc);
+
+            var json = Utility.SerializeEntity("account", "accountid", id.ToString(), record,
+                new[] { "name", "donotemail", "industrycode", "revenue", "numberofemployees", "parentaccountid", "createdon", "missingattribute" });
+
+            var body = (Newtonsoft.Json.Linq.JObject)Newtonsoft.Json.Linq.JObject.Parse(json)["account"];
+
+            Assert.AreEqual(id.ToString(), (string)body["accountid"]);
+            Assert.AreEqual("Contoso \"East\"\r\nBranch \\ HQ", (string)body["name"]);
+            Assert.AreEqual(true, (bool)body["donotemail"]);
+            Assert.AreEqual(7, (int)body["industrycode"]);
+            Assert.AreEqual(1234.5m, (decimal)body["revenue"]);
+            Assert.AreEqual(42, (int)body["numberofemployees"]);
+            Assert.AreEqual("account", (string)body["parentaccountid"]["typename"]);
+            Assert.AreEqual(parentId.ToString(), (string)body["parentaccountid"]["id"]);
+            Assert.AreEqual("Parent \"Co\"", (string)body["parentaccountid"]["name"]);
+            StringAssert.Contains(json, "\"createdon\":\"2026-10-04T05:30:00.0000000Z\"");
+            Assert.IsNull(body["missingattribute"]);
+            StringAssert.StartsWith(json, "{\"account\":{\"accountid\":");
+        }
     }
 }

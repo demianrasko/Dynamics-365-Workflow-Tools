@@ -1,5 +1,4 @@
-﻿using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Query;
+﻿using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
 
@@ -73,7 +72,8 @@ namespace msdyncrmWorkflowTools
             var qe = new QueryExpression
             {
                 EntityName = entityName,
-                ColumnSet = new ColumnSet()
+                ColumnSet = new ColumnSet(),
+                TopCount = 1
             };
 
             if (!string.IsNullOrEmpty(attribute1)) qe.ColumnSet.Columns.Add(attribute1);
@@ -119,60 +119,22 @@ namespace msdyncrmWorkflowTools
             }
 
             common.Trace("Setting results");
-            if (results.Entities[0].Attributes.Contains(attribute1))
-            {
-                common.Trace($"Setting result1: {results.Entities[0].Attributes[attribute1]}");
+            var record = results.Entities[0];
 
-                // TODO: Is there a better way to do this?
-                switch (results.Entities[0].Attributes[attribute1])
-                {
-                    case OptionSetValue _:
-                    {
-                        common.Trace("Value1 Is an OptionSetValue");
-                        var val = (OptionSetValue)results.Entities[0].Attributes[attribute1];
-                        ResultValue1.Set(executionContext, val.Value.ToString());
-                        break;
-                    }
-                    case EntityReference _:
-                    {
-                        common.Trace("Value1 Is an EntityReference");
-                        var val = (EntityReference)results.Entities[0].Attributes[attribute1];
-                        ResultValue1.Set(executionContext, val.Id.ToString());
-                        break;
-                    }
-                    default:
-                        ResultValue1.Set(executionContext, results.Entities[0].Attributes[attribute1].ToString());
-                        break;
-                }
+            if (!string.IsNullOrEmpty(attribute1) && record.Attributes.Contains(attribute1))
+            {
+                var value1 = Utility.AttributeValueToString(record.Attributes[attribute1]);
+                common.Trace($"Setting result1: {value1}");
+                ResultValue1.Set(executionContext, value1);
             }
 
-            if (results.Entities[0].Attributes.Contains(attribute2))
+            if (!string.IsNullOrEmpty(attribute2) && record.Attributes.Contains(attribute2))
             {
-                common.Trace($"Setting result2: {results.Entities[0].Attributes[attribute2]}");
-
-                switch (results.Entities[0].Attributes[attribute2])
-                {
-                    case OptionSetValue _:
-                    {
-                        common.Trace("Value2 Is an OptionSetValue");
-
-                        var val = (OptionSetValue)results.Entities[0].Attributes[attribute2];
-                        ResultValue2.Set(executionContext, val.Value.ToString());
-                        break;
-                    }
-                    case EntityReference _:
-                    {
-                        common.Trace("Value2 Is an EntityReference");
-                        var val = (EntityReference)results.Entities[0].Attributes[attribute2];
-                        ResultValue2.Set(executionContext, val.Id.ToString());
-                        break;
-                    }
-                    default:
-                        ResultValue2.Set(executionContext, results.Entities[0].Attributes[attribute2].ToString());
-                        break;
-                }
+                var value2 = Utility.AttributeValueToString(record.Attributes[attribute2]);
+                common.Trace($"Setting result2: {value2}");
+                ResultValue2.Set(executionContext, value2);
             }
-            
+
             common.Trace("End setting results");
             #endregion
         }
