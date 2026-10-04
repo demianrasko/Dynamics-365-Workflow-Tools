@@ -507,5 +507,13 @@ namespace msdyncrmWorkflowTools_Tests
             CollectionAssert.AreEqual(new[] { "Billing", "support" }, Utility.ParseCategories(" Billing, ,support,Support , billing"));
             Assert.AreEqual(0, Utility.ParseCategories(null).Count);
         }
+
+        [TestMethod]
+        public void ConvertSettingValue_TypesNumbersAndBooleans()
+        {
+            Assert.AreEqual(42, Utility.ConvertSettingValue("42"));
+            Assert.AreEqual(true, Utility.ConvertSettingValue("True"));
+            Assert.AreEqual("abc", Utility.ConvertSettingValue("abc"));
+        }
     }
 }

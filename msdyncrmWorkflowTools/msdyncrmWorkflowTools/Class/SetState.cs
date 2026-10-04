@@ -18,30 +18,10 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
-            var stateValue= State.Get(executionContext);
-            var statusValue = Status.Get(executionContext);
-            #endregion
-
-            #region "SetState Execution"
-
-            var moniker = new EntityReference
-            {
-                LogicalName = common.Context.PrimaryEntityName,
-                Id = common.Context.PrimaryEntityId
-            };
-
-            var request = new OrganizationRequest
-            {
-                RequestName = "SetState",
-                ["EntityMoniker"] = moniker,
-                ["State"] = new OptionSetValue(stateValue),
-                ["Status"] = new OptionSetValue(statusValue)
-            };
-
-            common.Service.Execute(request);
-
-            #endregion
+            common.SetState(
+                new EntityReference(common.Context.PrimaryEntityName, common.Context.PrimaryEntityId),
+                State.Get(executionContext),
+                Status.Get(executionContext));
         }
     }
 }

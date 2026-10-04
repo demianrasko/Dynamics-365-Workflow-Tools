@@ -1,7 +1,5 @@
-﻿using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk;
+﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
-using System;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools.Class
@@ -26,48 +24,11 @@ namespace msdyncrmWorkflowTools.Class
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
-            var sourceQueue = SourceQueue.Get(executionContext);
-
-            common.Trace($"sourceQueue: {sourceQueue.Id.ToString()} ");
-
-            var removeItems = RemoveItems.Get(executionContext);
-            common.Trace($"removeItems: {removeItems.ToString()} ");
-
-            var quantity = Quantity.Get(executionContext);
-            common.Trace($"quantity: {quantity.ToString()} ");
-
-            #endregion
-
-            // active, unassigned queue items, newest first; only the requested quantity is used
-            var queueItems = common.Service.RetrieveMultiple(Queries.QueueItems(sourceQueue.Id, onlyUnassigned: true, top: Math.Max(quantity, 1)));
-
-            //no pending queue items
-            if (queueItems.Entities.Count == 0)
-            {
-                return;
-            }
-
-            var count = 0;
-            foreach (var queItem in queueItems.Entities)
-            {
-                //pick from Queue
-                var request = new PickFromQueueRequest
-                {
-                    QueueItemId = queItem.Id,
-                    WorkerId = common.Context.InitiatingUserId, 
-                    RemoveQueueItem = removeItems
-                };
-
-                common.Service.Execute(request);
-                count++;
-
-                //only pick the defined Quantity
-                if (count >= quantity)
-                {
-                    break;
-                }
-            }
+            common.PickFromQueue(
+                SourceQueue.Get(executionContext).Id,
+                common.Context.InitiatingUserId,
+                RemoveItems.Get(executionContext),
+                Quantity.Get(executionContext));
         }
     }
 }

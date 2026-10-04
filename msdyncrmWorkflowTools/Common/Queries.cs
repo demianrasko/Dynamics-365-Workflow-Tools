@@ -257,6 +257,39 @@ namespace msdyncrmWorkflowTools
             return query;
         }
 
+        /// <summary>
+        /// The user's copies of a role (one row per business-unit copy whose root is <paramref name="rootRoleId"/>) —
+        /// no rows when the user does not have the role.
+        /// </summary>
+        public static QueryExpression UserRole(Guid systemUserId, Guid rootRoleId)
+        {
+            var query = new QueryExpression(EntityNames.Role)
+            {
+                ColumnSet = new ColumnSet("roleid"),
+                TopCount = 1
+            };
+            query.Criteria.AddCondition("parentrootroleid", ConditionOperator.Equal, rootRoleId);
+
+            var userRoles = query.AddLink(EntityNames.SystemUserRoles, "roleid", "roleid");
+            userRoles.LinkCriteria.AddCondition("systemuserid", ConditionOperator.Equal, systemUserId);
+
+            return query;
+        }
+
+        /// <summary>The users who are members of a team.</summary>
+        public static QueryExpression TeamMembers(Guid teamId)
+        {
+            var query = new QueryExpression(EntityNames.SystemUser)
+            {
+                ColumnSet = new ColumnSet("systemuserid")
+            };
+
+            var membership = query.AddLink(EntityNames.TeamMembership, "systemuserid", "systemuserid");
+            membership.LinkCriteria.AddCondition("teamid", ConditionOperator.Equal, teamId);
+
+            return query;
+        }
+
         /// <summary>Active queue items in a queue, newest first; optionally only those not assigned to a worker.</summary>
         /// <param name="top">Maximum number of records; 0 or less means no limit.</param>
         public static QueryExpression QueueItems(Guid queueId, bool onlyUnassigned, int top = 0)

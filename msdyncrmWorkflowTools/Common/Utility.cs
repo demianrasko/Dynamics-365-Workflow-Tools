@@ -491,6 +491,24 @@ namespace msdyncrmWorkflowTools
         }
 
         /// <summary>
+        /// The typed value to store in an organization setting: a whole number, true/false, or the text itself.
+        /// </summary>
+        public static object ConvertSettingValue(string value)
+        {
+            if (int.TryParse(value, out var number))
+            {
+                return number;
+            }
+
+            if (bool.TryParse(value, out var flag))
+            {
+                return flag;
+            }
+
+            return value;
+        }
+
+        /// <summary>
         /// Splits a comma-separated category list for AIClassify: trimmed, no empty entries, no duplicates
         /// (ignoring case), in the original order.
         /// </summary>

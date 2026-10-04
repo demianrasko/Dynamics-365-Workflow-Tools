@@ -1,8 +1,6 @@
 ﻿// Not in the Power Platform build: it needs Dynamics 365 tables (lead, list or salesliterature).
 #if !POWERPLATFORM
-using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
 
@@ -43,57 +41,17 @@ namespace msdyncrmWorkflowTools
         #endregion
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
-            var lead = Lead.Get(executionContext);
             // [RequiredArgument] is only enforced in the designer; a dynamic value can still be empty at runtime.
-            if (lead == null)
-            {
-                throw new InvalidPluginExecutionException("Lead is required.");
-            }
+            var lead = Lead.Get(executionContext) ?? throw new InvalidPluginExecutionException("Lead is required.");
 
-            var createAccount = CreateAccount.Get(executionContext);
-            var createContact = CreateContact.Get(executionContext);
-            var createOpportunity = CreateOpportunity.Get(executionContext);
-            var existingAccount = ExistingAccount.Get(executionContext);
-            var existingContact = ExistingContact.Get(executionContext);
-            var leadStatus = LeadStatus.Get(executionContext);
-
-            common.Trace($"LeadID={lead.Id}");
-            #endregion
-
-            #region "QualifyLead Execution"
-            var query = new QueryExpression(EntityNames.Organization)
-            {
-                ColumnSet = new ColumnSet("basecurrencyid")
-            };
-
-            var result = common.Service.RetrieveMultiple(query);
-            var currencyId = (EntityReference)result.Entities[0]["basecurrencyid"];
-
-            var request = new QualifyLeadRequest
-            {
-                CreateOpportunity = createOpportunity,
-                CreateAccount = createAccount,
-                CreateContact = createContact,
-                OpportunityCurrencyId = currencyId
-            };
-
-            if (existingAccount != null)
-            {
-                request.OpportunityCustomerId = new EntityReference(EntityNames.Account, existingAccount.Id);
-            }
-            else if (existingContact != null)
-            {
-                request.OpportunityCustomerId = new EntityReference(EntityNames.Contact, existingContact.Id);
-            }
-
-            request.Status = new OptionSetValue(leadStatus);
-            request.LeadId = new EntityReference(EntityNames.Lead, lead.Id);
-
-            common.Service.Execute(request);
-            common.Trace("  Executed OK.");
-
-            #endregion
+            common.QualifyLead(
+                lead,
+                CreateAccount.Get(executionContext),
+                CreateContact.Get(executionContext),
+                CreateOpportunity.Get(executionContext),
+                ExistingAccount.Get(executionContext),
+                ExistingContact.Get(executionContext),
+                LeadStatus.Get(executionContext));
         }
     }
 }

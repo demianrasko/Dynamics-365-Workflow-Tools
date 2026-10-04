@@ -266,5 +266,25 @@ namespace msdyncrmWorkflowTools_Tests
             Assert.AreEqual("systemuserroles", user.EntityName);
             AssertCondition(user.Criteria.Conditions[0], "systemuserid", ConditionOperator.Equal, IdA);
         }
+
+        [TestMethod]
+        public void UserRole_MatchesTheRootRoleForTheUser()
+        {
+            var query = Queries.UserRole(IdA, IdB);
+
+            Assert.AreEqual("role", query.EntityName);
+            AssertCondition(query.Criteria.Conditions.Single(), "parentrootroleid", ConditionOperator.Equal, IdB);
+            AssertCondition(query.LinkEntities.Single().LinkCriteria.Conditions.Single(), "systemuserid", ConditionOperator.Equal, IdA);
+        }
+
+        [TestMethod]
+        public void TeamMembers_FiltersOnTheTeam()
+        {
+            var query = Queries.TeamMembers(IdA);
+
+            Assert.AreEqual("systemuser", query.EntityName);
+            Assert.AreEqual("teammembership", query.LinkEntities.Single().LinkToEntityName);
+            AssertCondition(query.LinkEntities.Single().LinkCriteria.Conditions.Single(), "teamid", ConditionOperator.Equal, IdA);
+        }
     }
 }

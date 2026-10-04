@@ -24,37 +24,16 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
-            var orgDbSetting = orgDBSetting.Get(executionContext).ToLower();
-            #endregion
+            var setting = orgDBSetting.Get(executionContext).ToLower();
+            var stringValue = common.GetOrganizationSetting(setting)?.ToString();
+            common.Trace($"Organization setting {setting} = {stringValue}");
 
-            #region "OrgDBSettings Update"
-            common.Trace($"OrgDBSettingsUpdate.Execute - OrgDBSetting = {orgDbSetting}" );
-
-            var boolValue = false;
-
-            var organizationColl = common.Service.RetrieveMultiple(Queries.OrganizationSetting(orgDbSetting));
-
-            var stringValue = organizationColl.Entities[0].Attributes[orgDbSetting].ToString();
-
-            if (int.TryParse(stringValue, out var numericValue))
-            {
-                common.Trace("Numeric Value");
-            }
-            else if (bool.TryParse(stringValue, out boolValue))
-            {
-                common.Trace("Bool Value");
-            }
-            else
-            {
-                common.Trace("String Value");
-            }
+            int.TryParse(stringValue, out var numericValue);
+            bool.TryParse(stringValue, out var boolValue);
 
             StringValue.Set(executionContext, stringValue);
             NumericValue.Set(executionContext, numericValue);
             BoolValue.Set(executionContext, boolValue);
-
-            #endregion
         }
     }
 }

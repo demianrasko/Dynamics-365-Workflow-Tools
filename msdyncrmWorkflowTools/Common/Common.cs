@@ -439,6 +439,21 @@ namespace msdyncrmWorkflowTools
 
         #region Records
         /// <summary>
+        /// Sets a record's status (statecode) and status reason (statuscode).
+        /// </summary>
+        public void SetState(EntityReference record, int state, int status)
+        {
+            Trace($"Setting {record.LogicalName} {record.Id} to state {state}, status {status}");
+
+            Service.Execute(new OrganizationRequest("SetState")
+            {
+                ["EntityMoniker"] = record,
+                ["State"] = new OptionSetValue(state),
+                ["Status"] = new OptionSetValue(status)
+            });
+        }
+
+        /// <summary>
         /// Creates a copy of a record, copying every attribute that can be set on create.
         /// </summary>
         /// <param name="entityName">Logical name of the record.</param>
@@ -1026,6 +1041,19 @@ namespace msdyncrmWorkflowTools
         }
 
         /// <summary>
+        /// Whether a user has a security role, in any business unit copy of it.
+        /// </summary>
+        /// <param name="userId">The user.</param>
+        /// <param name="roleId">The role picked in the workflow (the root role).</param>
+        public bool UserHasRole(Guid userId, Guid roleId)
+        {
+            var hasRole = Service.RetrieveMultiple(Queries.UserRole(userId, roleId)).Entities.Count > 0;
+            Trace($"User {userId} {(hasRole ? "has" : "does not have")} role {roleId}.");
+
+            return hasRole;
+        }
+
+        /// <summary>
         /// Adds a user to a team.
         /// </summary>
         public void AddTeamMember(Guid teamId, Guid userId)
@@ -1264,37 +1292,58 @@ namespace msdyncrmWorkflowTools
             return true;
         }
 
-        public void SendEmailToUsersInRole(EntityReference securityRoleLookup, EntityReference emailReference)
+        /// <summary>
+        /// Sets the To recipients of an email to the given users (replacing any recipients it had).
+        /// </summary>
+        public void SetEmailRecipients(Guid emailId, IEnumerable<Guid> userIds)
         {
-            var userList = Service.RetrieveMultiple(Queries.UsersInRole(securityRoleLookup.Id));
-            Trace("Retrieved Data");
-
-            var email = new Entity(EntityNames.Email, emailReference.Id);
-
             var to = new EntityCollection();
 
-            foreach (var user in userList.Entities)
+            foreach (var userId in userIds)
             {
-                var userId = user.Id;
-
-                var to1 = new Entity(EntityNames.ActivityParty)
+                to.Entities.Add(new Entity(EntityNames.ActivityParty)
                 {
                     ["partyid"] = new EntityReference(EntityNames.SystemUser, userId)
-                };
-
-                to.Entities.Add(to1);
+                });
             }
 
-            email["to"] = to;
+            Trace($"Email {emailId}: {to.Entities.Count} recipient(s)");
 
-            Service.Update(email);
+            Service.Update(new Entity(EntityNames.Email, emailId)
+            {
+                ["to"] = to
+            });
+        }
 
-            var request = new SendEmailRequest
+        /// <summary>
+        /// Addresses an email to every member of a team. Leaves the email unchanged when the team has no members.
+        /// </summary>
+        /// <returns>The number of members the email was addressed to.</returns>
+        public int AddressEmailToTeam(Guid emailId, Guid teamId)
+        {
+            var members = Service.RetrieveMultiple(Queries.TeamMembers(teamId)).Entities.Select(e => e.Id).ToList();
+
+            if (members.Count == 0)
+            {
+                Trace($"Team {teamId} has no members.");
+                return 0;
+            }
+
+            SetEmailRecipients(emailId, members);
+
+            return members.Count;
+        }
+
+        public void SendEmailToUsersInRole(EntityReference securityRoleLookup, EntityReference emailReference)
+        {
+            var userIds = Service.RetrieveMultiple(Queries.UsersInRole(securityRoleLookup.Id)).Entities.Select(e => e.Id);
+
+            SetEmailRecipients(emailReference.Id, userIds);
+
+            Service.Execute(new SendEmailRequest
             {
                 EmailId = emailReference.Id
-            };
-
-            Service.Execute(request);
+            });
         }
 
         public void EntityAttachmentToEmail(string fileName, Guid parentId, EntityReference email, bool retrieveActivityMimeAttachment, bool mostRecent, int? topRecords = 0)
@@ -1527,7 +1576,100 @@ namespace msdyncrmWorkflowTools
         }
         #endregion
 
+        #region Queues and organization settings
+        /// <summary>
+        /// Picks the newest unassigned items of a queue for a worker.
+        /// </summary>
+        /// <param name="queueId">The queue.</param>
+        /// <param name="workerId">The user the items are assigned to.</param>
+        /// <param name="removeItems">Remove the items from the queue.</param>
+        /// <param name="quantity">How many items to pick; less than 1 picks one.</param>
+        /// <returns>The number of items picked.</returns>
+        public int PickFromQueue(Guid queueId, Guid workerId, bool removeItems, int quantity)
+        {
+            var queueItems = Service.RetrieveMultiple(Queries.QueueItems(queueId, onlyUnassigned: true, top: Math.Max(quantity, 1))).Entities;
+
+            foreach (var queueItem in queueItems)
+            {
+                Service.Execute(new PickFromQueueRequest
+                {
+                    QueueItemId = queueItem.Id,
+                    WorkerId = workerId,
+                    RemoveQueueItem = removeItems
+                });
+            }
+
+            Trace($"Picked {queueItems.Count} item(s) from queue {queueId}");
+
+            return queueItems.Count;
+        }
+
+        /// <summary>
+        /// The value of an organization setting (a column of the organization table), or null when it is empty.
+        /// </summary>
+        public object GetOrganizationSetting(string attributeName)
+        {
+            var organization = Service.RetrieveMultiple(Queries.OrganizationSetting(attributeName)).Entities.FirstOrDefault();
+
+            return organization?.GetAttributeValue<object>(attributeName);
+        }
+
+        /// <summary>
+        /// Sets an organization setting; the value is stored as a whole number, true/false or text
+        /// (see <see cref="Utility.ConvertSettingValue"/>).
+        /// </summary>
+        /// <returns>False when the organization record could not be read.</returns>
+        public bool SetOrganizationSetting(string attributeName, string value)
+        {
+            var organization = Service.RetrieveMultiple(Queries.OrganizationSetting(attributeName)).Entities.FirstOrDefault();
+
+            if (organization == null)
+            {
+                return false;
+            }
+
+            Trace($"Organization setting {attributeName} = {value}");
+
+            Service.Update(new Entity(organization.LogicalName, organization.Id)
+            {
+                [attributeName] = Utility.ConvertSettingValue(value)
+            });
+
+            return true;
+        }
+        #endregion
+
         #region Sales and marketing
+
+        /// <summary>
+        /// Qualifies a lead, optionally creating an account, contact and opportunity (in the organization's base
+        /// currency, for an existing account or contact when one is given).
+        /// </summary>
+        public void QualifyLead(EntityReference lead, bool createAccount, bool createContact, bool createOpportunity,
+            EntityReference existingAccount, EntityReference existingContact, int status)
+        {
+            var request = new QualifyLeadRequest
+            {
+                LeadId = new EntityReference(EntityNames.Lead, lead.Id),
+                CreateAccount = createAccount,
+                CreateContact = createContact,
+                CreateOpportunity = createOpportunity,
+                OpportunityCurrencyId = (EntityReference)GetOrganizationSetting("basecurrencyid"),
+                Status = new OptionSetValue(status)
+            };
+
+            if (existingAccount != null)
+            {
+                request.OpportunityCustomerId = new EntityReference(EntityNames.Account, existingAccount.Id);
+            }
+            else if (existingContact != null)
+            {
+                request.OpportunityCustomerId = new EntityReference(EntityNames.Contact, existingContact.Id);
+            }
+
+            Trace($"Qualifying lead {lead.Id}");
+            Service.Execute(request);
+        }
 
         public Guid CreateOpportunityProduct(EntityReference opportunity,
             EntityReference existingProduct, EntityReference uom, decimal quantity)
