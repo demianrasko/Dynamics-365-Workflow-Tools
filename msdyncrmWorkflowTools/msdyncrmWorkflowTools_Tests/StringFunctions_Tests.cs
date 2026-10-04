@@ -83,22 +83,23 @@ namespace msdyncrmWorkflowTools_Tests
             Assert.AreEqual("abcdef", Run("abcdef", finalLength: 3).Padded);
         }
 
+        // "Case Sensitive" is inverted on purpose (kept for existing workflows): true ignores case, false matches case exactly.
         [TestMethod]
-        public void Replace_CaseSensitiveOnlyMatchesTheSameCase()
+        public void Replace_CaseSensitiveTrueIgnoresCase()
         {
-            Assert.AreEqual("x b A", Run("a b A", caseSensitive: true, oldValue: "a", newValue: "x").Replaced);
+            Assert.AreEqual("x b x", Run("a b A", caseSensitive: true, oldValue: "a", newValue: "x").Replaced);
         }
 
         [TestMethod]
-        public void Replace_CaseInsensitiveMatchesEveryCase()
+        public void Replace_CaseSensitiveFalseMatchesTheSameCaseOnly()
         {
-            Assert.AreEqual("x b x", Run("a b A", caseSensitive: false, oldValue: "a", newValue: "x").Replaced);
+            Assert.AreEqual("x b A", Run("a b A", caseSensitive: false, oldValue: "a", newValue: "x").Replaced);
         }
 
         [TestMethod]
         public void Replace_MatchAtTheStartIsReplaced()
         {
-            Assert.AreEqual("zzbczzbc", Run("abcabc", caseSensitive: false, oldValue: "a", newValue: "zz").Replaced);
+            Assert.AreEqual("zzbczzbc", Run("abcabc", caseSensitive: true, oldValue: "a", newValue: "zz").Replaced);
         }
 
         [TestMethod]

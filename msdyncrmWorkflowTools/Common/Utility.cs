@@ -665,17 +665,19 @@ namespace msdyncrmWorkflowTools
             paddedText = padOnTheLeft ? inputText.PadLeft(finalLengthWithPadding, pad) : inputText.PadRight(finalLengthWithPadding, pad);
 
             // replace
+            // NOTE: "Case Sensitive" has always worked inverted (true ignores case, false matches case exactly).
+            // It is kept that way so existing workflows behave the same.
             if (string.IsNullOrEmpty(replaceOldValue))
             {
                 replacedText = inputText;
             }
             else if (caseSensitive)
             {
-                replacedText = inputText.Replace(replaceOldValue, replaceNewValue ?? string.Empty);
+                replacedText = CompareAndReplace(inputText, replaceOldValue, replaceNewValue ?? string.Empty, StringComparison.CurrentCultureIgnoreCase);
             }
             else
             {
-                replacedText = CompareAndReplace(inputText, replaceOldValue, replaceNewValue ?? string.Empty, StringComparison.CurrentCultureIgnoreCase);
+                replacedText = inputText.Replace(replaceOldValue, replaceNewValue ?? string.Empty);
             }
 
             // substring, cut short at the end of the text
