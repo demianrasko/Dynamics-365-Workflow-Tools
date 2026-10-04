@@ -32,7 +32,6 @@ namespace msdyncrmWorkflowTools
 
         [Output("Min")]
         public OutArgument<decimal> Min { get; set; }
-
         #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
@@ -46,9 +45,6 @@ namespace msdyncrmWorkflowTools
             }
 
             common.Trace($"_FetchXML={fetchXml}");
-
-            var context = executionContext.GetExtension<IWorkflowContext>();
-
             #endregion
 
             #region "RollupFunctions Execution"
@@ -60,7 +56,7 @@ namespace msdyncrmWorkflowTools
 
             while (true)
             {
-                fetchXml = fetchXml.Replace("{PARENT_GUID}", context.PrimaryEntityId.ToString());
+                fetchXml = fetchXml.Replace("{PARENT_GUID}", common.Context.PrimaryEntityId.ToString());
 
                 var xml = Utility.CreateXml(fetchXml, pagingCookie, pageNumber, fetchCount);
                 var request = new RetrieveMultipleRequest
@@ -132,7 +128,6 @@ namespace msdyncrmWorkflowTools
             Average.Set(executionContext, average);
             Min.Set(executionContext, min);
             Max.Set(executionContext, max);
-
             #endregion
         }
 

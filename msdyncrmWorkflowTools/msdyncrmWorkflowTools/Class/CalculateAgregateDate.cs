@@ -33,9 +33,6 @@ namespace msdyncrmWorkflowTools
             }
 
             common.Trace($"_FetchXML={fetchXml}");
-
-            var context = executionContext.GetExtension<IWorkflowContext>();
-
             #endregion
 
             #region "CalculateAgregateDate Execution"
@@ -47,7 +44,7 @@ namespace msdyncrmWorkflowTools
 
             Ok.Set(executionContext, false);
 
-            fetchXml = fetchXml.Replace("{PARENT_GUID}", context.PrimaryEntityId.ToString());
+            fetchXml = fetchXml.Replace("{PARENT_GUID}", common.Context.PrimaryEntityId.ToString());
 
             common.Trace(fetchXml);
             var xml = Utility.CreateXml(fetchXml, null, pageNumber, fetchCount);
@@ -93,7 +90,6 @@ namespace msdyncrmWorkflowTools
 
             Value.Set(executionContext, date);
             common.Trace("Calculate Aggregate Date --- Done");
-
             #endregion
         }
     }

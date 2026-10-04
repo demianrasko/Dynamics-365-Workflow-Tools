@@ -1,7 +1,6 @@
 ﻿using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
-using Microsoft.Xrm.Sdk.Workflow;
 using System;
 using System.Activities;
 
@@ -11,24 +10,14 @@ namespace msdyncrmWorkflowTools.Class
     {
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Load CRM Service from context"
-
-            var context = executionContext.GetExtension<IWorkflowContext>();
-
-            common.Trace("Load CRM Service from context --- OK");
-            #endregion
-
-            #region "Read Parameters"
-            #endregion
-
-            var entityName=context.PrimaryEntityName;
+            var entityName=common.Context.PrimaryEntityName;
 
             if (entityName != "account" && entityName != "contact" && entityName != "lead")
             {
                 throw new InvalidPluginExecutionException("Remove From All Marketing Lists only supports account, contact or lead records.");
             }
 
-            if (!DoesCrmRecordExist(common.Service, context.PrimaryEntityName, context.PrimaryEntityId))
+            if (!DoesCrmRecordExist(common.Service, common.Context.PrimaryEntityName, common.Context.PrimaryEntityId))
             {
                 return;
             }
@@ -47,7 +36,7 @@ namespace msdyncrmWorkflowTools.Class
                                                 {
                                                     AttributeName = "entityid",
                                                     Operator = ConditionOperator.Equal,
-                                                    Values = { context.PrimaryEntityId }
+                                                    Values = { common.Context.PrimaryEntityId }
                                                 },
                                             }
                     }

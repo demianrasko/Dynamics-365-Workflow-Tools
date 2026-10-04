@@ -35,7 +35,6 @@ namespace msdyncrmWorkflowTools
 
         [Output("ConcatenatedString")]
         public OutArgument<string> ConcatenatedString { get; set; }
-
         #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
@@ -64,9 +63,6 @@ namespace msdyncrmWorkflowTools
 
             var topRecordCount = TopRecordCount.Get(executionContext);
             common.Trace($"TopRecordCount={topRecordCount}");
-
-            var context = executionContext.GetExtension<IWorkflowContext>();
-
             #endregion
 
             #region "Concatenation Execution"
@@ -81,7 +77,7 @@ namespace msdyncrmWorkflowTools
             {
                 common.Trace($"Fetch PageNumber={pageNumber}");
 
-                fetchXml = fetchXml.Replace("{PARENT_GUID}", context.PrimaryEntityId.ToString());
+                fetchXml = fetchXml.Replace("{PARENT_GUID}", common.Context.PrimaryEntityId.ToString());
 
                 var xml = Utility.CreateXml(fetchXml, pagingCookie, pageNumber, fetchCount);
                 var request = new RetrieveMultipleRequest
@@ -183,7 +179,6 @@ namespace msdyncrmWorkflowTools
             }
 
             common.Trace("ConcatenateFromQuery -- Done!");
-
             #endregion
         }
     }
