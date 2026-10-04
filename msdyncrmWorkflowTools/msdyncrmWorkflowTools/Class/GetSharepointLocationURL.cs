@@ -6,7 +6,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
 {
-   public class GetSharepointLocationURL : CodeActivity
+   public class GetSharepointLocationURL : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("Record URL")]
@@ -15,10 +15,8 @@ namespace msdyncrmWorkflowTools
         [Output("SharepointLocationURL")]
         public OutArgument<string> SharepointLocationURL { get; set; }
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
 
             var recordId = GetRecordIdFromURL(executionContext);
 
@@ -42,7 +40,7 @@ namespace msdyncrmWorkflowTools
                 var retriveResponse = (RetrieveAbsoluteAndSiteCollectionUrlResponse)objCommon.service.Execute(retrieveRequest);
 
                 absoluteURL = retriveResponse.AbsoluteUrl.ToString();
-                objCommon.tracingService.Trace("Absolute URL of document location record is '{0}'." + retriveResponse.AbsoluteUrl.ToString());
+                objCommon.Trace("Absolute URL of document location record is '{0}'." + retriveResponse.AbsoluteUrl.ToString());
             }
             else
             {

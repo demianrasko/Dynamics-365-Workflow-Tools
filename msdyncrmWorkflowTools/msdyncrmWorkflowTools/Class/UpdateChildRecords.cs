@@ -3,7 +3,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
 {
-    public class UpdateChildRecords : CodeActivity
+    public class UpdateChildRecords : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("Parent Record URL")]
@@ -32,14 +32,8 @@ namespace msdyncrmWorkflowTools
         [Input("Update only Active")]
         public InArgument<bool> UpdateonlyActive { get; set; }
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
             #region "Read Parameters"
             var parentRecordUrl = ParentRecordURL.Get(executionContext);
 
@@ -53,7 +47,7 @@ namespace msdyncrmWorkflowTools
             var parentEntityId = parsedUrl.Id;
             var parentEntityType = objCommon.GetEntityNameFromCode(objectTypeCode);
 
-            objCommon.tracingService.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={parentEntityId}");
+            objCommon.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={parentEntityId}");
 
             var relationshipName = RelationshipName.Get(executionContext);
             var parentFieldNameToUpdate = ParentFieldNameToUpdate.Get(executionContext);
@@ -61,8 +55,8 @@ namespace msdyncrmWorkflowTools
             var childFieldNameToUpdate = ChildFieldNameToUpdate.Get(executionContext);
             var updateOnlyActive = UpdateonlyActive.Get(executionContext);
 
-            objCommon.tracingService.Trace($"{nameof(RelationshipName)}={relationshipName}--_ParentFieldNameToUpdate={parentFieldNameToUpdate}");
-            objCommon.tracingService.Trace($"_ValueToSet={valueToSet}--_ChildFieldNameToUpdate={childFieldNameToUpdate}");
+            objCommon.Trace($"{nameof(RelationshipName)}={relationshipName}--_ParentFieldNameToUpdate={parentFieldNameToUpdate}");
+            objCommon.Trace($"_ValueToSet={valueToSet}--_ChildFieldNameToUpdate={childFieldNameToUpdate}");
             #endregion
 
 

@@ -8,7 +8,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
 {
-    public class CalculateAgregateDate : CodeActivity
+    public class CalculateAgregateDate : WorkflowActivityBase
     {
         #region "Parameter Definition"
         [RequiredArgument]
@@ -23,14 +23,8 @@ namespace msdyncrmWorkflowTools
         public OutArgument<bool> Ok { get; set; }
         #endregion
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
             #region "Read Parameters"
             var fetchXml = FetchXML.Get(executionContext);
             if (string.IsNullOrEmpty(fetchXml))
@@ -38,7 +32,7 @@ namespace msdyncrmWorkflowTools
                 return;
             }
 
-            objCommon.tracingService.Trace("_FetchXML=" + fetchXml);
+            objCommon.Trace("_FetchXML=" + fetchXml);
 
             var context = executionContext.GetExtension<IWorkflowContext>();
 
@@ -55,7 +49,7 @@ namespace msdyncrmWorkflowTools
 
             fetchXml = fetchXml.Replace("{PARENT_GUID}", context.PrimaryEntityId.ToString());
 
-            objCommon.tracingService.Trace(fetchXml);
+            objCommon.Trace(fetchXml);
             var xml = Utility.CreateXml(fetchXml, null, pageNumber, fetchCount);
 
             var fetchRequest1 = new RetrieveMultipleRequest
@@ -65,7 +59,7 @@ namespace msdyncrmWorkflowTools
             
             var returnCollection = ((RetrieveMultipleResponse)objCommon.service.Execute(fetchRequest1)).EntityCollection;
             
-            objCommon.tracingService.Trace($"Count {returnCollection.Entities.Count}");
+            objCommon.Trace($"Count {returnCollection.Entities.Count}");
 
             if (returnCollection.Entities.Count > 0)
             {
@@ -74,7 +68,7 @@ namespace msdyncrmWorkflowTools
                     try
                     {
                         var value = returnCollection.Entities[0].Attributes.First().Value;
-                        objCommon.tracingService.Trace($"Attribute {returnCollection.Entities[0].Attributes.First().Key} - {value}");
+                        objCommon.Trace($"Attribute {returnCollection.Entities[0].Attributes.First().Key} - {value}");
             
                         switch (value)
                         {
@@ -87,17 +81,17 @@ namespace msdyncrmWorkflowTools
                         }
 
                         Ok.Set(executionContext, true);
-                        objCommon.tracingService.Trace($"date {date}");
+                        objCommon.Trace($"date {date}");
                     }
                     catch (Exception e)
                     {
-                        objCommon.tracingService.Trace(e.ToString());
+                        objCommon.Trace(e.ToString());
                     }
                 }
             }
 
             Value.Set(executionContext, date);
-            objCommon.tracingService.Trace("Calculate Aggregate Date --- Done");
+            objCommon.Trace("Calculate Aggregate Date --- Done");
 
             #endregion
         }

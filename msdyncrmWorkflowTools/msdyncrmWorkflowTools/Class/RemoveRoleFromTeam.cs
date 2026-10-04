@@ -4,7 +4,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
 {
-    public class RemoveRoleFromTeam : CodeActivity
+    public class RemoveRoleFromTeam : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("Role")]
@@ -16,19 +16,13 @@ namespace msdyncrmWorkflowTools
         [ReferenceTarget("team")]
         public InArgument<EntityReference> Team { get; set; }
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
             #region "Read Parameters"
             var roleReference = Role.Get(executionContext);
             var teamReference = Team.Get(executionContext);
 
-            objCommon.tracingService.Trace($"RoleId: {roleReference.Id.ToString()} - TeamID: {teamReference.Id.ToString()} ");
+            objCommon.Trace($"RoleId: {roleReference.Id.ToString()} - TeamID: {teamReference.Id.ToString()} ");
             #endregion
 
             var roleId = Utility.GetRoleIdInBusinessUnit(objCommon.service, objCommon.tracingService, new EntityReference("team", teamReference.Id), roleReference.Id);

@@ -9,7 +9,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
 {
-    public class RollupFunctions : CodeActivity
+    public class RollupFunctions : WorkflowActivityBase
     {
         #region "Parameter Definition"
 
@@ -35,14 +35,8 @@ namespace msdyncrmWorkflowTools
         
         #endregion
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-            #region "Load CRM Service from context"
-            
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
             #region "Read Parameters"
             var fetchXml = FetchXML.Get(executionContext);
             
@@ -51,7 +45,7 @@ namespace msdyncrmWorkflowTools
                 return;
             }
             
-            objCommon.tracingService.Trace("_FetchXML=" + fetchXml);
+            objCommon.Trace("_FetchXML=" + fetchXml);
 
             var context = executionContext.GetExtension<IWorkflowContext>();
 
@@ -86,7 +80,7 @@ namespace msdyncrmWorkflowTools
                         break;
                     }
                     
-                    objCommon.tracingService.Trace($"Value: {attribute.Value}");
+                    objCommon.Trace($"Value: {attribute.Value}");
                     objNumbers.Add(attribute.Value);
                 }
                 if (returnCollection.MoreRecords)
@@ -100,7 +94,7 @@ namespace msdyncrmWorkflowTools
                 }
             }
             
-            objCommon.tracingService.Trace("Query Data --- Done");
+            objCommon.Trace("Query Data --- Done");
             
             decimal count = 0;
             decimal sum = 0;

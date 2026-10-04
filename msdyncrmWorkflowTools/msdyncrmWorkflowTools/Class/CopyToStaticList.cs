@@ -4,7 +4,7 @@ using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 namespace msdyncrmWorkflowTools.Class
 {
-    public class CopyToStaticList : CodeActivity
+    public class CopyToStaticList : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("Marketing List")]
@@ -15,17 +15,11 @@ namespace msdyncrmWorkflowTools.Class
 
 
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
             #region "Read Parameters"
             var marketingList = MarketingList.Get(executionContext);
-            objCommon.tracingService.Trace(string.Format("marketingList: {0} ", marketingList.Id.ToString()));
+            objCommon.Trace(string.Format("marketingList: {0} ", marketingList.Id.ToString()));
 
             
 

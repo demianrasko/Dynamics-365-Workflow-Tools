@@ -6,7 +6,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
 {
-    public class QualifyLead : CodeActivity
+    public class QualifyLead : WorkflowActivityBase
     {
         #region "Parameter Definition"
         [RequiredArgument]
@@ -39,14 +39,8 @@ namespace msdyncrmWorkflowTools
         public InArgument<int> LeadStatus { get; set; }
         
         #endregion
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
             #region "Read Parameters"
             var lead = Lead.Get(executionContext);
             // TODO: Lead is required, so this test should be unnecessary
@@ -62,7 +56,7 @@ namespace msdyncrmWorkflowTools
             var existingContact = ExistingContact.Get(executionContext);
             var leadStatus = LeadStatus.Get(executionContext);
 
-            objCommon.tracingService.Trace("LeadID=" + lead.Id);
+            objCommon.Trace("LeadID=" + lead.Id);
             #endregion
 
             #region "QualifyLead Execution"
@@ -95,7 +89,7 @@ namespace msdyncrmWorkflowTools
             qualifyIntoOpportunityReq.LeadId = new EntityReference("lead", lead.Id);
 
             objCommon.service.Execute(qualifyIntoOpportunityReq);
-            objCommon.tracingService.Trace("  Executed OK.");
+            objCommon.Trace("  Executed OK.");
 
             #endregion
         }

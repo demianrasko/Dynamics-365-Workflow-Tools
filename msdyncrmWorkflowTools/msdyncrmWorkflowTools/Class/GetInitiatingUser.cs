@@ -3,7 +3,7 @@ using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 namespace msdyncrmWorkflowTools.Class
 {
-    public class GetInitiatingUser : CodeActivity
+    public class GetInitiatingUser : WorkflowActivityBase
     {
        
 
@@ -17,13 +17,12 @@ namespace msdyncrmWorkflowTools.Class
 
 
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
             #region "Load CRM Service from context"
 
-            var objCommon = new Common(executionContext);
             var context = executionContext.GetExtension<IWorkflowContext>();
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
+            objCommon.Trace("Load CRM Service from context --- OK");
             #endregion
 
             InitiatingUser.Set(executionContext, new EntityReference("systemuser", context.InitiatingUserId));

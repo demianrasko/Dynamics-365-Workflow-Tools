@@ -7,7 +7,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
 {
-    public class ShareRecordWithUser : CodeActivity
+    public class ShareRecordWithUser : WorkflowActivityBase
     {
         #region "Parameter Definition"
 
@@ -76,14 +76,8 @@ namespace msdyncrmWorkflowTools
         #endregion
 
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
             #region "Read Parameters"
             var sharingRecordUrl = SharingRecordURL.Get(executionContext);
             if (string.IsNullOrEmpty(sharingRecordUrl))
@@ -95,7 +89,7 @@ namespace msdyncrmWorkflowTools
             var objectTypeCode = parsedUrl.ObjectTypeCode;
             var objectId = parsedUrl.Id;
 
-            objCommon.tracingService.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={objectId}");
+            objCommon.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={objectId}");
 
             var user = User.Get(executionContext);
             principals.Clear();
@@ -112,7 +106,7 @@ namespace msdyncrmWorkflowTools
 
             var refObject = new EntityReference(entityName, new Guid(objectId));
 
-            objCommon.tracingService.Trace("Grant Request--- Start");
+            objCommon.Trace("Grant Request--- Start");
 
             var grantRequest = new GrantAccessRequest
             {
@@ -137,7 +131,7 @@ namespace msdyncrmWorkflowTools
                 objCommon.service.Execute(grantRequest);
             }
 
-            objCommon.tracingService.Trace("Grant Request--- end");
+            objCommon.Trace("Grant Request--- end");
 
             #endregion
         }

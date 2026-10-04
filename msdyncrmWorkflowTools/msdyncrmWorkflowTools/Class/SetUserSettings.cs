@@ -4,7 +4,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
 {
-    public class SetUserSettings : CodeActivity
+    public class SetUserSettings : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("User")]
@@ -57,14 +57,8 @@ namespace msdyncrmWorkflowTools
         [Default("false")]
         public InArgument<bool> IsSendAsAllowed { get; set; }
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
 
             #region "Read Parameters"
 
@@ -77,7 +71,7 @@ namespace msdyncrmWorkflowTools
             var defaultCalendarView = DefaultCalendarView.Get(executionContext);
             var isSendAsAllowed = IsSendAsAllowed.Get(executionContext);
 
-            objCommon.tracingService.Trace($"UserID: {userReference.Id.ToString()} ");
+            objCommon.Trace($"UserID: {userReference.Id.ToString()} ");
             #endregion
 
             var newSettings = new Entity("usersettings");

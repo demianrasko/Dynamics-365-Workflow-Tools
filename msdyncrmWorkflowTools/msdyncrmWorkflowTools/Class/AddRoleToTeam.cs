@@ -6,7 +6,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
 {
-    public class AddRoleToTeam : CodeActivity
+    public class AddRoleToTeam : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("Role")]
@@ -19,20 +19,14 @@ namespace msdyncrmWorkflowTools
         public InArgument<EntityReference> Team { get; set; }
 
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
 
             #region "Read Parameters"
             var roleReference = Role.Get(executionContext);
             var teamReference = Team.Get(executionContext);
 
-            objCommon.tracingService.Trace("RoleId: {0} - TeamID: {1} ", roleReference.Id, teamReference.Id);
+            objCommon.Trace("RoleId: {0} - TeamID: {1} ", roleReference.Id, teamReference.Id);
             #endregion
 
             try
@@ -51,7 +45,7 @@ namespace msdyncrmWorkflowTools
                     return;
                 }
                 
-                objCommon.tracingService.Trace("Associate | RoleId: {0} - TeamID: {1} ", entRoleId, teamReference.Id);
+                objCommon.Trace("Associate | RoleId: {0} - TeamID: {1} ", entRoleId, teamReference.Id);
 
                 objCommon.service.Associate(
                     "team",
@@ -61,7 +55,7 @@ namespace msdyncrmWorkflowTools
             }
             catch (Exception ex)
             {
-                objCommon.tracingService.Trace("Message: {0} \nStackTrace: {1}", ex.Message, ex.StackTrace);
+                objCommon.Trace("Message: {0} \nStackTrace: {1}", ex.Message, ex.StackTrace);
                 throw;
             }
         }

@@ -6,7 +6,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools.Class
 {
-    public class ExecuteWorkflowByID : CodeActivity
+    public class ExecuteWorkflowByID : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("Record ID")]
@@ -17,14 +17,8 @@ namespace msdyncrmWorkflowTools.Class
         [ReferenceTarget("workflow")]
         public InArgument<EntityReference> Process { get; set; }
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
             #region "Read Parameters"
             var recordId = RecordID.Get(executionContext);
             

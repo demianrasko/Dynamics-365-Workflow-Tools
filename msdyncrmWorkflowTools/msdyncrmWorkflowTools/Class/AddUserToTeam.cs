@@ -5,7 +5,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
 {
-    public class AddUserToTeam : CodeActivity
+    public class AddUserToTeam : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("User")]
@@ -17,19 +17,13 @@ namespace msdyncrmWorkflowTools
         [ReferenceTarget("team")]
         public InArgument<EntityReference> Team { get; set; }
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
             #region "Read Parameters"
             var userReference = User.Get(executionContext);
             var teamReference = Team.Get(executionContext);
 
-            objCommon.tracingService.Trace($"UserID: {userReference.Id.ToString()} - TeamID: {teamReference.Id.ToString()} ");
+            objCommon.Trace($"UserID: {userReference.Id.ToString()} - TeamID: {teamReference.Id.ToString()} ");
             #endregion
 
             var request = new AddMembersTeamRequest

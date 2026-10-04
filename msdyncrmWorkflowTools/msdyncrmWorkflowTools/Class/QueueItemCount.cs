@@ -6,7 +6,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools.Class
 {
-    public class QueueItemCount : CodeActivity
+    public class QueueItemCount : WorkflowActivityBase
     {
         #region "Parameter Definition"
         [RequiredArgument]
@@ -24,21 +24,15 @@ namespace msdyncrmWorkflowTools.Class
 
         #endregion
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
             #region "Read Parameters"
             var sourceQueue = SourceQueue.Get(executionContext);
 
-            objCommon.tracingService.Trace($"sourceQueue: {sourceQueue.Id.ToString()} ");
+            objCommon.Trace($"sourceQueue: {sourceQueue.Id.ToString()} ");
 
             var countOnlyUnassigned = CountOnlyUnassigned.Get(executionContext);
-            objCommon.tracingService.Trace("countOnlyUnassigned: {0} ");
+            objCommon.Trace("countOnlyUnassigned: {0} ");
 
 
             #endregion
@@ -62,7 +56,7 @@ namespace msdyncrmWorkflowTools.Class
                       </entity>
                     </fetch>");
 
-            objCommon.tracingService.Trace($"FetchXML: {sFetchXml} ");
+            objCommon.Trace($"FetchXML: {sFetchXml} ");
             var queueItemsCount = objCommon.service.RetrieveMultiple(new FetchExpression(sFetchXml.ToString()));
 
             if (queueItemsCount.Entities.Count == 0)
@@ -75,7 +69,7 @@ namespace msdyncrmWorkflowTools.Class
             foreach (var c in queueItemsCount.Entities)
             {
                 var aggregate2 = (int)((AliasedValue)c["queueitem_count"]).Value;
-                objCommon.tracingService.Trace("{0}", "Count of all queueItemsCount: " + aggregate2);
+                objCommon.Trace("{0}", "Count of all queueItemsCount: " + aggregate2);
                 ItemsCount.Set(executionContext, aggregate2);
             }
         }

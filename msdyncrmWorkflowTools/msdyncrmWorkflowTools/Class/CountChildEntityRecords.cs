@@ -8,7 +8,7 @@ namespace msdyncrmWorkflowTools
 {
 
 
-    public class CountChildEntityRecords : CodeActivity
+    public class CountChildEntityRecords : WorkflowActivityBase
     {
         #region "Parameter Definition"
         [RequiredArgument]
@@ -31,20 +31,14 @@ namespace msdyncrmWorkflowTools
         public OutArgument<int> Result { get; set; }
         #endregion
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
 
             #region "Read Parameters"
             var _childEntityName = ChildEntityName.Get(executionContext);
             var _parentLookupName = ParentLookupName.Get(executionContext);
             var _recordURL = RecordURL.Get(executionContext);
-            objCommon.tracingService.Trace("ChildEntityName=" + _childEntityName + "--ParentLookupName=" + _parentLookupName + "--RecordURL=" + _recordURL);
+            objCommon.Trace("ChildEntityName=" + _childEntityName + "--ParentLookupName=" + _parentLookupName + "--RecordURL=" + _recordURL);
             if (_recordURL == null || _recordURL == string.Empty)
             {
                 return;
@@ -53,7 +47,7 @@ namespace msdyncrmWorkflowTools
             var ParentObjectTypeCode = parsedUrl.ObjectTypeCode;
             var ParenEntityName = objCommon.GetEntityNameFromCode(ParentObjectTypeCode);
             var ParentEntityId = parsedUrl.Id;
-            objCommon.tracingService.Trace("ParentObjectTypeCode=" + ParentObjectTypeCode + "--ParentId=" + ParentEntityId);
+            objCommon.Trace("ParentObjectTypeCode=" + ParentObjectTypeCode + "--ParentId=" + ParentEntityId);
             #endregion
 
 
@@ -69,7 +63,7 @@ namespace msdyncrmWorkflowTools
                                     </entity>
                                 </fetch>";
                 fetchXml = string.Format(fetchXml, _childEntityName, _parentLookupName, ParentEntityId);
-                objCommon.tracingService.Trace(string.Format("FetchXML: {0} ", fetchXml));
+                objCommon.Trace(string.Format("FetchXML: {0} ", fetchXml));
                 var results = objCommon.service.RetrieveMultiple(new FetchExpression(fetchXml));
 
                 Result.Set(executionContext, results.Entities.Count);

@@ -4,7 +4,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
 {
-    public class DateFunctions : CodeActivity
+    public class DateFunctions : WorkflowActivityBase
     {
         #region "Parameter Definition"
         
@@ -50,14 +50,8 @@ namespace msdyncrmWorkflowTools
 
         #endregion
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
             #region "Read Parameters"
             var date1 = Date1.Get(executionContext);
             var date2 = Date2.Get(executionContext);

@@ -6,7 +6,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools.Class
 {
-    public class SetProcess : CodeActivity
+    public class SetProcess : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("Record URL")]
@@ -17,14 +17,8 @@ namespace msdyncrmWorkflowTools.Class
         [ReferenceTarget("workflow")]
         public InArgument<EntityReference> Process { get; set; }
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
             #region "Read Parameters"
             var cloningRecordUrl = ClonningRecordURL.Get(executionContext);
 
@@ -38,7 +32,7 @@ namespace msdyncrmWorkflowTools.Class
             var objectId = parsedUrl.Id;
             var entityName = objCommon.GetEntityNameFromCode(objectTypeCode);
 
-            objCommon.tracingService.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={objectId}");
+            objCommon.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={objectId}");
 
             var process = Process.Get(executionContext);
             

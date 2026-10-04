@@ -7,7 +7,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 namespace msdyncrmWorkflowTools
 {
   
-    public class CreateTeam : CodeActivity
+    public class CreateTeam : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("Team Name")]
@@ -34,14 +34,8 @@ namespace msdyncrmWorkflowTools
         [ReferenceTarget("team")]
         public OutArgument<EntityReference> createdTeam { get; set; }
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
 
             #region "Read Parameters"
             var _teamName = TeamName.Get(executionContext);
@@ -49,7 +43,7 @@ namespace msdyncrmWorkflowTools
             var _administrator= Administrator.Get(executionContext);
             var _businessUnit= BusinessUnit.Get(executionContext);
 
-            objCommon.tracingService.Trace("_teamName=" + _teamName );
+            objCommon.Trace("_teamName=" + _teamName );
             #endregion
 
 
@@ -63,7 +57,7 @@ namespace msdyncrmWorkflowTools
             }
             catch (FaultException<OrganizationServiceFault> ex)
             {
-                objCommon.tracingService.Trace("Error : {0} - {1}", ex.Message, ex.StackTrace);
+                objCommon.Trace("Error : {0} - {1}", ex.Message, ex.StackTrace);
                 //throw ex;
                 // if (ex.Detail.ErrorCode != 2147220937)//ignore if the error is a duplicate insert
                 //{
@@ -72,7 +66,7 @@ namespace msdyncrmWorkflowTools
             }
             catch (System.Exception ex)
             {
-                objCommon.tracingService.Trace("Error : {0} - {1}", ex.Message, ex.StackTrace);
+                objCommon.Trace("Error : {0} - {1}", ex.Message, ex.StackTrace);
                 //throw ex;
             }
             #endregion

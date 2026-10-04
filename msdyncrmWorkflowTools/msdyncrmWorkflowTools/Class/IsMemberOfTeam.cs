@@ -4,7 +4,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools.Class
 {
-    public class IsMemberOfTeam : CodeActivity
+    public class IsMemberOfTeam : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("User")]
@@ -18,14 +18,8 @@ namespace msdyncrmWorkflowTools.Class
 
         [Output("Result")]
         public OutArgument<bool> Result { get; set; }
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
             #region "Read Parameters"
             var user = User.Get(executionContext);
             var team = Team.Get(executionContext);

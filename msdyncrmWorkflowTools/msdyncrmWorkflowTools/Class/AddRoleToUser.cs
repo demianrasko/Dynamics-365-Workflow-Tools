@@ -4,7 +4,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
 {
-    public class AddRoleToUser : CodeActivity
+    public class AddRoleToUser : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("Role")]
@@ -16,19 +16,13 @@ namespace msdyncrmWorkflowTools
         [ReferenceTarget("systemuser")]
         public InArgument<EntityReference> User { get; set; }
         
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
             #region "Read Parameters"
             var roleReference = Role.Get(executionContext);
             var userReference = User.Get(executionContext);
 
-            objCommon.tracingService.Trace(
+            objCommon.Trace(
                 $"RoleId: {roleReference.Id.ToString()} - UserID: {userReference.Id.ToString()} ");
             #endregion
 

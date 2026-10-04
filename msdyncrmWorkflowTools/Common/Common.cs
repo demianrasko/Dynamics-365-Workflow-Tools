@@ -67,6 +67,23 @@ namespace msdyncrmWorkflowTools
         }
 
         /// <summary>
+        /// Writes a message to the trace log exactly as given, so it may contain { and } (interpolated
+        /// values, JSON, FetchXML, stack traces).
+        /// </summary>
+        public void Trace(string message)
+        {
+            tracingService.Trace("{0}", message);
+        }
+
+        /// <summary>
+        /// Writes a composite-format message (string.Format style) to the trace log.
+        /// </summary>
+        public void Trace(string format, params object[] args)
+        {
+            tracingService.Trace(format, args);
+        }
+
+        /// <summary>
         /// Tracing service that discards everything, so tracingService is never null.
         /// </summary>
         private sealed class NullTracingService : ITracingService
@@ -124,7 +141,7 @@ namespace msdyncrmWorkflowTools
                                       </entity>
                                     </fetch>";
             
-            tracingService.Trace($"FetchXML: {fetchXml} ");
+            Trace($"FetchXML: {fetchXml} ");
             
             var relations = service.RetrieveMultiple(new FetchExpression(fetchXml));
 
@@ -168,17 +185,17 @@ namespace msdyncrmWorkflowTools
 
         public Guid CloneRecord(string entityName, string objectId, string fieldstoIgnore, string prefix)
         {
-            tracingService.Trace("entering CloneRecord");
+            Trace("entering CloneRecord");
             if (fieldstoIgnore == null)
             {
                 fieldstoIgnore = string.Empty;
             }
 
             fieldstoIgnore = fieldstoIgnore.ToLower();
-            tracingService.Trace($"{nameof(fieldstoIgnore)}={fieldstoIgnore}");
+            Trace($"{nameof(fieldstoIgnore)}={fieldstoIgnore}");
             
             var retrievedObject = service.Retrieve(entityName, new Guid(objectId), new ColumnSet(allColumns: true));
-            tracingService.Trace("retrieved object OK");
+            Trace("retrieved object OK");
 
             var newEntity = new Entity(entityName);
             var primaryIdAttribute = string.Empty;
@@ -223,10 +240,10 @@ namespace msdyncrmWorkflowTools
                         Query = new FetchExpression(fetchParty)
                     };
 
-                    tracingService.Trace(fetchParty);
+                    Trace(fetchParty);
                     var returnCollection = ((RetrieveMultipleResponse)service.Execute(request)).EntityCollection;
                     
-                    tracingService.Trace("attribute:{0}", att2);
+                    Trace("attribute:{0}", att2);
 
                     var party = new Entity("activityparty");
                     foreach (var ent in returnCollection.Entities)
@@ -234,7 +251,7 @@ namespace msdyncrmWorkflowTools
                         var partyid = (EntityReference)ent.Attributes["partyid"];
 
                         party.Attributes.Add("partyid", new EntityReference(partyid.LogicalName, partyid.Id));
-                        tracingService.Trace("attribute:{0}:{1}:{2}", att2, partyid.LogicalName, partyid.Id.ToString());
+                        Trace("attribute:{0}:{1}:{2}", att2, partyid.LogicalName, partyid.Id.ToString());
                         arrPartiesNew.Entities.Add(party);
                     }
 
@@ -242,7 +259,7 @@ namespace msdyncrmWorkflowTools
                     continue;
                 }
 
-                tracingService.Trace("attribute:{0}", att);
+                Trace("attribute:{0}", att);
 
                 if (att == primaryNameAttribute && prefix != null)
                 {
@@ -252,9 +269,9 @@ namespace msdyncrmWorkflowTools
                 newEntity.Attributes.Add(att, retrievedObject.Attributes[att]);
             }
 
-            tracingService.Trace("creating cloned object...");
+            Trace("creating cloned object...");
             var id = service.Create(newEntity);
-            tracingService.Trace("created cloned object OK");
+            Trace("created cloned object OK");
 
             if (newEntity.Attributes.Contains("statuscode") && newEntity.Attributes.Contains("statecode"))
             {
@@ -272,7 +289,7 @@ namespace msdyncrmWorkflowTools
                 }
             }
 
-            tracingService.Trace("cloned object OK");
+            Trace("cloned object OK");
 
             return id;
         }
@@ -345,16 +362,16 @@ namespace msdyncrmWorkflowTools
         /*
         public void QRCode(string entityname, string recordid, string QRInfo, string noteSubject, string noteText, string fileName)
         {
-            tracingService.Trace("1");
+            Trace("1");
             QRCodeEncoder encoder = new QRCodeEncoder();
-            tracingService.Trace("2");
+            Trace("2");
             Bitmap hi = encoder.Encode(QRInfo);
-            tracingService.Trace("3");
+            Trace("3");
             string base64String = String.Empty;
-            tracingService.Trace("4");
+            Trace("4");
             using (MemoryStream ms = new MemoryStream())
             {
-                tracingService.Trace("read stream");
+                Trace("read stream");
                 hi.Save(ms, ImageFormat.Jpeg);
             
             
@@ -424,7 +441,7 @@ namespace msdyncrmWorkflowTools
         public bool SendEmailToUsersInRole(EntityReference securityRoleLookup, EntityReference email)
         {
             var userList = service.RetrieveMultiple(new FetchExpression(BuildFetchXml(securityRoleLookup.Id)));
-            tracingService.Trace("Retrieved Data");
+            Trace("Retrieved Data");
 
 
             var emailEnt = new Entity("email", email.Id);
@@ -456,20 +473,20 @@ namespace msdyncrmWorkflowTools
         public bool SendEmailFromTemplateToUsersInRole(EntityReference securityRoleLookup, EntityReference emailTemplateLookup)
         {
             var userList = service.RetrieveMultiple(new FetchExpression(BuildFetchXml(securityRoleLookup.Id)));
-            tracingService.Trace("Retrieved Data");
+            Trace("Retrieved Data");
 
             foreach (var user in userList.Entities)
             {
                 try
                 {
-                    tracingService.Trace("user creating email");
+                    Trace("user creating email");
                     var sent = SendEmailFromTemplate(emailTemplateLookup, user.Id);
 
 
                 }
                 catch (System.Exception ex)
                 {
-                    tracingService.Trace("error:" + ex.ToString());
+                    Trace("error:" + ex.ToString());
                 }
             }
             return true;
@@ -815,12 +832,12 @@ namespace msdyncrmWorkflowTools
                         </filter>
                       </entity>
                     </fetch>";
-            tracingService.Trace(string.Format("FetchXML: {0} ", fetchXML));
+            Trace(string.Format("FetchXML: {0} ", fetchXML));
             var attachmentFiles = service.RetrieveMultiple(new FetchExpression(fetchXML));
 
             if (attachmentFiles.Entities.Count == 0)
             {
-                tracingService.Trace(string.Format("No Attachment Files found."));
+                Trace(string.Format("No Attachment Files found."));
                 return;
             }
 
@@ -930,7 +947,7 @@ namespace msdyncrmWorkflowTools
             }
             catch (Exception ex)
             {
-                tracingService.Trace("Error : {0} - {1}", ex.Message, ex.StackTrace);
+                Trace("Error : {0} - {1}", ex.Message, ex.StackTrace);
                 //    objCommon.tracingService.Trace("Error : {0} - {1}", ex.Message, ex.StackTrace);//
                 //throw ex;
                 // if (ex.Detail.ErrorCode != 2147220937)//ignore if the error is a duplicate insert
@@ -984,12 +1001,12 @@ namespace msdyncrmWorkflowTools
                     </fetch>";
             }
 
-            tracingService.Trace("FetchXML: {0} ", fetchXML);
+            Trace("FetchXML: {0} ", fetchXML);
             var attachmentFiles = service.RetrieveMultiple(new FetchExpression(fetchXML));
 
             if (attachmentFiles.Entities.Count == 0)
             {
-                tracingService.Trace("No Attachment Files found.");
+                Trace("No Attachment Files found.");
                 return;
             }
 
@@ -1002,7 +1019,7 @@ namespace msdyncrmWorkflowTools
 
             foreach (var file in attachmentFiles.Entities)
             {
-                tracingService.Trace("Entities Count: {0} ", i);
+                Trace("Entities Count: {0} ", i);
 
                 var _Attachment = new Entity("activitymimeattachment");
                 _Attachment["objectid"] = new EntityReference("email", email.Id);
@@ -1033,13 +1050,13 @@ namespace msdyncrmWorkflowTools
 
                 if (mostRecent)
                 {
-                    tracingService.Trace("Is Most Recent");
+                    Trace("Is Most Recent");
 
                     var alreadyAttached = attachedFiles.Where(f => f["filename"].ToString() == file.GetAttributeValue<string>("filename")).FirstOrDefault();
 
                     if (alreadyAttached == null)
                     {
-                        tracingService.Trace("not already attached");
+                        Trace("not already attached");
 
                         service.Create(_Attachment);
 
@@ -1052,12 +1069,12 @@ namespace msdyncrmWorkflowTools
                     }
                     else
                     {
-                        tracingService.Trace("already attached");
+                        Trace("already attached");
                     }
                 }
                 else
                 {
-                    tracingService.Trace("Is Not Most Recent");
+                    Trace("Is Not Most Recent");
                     service.Create(_Attachment);
                 }
             }
@@ -1150,7 +1167,7 @@ namespace msdyncrmWorkflowTools
                 result = await response.Content.ReadAsStringAsync();
                 // NOTE: A successful response is returned in XML. You can extract the contents of the XML as follows.
                 // var content = XElement.Parse(result).Value;
-                tracingService.Trace("{0}", result);
+                Trace("{0}", result);
 
 
             }

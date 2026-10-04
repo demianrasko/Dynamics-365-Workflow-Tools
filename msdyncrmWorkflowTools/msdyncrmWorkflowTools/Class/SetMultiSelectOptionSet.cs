@@ -6,7 +6,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
 {
-    public class SetMultiSelectOptionSet : CodeActivity
+    public class SetMultiSelectOptionSet : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("Target Record URL")]
@@ -27,10 +27,8 @@ namespace msdyncrmWorkflowTools
         [Default("false")]
         public InArgument<bool> KeepExistingValues { get; set; } 
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
 
             var sourceEntityReference = GetTargetEntityReference(executionContext,objCommon.tracingService, objCommon.service);
             var attributeName = GetAttributeName(executionContext,objCommon.tracingService);

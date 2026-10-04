@@ -5,7 +5,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools.Class
 {
-    public class SendEmail : CodeActivity
+    public class SendEmail : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("Email to send")]
@@ -16,14 +16,8 @@ namespace msdyncrmWorkflowTools.Class
         [Output("Email Subject")]
         public OutArgument<string> Subject { get; set; }
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
             #region "Read Parameters"
             var email = SourceEmail.Get(executionContext);
             #endregion

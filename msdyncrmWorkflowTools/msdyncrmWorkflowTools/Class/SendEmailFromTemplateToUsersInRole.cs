@@ -3,7 +3,7 @@ using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 namespace msdyncrmWorkflowTools.Class
 {
-    public class SendEmailFromTemplateToUsersInRole : CodeActivity
+    public class SendEmailFromTemplateToUsersInRole : WorkflowActivityBase
     {
         [Input("Security Role")]
         [RequiredArgument]
@@ -25,24 +25,18 @@ namespace msdyncrmWorkflowTools.Class
 
 
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
             #region "Read Parameters"
             var securityRoleLookup = SecurityRoleLookup.Get(executionContext);
-            objCommon.tracingService.Trace(string.Format("marketingList: {0} ", securityRoleLookup.Id.ToString()));
+            objCommon.Trace(string.Format("marketingList: {0} ", securityRoleLookup.Id.ToString()));
 
             var emailTemplateLookup = EmailTemplateLookup.Get(executionContext);
-            objCommon.tracingService.Trace(string.Format("campaign: {0} ", emailTemplateLookup.Id.ToString()));
+            objCommon.Trace(string.Format("campaign: {0} ", emailTemplateLookup.Id.ToString()));
 
 
             #endregion
-            objCommon.tracingService.Trace("Init");
+            objCommon.Trace("Init");
 
             objCommon.SendEmailFromTemplateToUsersInRole(securityRoleLookup,emailTemplateLookup);
 

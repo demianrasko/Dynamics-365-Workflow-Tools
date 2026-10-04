@@ -4,7 +4,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools.Class
 {
-    public class EntityAttachmentToEmail : CodeActivity
+    public class EntityAttachmentToEmail : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("Main Record URL")]
@@ -30,15 +30,8 @@ namespace msdyncrmWorkflowTools.Class
         [Input("Top Attachments (Most Recent)")]
         public InArgument<int> TopRecords { get; set; }
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-
-            #endregion
-
             #region "Read Parameters"
 
             // Get parameters
@@ -54,7 +47,7 @@ namespace msdyncrmWorkflowTools.Class
             var parentObjectTypeCode = parsedUrl.ObjectTypeCode;
             var parentId = parsedUrl.Id;
 
-            objCommon.tracingService.Trace("ParentObjectTypeCode=" + parentObjectTypeCode + "--ParentId=" + parentId);
+            objCommon.Trace("ParentObjectTypeCode=" + parentObjectTypeCode + "--ParentId=" + parentId);
 
             // Treat file name
             if (fileName == "*") fileName = string.Empty;

@@ -7,7 +7,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools.Class
 {
-    public class PickFromQueue : CodeActivity
+    public class PickFromQueue : WorkflowActivityBase
     {
         #region "Parameter Definition"
         [RequiredArgument]
@@ -26,24 +26,18 @@ namespace msdyncrmWorkflowTools.Class
 
         #endregion
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
             #region "Read Parameters"
             var sourceQueue = SourceQueue.Get(executionContext);
 
-            objCommon.tracingService.Trace($"sourceQueue: {sourceQueue.Id.ToString()} ");
+            objCommon.Trace($"sourceQueue: {sourceQueue.Id.ToString()} ");
 
             var removeItems = RemoveItems.Get(executionContext);
-            objCommon.tracingService.Trace($"removeItems: {removeItems.ToString()} ");
+            objCommon.Trace($"removeItems: {removeItems.ToString()} ");
 
             var quantity = Quantity.Get(executionContext);
-            objCommon.tracingService.Trace($"quantity: {quantity.ToString()} ");
+            objCommon.Trace($"quantity: {quantity.ToString()} ");
 
             #endregion
 
@@ -64,7 +58,7 @@ namespace msdyncrmWorkflowTools.Class
                       </entity>
                     </fetch>");
 
-            objCommon.tracingService.Trace($"FetchXML: {sFetchXml} ");
+            objCommon.Trace($"FetchXML: {sFetchXml} ");
             var queueItems = objCommon.service.RetrieveMultiple(new FetchExpression(sFetchXml.ToString()));
 
             //no pending queue items

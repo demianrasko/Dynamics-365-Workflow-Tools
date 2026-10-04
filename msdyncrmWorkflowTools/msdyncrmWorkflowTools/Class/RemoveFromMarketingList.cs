@@ -6,7 +6,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools.Class
 {
-    public class RemoveFromMarketingList : CodeActivity
+    public class RemoveFromMarketingList : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("Marketing List")]
@@ -25,17 +25,11 @@ namespace msdyncrmWorkflowTools.Class
         [ReferenceTarget("lead")]
         public InArgument<EntityReference> Lead { get; set; }
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
             #region "Read Parameters"
             var marketingList = MarketingList.Get(executionContext);
-            objCommon.tracingService.Trace($"marketingList: {marketingList.Id.ToString()} ");
+            objCommon.Trace($"marketingList: {marketingList.Id.ToString()} ");
 
             var account = Account.Get(executionContext);
 
@@ -60,7 +54,7 @@ namespace msdyncrmWorkflowTools.Class
                 idToRemove = lead.Id;
             }
 
-            objCommon.tracingService.Trace($"idToRemove: {idToRemove.ToString()} ");
+            objCommon.Trace($"idToRemove: {idToRemove.ToString()} ");
 
             var removeRequest = new RemoveMemberListRequest
             {

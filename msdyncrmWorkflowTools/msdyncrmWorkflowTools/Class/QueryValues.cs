@@ -6,7 +6,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
 {
-    public class QueryValues: CodeActivity
+    public class QueryValues: WorkflowActivityBase
     {
         #region "Parameter Definition"
         [RequiredArgument]
@@ -56,14 +56,8 @@ namespace msdyncrmWorkflowTools
         
         #endregion
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
             #region "Read Parameters"
             var entityName = EntityName.Get(executionContext);
             var attribute1 = Attribute1.Get(executionContext);
@@ -73,7 +67,7 @@ namespace msdyncrmWorkflowTools
             var valueAttribute1 = ValueAttribute1.Get(executionContext);
             var valueAttribute2 = ValueAttribute2.Get(executionContext);
 
-            objCommon.tracingService.Trace(
+            objCommon.Trace(
                 $"EntityName: {entityName} - Attribute1:{attribute1} - Attribute2:{attribute2} - FilterAttribute1:{filterAttribute1} - FilterAttribute2:{filterAttribute2} - ValueAttribute1:{valueAttribute1} ValueAttribute2:{valueAttribute2}");
             #endregion
             try
@@ -116,35 +110,35 @@ namespace msdyncrmWorkflowTools
 
                 qe.Criteria = filter;
 
-                objCommon.tracingService.Trace("Executing Query...");
+                objCommon.Trace("Executing Query...");
 
                 var results = objCommon.service.RetrieveMultiple(qe);
 
-                objCommon.tracingService.Trace($"Executed Query Ok, {results.Entities.Count} records ...");
+                objCommon.Trace($"Executed Query Ok, {results.Entities.Count} records ...");
 
                 if (results.Entities.Count <= 0)
                 {
                     return;
                 }
 
-                objCommon.tracingService.Trace("Setting results");
+                objCommon.Trace("Setting results");
                 if (results.Entities[0].Attributes.Contains(attribute1))
                 {
-                    objCommon.tracingService.Trace($"Setting result1: {results.Entities[0].Attributes[attribute1]}");
+                    objCommon.Trace($"Setting result1: {results.Entities[0].Attributes[attribute1]}");
 
                     // TODO: Is there a better way to do this?
                     switch (results.Entities[0].Attributes[attribute1])
                     {
                         case OptionSetValue _:
                         {
-                            objCommon.tracingService.Trace("Value1 Is an OptionSetValue");
+                            objCommon.Trace("Value1 Is an OptionSetValue");
                             var val = (OptionSetValue)results.Entities[0].Attributes[attribute1];
                             ResultValue1.Set(executionContext, val.Value.ToString());
                             break;
                         }
                         case EntityReference _:
                         {
-                            objCommon.tracingService.Trace("Value1 Is an EntityReference");
+                            objCommon.Trace("Value1 Is an EntityReference");
                             var val = (EntityReference)results.Entities[0].Attributes[attribute1];
                             ResultValue1.Set(executionContext, val.Id.ToString());
                             break;
@@ -157,13 +151,13 @@ namespace msdyncrmWorkflowTools
 
                 if (results.Entities[0].Attributes.Contains(attribute2))
                 {
-                    objCommon.tracingService.Trace($"Setting result2: {results.Entities[0].Attributes[attribute2]}");
+                    objCommon.Trace($"Setting result2: {results.Entities[0].Attributes[attribute2]}");
 
                     switch (results.Entities[0].Attributes[attribute2])
                     {
                         case OptionSetValue _:
                         {
-                            objCommon.tracingService.Trace("Value2 Is an OptionSetValue");
+                            objCommon.Trace("Value2 Is an OptionSetValue");
 
                             var val = (OptionSetValue)results.Entities[0].Attributes[attribute2];
                             ResultValue2.Set(executionContext, val.Value.ToString());
@@ -171,7 +165,7 @@ namespace msdyncrmWorkflowTools
                         }
                         case EntityReference _:
                         {
-                            objCommon.tracingService.Trace("Value2 Is an EntityReference");
+                            objCommon.Trace("Value2 Is an EntityReference");
                             var val = (EntityReference)results.Entities[0].Attributes[attribute2];
                             ResultValue2.Set(executionContext, val.Id.ToString());
                             break;
@@ -182,12 +176,12 @@ namespace msdyncrmWorkflowTools
                     }
                 }
                 
-                objCommon.tracingService.Trace("End setting results");
+                objCommon.Trace("End setting results");
                 #endregion
             }
             catch (Exception ex)
             {
-                objCommon.tracingService.Trace($"error: {ex.Message} - {ex.StackTrace}");
+                objCommon.Trace($"error: {ex.Message} - {ex.StackTrace}");
 
                 throw;
             }

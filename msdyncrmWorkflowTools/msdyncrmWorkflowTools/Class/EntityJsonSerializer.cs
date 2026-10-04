@@ -8,7 +8,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
 {
-    public class EntityJsonSerializer : CodeActivity
+    public class EntityJsonSerializer : WorkflowActivityBase
     {
         #region "Parameter Definition"
 
@@ -21,15 +21,8 @@ namespace msdyncrmWorkflowTools
 
         #endregion
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-
-            #endregion
-
             #region "Read Parameters"
 
             var serializingRecordUrl = SerializingRecordURL.Get(executionContext);
@@ -44,7 +37,7 @@ namespace msdyncrmWorkflowTools
             var objectId = parsedUrl.Id;
             var entityName = objCommon.GetEntityNameFromCode(objectTypeCode);
 
-            objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
+            objCommon.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
 
             #endregion
 
@@ -52,7 +45,7 @@ namespace msdyncrmWorkflowTools
 
             var retrievedObject =
                 objCommon.service.Retrieve(entityName, new Guid(objectId), new ColumnSet(allColumns: true));
-            objCommon.tracingService.Trace("retrieved object OK");
+            objCommon.Trace("retrieved object OK");
 
             //var newEntity = new Entity(entityName);
             var primaryIdAttribute = string.Empty;
@@ -100,11 +93,11 @@ namespace msdyncrmWorkflowTools
                     sJson.Append("\"" + att + "\" : " + retrievedObject.Attributes[att]);
                 }
 
-                objCommon.tracingService.Trace("attribute:{0}", att);
+                objCommon.Trace("attribute:{0}", att);
             }
 
             sJson.Append("}}");
-            objCommon.tracingService.Trace("json object OK");
+            objCommon.Trace("json object OK");
             OutputJson.Set(executionContext, sJson.ToString());
 
             #endregion

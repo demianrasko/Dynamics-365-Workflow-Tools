@@ -15,7 +15,7 @@ namespace msdyncrmWorkflowTools
     /// Note: "Old Parent Field" is optional if the new parent relationship is with the same entity / lookup field
     /// 
     /// </summary>
-    public class CloneChildren : CodeActivity
+    public class CloneChildren : WorkflowActivityBase
     {
         #region "Parameter Definition"
 
@@ -55,14 +55,8 @@ namespace msdyncrmWorkflowTools
 
 
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
             #region "Read Parameters"
 
             var _relationshipName = RelationshipName.Get(executionContext);
@@ -87,7 +81,7 @@ namespace msdyncrmWorkflowTools
             var parentObjectTypeCode = parsedUrl.ObjectTypeCode;
             var parentEntityName = objCommon.GetEntityNameFromCode(parentObjectTypeCode);
             var parentId = parsedUrl.Id;
-            objCommon.tracingService.Trace("ObjectTypeCode=" + parentObjectTypeCode + "--ParentId=" + parentId);
+            objCommon.Trace("ObjectTypeCode=" + parentObjectTypeCode + "--ParentId=" + parentId);
 
             var _destination = TargetRecordUrl.Get(executionContext);
             if (_destination == null || _destination == string.Empty)
@@ -98,7 +92,7 @@ namespace msdyncrmWorkflowTools
             var destinationObjectTypeCode = parsedDestinationUrl.ObjectTypeCode;
             var destinationEntityName = objCommon.GetEntityNameFromCode(destinationObjectTypeCode);
             var destinationId = parsedDestinationUrl.Id;
-            objCommon.tracingService.Trace("ObjectTypeCode=" + destinationObjectTypeCode + "--ParentId=" + destinationId);
+            objCommon.Trace("ObjectTypeCode=" + destinationObjectTypeCode + "--ParentId=" + destinationId);
 
 
             //Optional

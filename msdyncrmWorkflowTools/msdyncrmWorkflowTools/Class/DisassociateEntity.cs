@@ -5,7 +5,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
 {
-    public class DisassociateEntity : CodeActivity
+    public class DisassociateEntity : WorkflowActivityBase
     {
         #region "Parameter Definition"
         [RequiredArgument]
@@ -19,14 +19,8 @@ namespace msdyncrmWorkflowTools
         public InArgument<string> RecordURL { get; set; }
         #endregion
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
             #region "Read Parameters"
             var relationshipName = RelationshipName.Get(executionContext);
             var recordUrl = RecordURL.Get(executionContext);
@@ -42,7 +36,7 @@ namespace msdyncrmWorkflowTools
 
             var entityName = objCommon.GetEntityNameFromCode(parentObjectTypeCode);
 
-            objCommon.tracingService.Trace($"ParentObjectTypeCode={parentObjectTypeCode}--ParentId={parentId}");
+            objCommon.Trace($"ParentObjectTypeCode={parentObjectTypeCode}--ParentId={parentId}");
             #endregion
             
             #region "Disassociate Execution"

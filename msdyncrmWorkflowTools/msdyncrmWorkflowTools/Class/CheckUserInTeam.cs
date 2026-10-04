@@ -5,7 +5,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
 {
-    public class CheckUserInTeam : CodeActivity
+    public class CheckUserInTeam : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("Team")]
@@ -19,19 +19,13 @@ namespace msdyncrmWorkflowTools
         [Output("isUserInTeam")]
         public OutArgument<bool> isUserInTeam { get; set; }
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
             #region "Read Parameters"
             var teamReference = Team.Get(executionContext);
             var userReference = User.Get(executionContext);
             
-            objCommon.tracingService.Trace($"TeamId: {teamReference.Id.ToString()} ");
+            objCommon.Trace($"TeamId: {teamReference.Id.ToString()} ");
             #endregion
 
             var userId = objCommon.context.InitiatingUserId.ToString();
@@ -54,12 +48,12 @@ namespace msdyncrmWorkflowTools
                                                              </link-entity>
                                                            </entity></fetch> ";
 
-            objCommon.tracingService.Trace($"FetchXML: {fetchXml} ");
+            objCommon.Trace($"FetchXML: {fetchXml} ");
             var givenTeams = objCommon.service.RetrieveMultiple(new FetchExpression (fetchXml));
 
             var userInTeam = (givenTeams.Entities.Count > 0);
 
-            objCommon.tracingService.Trace("{0}", userInTeam ? "User do not belong to the team." : "User belong to this team.");
+            objCommon.Trace("{0}", userInTeam ? "User do not belong to the team." : "User belong to this team.");
 
             isUserInTeam.Set(executionContext, userInTeam);
         }

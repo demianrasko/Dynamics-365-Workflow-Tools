@@ -5,7 +5,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools.Class
 {
-    public class EmailToTeam : CodeActivity
+    public class EmailToTeam : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("Email")]
@@ -17,14 +17,8 @@ namespace msdyncrmWorkflowTools.Class
         [ReferenceTarget("team")]
         public InArgument<EntityReference> Team { get; set; }
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
             #region "Read Parameters"
            
             var email = Email.Get(executionContext);

@@ -5,7 +5,7 @@ using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 namespace msdyncrmWorkflowTools.Class
 {
-    public class AddToMarketingList : CodeActivity
+    public class AddToMarketingList : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("Marketing List")]
@@ -24,17 +24,11 @@ namespace msdyncrmWorkflowTools.Class
         [ReferenceTarget("lead")]
         public InArgument<EntityReference> Lead { get; set; }
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
             #region "Read Parameters"
             var marketingList = MarketingList.Get(executionContext);
-            objCommon.tracingService.Trace(string.Format("marketingList: {0} ", marketingList.Id.ToString()));
+            objCommon.Trace(string.Format("marketingList: {0} ", marketingList.Id.ToString()));
 
             var account = Account.Get(executionContext);
             
@@ -58,7 +52,7 @@ namespace msdyncrmWorkflowTools.Class
             {
                 idToAdd = lead.Id;
             }
-            objCommon.tracingService.Trace(string.Format("idToAdd: {0} ", idToAdd.ToString()));
+            objCommon.Trace(string.Format("idToAdd: {0} ", idToAdd.ToString()));
 
             var addRequest = new AddMemberListRequest
             {

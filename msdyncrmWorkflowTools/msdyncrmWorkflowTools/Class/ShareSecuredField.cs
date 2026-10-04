@@ -7,7 +7,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
 {
-    public class ShareSecuredField : CodeActivity
+    public class ShareSecuredField : WorkflowActivityBase
     {
         #region "Parameter Definition"
 
@@ -43,13 +43,12 @@ namespace msdyncrmWorkflowTools
         #endregion
 
         
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
             #region "Load CRM Service from context"
 
-            var objCommon = new Common(executionContext);
             
-            objCommon.tracingService.Trace("Entered ShareSecuredField.Execute(), Activity Instance Id: {0}, Workflow Instance Id: {1}", executionContext.ActivityInstanceId, executionContext.WorkflowInstanceId);
+            objCommon.Trace("Entered ShareSecuredField.Execute(), Activity Instance Id: {0}, Workflow Instance Id: {1}", executionContext.ActivityInstanceId, executionContext.WorkflowInstanceId);
 
             #endregion
 
@@ -63,7 +62,7 @@ namespace msdyncrmWorkflowTools
             var objectTypeCode = parsedUrl.ObjectTypeCode;
             var entityName = objCommon.GetEntityNameFromCode(objectTypeCode);
             var objectId = parsedUrl.Id;
-            objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
+            objCommon.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
 
             #endregion
 
@@ -73,7 +72,7 @@ namespace msdyncrmWorkflowTools
             ExecuteCore(executionContext, objCommon.context, objCommon.service, entityName, new Guid (objectId));
 
 
-            objCommon.tracingService.Trace("OK");
+            objCommon.Trace("OK");
 
             #endregion
 

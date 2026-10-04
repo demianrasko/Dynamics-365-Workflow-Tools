@@ -3,7 +3,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
 {
-    public class CloneRecord : CodeActivity
+    public class CloneRecord : WorkflowActivityBase
     {
         #region "Parameter Definition"
 
@@ -39,14 +39,8 @@ namespace msdyncrmWorkflowTools
         }*/
 
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
             #region "Read Parameters"
             var _ClonningRecordURL = ClonningRecordURL.Get(executionContext);
             if (_ClonningRecordURL == null || _ClonningRecordURL == string.Empty)
@@ -57,7 +51,7 @@ namespace msdyncrmWorkflowTools
             var objectTypeCode = parsedUrl.ObjectTypeCode;
             var entityName = objCommon.GetEntityNameFromCode(objectTypeCode);
             var objectId = parsedUrl.Id;
-            objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
+            objCommon.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
 
             var prefix = Prefix.Get(executionContext);
             var fieldstoIgnore = FieldstoIgnore.Get(executionContext);
@@ -69,7 +63,7 @@ namespace msdyncrmWorkflowTools
             ClonedGuid.Set(executionContext, createdGUID.ToString());
             
 
-            objCommon.tracingService.Trace("cloned object OK");
+            objCommon.Trace("cloned object OK");
 
             #endregion
 

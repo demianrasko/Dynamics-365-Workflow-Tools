@@ -4,7 +4,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
 {
-    public class RetrieveUserBUDefaultTeam : CodeActivity
+    public class RetrieveUserBUDefaultTeam : WorkflowActivityBase
     {
         #region "Parameter Definition"
         [RequiredArgument]
@@ -19,14 +19,8 @@ namespace msdyncrmWorkflowTools
         
         #endregion
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
 
             #region "Read Parameters"
             var user = User.Get(executionContext);

@@ -6,7 +6,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
 {
-    public class GoalRecalculate : CodeActivity
+    public class GoalRecalculate : WorkflowActivityBase
     {
         #region "Parameter Definition"
         [Input("Goal")]
@@ -18,15 +18,9 @@ namespace msdyncrmWorkflowTools
         public InArgument<string> GoalGuid { get; set; }
 
         #endregion
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
             
-
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
 
             #region "Read Parameters"
             var _goal = Goal.Get(executionContext);
@@ -37,7 +31,7 @@ namespace msdyncrmWorkflowTools
             }
             
 
-            objCommon.tracingService.Trace("GoalID=" + _goal.Id.ToString());
+            objCommon.Trace("GoalID=" + _goal.Id.ToString());
             #endregion
 
 

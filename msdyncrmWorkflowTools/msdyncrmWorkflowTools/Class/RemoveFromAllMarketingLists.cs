@@ -7,16 +7,15 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools.Class
 {
-    public class RemoveFromAllMarketingLists : CodeActivity
+    public class RemoveFromAllMarketingLists : WorkflowActivityBase
     {
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
             #region "Load CRM Service from context"
 
-            var objCommon = new Common(executionContext);
             var context = executionContext.GetExtension<IWorkflowContext>();
 
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
+            objCommon.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"

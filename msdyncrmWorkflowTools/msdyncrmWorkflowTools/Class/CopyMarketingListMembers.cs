@@ -4,7 +4,7 @@ using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 namespace msdyncrmWorkflowTools.Class
 {
-    public class CopyMarketingListMembers : CodeActivity
+    public class CopyMarketingListMembers : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("Source List")]
@@ -18,20 +18,14 @@ namespace msdyncrmWorkflowTools.Class
 
 
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
             #region "Read Parameters"
             var sourceList = SourceList.Get(executionContext);
-            objCommon.tracingService.Trace(string.Format("marketingList: {0} ", sourceList.Id.ToString()));
+            objCommon.Trace(string.Format("marketingList: {0} ", sourceList.Id.ToString()));
 
             var targetList = TargetList.Get(executionContext);
-            objCommon.tracingService.Trace(string.Format("campaign: {0} ", targetList.Id.ToString()));
+            objCommon.Trace(string.Format("campaign: {0} ", targetList.Id.ToString()));
 
 
             #endregion

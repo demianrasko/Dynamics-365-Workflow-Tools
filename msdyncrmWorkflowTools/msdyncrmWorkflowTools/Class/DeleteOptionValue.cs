@@ -7,7 +7,7 @@ namespace msdyncrmWorkflowTools
 {
 
    
-    public class DeleteOptionValue : CodeActivity
+    public class DeleteOptionValue : WorkflowActivityBase
     {
 
         #region "Parameter Definition"
@@ -35,14 +35,8 @@ namespace msdyncrmWorkflowTools
        
         #endregion
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
 
             #region "Read Parameters"
             var _GlobalOptionSet = GlobalOptionSet.Get(executionContext);
@@ -51,7 +45,7 @@ namespace msdyncrmWorkflowTools
             
             var _OptionValue = OptionValue.Get(executionContext);
             
-            objCommon.tracingService.Trace("_AttributeName=" + _AttributeName + "--_EntityName=" + _EntityName );
+            objCommon.Trace("_AttributeName=" + _AttributeName + "--_EntityName=" + _EntityName );
             #endregion
 
 
@@ -65,7 +59,7 @@ namespace msdyncrmWorkflowTools
             }
             catch (FaultException<OrganizationServiceFault> ex)
             {
-                objCommon.tracingService.Trace("Error : {0} - {1}", ex.Message, ex.StackTrace);
+                objCommon.Trace("Error : {0} - {1}", ex.Message, ex.StackTrace);
                 //throw ex;
                 // if (ex.Detail.ErrorCode != 2147220937)//ignore if the error is a duplicate insert
                 //{
@@ -74,7 +68,7 @@ namespace msdyncrmWorkflowTools
             }
             catch (System.Exception ex)
             {
-                objCommon.tracingService.Trace("Error : {0} - {1}", ex.Message, ex.StackTrace);
+                objCommon.Trace("Error : {0} - {1}", ex.Message, ex.StackTrace);
                 //throw ex;
             }
             #endregion

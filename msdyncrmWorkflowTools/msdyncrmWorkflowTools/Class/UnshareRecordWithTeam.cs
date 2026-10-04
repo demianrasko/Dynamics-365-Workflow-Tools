@@ -7,7 +7,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
 {
-    public class UnshareRecordWithTeam : CodeActivity
+    public class UnshareRecordWithTeam : WorkflowActivityBase
     {
         #region "Parameter Definition"
 
@@ -24,14 +24,8 @@ namespace msdyncrmWorkflowTools
         List<EntityReference> principals = new List<EntityReference>();
         #endregion
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
             #region "Read Parameters"
             var sharingRecordUrl = SharingRecordURL.Get(executionContext);
 
@@ -44,7 +38,7 @@ namespace msdyncrmWorkflowTools
             var objectTypeCode = parsedUrl.ObjectTypeCode;
             var objectId = parsedUrl.Id;
             
-            objCommon.tracingService.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={objectId}");
+            objCommon.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={objectId}");
 
             var teamReference = Team.Get(executionContext);
 
@@ -68,7 +62,7 @@ namespace msdyncrmWorkflowTools
                 objCommon.service.Execute(request);
             }
 
-            objCommon.tracingService.Trace("Revoked Permissions--- OK");
+            objCommon.Trace("Revoked Permissions--- OK");
 
             #endregion
         }

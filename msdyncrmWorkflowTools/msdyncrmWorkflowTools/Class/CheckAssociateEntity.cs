@@ -7,7 +7,7 @@ namespace msdyncrmWorkflowTools
 {
 
    
-    public class CheckAssociateEntity : CodeActivity
+    public class CheckAssociateEntity : WorkflowActivityBase
     {
         #region "Parameter Definition"
         [RequiredArgument]
@@ -25,14 +25,8 @@ namespace msdyncrmWorkflowTools
         public OutArgument<bool> Result { get; set; }
         #endregion
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
 
             #region "Read Parameters"
             var _relationshipName = RelationshipName.Get(executionContext);
@@ -45,7 +39,7 @@ namespace msdyncrmWorkflowTools
             var ParentObjectTypeCode=parsedUrl.ObjectTypeCode;
             var entityName = objCommon.GetEntityNameFromCode(ParentObjectTypeCode);
             var ParentId = parsedUrl.Id;
-            objCommon.tracingService.Trace("ParentObjectTypeCode=" + ParentObjectTypeCode + "--ParentId=" + ParentId);
+            objCommon.Trace("ParentObjectTypeCode=" + ParentObjectTypeCode + "--ParentId=" + ParentId);
             #endregion
 
 

@@ -5,7 +5,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
 {
-    public class CheckUserInRole : CodeActivity
+    public class CheckUserInRole : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("Role")]
@@ -15,21 +15,15 @@ namespace msdyncrmWorkflowTools
         [Output("isUserInRole")]
         public OutArgument<bool> isUserInRole { get; set; }
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
             #region "Read Parameters"
             var roleReference = Role.Get(executionContext);
 
-            objCommon.tracingService.Trace($"RoleId: {roleReference.Id.ToString()} ");
+            objCommon.Trace($"RoleId: {roleReference.Id.ToString()} ");
             #endregion
 
-            objCommon.tracingService.Trace("Checking association between user and role.");
+            objCommon.Trace("Checking association between user and role.");
 
             var systemUserLink = new LinkEntity
             {
@@ -78,7 +72,7 @@ namespace msdyncrmWorkflowTools
             // of the role
             var userInRole = (matchEntities.Entities.Count > 0);
 
-            objCommon.tracingService.Trace("{0}", userInRole ? "User do not belong to the role." : "User belong to this role.");
+            objCommon.Trace("{0}", userInRole ? "User do not belong to the role." : "User belong to this role.");
 
             isUserInRole.Set(executionContext, userInRole);
         }

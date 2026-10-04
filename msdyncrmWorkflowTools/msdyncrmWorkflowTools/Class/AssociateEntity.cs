@@ -6,7 +6,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
 {
-    public class AssociateEntity : CodeActivity
+    public class AssociateEntity : WorkflowActivityBase
     {
         #region "Parameter Definition"
         [RequiredArgument]
@@ -28,14 +28,8 @@ namespace msdyncrmWorkflowTools
 
         #endregion
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
             #region "Read Parameters"
             var relationshipName = RelationshipName.Get(executionContext);
             var relationshipEntityName = RelationshipEntityName.Get(executionContext);
@@ -51,7 +45,7 @@ namespace msdyncrmWorkflowTools
             var entityName = objCommon.GetEntityNameFromCode(parentObjectTypeCode);
             var parentId = parsedUrl.Id;
 
-            objCommon.tracingService.Trace($"ParentObjectTypeCode={parentObjectTypeCode}--ParentId={parentId}");
+            objCommon.Trace($"ParentObjectTypeCode={parentObjectTypeCode}--ParentId={parentId}");
             #endregion
 
             #region "Associate Execution"
@@ -62,7 +56,7 @@ namespace msdyncrmWorkflowTools
             }
             catch (FaultException<OrganizationServiceFault> ex)
             {
-                objCommon.tracingService.Trace("Error : {0} - {1}", ex.Message, ex.StackTrace);
+                objCommon.Trace("Error : {0} - {1}", ex.Message, ex.StackTrace);
                 //throw ex;
                 // if (ex.Detail.ErrorCode != 2147220937)//ignore if the error is a duplicate insert
                 //{
@@ -71,7 +65,7 @@ namespace msdyncrmWorkflowTools
             }
             catch (Exception ex)
             {
-                objCommon.tracingService.Trace("Error : {0} - {1}", ex.Message, ex.StackTrace);
+                objCommon.Trace("Error : {0} - {1}", ex.Message, ex.StackTrace);
                 //throw ex;
             }
             #endregion

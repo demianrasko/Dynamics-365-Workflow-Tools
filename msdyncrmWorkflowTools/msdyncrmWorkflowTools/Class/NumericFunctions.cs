@@ -4,7 +4,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools.Class
 {
-    public class NumericFunctions : CodeActivity
+    public class NumericFunctions : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("Number 1")]
@@ -26,19 +26,13 @@ namespace msdyncrmWorkflowTools.Class
         [Output("Divide")]
         public OutArgument<decimal> Divide { get; set; }
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
             #region "Read Parameters"
             var number1= Number1.Get(executionContext);
             var number2 = Number2.Get(executionContext);
 
-            objCommon.tracingService.Trace($"number 1 / number 2: {number1.ToString(CultureInfo.InvariantCulture)} / {number2.ToString(CultureInfo.InvariantCulture)}");
+            objCommon.Trace($"number 1 / number 2: {number1.ToString(CultureInfo.InvariantCulture)} / {number2.ToString(CultureInfo.InvariantCulture)}");
 
             #endregion
 

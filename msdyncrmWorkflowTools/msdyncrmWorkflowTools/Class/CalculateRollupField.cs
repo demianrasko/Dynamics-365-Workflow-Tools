@@ -9,7 +9,7 @@ namespace msdyncrmWorkflowTools
 {
 
    
-    public class CalculateRollupField : CodeActivity
+    public class CalculateRollupField : WorkflowActivityBase
     {
         #region "Parameter Definition"
         [RequiredArgument]
@@ -23,30 +23,24 @@ namespace msdyncrmWorkflowTools
         public InArgument<string> ParentRecordURL { get; set; }
         #endregion
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
 
             #region "Read Parameters"
             var _FieldName = FieldName.Get(executionContext);
-            objCommon.tracingService.Trace("_FieldName=" + _FieldName);
+            objCommon.Trace("_FieldName=" + _FieldName);
             var _ParentRecordURL = ParentRecordURL.Get(executionContext);
 
             if (_ParentRecordURL == null || _ParentRecordURL == string.Empty)
             {
                 return;
             }
-            objCommon.tracingService.Trace("_ParentRecordURL=" + _ParentRecordURL);
+            objCommon.Trace("_ParentRecordURL=" + _ParentRecordURL);
             var parsedUrl = Utility.ParseRecordUrl(_ParentRecordURL);
             
             var ParentObjectTypeCode=parsedUrl.ObjectTypeCode;
             var ParentId = parsedUrl.Id;
-            objCommon.tracingService.Trace("ParentObjectTypeCode=" + ParentObjectTypeCode + "--ParentId=" + ParentId);
+            objCommon.Trace("ParentObjectTypeCode=" + ParentObjectTypeCode + "--ParentId=" + ParentId);
             #endregion
 
 

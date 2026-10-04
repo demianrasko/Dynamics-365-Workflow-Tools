@@ -6,7 +6,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
 {
-    public class OrgDBSettingsRetrieve : CodeActivity
+    public class OrgDBSettingsRetrieve : WorkflowActivityBase
     {
         #region "Parameter Definition"
         [RequiredArgument]
@@ -27,21 +27,15 @@ namespace msdyncrmWorkflowTools
 
         #endregion
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
 
             #region "Read Parameters"
             var orgDbSetting = orgDBSetting.Get(executionContext).ToLower();
             #endregion
 
             #region "OrgDBSettings Update"
-            objCommon.tracingService.Trace("OrgDBSettingsUpdate.Execute - OrgDBSetting = " + orgDbSetting );
+            objCommon.Trace("OrgDBSettingsUpdate.Execute - OrgDBSetting = " + orgDbSetting );
 
             var boolValue = false;
 
@@ -50,7 +44,7 @@ namespace msdyncrmWorkflowTools
                 var fetch =
                     $"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false'><entity name='organization'><attribute name='{orgDbSetting}'/><order attribute='name' descending='false' /></entity></fetch>";
 
-                objCommon.tracingService.Trace("OrgDBSettingsUpdate.Execute - Fetch = " + fetch);
+                objCommon.Trace("OrgDBSettingsUpdate.Execute - Fetch = " + fetch);
 
                 var organizationColl = objCommon.service.RetrieveMultiple(new FetchExpression(fetch));
 
@@ -58,15 +52,15 @@ namespace msdyncrmWorkflowTools
 
                 if (int.TryParse(stringValue, out var numericValue))
                 {
-                    objCommon.tracingService.Trace("Numeric Value");
+                    objCommon.Trace("Numeric Value");
                 }
                 else if (bool.TryParse(stringValue, out boolValue))
                 {
-                    objCommon.tracingService.Trace("Bool Value");
+                    objCommon.Trace("Bool Value");
                 }
                 else
                 {
-                    objCommon.tracingService.Trace("String Value");
+                    objCommon.Trace("String Value");
                 }
 
                 StringValue.Set(executionContext, stringValue);

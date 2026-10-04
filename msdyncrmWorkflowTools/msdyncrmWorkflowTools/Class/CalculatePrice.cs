@@ -6,7 +6,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
 {
-    public class CalculatePrice : CodeActivity
+    public class CalculatePrice : WorkflowActivityBase
     {
         #region "Parameter Definition"
         [RequiredArgument]
@@ -14,14 +14,8 @@ namespace msdyncrmWorkflowTools
         [ReferenceTarget("")]
         public InArgument<string> TargetRecordURL { get; set; }
         #endregion
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
             #region "Read Parameters"
             var targetRecordUrl = TargetRecordURL.Get(executionContext);
 
@@ -33,7 +27,7 @@ namespace msdyncrmWorkflowTools
             var parentObjectTypeCode = parsedUrl.ObjectTypeCode;
             var parentId = parsedUrl.Id;
 
-            objCommon.tracingService.Trace($"ParentObjectTypeCode={parentObjectTypeCode}--ParentId={parentId}");
+            objCommon.Trace($"ParentObjectTypeCode={parentObjectTypeCode}--ParentId={parentId}");
             #endregion
 
             #region "ApplyRoutingRuleRequest Execution"

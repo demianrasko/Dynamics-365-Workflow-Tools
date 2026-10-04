@@ -6,7 +6,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
 {
-    public class MapMultiSelectOptionSet : CodeActivity
+    public class MapMultiSelectOptionSet : WorkflowActivityBase
     {
         [Input("Source Record URL")]
         public InArgument<string> SourceRecordUrl { get; set; }
@@ -28,10 +28,8 @@ namespace msdyncrmWorkflowTools
         [Default("false")]
         public InArgument<bool> KeepExistingValues { get; set; }
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
 
             var sourceAttributes = GetSourceAttributes(executionContext, objCommon.tracingService);
             var targetAttributes = GetTargetAttributes(executionContext, objCommon.tracingService);
@@ -42,11 +40,11 @@ namespace msdyncrmWorkflowTools
             if (targetEntity != null)
             {
                 objCommon.service.Update(targetEntity);
-                objCommon.tracingService.Trace("Target entity record updated correctly.");
+                objCommon.Trace("Target entity record updated correctly.");
 
             }
             else
-                objCommon.tracingService.Trace("Target entity record was NOT updated. ");
+                objCommon.Trace("Target entity record was NOT updated. ");
 
         }
 

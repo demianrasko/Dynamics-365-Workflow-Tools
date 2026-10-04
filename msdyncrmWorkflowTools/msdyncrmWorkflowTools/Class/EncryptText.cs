@@ -5,7 +5,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
 {
-    public class EncryptText : CodeActivity
+    public class EncryptText : WorkflowActivityBase
     {
         #region "Parameter Definition"
         [RequiredArgument]
@@ -25,20 +25,14 @@ namespace msdyncrmWorkflowTools
 
         #endregion
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
         {
-
-            #region "Load CRM Service from context"
-
-            var objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
 
             #region "Read Parameters"
             var _TexttoEncrypt = TexttoEncrypt.Get(executionContext);
            
 
-            objCommon.tracingService.Trace(string.Format("_TexttoEncrypt: {0} ",_TexttoEncrypt));
+            objCommon.Trace(string.Format("_TexttoEncrypt: {0} ",_TexttoEncrypt));
             #endregion
 
 
