@@ -3,6 +3,7 @@ using System.Activities;
 using System.Net;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
+using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
@@ -53,7 +54,7 @@ namespace msdyncrmWorkflowTools
             
 
             var locationsRequest = CreateRequest(address, bingMapsKey);
-            var locationsResponse = MakeRequest(locationsRequest);
+            var locationsResponse = MakeRequest(locationsRequest, objCommon.tracingService);
 
             if (locationsResponse != null)
             {
@@ -71,7 +72,7 @@ namespace msdyncrmWorkflowTools
             return (UrlRequest);
         }
 
-        public  Response MakeRequest(string requestUrl)
+        public  Response MakeRequest(string requestUrl, ITracingService tracingService)
         {
             try
             {
@@ -93,7 +94,7 @@ namespace msdyncrmWorkflowTools
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                tracingService.Trace("{0}", e.Message);
                 return null;
             }
         }

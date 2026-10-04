@@ -1,5 +1,4 @@
-﻿using System;
-using System.Activities;
+﻿using System.Activities;
 using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
@@ -96,7 +95,7 @@ namespace msdyncrmWorkflowTools
             qualifyIntoOpportunityReq.LeadId = new EntityReference("lead", lead.Id);
 
             objCommon.service.Execute(qualifyIntoOpportunityReq);
-            Console.WriteLine("  Executed OK.");
+            objCommon.tracingService.Trace("  Executed OK.");
 
             #endregion
         }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Activities;
+﻿using System.Activities;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
@@ -79,7 +78,7 @@ namespace msdyncrmWorkflowTools
             // of the role
             var userInRole = (matchEntities.Entities.Count > 0);
 
-            Console.WriteLine(userInRole ? "User do not belong to the role." : "User belong to this role.");
+            objCommon.tracingService.Trace("{0}", userInRole ? "User do not belong to the role." : "User belong to this role.");
 
             isUserInRole.Set(executionContext, userInRole);
         }

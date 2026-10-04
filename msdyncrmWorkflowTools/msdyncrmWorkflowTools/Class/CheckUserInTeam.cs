@@ -1,5 +1,4 @@
-﻿using System;
-using System.Activities;
+﻿using System.Activities;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
@@ -60,7 +59,7 @@ namespace msdyncrmWorkflowTools
 
             var userInTeam = (givenTeams.Entities.Count > 0);
 
-            Console.WriteLine(userInTeam ? "User do not belong to the team." : "User belong to this team.");
+            objCommon.tracingService.Trace("{0}", userInTeam ? "User do not belong to the team." : "User belong to this team.");
 
             isUserInTeam.Set(executionContext, userInTeam);
         }

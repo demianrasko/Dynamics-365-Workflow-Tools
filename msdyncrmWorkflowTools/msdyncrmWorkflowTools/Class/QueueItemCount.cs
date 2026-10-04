@@ -1,5 +1,4 @@
-﻿using System;
-using System.Activities;
+﻿using System.Activities;
 using System.Text;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
@@ -76,7 +75,7 @@ namespace msdyncrmWorkflowTools.Class
             foreach (var c in queueItemsCount.Entities)
             {
                 var aggregate2 = (int)((AliasedValue)c["queueitem_count"]).Value;
-                Console.WriteLine("Count of all queueItemsCount: " + aggregate2);
+                objCommon.tracingService.Trace("{0}", "Count of all queueItemsCount: " + aggregate2);
                 ItemsCount.Set(executionContext, aggregate2);
             }
         }
