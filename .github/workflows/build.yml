@@ -10,13 +10,13 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Set up MSBuild
-        uses: microsoft/setup-msbuild@v2
+        uses: microsoft/setup-msbuild@v3
 
       - name: Set up NuGet
-        uses: NuGet/setup-nuget@v2
+        uses: NuGet/setup-nuget@v4
 
       - name: Restore packages
         run: nuget restore msdyncrmWorkflowTools\msdyncrmWorkflowTools.sln
@@ -33,13 +33,13 @@ jobs:
 
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: test-results
           path: TestResults
 
       - name: Upload workflow assembly
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: msdyncrmWorkflowTools
           path: msdyncrmWorkflowTools\msdyncrmWorkflowTools\bin\Release\msdyncrmWorkflowTools.dll
