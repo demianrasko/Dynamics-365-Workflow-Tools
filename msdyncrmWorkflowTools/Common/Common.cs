@@ -434,7 +434,18 @@ namespace msdyncrmWorkflowTools
         #endregion
 
         #region Records
-        public Guid CloneRecord(string entityName, Guid objectId, string fieldstoIgnore, string prefix)
+        /// <summary>
+        /// Creates a copy of a record, copying every attribute that can be set on create.
+        /// </summary>
+        /// <param name="entityName">Logical name of the record.</param>
+        /// <param name="objectId">The record to copy.</param>
+        /// <param name="fieldstoIgnore">Attributes not to copy, separated by ";" or ",".</param>
+        /// <param name="prefix">Text put in front of the copy's primary name; null for none.</param>
+        /// <param name="fieldsToReplace">Attribute values to set on the copy instead of the copied ones (null removes
+        /// the value), e.g. the new parent lookup for CloneChildren. They are part of the create, so the copy never
+        /// points at the original parent.</param>
+        /// <returns>The id of the copy.</returns>
+        public Guid CloneRecord(string entityName, Guid objectId, string fieldstoIgnore, string prefix, IDictionary<string, object> fieldsToReplace = null)
         {
             Trace("entering CloneRecord");
             if (fieldstoIgnore == null)
@@ -514,6 +525,15 @@ namespace msdyncrmWorkflowTools
                 }
 
                 newEntity.Attributes.Add(attribute, retrievedObject.Attributes[attribute]);
+            }
+
+            if (fieldsToReplace != null)
+            {
+                foreach (var field in fieldsToReplace)
+                {
+                    Trace($"replacing attribute: {field.Key}");
+                    newEntity[field.Key] = field.Value;
+                }
             }
 
             Trace("creating cloned object...");

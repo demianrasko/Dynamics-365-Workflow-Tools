@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
+using System.Collections.Generic;
 
 namespace msdyncrmWorkflowTools
 {
@@ -90,21 +91,22 @@ namespace msdyncrmWorkflowTools
             var fieldstoIgnore = FieldstoIgnore.Get(executionContext);
             #endregion
 
+            // the new parent is set when each copy is created, so a locked parent (e.g. an invoiced order) is never touched
+            var fieldsToReplace = new Dictionary<string, object>
+            {
+                [newParentFieldName] = parsedDestinationUrl.ToEntityReference()
+            };
+
+            if (!string.IsNullOrEmpty(oldParentFieldName) && oldParentFieldName != newParentFieldName)
+            {
+                fieldsToReplace[oldParentFieldName] = null;
+            }
+
             var children = common.GetChildRecords(relationshipName, parsedUrl.Id);
 
             foreach (var item in children.Entities)
             {
-                var newRecordId = common.CloneRecord(item.LogicalName, item.Id, fieldstoIgnore, prefix);
-
-                var update = new Entity(item.LogicalName);
-                update.Id = newRecordId;
-                update.Attributes.Add(newParentFieldName, parsedDestinationUrl.ToEntityReference());
-                if (!string.IsNullOrEmpty(oldParentFieldName) && oldParentFieldName != newParentFieldName)
-                {
-                    update.Attributes.Add(oldParentFieldName, null);
-                }
-
-                common.Service.Update(update);
+                common.CloneRecord(item.LogicalName, item.Id, fieldstoIgnore, prefix, fieldsToReplace);
             }
         }
     }

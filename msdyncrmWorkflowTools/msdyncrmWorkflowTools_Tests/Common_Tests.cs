@@ -454,6 +454,26 @@ namespace msdyncrmWorkflowTools_Tests
         }
 
         [TestMethod]
+        public void CloneRecord_SetsTheReplacementValuesOnCreate()
+        {
+            var oldParent = new EntityReference("salesorder", Guid.NewGuid());
+            var newParent = new EntityReference("salesorder", Guid.NewGuid());
+            service.OnExecute = r => new RetrieveEntityResponse
+            {
+                Results = { ["EntityMetadata"] = EntityWithAttributes("salesorderdetailid", Attribute<StringAttributeMetadata>("productdescription"), Attribute<LookupAttributeMetadata>("salesorderid")) }
+            };
+            service.OnRetrieve = (name, id, columns) => new Entity(name, id) { ["productdescription"] = "Widget", ["salesorderid"] = oldParent };
+
+            common.CloneRecord("salesorderdetail", RecordId, null, null, new Dictionary<string, object> { ["salesorderid"] = newParent, ["new_oldorderid"] = null });
+
+            var copy = service.Created.Single();
+            Assert.AreEqual("Widget", copy["productdescription"]);
+            Assert.AreEqual(newParent, copy["salesorderid"]);
+            Assert.IsTrue(copy.Contains("new_oldorderid") && copy["new_oldorderid"] == null);
+            Assert.AreEqual(0, service.Updated.Count, "the copy is never created under the old parent and updated afterwards");
+        }
+
+        [TestMethod]
         public void CreateTeam_SendsTheTeamTypeAsAnOptionSetValue()
         {
             common.CreateTeam("Sales", 1, new EntityReference("systemuser", UserId), new EntityReference("businessunit", Guid.NewGuid()));
@@ -637,6 +657,28 @@ namespace msdyncrmWorkflowTools_Tests
             typeof(EntityMetadata).GetProperty("ObjectTypeCode").SetValue(metadata, (int?)objectTypeCode);
 
             return metadata;
+        }
+
+        private static EntityMetadata EntityWithAttributes(string primaryIdAttribute, params AttributeMetadata[] attributes)
+        {
+            // the metadata classes have no public setters for these
+            var metadata = new EntityMetadata();
+            typeof(EntityMetadata).GetProperty("PrimaryIdAttribute").SetValue(metadata, primaryIdAttribute);
+            typeof(EntityMetadata).GetProperty("Attributes").SetValue(metadata, attributes);
+
+            return metadata;
+        }
+
+        private static T Attribute<T>(string logicalName) where T : AttributeMetadata, new()
+        {
+            var attribute = new T { LogicalName = logicalName };
+            typeof(AttributeMetadata).GetProperty("IsValidForCreate").SetValue(attribute, (bool?)true);
+            typeof(AttributeMetadata).GetProperty("IsValidForUpdate").SetValue(attribute, (bool?)true);
+            typeof(AttributeMetadata).GetProperty("IsPrimaryId").SetValue(attribute, (bool?)false);
+            typeof(AttributeMetadata).GetProperty("IsPrimaryName").SetValue(attribute, (bool?)false);
+            typeof(AttributeMetadata).GetProperty("AttributeTypeName").SetValue(attribute, AttributeTypeDisplayName.StringType);
+
+            return attribute;
         }
 
         private static RetrieveAttributeResponse AttributeResponse(bool isSecured)
