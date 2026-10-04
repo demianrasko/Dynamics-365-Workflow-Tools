@@ -13,6 +13,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.ServiceModel;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -122,14 +123,41 @@ namespace msdyncrmWorkflowTools
         /// </summary>
         /// <param name="primaryEntityName">Logical name of the primary record.</param>
         /// <param name="primaryEntityId">Id of the primary record.</param>
-        /// <param name="relationshipName">Name of the N:N intersect entity.</param>
+        /// <param name="intersectEntityName">Name of the N:N intersect entity.</param>
         /// <param name="entityName">Logical name of the related record.</param>
         /// <param name="parentId">Id of the related record.</param>
-        public EntityCollection GetAssociations(string primaryEntityName, Guid primaryEntityId, string relationshipName, string entityName, string parentId)
+        public EntityCollection GetAssociations(string primaryEntityName, Guid primaryEntityId, string intersectEntityName, string entityName, string parentId)
         {
-            Trace($"Associations: {primaryEntityName} {primaryEntityId} via {relationshipName} to {entityName} {parentId}");
+            Trace($"Associations: {primaryEntityName} {primaryEntityId} via {intersectEntityName} to {entityName} {parentId}");
 
-            return service.RetrieveMultiple(Queries.Associations(primaryEntityName, primaryEntityId, relationshipName, entityName, new Guid(parentId)));
+            return service.RetrieveMultiple(Queries.Associations(primaryEntityName, primaryEntityId, intersectEntityName, entityName, new Guid(parentId)));
+        }
+
+        /// <summary>
+        /// Intersect entity of an N:N relationship. A name that is not a relationship is returned unchanged,
+        /// so workflows configured with the intersect entity name keep working.
+        /// </summary>
+        public string GetIntersectEntityName(string relationshipName)
+        {
+            RetrieveRelationshipResponse response;
+
+            try
+            {
+                response = (RetrieveRelationshipResponse)service.Execute(new RetrieveRelationshipRequest { Name = relationshipName, RetrieveAsIfPublished = false });
+            }
+            catch (FaultException<OrganizationServiceFault>)
+            {
+                Trace($"Relationship '{relationshipName}' not found; using it as the intersect entity name.");
+
+                return relationshipName;
+            }
+
+            if (!(response.RelationshipMetadata is ManyToManyRelationshipMetadata relationship))
+            {
+                throw new InvalidPluginExecutionException($"Relationship '{relationshipName}' is not Many to Many.");
+            }
+
+            return relationship.IntersectEntityName;
         }
 
         /// <summary>
