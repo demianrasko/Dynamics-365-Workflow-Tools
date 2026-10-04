@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
+using System;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools
@@ -34,22 +34,7 @@ namespace msdyncrmWorkflowTools
                 userId = userReference.Id.ToString();
             }
 
-            var fetchXml = @"<fetch version=""1.0"" output-format=""xml - platform"" mapping=""logical"" distinct=""true""><entity name=""team"">
-                         <attribute name=""teamid""/>
-                         <filter type=""and"">
-                          <condition attribute=""teamid"" operator=""eq"" value="""+ teamReference.Id.ToString() + @"""/>
-                                </filter>
-                                <link-entity name=""teammembership"" from=""teamid"" to=""teamid"" visible=""false"" intersect=""true"">
-                                             <link-entity name=""systemuser"" from=""systemuserid"" to=""systemuserid"" alias=""ag"">
-                                                        <filter type=""and"">
-                                                           <condition attribute=""systemuserid"" operator=""eq""  uitype=""systemuser"" value= """+ userId + @"""/>
-                                                                 </filter>
-                                                               </link-entity>
-                                                             </link-entity>
-                                                           </entity></fetch> ";
-
-            common.Trace($"FetchXML: {fetchXml} ");
-            var givenTeams = common.service.RetrieveMultiple(new FetchExpression (fetchXml));
+            var givenTeams = common.service.RetrieveMultiple(Queries.TeamMembership(teamReference.Id, new Guid(userId)));
 
             var userInTeam = (givenTeams.Entities.Count > 0);
 

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
+using System;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools
@@ -47,18 +47,10 @@ namespace msdyncrmWorkflowTools
 
             #region "Process"
 
-            var fetchXml = @"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='true'>
-                                <entity name='{0}'>                                                                           
-                                <filter type='and'>
-                                    <condition attribute='{1}' operator='eq' value='{2}' />                                                                                 
-                                    </filter>
-                                </entity>
-                            </fetch>";
-            fetchXml = string.Format(fetchXml, _childEntityName, _parentLookupName, ParentEntityId);
-            common.Trace($"FetchXML: {fetchXml} ");
-            var results = common.service.RetrieveMultiple(new FetchExpression(fetchXml));
+            var count = common.CountRecords(Queries.ChildRecords(_childEntityName, _parentLookupName, new Guid(ParentEntityId)));
+            common.Trace($"{_childEntityName} records with {_parentLookupName} = {ParentEntityId}: {count}");
 
-            Result.Set(executionContext, results.Entities.Count);
+            Result.Set(executionContext, count);
             #endregion
         }
     }

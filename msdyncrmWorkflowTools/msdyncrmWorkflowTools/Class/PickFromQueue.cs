@@ -1,9 +1,8 @@
 ﻿using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
+using System;
 using System.Activities;
-using System.Text;
 
 namespace msdyncrmWorkflowTools.Class
 {
@@ -40,25 +39,8 @@ namespace msdyncrmWorkflowTools.Class
 
             #endregion
 
-            //query for retrieving all the queueitems from one queue
-            var sFetchXml = new StringBuilder(@"
-                    <fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false'>
-                      <entity name='queueitem'>
-                        <attribute name='enteredon' />
-                        <attribute name='objecttypecode' />
-                        <attribute name='objectid' />
-                        <attribute name='queueid' />
-                        <order attribute='enteredon' descending='true' />
-                        <filter type='and'>
-                          <condition attribute='statecode' operator='eq' value='0' />
-                          <condition attribute='workerid' operator='null' />
-                          <condition attribute='queueid' operator='eq' uitype='queue' value='"+ sourceQueue.Id.ToString() + @"' />
-                        </filter>
-                      </entity>
-                    </fetch>");
-
-            common.Trace($"FetchXML: {sFetchXml} ");
-            var queueItems = common.service.RetrieveMultiple(new FetchExpression(sFetchXml.ToString()));
+            // active, unassigned queue items, newest first; only the requested quantity is used
+            var queueItems = common.service.RetrieveMultiple(Queries.QueueItems(sourceQueue.Id, onlyUnassigned: true, top: Math.Max(quantity, 1)));
 
             //no pending queue items
             if (queueItems.Entities.Count == 0)

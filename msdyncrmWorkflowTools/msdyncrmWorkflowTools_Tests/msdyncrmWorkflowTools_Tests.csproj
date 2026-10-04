@@ -107,6 +107,7 @@
     <Compile Include="GetRecordID_Tests.cs" />
     <Compile Include="StringFunctions_Tests.cs" />
     <Compile Include="CurrencyConvert_Tests.cs" />
+    <Compile Include="Queries_Tests.cs" />
     <Compile Include="Utility_Tests.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,8 +1,6 @@
 ﻿using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
-using System.Text;
 
 namespace msdyncrmWorkflowTools.Class
 {
@@ -35,41 +33,10 @@ namespace msdyncrmWorkflowTools.Class
 
             #endregion
 
-            //query for retrieving all the queueitems from one queue
-            var sFetchXml = new StringBuilder(@"
-                    <fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false' aggregate='true'>
-                      <entity name='queueitem'>
-                        <attribute name='objectid' alias='queueitem_count' aggregate='count'/>
-                        <filter type='and'>
-                          <condition attribute='statecode' operator='eq' value='0' />");
+            var count = common.CountRecords(Queries.QueueItems(sourceQueue.Id, countOnlyUnassigned));
+            common.Trace($"Count of all queueItemsCount: {count}");
 
-            if (countOnlyUnassigned)
-            {
-                sFetchXml.Append("<condition attribute='workerid' operator='null' />");
-            }
-
-            sFetchXml.Append(@"
-                            <condition attribute='queueid' operator='eq' uitype='queue' value='" + sourceQueue.Id + @"' />
-                        </filter>
-                      </entity>
-                    </fetch>");
-
-            common.Trace($"FetchXML: {sFetchXml} ");
-            var queueItemsCount = common.service.RetrieveMultiple(new FetchExpression(sFetchXml.ToString()));
-
-            if (queueItemsCount.Entities.Count == 0)
-            {
-                //no pending queue items
-                ItemsCount.Set(executionContext, 0);
-                return;
-            }
-
-            foreach (var c in queueItemsCount.Entities)
-            {
-                var aggregate2 = (int)((AliasedValue)c["queueitem_count"]).Value;
-                common.Trace("{0}", $"Count of all queueItemsCount: {aggregate2}");
-                ItemsCount.Set(executionContext, aggregate2);
-            }
+            ItemsCount.Set(executionContext, count);
         }
     }
 }

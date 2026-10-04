@@ -1,5 +1,4 @@
-﻿using Microsoft.Xrm.Sdk.Query;
-using Microsoft.Xrm.Sdk.Workflow;
+﻿using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools
@@ -34,12 +33,7 @@ namespace msdyncrmWorkflowTools
 
             var boolValue = false;
 
-            var fetch =
-                $"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false'><entity name='organization'><attribute name='{orgDbSetting}'/><order attribute='name' descending='false' /></entity></fetch>";
-
-            common.Trace($"OrgDBSettingsUpdate.Execute - Fetch = {fetch}");
-
-            var organizationColl = common.service.RetrieveMultiple(new FetchExpression(fetch));
+            var organizationColl = common.service.RetrieveMultiple(Queries.OrganizationSetting(orgDbSetting));
 
             var stringValue = organizationColl.Entities[0].Attributes[orgDbSetting].ToString();
 

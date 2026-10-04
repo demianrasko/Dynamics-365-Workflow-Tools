@@ -117,31 +117,44 @@ namespace msdyncrmWorkflowTools
             return entityMetadata.SchemaName.ToLower();
         }
 
+        /// <summary>
+        /// Returns the primary record if it is associated with the given record through an N:N relationship.
+        /// </summary>
+        /// <param name="primaryEntityName">Logical name of the primary record.</param>
+        /// <param name="primaryEntityId">Id of the primary record.</param>
+        /// <param name="relationshipName">Name of the N:N intersect entity.</param>
+        /// <param name="entityName">Logical name of the related record.</param>
+        /// <param name="parentId">Id of the related record.</param>
         public EntityCollection GetAssociations(string primaryEntityName, Guid primaryEntityId, string relationshipName, string entityName, string parentId)
         {
-            //
-            var fetchXml = @"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='true'>
-                                      <entity name='" + primaryEntityName + @"'>
-                                        <link-entity name='" + relationshipName + @"' from='" + primaryEntityName + @"id' to='" + primaryEntityName + @"id' visible='false' intersect='true'>
-                                        
-                                            <filter type='and'>
-                                            <condition attribute='" + primaryEntityName + @"id' operator='eq' value='" + primaryEntityId.ToString() + @"' />
-                                            </filter>
-                                       
-                                        <link-entity name='" + entityName + @"' from='" + entityName + @"id' to='" + entityName + @"id' alias='ac'>
-                                                <filter type='and'>
-                                                  <condition attribute='" + entityName + @"id' operator='eq' value='" + parentId + @"' />
-                                                </filter>
-                                              </link-entity>
-                                        </link-entity>
-                                      </entity>
-                                    </fetch>";
+            Trace($"Associations: {primaryEntityName} {primaryEntityId} via {relationshipName} to {entityName} {parentId}");
 
-            Trace($"FetchXML: {fetchXml} ");
+            return service.RetrieveMultiple(Queries.Associations(primaryEntityName, primaryEntityId, relationshipName, entityName, new Guid(parentId)));
+        }
 
-            var relations = service.RetrieveMultiple(new FetchExpression(fetchXml));
+        /// <summary>
+        /// Counts the records a query returns, page by page, so there is no 5,000-row or 50,000-row aggregate limit.
+        /// </summary>
+        public int CountRecords(QueryExpression query)
+        {
+            query.ColumnSet = new ColumnSet(false);
+            query.PageInfo = new PagingInfo { PageNumber = 1, Count = 5000 };
 
-            return relations;
+            var count = 0;
+
+            while (true)
+            {
+                var page = service.RetrieveMultiple(query);
+                count += page.Entities.Count;
+
+                if (!page.MoreRecords)
+                {
+                    return count;
+                }
+
+                query.PageInfo.PageNumber++;
+                query.PageInfo.PagingCookie = page.PagingCookie;
+            }
         }
 
         public List<string> GetEntityAttributesToClone(string entityName, ref string primaryIdAttribute, ref string primaryNameAttribute)
@@ -220,31 +233,23 @@ namespace msdyncrmWorkflowTools
                 {
                     var att2 = att.Replace("partylist-", string.Empty);
 
-                    var fetchParty = @"<fetch version='1.0' output-format='xml - platform' mapping='logical' distinct='true'>
-                                                <entity name='activityparty'>
-                                                    <attribute name = 'partyid'/>
-                                                        <filter type = 'and' >
-                                                            <condition attribute = 'activityid' operator= 'eq' value = '" + objectId + @"' />
-                                                            <condition attribute = 'participationtypemask' operator= 'eq' value = '" + Utility.GetParticipation(att2) + @"' />
-                                                         </filter>
-                                                </entity>
-                                            </fetch> ";
-
-                    var request = new RetrieveMultipleRequest
+                    var participationTypeMask = Utility.GetParticipation(att2);
+                    if (string.IsNullOrEmpty(participationTypeMask))
                     {
-                        Query = new FetchExpression(fetchParty)
-                    };
+                        throw new InvalidPluginExecutionException($"Unsupported party list attribute '{att2}'.");
+                    }
 
-                    Trace(fetchParty);
-                    var returnCollection = ((RetrieveMultipleResponse)service.Execute(request)).EntityCollection;
+                    var returnCollection = service.RetrieveMultiple(
+                        Queries.ActivityParties(new Guid(objectId), int.Parse(participationTypeMask)));
 
                     Trace("attribute:{0}", att2);
 
-                    var party = new Entity("activityparty");
                     foreach (var ent in returnCollection.Entities)
                     {
                         var partyid = (EntityReference)ent.Attributes["partyid"];
 
+                        // one activityparty per party (re-using one entity threw "same key" for a second party)
+                        var party = new Entity("activityparty");
                         party.Attributes.Add("partyid", new EntityReference(partyid.LogicalName, partyid.Id));
                         Trace("attribute:{0}:{1}:{2}", att2, partyid.LogicalName, partyid.Id.ToString());
                         arrPartiesNew.Entities.Add(party);
@@ -325,28 +330,7 @@ namespace msdyncrmWorkflowTools
         {
             var teamres = new EntityReference("team");
 
-            var fetch = @"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='true'>
-                                  <entity name='team'>
-                                    <attribute name='name' />
-                                    <attribute name='businessunitid' />
-                                    <attribute name='teamid' />
-                                    <attribute name='teamtype' />
-                                    <order attribute='name' descending='false' />
-                                    <filter type='and'>
-                                      <condition attribute='teamtype' operator='eq' value='0' />
-                                      <condition attribute='isdefault' operator='eq' value='1' />
-                                    </filter>
-                                    <link-entity name='businessunit' from='businessunitid' to='businessunitid' link-type='inner' alias='ae'>
-                                      <link-entity name='systemuser' from='businessunitid' to='businessunitid' link-type='inner' alias='af'>
-                                        <filter type='and'>
-                                          <condition attribute='systemuserid' operator='eq' value='" + systemuserid + @"' />
-                                        </filter>
-                                      </link-entity>
-                                    </link-entity>
-                                  </entity>
-                                </fetch> ";
-
-            var team = service.RetrieveMultiple(new FetchExpression(fetch));
+            var team = service.RetrieveMultiple(Queries.DefaultTeamForUser(new Guid(systemuserid)));
 
             teamres.Id = team.Entities[0].Id;
             return teamres;
@@ -432,7 +416,7 @@ namespace msdyncrmWorkflowTools
 
         public bool SendEmailToUsersInRole(EntityReference securityRoleLookup, EntityReference email)
         {
-            var userList = service.RetrieveMultiple(new FetchExpression(BuildFetchXml(securityRoleLookup.Id)));
+            var userList = service.RetrieveMultiple(Queries.UsersInRole(securityRoleLookup.Id));
             Trace("Retrieved Data");
 
             var emailEnt = new Entity("email", email.Id);
@@ -462,7 +446,7 @@ namespace msdyncrmWorkflowTools
 
         public bool SendEmailFromTemplateToUsersInRole(EntityReference securityRoleLookup, EntityReference emailTemplateLookup)
         {
-            var userList = service.RetrieveMultiple(new FetchExpression(BuildFetchXml(securityRoleLookup.Id)));
+            var userList = service.RetrieveMultiple(Queries.UsersInRole(securityRoleLookup.Id));
             Trace("Retrieved Data");
 
             foreach (var user in userList.Entities)
@@ -506,28 +490,6 @@ namespace msdyncrmWorkflowTools
             var emailUsingTemplateResp = (SendEmailFromTemplateResponse)service.Execute(emailUsingTemplateReq);
 
             return true;
-        }
-
-        private string BuildFetchXml(Guid roleId)
-        {
-            const string fetchXml =
-                    @"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='true'>
-                      <entity name='systemuser'>
-                        <attribute name='systemuserid' />
-                            <filter type='and'>
-                             <condition attribute='accessmode' operator='eq' value='0' />
-                            </filter>
-                        <link-entity name='systemuserroles' from='systemuserid' to='systemuserid' visible='false' intersect='true'>
-                          <link-entity name='role' from='roleid' to='roleid' alias='aa'>
-                            <filter type='and'>
-                              <condition attribute='roleid' operator='eq' uitype='role' value='{0}' />
-                            </filter>
-                          </link-entity>
-                        </link-entity>
-                      </entity>
-                    </fetch>";
-
-            return string.Format(fetchXml, roleId);
         }
 
         public string GetRecordID(string recordURL)
@@ -752,23 +714,9 @@ namespace msdyncrmWorkflowTools
             _FileName = _FileName.Replace("*", "%");
 
             #region "Query Attachments"
-            var fetchXML = @"
-                    <fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false'>
-                      <entity name='salesliteratureitem'>
-                        <attribute name='filename' />
-                        <attribute name='salesliteratureitemid' />
-                        <attribute name='title' />
-                        <attribute name='documentbody' />
-                        <attribute name='mimetype' />
-
-                        <filter type='and'>
-                          <condition attribute='filename' operator='like' value='%" + _FileName + @"%' />
-                          <condition attribute='salesliteratureid' operator='eq' value='" + salesLiteratureId + @"' />
-                        </filter>
-                      </entity>
-                    </fetch>";
-            Trace($"FetchXML: {fetchXML} ");
-            var attachmentFiles = service.RetrieveMultiple(new FetchExpression(fetchXML));
+            var fileNamePattern = $"%{_FileName}%";
+            Trace($"Sales literature items: file name like '{fileNamePattern}', sales literature {salesLiteratureId}");
+            var attachmentFiles = service.RetrieveMultiple(Queries.SalesLiteratureItems(fileNamePattern, new Guid(salesLiteratureId)));
 
             if (attachmentFiles.Entities.Count == 0)
             {
@@ -856,7 +804,7 @@ namespace msdyncrmWorkflowTools
         {
             try
             {
-                var relations = getAssociations(PrimaryEntityName, PrimaryEntityId, _relationshipName, _relationshipEntityName, entityName, ParentId);
+                var relations = GetAssociations(PrimaryEntityName, PrimaryEntityId, _relationshipEntityName, entityName, ParentId);
 
                 if (relations.Entities.Count == 0)
                 {
@@ -887,47 +835,9 @@ namespace msdyncrmWorkflowTools
         {
             #region "Query Attachments"
 
-            var fileNameCondition = string.IsNullOrEmpty(fileName) ? string.Empty : $"<condition attribute='filename' operator='like' value='{fileName}' />";
-            var fetchXML = $@"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false'
-                                 {(topRecords > 0 ? $"top='{topRecords}'" : string.Empty)}>";
-
-            if (!retrieveActivityMimeAttachment)
-            {
-                fetchXML = $@"{fetchXML}
-                      <entity name='annotation'>
-                        <attribute name='filename' />
-                        <attribute name='annotationid' />
-                        <attribute name='subject' />
-                        <attribute name='documentbody' />
-                        <attribute name='mimetype' />
-                        <order attribute='createdon' descending='true' />
-                        <filter type='and'>
-                          {fileNameCondition}
-                          <condition attribute='isdocument' operator='eq' value='1' />
-                          <condition attribute='objectid' operator='eq' value='{parentId} ' />
-                        </filter>
-                      </entity>
-                    </fetch>";
-            }
-            else
-            {
-                fetchXML = $@"{fetchXML}
-                      <entity name='activitymimeattachment'>
-                        <attribute name='filename' />
-                        <attribute name='attachmentid' />
-                        <attribute name='subject' />
-                        <attribute name='body' />
-                        <attribute name='mimetype' />
-                        <filter type='and'>
-                          {fileNameCondition}
-                          <condition attribute='activityid' operator='eq' value='{parentId}' />
-                        </filter>
-                      </entity>
-                    </fetch>";
-            }
-
-            Trace("FetchXML: {0} ", fetchXML);
-            var attachmentFiles = service.RetrieveMultiple(new FetchExpression(fetchXML));
+            Trace($"Attachments: {(retrieveActivityMimeAttachment ? "activitymimeattachment" : "annotation")} of {parentId}, file name like '{fileName}', top {topRecords}");
+            var attachmentFiles = service.RetrieveMultiple(
+                Queries.EntityAttachments(retrieveActivityMimeAttachment, fileName, new Guid(parentId), topRecords ?? 0));
 
             if (attachmentFiles.Entities.Count == 0)
             {
@@ -1005,31 +915,6 @@ namespace msdyncrmWorkflowTools
             }
 
             #endregion
-        }
-
-        public EntityCollection getAssociations(string PrimaryEntityName, Guid PrimaryEntityId, string _relationshipName, string _relationshipEntityName, string entityName, string ParentId)
-        {
-            //
-            var fetchXML = @"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='true'>
-                                      <entity name='" + PrimaryEntityName + @"'>
-                                        <link-entity name='" + _relationshipEntityName + @"' from='" + PrimaryEntityName + @"id' to='" + PrimaryEntityName + @"id' visible='false' intersect='true'>
-                                        <link-entity name='" + PrimaryEntityName + @"' from='" + PrimaryEntityName + @"id' to='" + PrimaryEntityName + @"id' alias='ab'>
-                                            <filter type='and'>
-                                            <condition attribute='" + PrimaryEntityName + @"id' operator='eq' value='" + PrimaryEntityId.ToString() + @"' />
-                                            </filter>
-                                        </link-entity>
-                                        <link-entity name='" + entityName + @"' from='" + entityName + @"id' to='" + entityName + @"id' alias='ac'>
-                                                <filter type='and'>
-                                                  <condition attribute='" + entityName + @"id' operator='eq' value='" + ParentId + @"' />
-                                                </filter>
-                                              </link-entity>
-                                        </link-entity>
-                                      </entity>
-                                    </fetch>";
-
-            var relations = service.RetrieveMultiple(new FetchExpression(fetchXML));
-
-            return relations;
         }
 
         /// <summary>
