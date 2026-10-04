@@ -53,7 +53,7 @@ namespace msdyncrmWorkflowTools
 
             var userInTeam = (givenTeams.Entities.Count > 0);
 
-            common.Trace("{0}", userInTeam ? "User do not belong to the team." : "User belong to this team.");
+            common.Trace("{0}", userInTeam ? "User belongs to the team." : "User does not belong to the team.");
 
             isUserInTeam.Set(executionContext, userInTeam);
         }

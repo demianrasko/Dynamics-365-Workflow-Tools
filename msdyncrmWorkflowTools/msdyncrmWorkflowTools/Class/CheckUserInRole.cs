@@ -72,7 +72,7 @@ namespace msdyncrmWorkflowTools
             // of the role
             var userInRole = (matchEntities.Entities.Count > 0);
 
-            common.Trace("{0}", userInRole ? "User do not belong to the role." : "User belong to this role.");
+            common.Trace("{0}", userInRole ? "User belongs to the role." : "User does not belong to the role.");
 
             isUserInRole.Set(executionContext, userInRole);
         }
