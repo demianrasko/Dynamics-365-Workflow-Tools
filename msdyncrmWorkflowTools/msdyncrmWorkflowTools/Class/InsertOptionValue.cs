@@ -47,7 +47,7 @@ namespace msdyncrmWorkflowTools
             var _OptionValue = OptionValue.Get(executionContext);
             var _LanguageCode = LanguageCode.Get(executionContext);
 
-            common.Trace("_AttributeName=" + _AttributeName + "--_EntityName=" + _EntityName+ "--_OptionText="+ _OptionText+ "--_LanguageCode="+ _LanguageCode.ToString());
+            common.Trace($"_AttributeName={_AttributeName}--_EntityName={_EntityName}--_OptionText={_OptionText}--_LanguageCode={_LanguageCode.ToString()}");
             #endregion
 
             #region "Insert Option Value"

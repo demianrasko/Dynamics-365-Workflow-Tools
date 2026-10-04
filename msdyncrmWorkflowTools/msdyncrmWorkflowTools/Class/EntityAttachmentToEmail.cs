@@ -47,7 +47,7 @@ namespace msdyncrmWorkflowTools.Class
             var parentObjectTypeCode = parsedUrl.ObjectTypeCode;
             var parentId = parsedUrl.Id;
 
-            common.Trace("ParentObjectTypeCode=" + parentObjectTypeCode + "--ParentId=" + parentId);
+            common.Trace($"ParentObjectTypeCode={parentObjectTypeCode}--ParentId={parentId}");
 
             // Treat file name
             if (fileName == "*")

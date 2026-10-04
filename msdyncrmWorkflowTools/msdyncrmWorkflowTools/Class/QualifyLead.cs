@@ -56,7 +56,7 @@ namespace msdyncrmWorkflowTools
             var existingContact = ExistingContact.Get(executionContext);
             var leadStatus = LeadStatus.Get(executionContext);
 
-            common.Trace("LeadID=" + lead.Id);
+            common.Trace($"LeadID={lead.Id}");
             #endregion
 
             #region "QualifyLead Execution"

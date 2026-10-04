@@ -79,7 +79,7 @@ namespace msdyncrmWorkflowTools
             var parentObjectTypeCode = parsedUrl.ObjectTypeCode;
             var parentEntityName = common.GetEntityNameFromCode(parentObjectTypeCode);
             var parentId = parsedUrl.Id;
-            common.Trace("ObjectTypeCode=" + parentObjectTypeCode + "--ParentId=" + parentId);
+            common.Trace($"ObjectTypeCode={parentObjectTypeCode}--ParentId={parentId}");
 
             var _destination = TargetRecordUrl.Get(executionContext);
             if (_destination == null || _destination == string.Empty)
@@ -90,7 +90,7 @@ namespace msdyncrmWorkflowTools
             var destinationObjectTypeCode = parsedDestinationUrl.ObjectTypeCode;
             var destinationEntityName = common.GetEntityNameFromCode(destinationObjectTypeCode);
             var destinationId = parsedDestinationUrl.Id;
-            common.Trace("ObjectTypeCode=" + destinationObjectTypeCode + "--ParentId=" + destinationId);
+            common.Trace($"ObjectTypeCode={destinationObjectTypeCode}--ParentId={destinationId}");
 
             //Optional
             var _oldParentFieldName = OldParentFieldNameToUpdate.Get(executionContext);

@@ -474,7 +474,7 @@ namespace msdyncrmWorkflowTools
                 }
                 catch (System.Exception ex)
                 {
-                    Trace("error:" + ex.ToString());
+                    Trace($"error:{ex.ToString()}");
                 }
             }
             return true;
@@ -562,7 +562,7 @@ namespace msdyncrmWorkflowTools
         {
             var appModuleId = GetAppModuleId(appModuleUniqueName);
 
-            return recordUrl + "&appid=" + appModuleId;
+            return $"{recordUrl}&appid={appModuleId}";
         }
 
         public bool IsMemberOfTeam(Guid teamId, Guid userId)

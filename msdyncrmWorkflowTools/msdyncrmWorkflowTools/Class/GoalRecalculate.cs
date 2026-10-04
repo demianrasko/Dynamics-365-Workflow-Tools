@@ -28,7 +28,7 @@ namespace msdyncrmWorkflowTools
                 return;
             }
 
-            common.Trace("GoalID=" + _goal.Id.ToString());
+            common.Trace($"GoalID={_goal.Id.ToString()}");
             #endregion
 
             #region "GoalRequest Execution"

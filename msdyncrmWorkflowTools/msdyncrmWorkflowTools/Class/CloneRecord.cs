@@ -49,7 +49,7 @@ namespace msdyncrmWorkflowTools
             var objectTypeCode = parsedUrl.ObjectTypeCode;
             var entityName = common.GetEntityNameFromCode(objectTypeCode);
             var objectId = parsedUrl.Id;
-            common.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
+            common.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={objectId}");
 
             var prefix = Prefix.Get(executionContext);
             var fieldstoIgnore = FieldstoIgnore.Get(executionContext);

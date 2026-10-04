@@ -32,7 +32,7 @@ namespace msdyncrmWorkflowTools
                 throw new InvalidPluginExecutionException("FetchXML is required.");
             }
 
-            common.Trace("_FetchXML=" + fetchXml);
+            common.Trace($"_FetchXML={fetchXml}");
 
             var context = executionContext.GetExtension<IWorkflowContext>();
 

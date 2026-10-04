@@ -67,7 +67,7 @@ namespace msdyncrmWorkflowTools.Class
             foreach (var c in queueItemsCount.Entities)
             {
                 var aggregate2 = (int)((AliasedValue)c["queueitem_count"]).Value;
-                common.Trace("{0}", "Count of all queueItemsCount: " + aggregate2);
+                common.Trace("{0}", $"Count of all queueItemsCount: {aggregate2}");
                 ItemsCount.Set(executionContext, aggregate2);
             }
         }

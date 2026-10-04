@@ -49,7 +49,7 @@ namespace msdyncrmWorkflowTools.Class
             Guid? stageId = null;
             if (processStage != null)
             {
-                common.Trace("[Dynamics.ChangeBPFandPhase.Execute] Process stage: " + processStage);
+                common.Trace($"[Dynamics.ChangeBPFandPhase.Execute] Process stage: {processStage}");
 
                 var queryStage = new QueryExpression("processstage")
                 {
@@ -63,7 +63,7 @@ namespace msdyncrmWorkflowTools.Class
                 var stageReference = common.service.RetrieveMultiple(queryStage).Entities.FirstOrDefault();
                 if (stageReference == null)
                 {
-                    throw new InvalidPluginExecutionException(nameof(Process) + " stage " + processStage + " not found");
+                    throw new InvalidPluginExecutionException($"{nameof(Process)} stage {processStage} not found");
                 }
 
                 stageId = stageReference.Id;

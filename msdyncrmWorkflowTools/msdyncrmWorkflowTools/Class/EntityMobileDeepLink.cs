@@ -36,7 +36,7 @@ namespace msdyncrmWorkflowTools
             var objectTypeCode = parsedUrl.ObjectTypeCode;
             var entityName = common.GetEntityNameFromCode(objectTypeCode);
             var objectId = parsedUrl.Id;
-            common.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
+            common.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={objectId}");
 
             #endregion
 
@@ -46,9 +46,9 @@ namespace msdyncrmWorkflowTools
             var recordURLNew = $"ms-dynamicsxrm://?pagetype=create&etn={entityName}";
             var recordURLDefaultView = $"ms-dynamicsxrm://?pagetype=view&etn={entityName}";
 
-            common.Trace("MobileDeepLinkEdit: "+ recordURLEdit);
-            common.Trace("MobileDeepLinkNew: "+ recordURLNew);
-            common.Trace("MobileDeepLinkDefaultView: "+ recordURLDefaultView);
+            common.Trace($"MobileDeepLinkEdit: {recordURLEdit}");
+            common.Trace($"MobileDeepLinkNew: {recordURLNew}");
+            common.Trace($"MobileDeepLinkDefaultView: {recordURLDefaultView}");
 
             MobileDeepLinkEdit.Set(executionContext, recordURLEdit);
             MobileDeepLinkNew.Set(executionContext, recordURLNew);

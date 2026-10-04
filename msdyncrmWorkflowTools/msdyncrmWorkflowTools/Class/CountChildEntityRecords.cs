@@ -33,7 +33,7 @@ namespace msdyncrmWorkflowTools
             var _childEntityName = ChildEntityName.Get(executionContext);
             var _parentLookupName = ParentLookupName.Get(executionContext);
             var _recordURL = RecordURL.Get(executionContext);
-            common.Trace("ChildEntityName=" + _childEntityName + "--ParentLookupName=" + _parentLookupName + "--RecordURL=" + _recordURL);
+            common.Trace($"ChildEntityName={_childEntityName}--ParentLookupName={_parentLookupName}--RecordURL={_recordURL}");
             if (_recordURL == null || _recordURL == string.Empty)
             {
                 throw new InvalidPluginExecutionException("Record URL (Parent) is required.");
@@ -42,7 +42,7 @@ namespace msdyncrmWorkflowTools
             var ParentObjectTypeCode = parsedUrl.ObjectTypeCode;
             var ParenEntityName = common.GetEntityNameFromCode(ParentObjectTypeCode);
             var ParentEntityId = parsedUrl.Id;
-            common.Trace("ParentObjectTypeCode=" + ParentObjectTypeCode + "--ParentId=" + ParentEntityId);
+            common.Trace($"ParentObjectTypeCode={ParentObjectTypeCode}--ParentId={ParentEntityId}");
             #endregion
 
             #region "Process"

@@ -59,7 +59,7 @@ namespace msdyncrmWorkflowTools
             string ParentObjectTypeCode = urlParams[0].Replace("etc=", "");
             string entityName = common.sGetEntityNameFromCode(ParentObjectTypeCode, common.service);
             string ParentId = urlParams[1].Replace("id=", "");
-            common.tracingService.Trace("ParentObjectTypeCode=" + ParentObjectTypeCode + "--ParentId=" + ParentId);
+            common.tracingService.Trace($"ParentObjectTypeCode={ParentObjectTypeCode}--ParentId={ParentId}");
 
             string _QRInfo = this.QRInfo.Get(executionContext);
             common.tracingService.Trace("QR Ok");
@@ -85,7 +85,7 @@ namespace msdyncrmWorkflowTools
             }
             if (_fileName == null || _fileName == "")
             {
-                _fileName = "QR." + _imageFormat;
+                _fileName = $"QR.{_imageFormat}";
             }
 
             #endregion

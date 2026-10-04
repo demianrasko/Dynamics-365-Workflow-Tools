@@ -37,7 +37,7 @@ namespace msdyncrmWorkflowTools
             var _administrator= Administrator.Get(executionContext);
             var _businessUnit= BusinessUnit.Get(executionContext);
 
-            common.Trace("_teamName=" + _teamName );
+            common.Trace($"_teamName={_teamName}" );
             #endregion
 
             #region "Associate Execution"

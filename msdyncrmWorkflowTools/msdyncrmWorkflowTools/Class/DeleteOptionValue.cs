@@ -37,7 +37,7 @@ namespace msdyncrmWorkflowTools
 
             var _OptionValue = OptionValue.Get(executionContext);
 
-            common.Trace("_AttributeName=" + _AttributeName + "--_EntityName=" + _EntityName );
+            common.Trace($"_AttributeName={_AttributeName}--_EntityName={_EntityName}" );
             #endregion
 
             #region "Insert Option Value"

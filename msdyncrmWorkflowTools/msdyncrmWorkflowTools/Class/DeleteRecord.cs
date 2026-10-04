@@ -37,7 +37,7 @@ namespace msdyncrmWorkflowTools.Class
                 var objectTypeCode = parsedUrl.ObjectTypeCode;
                 entityName = common.GetEntityNameFromCode(objectTypeCode);
                 objectId = parsedUrl.Id;
-                common.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
+                common.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={objectId}");
             }
 
             var deleteUsingRecordUrl = DeleteUsingRecordURL.Get(executionContext);
@@ -60,7 +60,7 @@ namespace msdyncrmWorkflowTools.Class
             }
             else
             {
-                common.Trace("Record type to be deleted: "+ entityTypeName+" and ID:"+ entityGuid);
+                common.Trace($"Record type to be deleted: {entityTypeName} and ID:{entityGuid}");
                 if (string.IsNullOrEmpty(entityTypeName) || entityGuid == null || entityGuid == string.Empty)
                 {
                     throw new InvalidPluginExecutionException("ERROR: Entity Type name or GUID to be deleted missing.");

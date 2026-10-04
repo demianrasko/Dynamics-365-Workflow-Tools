@@ -24,19 +24,19 @@ namespace msdyncrmWorkflowTools
         {
             #region "Read Parameters"
             var _FieldName = FieldName.Get(executionContext);
-            common.Trace("_FieldName=" + _FieldName);
+            common.Trace($"_FieldName={_FieldName}");
             var _ParentRecordURL = ParentRecordURL.Get(executionContext);
 
             if (_ParentRecordURL == null || _ParentRecordURL == string.Empty)
             {
                 throw new InvalidPluginExecutionException("Parent Record URL is required.");
             }
-            common.Trace("_ParentRecordURL=" + _ParentRecordURL);
+            common.Trace($"_ParentRecordURL={_ParentRecordURL}");
             var parsedUrl = Utility.ParseRecordUrl(_ParentRecordURL);
 
             var ParentObjectTypeCode=parsedUrl.ObjectTypeCode;
             var ParentId = parsedUrl.Id;
-            common.Trace("ParentObjectTypeCode=" + ParentObjectTypeCode + "--ParentId=" + ParentId);
+            common.Trace($"ParentObjectTypeCode={ParentObjectTypeCode}--ParentId={ParentId}");
             #endregion
 
             #region "CalculateRollupField Execution"

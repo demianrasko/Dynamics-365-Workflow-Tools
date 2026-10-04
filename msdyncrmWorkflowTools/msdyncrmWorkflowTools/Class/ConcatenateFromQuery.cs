@@ -95,7 +95,7 @@ namespace msdyncrmWorkflowTools
 
                     if (!attributeNamesSentToTrace)
                     {
-                        var attributeNames = entity.Attributes.Select(a => a.Key).Aggregate((x, y) => x + "," + y);
+                        var attributeNames = entity.Attributes.Select(a => a.Key).Aggregate((x, y) => $"{x},{y}");
                         common.Trace($"List of attributes available: {attributeNames}");
                         attributeNamesSentToTrace = true;
                     }

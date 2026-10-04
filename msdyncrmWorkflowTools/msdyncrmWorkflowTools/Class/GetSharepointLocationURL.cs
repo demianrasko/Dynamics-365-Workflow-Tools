@@ -39,7 +39,7 @@ namespace msdyncrmWorkflowTools
                 var retriveResponse = (RetrieveAbsoluteAndSiteCollectionUrlResponse)common.service.Execute(retrieveRequest);
 
                 absoluteURL = retriveResponse.AbsoluteUrl.ToString();
-                common.Trace("Absolute URL of document location record is '{0}'." + retriveResponse.AbsoluteUrl.ToString());
+                common.Trace($"Absolute URL of document location record is '{{0}}'.{retriveResponse.AbsoluteUrl.ToString()}");
             }
             else
             {

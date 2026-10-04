@@ -30,14 +30,14 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "OrgDBSettings Update"
-            common.Trace("OrgDBSettingsUpdate.Execute - OrgDBSetting = " + orgDbSetting );
+            common.Trace($"OrgDBSettingsUpdate.Execute - OrgDBSetting = {orgDbSetting}" );
 
             var boolValue = false;
 
             var fetch =
                 $"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false'><entity name='organization'><attribute name='{orgDbSetting}'/><order attribute='name' descending='false' /></entity></fetch>";
 
-            common.Trace("OrgDBSettingsUpdate.Execute - Fetch = " + fetch);
+            common.Trace($"OrgDBSettingsUpdate.Execute - Fetch = {fetch}");
 
             var organizationColl = common.service.RetrieveMultiple(new FetchExpression(fetch));
 
