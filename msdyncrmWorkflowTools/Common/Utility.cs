@@ -189,6 +189,7 @@ namespace msdyncrmWorkflowTools
             var parameters = recordUrl.Substring(queryStart + 1).Split('&');
             string objectTypeCode = null;
             string id = null;
+            string entityName = null;
 
             foreach (var parameter in parameters)
             {
@@ -209,6 +210,10 @@ namespace msdyncrmWorkflowTools
                 {
                     id = value;
                 }
+                else if (entityName == null && string.Equals(name, "etn", StringComparison.OrdinalIgnoreCase))
+                {
+                    entityName = value;
+                }
             }
 
             if (objectTypeCode == null && parameters.Length > 0)
@@ -221,7 +226,7 @@ namespace msdyncrmWorkflowTools
                 id = parameters[1].Replace("id=", string.Empty);
             }
 
-            return new RecordUrl(objectTypeCode, id, null);
+            return new RecordUrl(objectTypeCode, id, entityName);
         }
 
         public static string GetRecordId(string recordUrl)
@@ -841,7 +846,10 @@ namespace msdyncrmWorkflowTools
         /// <summary>The entity type code from the "etc" parameter.</summary>
         public string ObjectTypeCode { get; }
 
-        /// <summary>The entity name.</summary>
+        /// <summary>
+        /// The entity logical name: the "etn" parameter when the URL has one (Unified Interface URLs), otherwise
+        /// null from <see cref="Utility.ParseRecordUrl"/> and looked up from the type code by Common.ParseRecordUrl.
+        /// </summary>
         public string EntityName { get; }
 
         /// <summary>The record id from the "id" parameter.</summary>

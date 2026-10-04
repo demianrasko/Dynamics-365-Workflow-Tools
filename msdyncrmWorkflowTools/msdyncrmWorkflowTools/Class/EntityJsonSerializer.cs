@@ -30,10 +30,10 @@ namespace msdyncrmWorkflowTools
                 throw new InvalidPluginExecutionException("Serializing Record URL is required.");
             }
 
-            var parsedUrl = Utility.ParseRecordUrl(serializingRecordUrl);
+            var parsedUrl = common.ParseRecordUrl(serializingRecordUrl);
             var objectTypeCode = parsedUrl.ObjectTypeCode;
             var objectId = parsedUrl.Id;
-            var entityName = common.GetEntityNameFromCode(objectTypeCode);
+            var entityName = parsedUrl.EntityName;
 
             common.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={objectId}");
 

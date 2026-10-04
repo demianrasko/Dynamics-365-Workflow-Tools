@@ -75,9 +75,9 @@ namespace msdyncrmWorkflowTools
                 throw new InvalidPluginExecutionException("Source Record URL is required.");
             }
 
-            var parsedUrl = Utility.ParseRecordUrl(_source);
+            var parsedUrl = common.ParseRecordUrl(_source);
             var parentObjectTypeCode = parsedUrl.ObjectTypeCode;
-            var parentEntityName = common.GetEntityNameFromCode(parentObjectTypeCode);
+            var parentEntityName = parsedUrl.EntityName;
             var parentId = parsedUrl.Id;
             common.Trace($"ObjectTypeCode={parentObjectTypeCode}--ParentId={parentId}");
 
@@ -86,9 +86,9 @@ namespace msdyncrmWorkflowTools
             {
                 throw new InvalidPluginExecutionException("Target Record URL is required.");
             }
-            var parsedDestinationUrl = Utility.ParseRecordUrl(_destination);
+            var parsedDestinationUrl = common.ParseRecordUrl(_destination);
             var destinationObjectTypeCode = parsedDestinationUrl.ObjectTypeCode;
-            var destinationEntityName = common.GetEntityNameFromCode(destinationObjectTypeCode);
+            var destinationEntityName = parsedDestinationUrl.EntityName;
             var destinationId = parsedDestinationUrl.Id;
             common.Trace($"ObjectTypeCode={destinationObjectTypeCode}--ParentId={destinationId}");
 

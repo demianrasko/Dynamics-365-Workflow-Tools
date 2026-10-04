@@ -23,7 +23,7 @@ namespace msdyncrmWorkflowTools
             {
                 throw new InvalidPluginExecutionException("Target Record URL is required.");
             }
-            var parsedUrl = Utility.ParseRecordUrl(targetRecordUrl);
+            var parsedUrl = common.ParseRecordUrl(targetRecordUrl);
             var parentObjectTypeCode = parsedUrl.ObjectTypeCode;
             var parentId = parsedUrl.Id;
 
@@ -31,7 +31,7 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "ApplyRoutingRuleRequest Execution"
-            var entityName = common.GetEntityNameFromCode(parentObjectTypeCode);
+            var entityName = parsedUrl.EntityName;
 
             var target = new EntityReference(entityName, new Guid(parentId));
 

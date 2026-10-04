@@ -29,6 +29,21 @@ namespace msdyncrmWorkflowTools_Tests
         }
 
         [TestMethod]
+        public void ParseRecordUrl_ReadsTheEntityNameFromEtn()
+        {
+            var parsedUrl = Utility.ParseRecordUrl("https://org.crm.dynamics.com/main.aspx?etc=1&id=d3c3b3b2-ae19-e811-811f-5065f38a3a01&etn=account&pagetype=entityrecord");
+
+            Assert.AreEqual("account", parsedUrl.EntityName);
+            Assert.AreEqual("1", parsedUrl.ObjectTypeCode);
+        }
+
+        [TestMethod]
+        public void ParseRecordUrl_LeavesEntityNameNullWithoutEtn()
+        {
+            Assert.IsNull(Utility.ParseRecordUrl(RecordUrl).EntityName);
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(InvalidPluginExecutionException))]
         public void ParseRecordUrl_ThrowsWhenThereIsNoQueryString()
         {

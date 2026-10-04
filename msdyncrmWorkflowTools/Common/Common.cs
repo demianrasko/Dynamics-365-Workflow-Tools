@@ -747,15 +747,33 @@ namespace msdyncrmWorkflowTools
         }
 
         /// <summary>
+        /// Parses a record URL and fills in its entity name: from the URL's "etn" parameter when it has one,
+        /// otherwise by looking up the "etc" type code in the metadata.
+        /// </summary>
+        /// <param name="recordUrl">The record URL a workflow passes in.</param>
+        /// <returns>The object type code, record id and entity logical name.</returns>
+        public RecordUrl ParseRecordUrl(string recordUrl)
+        {
+            var parsedUrl = Utility.ParseRecordUrl(recordUrl);
+
+            if (!string.IsNullOrEmpty(parsedUrl.EntityName))
+            {
+                return parsedUrl;
+            }
+
+            return new RecordUrl(parsedUrl.ObjectTypeCode, parsedUrl.Id, GetEntityNameFromCode(parsedUrl.ObjectTypeCode));
+        }
+
+        /// <summary>
         /// The record a record URL points at, with the entity name looked up from the URL's type code.
         /// </summary>
         public EntityReference GetRecordReference(string recordUrl)
         {
-            var parsedUrl = Utility.ParseRecordUrl(recordUrl);
+            var parsedUrl = ParseRecordUrl(recordUrl);
 
             Trace($"ObjectTypeCode={parsedUrl.ObjectTypeCode}--ParentId={parsedUrl.Id}");
 
-            return new EntityReference(GetEntityNameFromCode(parsedUrl.ObjectTypeCode), new Guid(parsedUrl.Id));
+            return new EntityReference(parsedUrl.EntityName, new Guid(parsedUrl.Id));
         }
 
         /// <summary>

@@ -45,9 +45,9 @@ namespace msdyncrmWorkflowTools
             {
                 throw new InvalidPluginExecutionException("Clonning Record URL is required.");
             }
-            var parsedUrl = Utility.ParseRecordUrl(_ClonningRecordURL);
+            var parsedUrl = common.ParseRecordUrl(_ClonningRecordURL);
             var objectTypeCode = parsedUrl.ObjectTypeCode;
-            var entityName = common.GetEntityNameFromCode(objectTypeCode);
+            var entityName = parsedUrl.EntityName;
             var objectId = parsedUrl.Id;
             common.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={objectId}");
 

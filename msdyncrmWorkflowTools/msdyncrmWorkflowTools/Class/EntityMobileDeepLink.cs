@@ -32,9 +32,9 @@ namespace msdyncrmWorkflowTools
             {
                 throw new InvalidPluginExecutionException("Record URL is required.");
             }
-            var parsedUrl = Utility.ParseRecordUrl(_recordURL);
+            var parsedUrl = common.ParseRecordUrl(_recordURL);
             var objectTypeCode = parsedUrl.ObjectTypeCode;
-            var entityName = common.GetEntityNameFromCode(objectTypeCode);
+            var entityName = parsedUrl.EntityName;
             var objectId = parsedUrl.Id;
             common.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={objectId}");
 

@@ -33,9 +33,9 @@ namespace msdyncrmWorkflowTools.Class
 
             if (deleteRecordUrl != null)
             {
-                var parsedUrl = Utility.ParseRecordUrl(deleteRecordUrl);
+                var parsedUrl = common.ParseRecordUrl(deleteRecordUrl);
                 var objectTypeCode = parsedUrl.ObjectTypeCode;
-                entityName = common.GetEntityNameFromCode(objectTypeCode);
+                entityName = parsedUrl.EntityName;
                 objectId = parsedUrl.Id;
                 common.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={objectId}");
             }

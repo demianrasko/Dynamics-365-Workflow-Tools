@@ -23,7 +23,7 @@ namespace msdyncrmWorkflowTools
                 throw new InvalidPluginExecutionException("Incident Record URL is required.");
             }
 
-            var parsedUrl = Utility.ParseRecordUrl(incidentRecordUrl);
+            var parsedUrl = common.ParseRecordUrl(incidentRecordUrl);
             var parentObjectTypeCode = parsedUrl.ObjectTypeCode;
             var parentId = parsedUrl.Id;
 
@@ -31,7 +31,7 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "ApplyRoutingRuleRequest Execution"
-            var entityName = common.GetEntityNameFromCode(parentObjectTypeCode);
+            var entityName = parsedUrl.EntityName;
 
             var request = new ApplyRoutingRuleRequest
             {
