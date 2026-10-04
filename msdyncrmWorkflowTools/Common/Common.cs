@@ -16,7 +16,6 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace msdyncrmWorkflowTools
 {
@@ -1085,41 +1084,40 @@ namespace msdyncrmWorkflowTools
             return retrieved;
         }
 
-        public string TranslateText(string textToTranslate, string language, string key)
+        /// <summary>
+        /// Translates text with Azure AI Translator (Text Translation v3.0).
+        /// </summary>
+        /// <param name="textToTranslate">Text to translate; the source language is detected automatically.</param>
+        /// <param name="language">Target language code, e.g. "en", "es", "pt", "fr-ca".</param>
+        /// <param name="key">Translator resource key (Ocp-Apim-Subscription-Key).</param>
+        /// <param name="region">Azure region of the Translator resource, e.g. "westeurope". Required for regional and
+        /// multi-service resources; leave empty for a global Translator resource.</param>
+        /// <returns>The translated text, or an empty string when there is nothing to translate.</returns>
+        public string TranslateText(string textToTranslate, string language, string key, string region = null)
         {
-
-            TranslateTextasync(textToTranslate, language, key).Wait();
-            var content = XElement.Parse(result).Value;
-            return content;
-        }
-        string result;
-        async Task TranslateTextasync(string textToTranslate, string language, string key)
-        {
-            var host = "https://api.microsofttranslator.com";
-            var path = "/V2/Http.svc/Translate";
-
-            var client = new HttpClient();
-            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", key);
-
-            var list = new List<KeyValuePair<string, string>>() {
-                new KeyValuePair<string, string> (textToTranslate,language)// "fr-fr"
-
-            };
-
-            foreach (var i in list)
+            if (string.IsNullOrEmpty(textToTranslate))
             {
-                var uri = host + path + "?to=" + i.Value + "&text=" + System.Net.WebUtility.UrlEncode(i.Key);
-
-                var response = await client.GetAsync(uri);
-
-                result = await response.Content.ReadAsStringAsync();
-                // NOTE: A successful response is returned in XML. You can extract the contents of the XML as follows.
-                // var content = XElement.Parse(result).Value;
-                Trace("{0}", result);
-
-
+                return string.Empty;
             }
 
+            var url = "https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&to=" +
+                      Uri.EscapeDataString((language ?? string.Empty).Trim());
+
+            var request = new HttpRequestMessage(HttpMethod.Post, url)
+            {
+                Content = new StringContent(Utility.BuildTranslatorRequest(textToTranslate), Encoding.UTF8, "application/json")
+            };
+            request.Headers.Add("Ocp-Apim-Subscription-Key", key);
+
+            if (!string.IsNullOrWhiteSpace(region))
+            {
+                request.Headers.Add("Ocp-Apim-Subscription-Region", region.Trim());
+            }
+
+            var response = ExecuteAsyncRequest(request);
+            Trace("Translator response: {0}", response);
+
+            return Utility.ParseTranslatorResponse(response);
         }
         /// <summary>
         /// Converts an amount between currencies using the European Central Bank reference rates published by
