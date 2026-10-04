@@ -229,5 +229,19 @@ namespace msdyncrmWorkflowTools_Tests
 
             Assert.AreEqual(1, xml.Element("entity").Element("filter").Elements("condition").Count());
         }
+
+        [TestMethod]
+        public void FirstMatch_SkipsEmptyColumnsAndFilters()
+        {
+            var query = Queries.FirstMatch("account",
+                new[] { "name", string.Empty, "name" },
+                new System.Collections.Generic.KeyValuePair<string, object>("accountnumber", "A-1"),
+                new System.Collections.Generic.KeyValuePair<string, object>(null, "ignored"));
+
+            Assert.AreEqual("account", query.EntityName);
+            Assert.AreEqual(1, query.TopCount);
+            CollectionAssert.AreEqual(new[] { "name" }, query.ColumnSet.Columns.ToArray());
+            AssertCondition(query.Criteria.Conditions.Single(), "accountnumber", ConditionOperator.Equal, "A-1");
+        }
     }
 }

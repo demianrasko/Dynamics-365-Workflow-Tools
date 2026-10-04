@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xrm.Sdk.Query;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace msdyncrmWorkflowTools
 {
@@ -172,6 +174,26 @@ namespace msdyncrmWorkflowTools
             };
             query.Criteria.AddCondition("listid", ConditionOperator.Equal, listId);
             query.Criteria.AddCondition("entityid", ConditionOperator.Equal, memberId);
+
+            return query;
+        }
+
+        /// <summary>
+        /// The first record of <paramref name="entityName"/> where every filter attribute equals its value.
+        /// Empty column names and filters with an empty attribute name are skipped.
+        /// </summary>
+        public static QueryExpression FirstMatch(string entityName, IEnumerable<string> columns, params KeyValuePair<string, object>[] equalFilters)
+        {
+            var query = new QueryExpression(entityName)
+            {
+                ColumnSet = new ColumnSet(columns.Where(c => !string.IsNullOrEmpty(c)).Distinct().ToArray()),
+                TopCount = 1
+            };
+
+            foreach (var filter in equalFilters.Where(f => !string.IsNullOrEmpty(f.Key)))
+            {
+                query.Criteria.AddCondition(filter.Key, ConditionOperator.Equal, filter.Value);
+            }
 
             return query;
         }

@@ -1,6 +1,7 @@
-﻿using Microsoft.Xrm.Sdk.Query;
-using Microsoft.Xrm.Sdk.Workflow;
+﻿using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace msdyncrmWorkflowTools
 {
@@ -62,81 +63,29 @@ namespace msdyncrmWorkflowTools
             common.Trace(
                 $"EntityName: {entityName} - Attribute1:{attribute1} - Attribute2:{attribute2} - FilterAttribute1:{filterAttribute1} - FilterAttribute2:{filterAttribute2} - ValueAttribute1:{valueAttribute1} ValueAttribute2:{valueAttribute2}");
             #endregion
-            #region "QueryExpression Execution"
-            var qe = new QueryExpression
+
+            var query = Queries.FirstMatch(entityName,
+                new[] { attribute1, attribute2 },
+                new KeyValuePair<string, object>(filterAttribute1, valueAttribute1),
+                new KeyValuePair<string, object>(filterAttribute2, valueAttribute2));
+
+            var record = common.Service.RetrieveMultiple(query).Entities.FirstOrDefault();
+
+            if (record == null)
             {
-                EntityName = entityName,
-                ColumnSet = new ColumnSet(),
-                TopCount = 1
-            };
-
-            if (!string.IsNullOrEmpty(attribute1))
-            {
-                qe.ColumnSet.Columns.Add(attribute1);
-            }
-            if (!string.IsNullOrEmpty(attribute2))
-            {
-                qe.ColumnSet.Columns.Add(attribute2);
-            }
-
-            var filter = new FilterExpression(LogicalOperator.And);
-
-            if (!string.IsNullOrEmpty(filterAttribute1))
-            {
-                var condition1 = new ConditionExpression
-                {
-                    AttributeName = filterAttribute1
-                };
-
-                condition1.Values.Add(valueAttribute1);
-                condition1.Operator = ConditionOperator.Equal;
-                filter.Conditions.Add(condition1);
-            }
-
-            if (!string.IsNullOrEmpty(filterAttribute2))
-            {
-                var condition2 = new ConditionExpression
-                {
-                    AttributeName = filterAttribute2
-                };
-
-                condition2.Values.Add(valueAttribute2);
-                condition2.Operator = ConditionOperator.Equal;
-                filter.Conditions.Add(condition2);
-            }
-
-            qe.Criteria = filter;
-
-            common.Trace("Executing Query...");
-
-            var results = common.Service.RetrieveMultiple(qe);
-
-            common.Trace($"Executed Query Ok, {results.Entities.Count} records ...");
-
-            if (results.Entities.Count <= 0)
-            {
+                common.Trace("No matching record.");
                 return;
             }
 
-            common.Trace("Setting results");
-            var record = results.Entities[0];
-
-            if (!string.IsNullOrEmpty(attribute1) && record.Attributes.Contains(attribute1))
+            if (!string.IsNullOrEmpty(attribute1) && record.Contains(attribute1))
             {
-                var value1 = Utility.AttributeValueToString(record.Attributes[attribute1]);
-                common.Trace($"Setting result1: {value1}");
-                ResultValue1.Set(executionContext, value1);
+                ResultValue1.Set(executionContext, Utility.AttributeValueToString(record[attribute1]));
             }
 
-            if (!string.IsNullOrEmpty(attribute2) && record.Attributes.Contains(attribute2))
+            if (!string.IsNullOrEmpty(attribute2) && record.Contains(attribute2))
             {
-                var value2 = Utility.AttributeValueToString(record.Attributes[attribute2]);
-                common.Trace($"Setting result2: {value2}");
-                ResultValue2.Set(executionContext, value2);
+                ResultValue2.Set(executionContext, Utility.AttributeValueToString(record[attribute2]));
             }
-
-            common.Trace("End setting results");
-            #endregion
         }
     }
 }
