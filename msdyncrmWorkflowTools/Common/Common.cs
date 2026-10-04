@@ -849,23 +849,19 @@ namespace msdyncrmWorkflowTools
                     attachment["subject"] = title;
                 }
 
-                //if (file.Attributes.Contains("title"))
-                //{
-                //    attachment["subject"] = file.Attributes["title"].ToString();
-                //}
+                if (file.TryGetAttributeValue("filename", out string attachmentFileName))
+                {
+                    attachment["filename"] = attachmentFileName;
+                }
 
-                if (file.Attributes.Contains("filename"))
+                if (file.TryGetAttributeValue("documentbody", out string documentBody))
                 {
-                    attachment["filename"] = file.Attributes["filename"].ToString();
+                    attachment["body"] = documentBody;
                 }
-                if (file.Attributes.Contains("documentbody"))
+
+                if (file.TryGetAttributeValue("mimetype", out string mimeType))
                 {
-                    attachment["body"] = file.Attributes["documentbody"].ToString();
-                }
-                
-                if (file.Attributes.Contains("mimetype"))
-                {
-                    attachment["mimetype"] = file.Attributes["mimetype"].ToString();
+                    attachment["mimetype"] = mimeType;
                 }
 
                 Service.Create(attachment);
@@ -978,25 +974,28 @@ namespace msdyncrmWorkflowTools
                 attachment["attachmentnumber"] = i;
                 i++;
 
-                if (file.Attributes.Contains("subject"))
+                if (file.TryGetAttributeValue("subject", out string subject))
                 {
-                    attachment["subject"] = file.Attributes["subject"].ToString();
+                    attachment["subject"] = subject;
                 }
-                if (file.Attributes.Contains("filename"))
+
+                if (file.TryGetAttributeValue("filename", out string attachmentFileName))
                 {
-                    attachment["filename"] = file.Attributes["filename"].ToString();
+                    attachment["filename"] = attachmentFileName;
                 }
-                if (file.Attributes.Contains("documentbody"))
+
+                if (file.TryGetAttributeValue("documentbody", out string documentBody))
                 {
-                    attachment["body"] = file.Attributes["documentbody"].ToString();
+                    attachment["body"] = documentBody;
                 }
-                else if (file.Attributes.Contains("body"))
+                else if (file.TryGetAttributeValue("body", out string body))
                 {
-                    attachment["body"] = file.Attributes["body"].ToString();
+                    attachment["body"] = body;
                 }
-                if (file.Attributes.Contains("mimetype"))
+
+                if (file.TryGetAttributeValue("mimetype", out string mimeType))
                 {
-                    attachment["mimetype"] = file.Attributes["mimetype"].ToString();
+                    attachment["mimetype"] = mimeType;
                 }
 
                 if (mostRecent)
