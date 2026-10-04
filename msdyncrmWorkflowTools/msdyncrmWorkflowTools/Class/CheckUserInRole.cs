@@ -18,24 +18,21 @@ namespace msdyncrmWorkflowTools
 
         protected override void Execute(CodeActivityContext executionContext)
         {
-
             #region "Load CRM Service from context"
 
             var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
-             
+
             #region "Read Parameters"
             var roleReference = Role.Get(executionContext);
 
-            objCommon.tracingService.Trace(String.Format("RoleId: {0} ", roleReference.Id.ToString()));
+            objCommon.tracingService.Trace($"RoleId: {roleReference.Id.ToString()} ");
             #endregion
 
-           
+            objCommon.tracingService.Trace("Checking association between user and role.");
 
-            Console.WriteLine("Checking association between user and role.");
-            // Establish a SystemUser link for a query.
-            var systemUserLink = new LinkEntity()
+            var systemUserLink = new LinkEntity
             {
                 LinkFromEntityName = "systemuserroles",
                 LinkFromAttributeName = "systemuserid",
@@ -51,15 +48,13 @@ namespace msdyncrmWorkflowTools
             }
             };
 
-            // Build the query.
-                
-            var linkQuery = new QueryExpression()
+            var linkQuery = new QueryExpression
             {
                 EntityName = "role",
                 ColumnSet = new ColumnSet("parentrootroleid"),
                 LinkEntities =
             {
-                new LinkEntity()
+                new LinkEntity
                 {
                     LinkFromEntityName = "role",
                     LinkFromAttributeName = "roleid",
@@ -82,17 +77,11 @@ namespace msdyncrmWorkflowTools
 
             // if an entity is returned then the user is a member
             // of the role
-            var UserInRole = (matchEntities.Entities.Count > 0);
+            var userInRole = (matchEntities.Entities.Count > 0);
 
-            if (UserInRole)
-                Console.WriteLine("User do not belong to the role.");
-            else
-                Console.WriteLine("User belong to this role.");
+            Console.WriteLine(userInRole ? "User do not belong to the role." : "User belong to this role.");
 
-            isUserInRole.Set(executionContext, UserInRole);
-
-
-
+            isUserInRole.Set(executionContext, userInRole);
         }
     }
 }

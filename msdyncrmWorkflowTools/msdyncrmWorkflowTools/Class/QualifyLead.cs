@@ -42,8 +42,6 @@ namespace msdyncrmWorkflowTools
         #endregion
         protected override void Execute(CodeActivityContext executionContext)
         {
-            
-
             #region "Load CRM Service from context"
 
             var objCommon = new Common(executionContext);
@@ -52,6 +50,7 @@ namespace msdyncrmWorkflowTools
 
             #region "Read Parameters"
             var lead = Lead.Get(executionContext);
+            // TODO: Lead is required, so this test should be unnecessary
             if (lead == null)
             {
                 return;
@@ -67,42 +66,39 @@ namespace msdyncrmWorkflowTools
             objCommon.tracingService.Trace("LeadID=" + lead.Id);
             #endregion
 
-
             #region "QualifyLead Execution"
-            var query = new QueryExpression("organization");
-            query.ColumnSet = new ColumnSet("basecurrencyid");
+            var query = new QueryExpression("organization")
+            {
+                ColumnSet = new ColumnSet("basecurrencyid")
+            };
+
             var result = objCommon.service.RetrieveMultiple(query);
             var currencyId = (EntityReference)result.Entities[0]["basecurrencyid"];
 
-
-            var qualifyIntoOpportunityReq = new QualifyLeadRequest();
-
-            qualifyIntoOpportunityReq.CreateOpportunity = createOpportunity;
-            qualifyIntoOpportunityReq.CreateAccount = createAccount;
-            qualifyIntoOpportunityReq.CreateContact = createContact;
-            qualifyIntoOpportunityReq.OpportunityCurrencyId = currencyId;
+            var qualifyIntoOpportunityReq = new QualifyLeadRequest
+            {
+                CreateOpportunity = createOpportunity,
+                CreateAccount = createAccount,
+                CreateContact = createContact,
+                OpportunityCurrencyId = currencyId
+            };
 
             if (existingAccount != null)
             {
-                qualifyIntoOpportunityReq.OpportunityCustomerId = new EntityReference(
-                        "account", existingAccount.Id);
+                qualifyIntoOpportunityReq.OpportunityCustomerId = new EntityReference("account", existingAccount.Id);
             }
             else if (existingContact != null)
             {
-                qualifyIntoOpportunityReq.OpportunityCustomerId = new EntityReference(
-                        "contact", existingContact.Id);
+                qualifyIntoOpportunityReq.OpportunityCustomerId = new EntityReference("contact", existingContact.Id);
             }
+
             qualifyIntoOpportunityReq.Status = new OptionSetValue(leadStatus);
             qualifyIntoOpportunityReq.LeadId = new EntityReference("lead", lead.Id);
-            
 
-            var qualifyIntoOpportunityRes =
-                (QualifyLeadResponse)objCommon.service.Execute(qualifyIntoOpportunityReq);
+            objCommon.service.Execute(qualifyIntoOpportunityReq);
             Console.WriteLine("  Executed OK.");
 
-
             #endregion
-
         }
     }
 }

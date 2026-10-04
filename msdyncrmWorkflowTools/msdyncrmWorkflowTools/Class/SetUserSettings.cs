@@ -7,8 +7,6 @@ namespace msdyncrmWorkflowTools
 {
     public class SetUserSettings : CodeActivity
     {
-
-
         [RequiredArgument]
         [Input("User")]
         [ReferenceTarget("systemuser")]
@@ -44,7 +42,6 @@ namespace msdyncrmWorkflowTools
         public InArgument<int> UILanguageId { get; set; }
         //Specify Unique identifier of the language in which to view the user interface (UI). 0 for ignore
 
-
         [RequiredArgument]
         [Input("DefaultCalendarView")]
         [Default("0")]
@@ -56,14 +53,10 @@ namespace msdyncrmWorkflowTools
 1: Show the week by default
             */
 
-
         [RequiredArgument]
         [Input("IsSendAsAllowed")]
         [Default("false")]
         public InArgument<bool> IsSendAsAllowed { get; set; }
-        
-       
-
 
         protected override void Execute(CodeActivityContext executionContext)
         {
@@ -84,43 +77,47 @@ namespace msdyncrmWorkflowTools
             var uiLanguageId = UILanguageId.Get(executionContext);
             var defaultCalendarView = DefaultCalendarView.Get(executionContext);
             var isSendAsAllowed = IsSendAsAllowed.Get(executionContext);
-            
 
-            objCommon.tracingService.Trace(String.Format("UserID: {0} ", userReference.Id.ToString()));
+            objCommon.tracingService.Trace($"UserID: {userReference.Id.ToString()} ");
             #endregion
 
             var newSettings = new Entity("usersettings");
             newSettings.Attributes.Add("systemuserid", userReference.Id);
+
+            // TODO: Find a better way to do this
             if (pagingLimit != 0)
             {
                 newSettings.Attributes.Add("paginglimit", pagingLimit);
             }
+
             if (advancedFindStartupMode == 1 || advancedFindStartupMode == 2)
             {
                 newSettings.Attributes.Add("advancedfindstartupmode", advancedFindStartupMode);
             }
+
             if (timeZoneCode != 0)
             {
                 newSettings.Attributes.Add("timezonecode", timeZoneCode);
             }
+
             if (helpLanguageId != 0)
             {
                 newSettings.Attributes.Add("helplanguageid", helpLanguageId);
             }
+
             if (uiLanguageId != 0)
             {
                 newSettings.Attributes.Add("uilanguageid", uiLanguageId);
             }
+
             if (defaultCalendarView == 0 || defaultCalendarView == 1 || defaultCalendarView == 2)
             {
                 newSettings.Attributes.Add("defaultcalendarview", defaultCalendarView);
             }
+
             newSettings.Attributes.Add("issendasallowed", isSendAsAllowed);
-            
 
             objCommon.service.Update(newSettings);
-
-
         }
     }
 }

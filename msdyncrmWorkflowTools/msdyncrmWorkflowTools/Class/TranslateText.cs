@@ -30,7 +30,6 @@ namespace msdyncrmWorkflowTools
 
         protected override void Execute(CodeActivityContext executionContext)
         {
-
             #region "Load CRM Service from context"
 
             var objCommon = new Common(executionContext);
@@ -38,20 +37,15 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var _TextToTranslate = TextToTranslate.Get(executionContext);
-            var _Language = Language.Get(executionContext);
-            var _Authenticationkey = Authenticationkey.Get(executionContext);
-
+            var textToTranslate = TextToTranslate.Get(executionContext);
+            var language = Language.Get(executionContext);
+            var authenticationKey = Authenticationkey.Get(executionContext);
             #endregion
-
-
+            
             var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
-            var res=commonClass.TranslateText(_TextToTranslate, _Language, _Authenticationkey);
-
-            if (res == null) res = "";
+            var res=commonClass.TranslateText(textToTranslate, language, authenticationKey) ?? string.Empty;
 
             TranslatedText.Set(executionContext, res);
-            
         }
     }
 }

@@ -7,8 +7,6 @@ using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
 {
-
-   
     public class AssociateEntity : CodeActivity
     {
         #region "Parameter Definition"
@@ -33,7 +31,6 @@ namespace msdyncrmWorkflowTools
 
         protected override void Execute(CodeActivityContext executionContext)
         {
-
             #region "Load CRM Service from context"
 
             var objCommon = new Common(executionContext);
@@ -41,30 +38,30 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var _relationshipName = RelationshipName.Get(executionContext);
-            var _relationshipEntityName = RelationshipEntityName.Get(executionContext);
-            var _recordURL = RecordURL.Get(executionContext);
-            if (_recordURL == null || _recordURL == "")
+            var relationshipName = RelationshipName.Get(executionContext);
+            var relationshipEntityName = RelationshipEntityName.Get(executionContext);
+            var recordUrl = RecordURL.Get(executionContext);
+
+            if (string.IsNullOrEmpty(recordUrl))
             {
                 return;
             }
-            var urlParts = _recordURL.Split("?".ToArray());
-            var urlParams=urlParts[1].Split("&".ToCharArray());
-            var ParentObjectTypeCode=urlParams[0].Replace("etc=","");
-            var entityName = objCommon.sGetEntityNameFromCode(ParentObjectTypeCode, objCommon.service);
-            var ParentId = urlParams[1].Replace("id=", "");
-            objCommon.tracingService.Trace("ParentObjectTypeCode=" + ParentObjectTypeCode + "--ParentId=" + ParentId);
-            #endregion
 
+            var urlParts = recordUrl.Split("?".ToArray());
+            var urlParams=urlParts[1].Split("&".ToCharArray());
+            var parentObjectTypeCode=urlParams[0].Replace("etc=",string.Empty);
+            var entityName = objCommon.GetEntityNameFromCode(parentObjectTypeCode, objCommon.service);
+            var parentId = urlParams[1].Replace("id=", string.Empty);
+
+            objCommon.tracingService.Trace($"ParentObjectTypeCode={parentObjectTypeCode}--ParentId={parentId}");
+            #endregion
 
             #region "Associate Execution"
 
             try
             {
                 var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service);
-                commonClass.AssociateEntity(objCommon.context.PrimaryEntityName, objCommon.context.PrimaryEntityId, _relationshipName, _relationshipEntityName, entityName, ParentId);
-
-                
+                commonClass.AssociateEntity(objCommon.context.PrimaryEntityName, objCommon.context.PrimaryEntityId, relationshipName, relationshipEntityName, entityName, parentId);
             }
             catch (FaultException<OrganizationServiceFault> ex)
             {
@@ -75,15 +72,12 @@ namespace msdyncrmWorkflowTools
                 // throw ex;
                 //}
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 objCommon.tracingService.Trace("Error : {0} - {1}", ex.Message, ex.StackTrace);
                 //throw ex;
             }
             #endregion
-
         }
-
-
     }
 }

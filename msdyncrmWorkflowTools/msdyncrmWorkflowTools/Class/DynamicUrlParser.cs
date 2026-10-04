@@ -25,6 +25,7 @@ namespace msdyncrmWorkflowTools
                 var found = 0;
 
                 var parameters = uri.Query.TrimStart('?').Split('&');
+
                 foreach (var param in parameters)
                 {
                     var nameValue = param.Split('=');
@@ -44,7 +45,7 @@ namespace msdyncrmWorkflowTools
             }
             catch (Exception ex)
             {
-                throw new Exception(String.Format("Url '{0}' is incorrectly formated for a Dynamics CRM Dynamics Url", url), ex);
+                throw new Exception($"Url '{url}' is incorrectly formated for a Dynamics CRM Dynamics Url", ex);
             }
         }
 
@@ -57,9 +58,11 @@ namespace msdyncrmWorkflowTools
         {
             var entityFilter = new MetadataFilterExpression(LogicalOperator.And);
             entityFilter.Conditions.Add(new MetadataConditionExpression("ObjectTypeCode ", MetadataConditionOperator.Equals, EntityTypeCode));
+            
             var propertyExpression = new MetadataPropertiesExpression { AllProperties = false };
             propertyExpression.PropertyNames.Add("LogicalName");
-            var entityQueryExpression = new EntityQueryExpression()
+
+            var entityQueryExpression = new EntityQueryExpression
             {
                 Criteria = entityFilter,
                 Properties = propertyExpression
@@ -72,11 +75,7 @@ namespace msdyncrmWorkflowTools
 
             var response = (RetrieveMetadataChangesResponse)service.Execute(retrieveMetadataChangesRequest);
 
-            if (response.EntityMetadata.Count == 1)
-            {
-                return response.EntityMetadata[0].LogicalName;
-            }
-            return null;
+            return response.EntityMetadata.Count == 1 ? response.EntityMetadata[0].LogicalName : null;
         }
 
         public EntityReference ToEntityReference(IOrganizationService service)

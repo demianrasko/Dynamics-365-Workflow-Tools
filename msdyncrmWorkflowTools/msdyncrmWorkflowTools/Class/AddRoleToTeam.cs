@@ -37,10 +37,7 @@ namespace msdyncrmWorkflowTools
 
             try
             {
-                var systemUser = objCommon.service.Retrieve(
-                            "team",
-                            teamReference.Id,
-                            new ColumnSet("businessunitid"));
+                var systemUser = objCommon.service.Retrieve("team", teamReference.Id, new ColumnSet("businessunitid"));
                 var businessUnit = (EntityReference)systemUser.Attributes["businessunitid"];
 
                 var query = new QueryExpression
@@ -61,25 +58,26 @@ namespace msdyncrmWorkflowTools
                         }
                     }
                 };
+
                 var givenRoles = objCommon.service.RetrieveMultiple(query);
 
-
-
-                if (givenRoles.Entities.Count > 0)
+                if (givenRoles.Entities.Count <= 0)
                 {
-                    var givenRole = givenRoles.Entities[0].ToEntity<Entity>();
-                    var entRootRole = (EntityReference)givenRole.Attributes["parentrootroleid"];
+                    return;
+                }
 
-                    objCommon.tracingService.Trace("Role {0} is retrieved.", givenRole.Id);
+                var givenRole = givenRoles.Entities[0].ToEntity<Entity>();
+                var entRootRole = (EntityReference)givenRole.Attributes["parentrootroleid"];
 
+                objCommon.tracingService.Trace("Role {0} is retrieved.", givenRole.Id);
 
-                    var query2 = new QueryExpression
+                var query2 = new QueryExpression
+                {
+                    EntityName = "role",
+                    ColumnSet = new ColumnSet("roleid"),
+                    Criteria = new FilterExpression
                     {
-                        EntityName = "role",
-                        ColumnSet = new ColumnSet("roleid"),
-                        Criteria = new FilterExpression
-                        {
-                            Conditions =
+                        Conditions =
                         {
 
                             new ConditionExpression
@@ -95,24 +93,26 @@ namespace msdyncrmWorkflowTools
                                 Values = { businessUnit.Id}
                             }
                         }
-                        }
-                    };
-                    var givenRoles2 = objCommon.service.RetrieveMultiple(query2);
-
-                    var givenRole2 = givenRoles2.Entities[0].ToEntity<Entity>();
-                    var entRoleId = (Guid)givenRole2.Attributes["roleid"];
-
-                    if (!IsAssociate(objCommon.service, teamReference.Id, entRoleId))
-                    {
-                        objCommon.tracingService.Trace("Associate | RoleId: {0} - TeamID: {1} ", entRoleId, teamReference.Id);
-
-                        objCommon.service.Associate(
-                              "team",
-                              teamReference.Id,
-                              new Relationship("teamroles_association"),
-                              new EntityReferenceCollection() { new EntityReference("role", entRoleId) });
                     }
+                };
+
+                var givenRoles2 = objCommon.service.RetrieveMultiple(query2);
+
+                var givenRole2 = givenRoles2.Entities[0].ToEntity<Entity>();
+                var entRoleId = (Guid)givenRole2.Attributes["roleid"];
+
+                if (IsAssociate(objCommon.service, teamReference.Id, entRoleId))
+                {
+                    return;
                 }
+                
+                objCommon.tracingService.Trace("Associate | RoleId: {0} - TeamID: {1} ", entRoleId, teamReference.Id);
+
+                objCommon.service.Associate(
+                    "team",
+                    teamReference.Id,
+                    new Relationship("teamroles_association"),
+                    new EntityReferenceCollection { new EntityReference("role", entRoleId) });
             }
             catch (Exception ex)
             {
@@ -121,7 +121,7 @@ namespace msdyncrmWorkflowTools
             }
         }
 
-        private bool IsAssociate(IOrganizationService organizationService, Guid teamId, Guid rolesId)
+        private static bool IsAssociate(IOrganizationService organizationService, Guid teamId, Guid rolesId)
         {
             var query = new QueryExpression("teamroles")
             {

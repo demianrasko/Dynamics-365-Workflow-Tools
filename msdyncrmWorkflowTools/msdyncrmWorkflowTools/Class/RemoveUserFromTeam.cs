@@ -1,5 +1,4 @@
-﻿using System;
-using System.Activities;
+﻿using System.Activities;
 using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
@@ -21,7 +20,6 @@ namespace msdyncrmWorkflowTools
 
         protected override void Execute(CodeActivityContext executionContext)
         {
-
             #region "Load CRM Service from context"
 
             var objCommon = new Common(executionContext);
@@ -32,14 +30,16 @@ namespace msdyncrmWorkflowTools
             var userReference = User.Get(executionContext);
             var teamReference = Team.Get(executionContext);
 
-            objCommon.tracingService.Trace(String.Format("UserID: {0} - TeamID: {1} ", userReference.Id.ToString(), teamReference.Id.ToString()));
+            objCommon.tracingService.Trace($"UserID: {userReference.Id.ToString()} - TeamID: {teamReference.Id.ToString()} ");
             #endregion
 
-            var req = new RemoveMembersTeamRequest();
-            req.TeamId = teamReference.Id;
-            req.MemberIds = new[] { userReference.Id};
-            var res = (RemoveMembersTeamResponse)objCommon.service.Execute(req);
+            var req = new RemoveMembersTeamRequest
+            {
+                TeamId = teamReference.Id,
+                MemberIds = new[] { userReference.Id}
+            };
 
+            objCommon.service.Execute(req);
         }
     }
 }

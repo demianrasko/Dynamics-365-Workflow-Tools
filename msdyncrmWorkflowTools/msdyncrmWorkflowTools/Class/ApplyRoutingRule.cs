@@ -5,7 +5,6 @@ using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 
-
 namespace msdyncrmWorkflowTools
 {
     public class ApplyRoutingRule : CodeActivity
@@ -18,7 +17,6 @@ namespace msdyncrmWorkflowTools
         #endregion
         protected override void Execute(CodeActivityContext executionContext)
         {
-
             #region "Load CRM Service from context"
 
             var objCommon = new Common(executionContext);
@@ -26,27 +24,31 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var _IncidentRecordURL= IncidentRecordURL.Get(executionContext);
-            if (_IncidentRecordURL == null || _IncidentRecordURL == "")
+            var incidentRecordUrl= IncidentRecordURL.Get(executionContext);
+            if (string.IsNullOrEmpty(incidentRecordUrl))
             {
                 return;
             }
-            var urlParts = _IncidentRecordURL.Split("?".ToArray());
-            var urlParams = urlParts[1].Split("&".ToCharArray());
-            var ParentObjectTypeCode = urlParams[0].Replace("etc=", "");
-            var ParentId = urlParams[1].Replace("id=", "");
-            objCommon.tracingService.Trace("ParentObjectTypeCode=" + ParentObjectTypeCode + "--ParentId=" + ParentId);
-            #endregion
 
+            var urlParts = incidentRecordUrl.Split("?".ToArray());
+            var urlParams = urlParts[1].Split("&".ToCharArray());
+            var parentObjectTypeCode = urlParams[0].Replace("etc=", "");
+            var parentId = urlParams[1].Replace("id=", "");
+            
+            objCommon.tracingService.Trace("ParentObjectTypeCode=" + parentObjectTypeCode + "--ParentId=" + parentId);
+            #endregion
 
             #region "ApplyRoutingRuleRequest Execution"
-            var EntityName = objCommon.sGetEntityNameFromCode(ParentObjectTypeCode, objCommon.service);
-            var routeRequest = new ApplyRoutingRuleRequest();
-            routeRequest.Target = new EntityReference(EntityName, new Guid(ParentId));
-            var routeResponse = (ApplyRoutingRuleResponse)objCommon.service.Execute(routeRequest);
+            var entityName = objCommon.GetEntityNameFromCode(parentObjectTypeCode, objCommon.service);
+            
+            var request = new ApplyRoutingRuleRequest
+            {
+                Target = new EntityReference(entityName, new Guid(parentId))
+            };
+            
+            objCommon.service.Execute(request);
             
             #endregion
-
         }
     }
 }

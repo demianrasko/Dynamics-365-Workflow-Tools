@@ -4,7 +4,6 @@ using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 
-
 namespace msdyncrmWorkflowTools.Class
 {
     public class ExecuteWorkflowByID : CodeActivity
@@ -13,13 +12,10 @@ namespace msdyncrmWorkflowTools.Class
         [Input("Record ID")]
         [ReferenceTarget("")]
         public InArgument<String> RecordID { get; set; }
-
         
         [Input("Process")]
         [ReferenceTarget("workflow")]
         public InArgument<EntityReference> Process { get; set; }
-
- 
 
         protected override void Execute(CodeActivityContext executionContext)
         {
@@ -30,23 +26,22 @@ namespace msdyncrmWorkflowTools.Class
             #endregion
 
             #region "Read Parameters"
-            var _RecordID = RecordID.Get(executionContext);
-          
+            var recordId = RecordID.Get(executionContext);
             
             var process = Process.Get(executionContext);
-
-
             #endregion
 
             #region "SetProcess Execution"
 
-            var wfRequest = new ExecuteWorkflowRequest();
-            wfRequest.EntityId = new Guid(_RecordID);
-            wfRequest.WorkflowId = process.Id;
-            var wfResponse=(ExecuteWorkflowResponse)objCommon.service.Execute(wfRequest);
+            var request = new ExecuteWorkflowRequest
+            {
+                EntityId = new Guid(recordId),
+                WorkflowId = process.Id
+            };
+
+            objCommon.service.Execute(request);
 
             #endregion
-
         }
     }
 }

@@ -32,7 +32,7 @@ namespace msdyncrmWorkflowTools.Class
             var urlParts = _RecordURL.Split("?".ToArray());
             var urlParams = urlParts[1].Split("&".ToCharArray());
             var objectTypeCode = urlParams[0].Replace("etc=", "");
-            var entityName = objCommon.sGetEntityNameFromCode(objectTypeCode, objCommon.service);
+            var entityName = objCommon.GetEntityNameFromCode(objectTypeCode, objCommon.service);
             var objectId = urlParams[1].Replace("id=", "");
             objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
 

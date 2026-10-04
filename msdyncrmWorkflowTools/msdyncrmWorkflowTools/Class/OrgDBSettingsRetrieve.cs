@@ -37,49 +37,48 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var _orgDBSetting = orgDBSetting.Get(executionContext).ToLower();
+            var orgDbSetting = orgDBSetting.Get(executionContext).ToLower();
             #endregion
 
             #region "OrgDBSettings Update"
-            objCommon.tracingService.Trace("OrgDBSettingsUpdate.Execute - OrgDBSetting = " + _orgDBSetting );
+            objCommon.tracingService.Trace("OrgDBSettingsUpdate.Execute - OrgDBSetting = " + orgDbSetting );
 
-            var _NumericValue = 0;
-            var _BoolValue = false;
-            var _StringValue = "";
+            var boolValue = false;
 
             try
             {
-                var fetch = @"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false'>" +
-                                 "   <entity name='organization'>" +
-                                 "         <attribute name='" + _orgDBSetting + "' />" +
-                                 "                   <order attribute='name' descending='false' />" +
-                                 "   </entity>" +
-                                 "</fetch>";
+                var fetch =
+                    $"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false'><entity name='organization'><attribute name='{orgDbSetting}'/><order attribute='name' descending='false' /></entity></fetch>";
 
                 objCommon.tracingService.Trace("OrgDBSettingsUpdate.Execute - Fetch = " + fetch);
 
                 var organizationColl = objCommon.service.RetrieveMultiple(new FetchExpression(fetch));
 
-                _StringValue=organizationColl.Entities[0].Attributes[_orgDBSetting].ToString();
-                if (int.TryParse(_StringValue, out _NumericValue))
-                    objCommon.tracingService.Trace("Numeric Value");
-                else if (bool.TryParse(_StringValue, out _BoolValue))
-                    objCommon.tracingService.Trace("Bool Value");
-                else
-                    objCommon.tracingService.Trace("String Value");
+                var stringValue = organizationColl.Entities[0].Attributes[orgDbSetting].ToString();
 
-                StringValue.Set(executionContext, _StringValue);
-                NumericValue.Set(executionContext, _NumericValue);
-                BoolValue.Set(executionContext, _BoolValue);
+                if (int.TryParse(stringValue, out var numericValue))
+                {
+                    objCommon.tracingService.Trace("Numeric Value");
+                }
+                else if (bool.TryParse(stringValue, out boolValue))
+                {
+                    objCommon.tracingService.Trace("Bool Value");
+                }
+                else
+                {
+                    objCommon.tracingService.Trace("String Value");
+                }
+
+                StringValue.Set(executionContext, stringValue);
+                NumericValue.Set(executionContext, numericValue);
+                BoolValue.Set(executionContext, boolValue);
 
             }
             catch (Exception e)
             {
-                throw new InvalidPluginExecutionException("[OrgDBSettingsUpdate] ERROR: " + e.ToString());
+                throw new InvalidPluginExecutionException($"[OrgDBSettingsUpdate] ERROR: {e}");
             }
             #endregion
         }
-        
-
     }
 }

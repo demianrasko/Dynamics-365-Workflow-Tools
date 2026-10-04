@@ -5,7 +5,6 @@ using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 
-
 namespace msdyncrmWorkflowTools
 {
     public class CalculatePrice : CodeActivity
@@ -14,11 +13,10 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("Target Record URL")]
         [ReferenceTarget("")]
-        public InArgument<String> TargetRecordURL { get; set; }
+        public InArgument<string> TargetRecordURL { get; set; }
         #endregion
         protected override void Execute(CodeActivityContext executionContext)
         {
-
             #region "Load CRM Service from context"
 
             var objCommon = new Common(executionContext);
@@ -26,30 +24,33 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var _TargetRecordURL = TargetRecordURL.Get(executionContext);
-            if (_TargetRecordURL == null || _TargetRecordURL == "")
+            var targetRecordUrl = TargetRecordURL.Get(executionContext);
+
+            if (string.IsNullOrEmpty(targetRecordUrl))
             {
                 return;
             }
-            var urlParts = _TargetRecordURL.Split("?".ToArray());
+            var urlParts = targetRecordUrl.Split("?".ToArray());
             var urlParams = urlParts[1].Split("&".ToCharArray());
-            var ParentObjectTypeCode = urlParams[0].Replace("etc=", "");
-            var ParentId = urlParams[1].Replace("id=", "");
-            objCommon.tracingService.Trace("ParentObjectTypeCode=" + ParentObjectTypeCode + "--ParentId=" + ParentId);
-            #endregion
+            var parentObjectTypeCode = urlParams[0].Replace("etc=", "");
+            var parentId = urlParams[1].Replace("id=", "");
 
+            objCommon.tracingService.Trace($"ParentObjectTypeCode={parentObjectTypeCode}--ParentId={parentId}");
+            #endregion
 
             #region "ApplyRoutingRuleRequest Execution"
-            var EntityName = objCommon.sGetEntityNameFromCode(ParentObjectTypeCode, objCommon.service);
+            var entityName = objCommon.GetEntityNameFromCode(parentObjectTypeCode, objCommon.service);
 
+            var target = new EntityReference(entityName, new Guid(parentId));
 
-            var calcReq = new CalculatePriceRequest();
-            var target = new EntityReference(EntityName,new Guid(ParentId));
-            calcReq.Target = target;
-            var calcRes = (CalculatePriceResponse)objCommon.service.Execute(calcReq);
+            var calcReq = new CalculatePriceRequest
+            {
+                Target = target
+            };
+
+            objCommon.service.Execute(calcReq);
 
             #endregion
-
         }
     }
 }

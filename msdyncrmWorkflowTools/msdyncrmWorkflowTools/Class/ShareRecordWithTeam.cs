@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
+using msdyncrmWorkflowTools.SupportingClasses;
 
 namespace msdyncrmWorkflowTools
 {
@@ -75,7 +76,6 @@ namespace msdyncrmWorkflowTools
         List<EntityReference> principals = new List<EntityReference>();
         #endregion
 
-
         protected override void Execute(CodeActivityContext executionContext)
         {
             #region "Load CRM Service from context"
@@ -85,93 +85,113 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var _SharingRecordURL = SharingRecordURL.Get(executionContext);
-            if (_SharingRecordURL == null || _SharingRecordURL == "")
+            var sharingRecordUrl = SharingRecordURL.Get(executionContext);
+            if (string.IsNullOrEmpty(sharingRecordUrl))
             {
                 return;
             }
-            var urlParts = _SharingRecordURL.Split("?".ToArray());
+
+            var teamReference = Team.Get(executionContext);
+
+            var urlParts = sharingRecordUrl.Split("?".ToArray());
             var urlParams = urlParts[1].Split("&".ToCharArray());
             var objectTypeCode = urlParams[0].Replace("etc=", "");
             var objectId = urlParams[1].Replace("id=", "");
-            objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
+            
+            objCommon.tracingService.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={objectId}");
 
-            var teamReference = Team.Get(executionContext);
             principals.Clear();
 
-            if (teamReference != null) principals.Add(teamReference);
+            if (teamReference != null)
+            {
+                principals.Add(teamReference);
+            }
 
             #endregion
 
             #region "ApplyRoutingRuteamReferenceleRequest Execution"
-            var EntityName = objCommon.sGetEntityNameFromCode(objectTypeCode, objCommon.service);
+            var entityName = objCommon.GetEntityNameFromCode(objectTypeCode, objCommon.service);
 
-            var refObject = new EntityReference(EntityName, new Guid(objectId));
+            var refObject = new EntityReference(entityName, new Guid(objectId));
 
             objCommon.tracingService.Trace("Grant Request--- Start");
+            var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
 
-            var grantRequest = new GrantAccessRequest();
-            grantRequest.Target = refObject;
-            grantRequest.PrincipalAccess = new PrincipalAccess();
-            grantRequest.PrincipalAccess.AccessMask = (AccessRights)getMask(executionContext);
+            var grantRequest = new GrantAccessRequest
+            {
+                Target = refObject,
+                PrincipalAccess = new PrincipalAccess
+                {
+                    AccessMask = msdyncrmWorkflowTools_Class.GetMask(
+                        read: ShareRead.Get(executionContext),
+                        write: ShareWrite.Get(executionContext),
+                        append: ShareAppend.Get(executionContext),
+                        appendTo: ShareAppendTo.Get(executionContext),
+                        delete: ShareDelete.Get(executionContext),
+                        share: ShareShare.Get(executionContext),
+                        assign: ShareAssign.Get(executionContext))
+                }
+            };
+
             foreach (var principalObject2 in principals)
             {
                 grantRequest.PrincipalAccess.Principal = principalObject2;
-                var grantResponse = (GrantAccessResponse)objCommon.service.Execute(grantRequest);
+
+                objCommon.service.Execute(grantRequest);
             }
 
             objCommon.tracingService.Trace("Grant Request--- end");
 
             #endregion
-
         }
 
-        UInt32 getMask(CodeActivityContext executionContext)
-        {
-            var ShareAppend = this.ShareAppend.Get(executionContext);
-            var ShareAppendTo = this.ShareAppendTo.Get(executionContext);
-            var ShareAssign = this.ShareAssign.Get(executionContext);
-            var ShareDelete = this.ShareDelete.Get(executionContext);
-            var ShareRead = this.ShareRead.Get(executionContext);
-            var ShareShare = this.ShareShare.Get(executionContext);
-            var ShareWrite = this.ShareWrite.Get(executionContext);
+        //private uint GetMask(CodeActivityContext executionContext)
+        //{
+        //    var shareAppend = ShareAppend.Get(executionContext);
+        //    var shareAppendTo = ShareAppendTo.Get(executionContext);
+        //    var shareAssign = ShareAssign.Get(executionContext);
+        //    var shareDelete = ShareDelete.Get(executionContext);
+        //    var shareRead = ShareRead.Get(executionContext);
+        //    var shareShare = ShareShare.Get(executionContext);
+        //    var shareWrite = ShareWrite.Get(executionContext);
 
-            UInt32 mask = 0;
-            if (ShareAppend)
-            {
-                mask |= (UInt32)AccessRights.AppendAccess;
-            }
-            if (ShareAppendTo)
-            {
-                mask |= (UInt32)AccessRights.AppendToAccess;
-            }
-            if (ShareAssign)
-            {
-                mask |= (UInt32)AccessRights.AssignAccess;
-            }
+        //    uint mask = 0;
+        //    if (shareAppend)
+        //    {
+        //        mask |= (uint)AccessRights.AppendAccess;
+        //    }
 
-            if (ShareDelete)
-            {
-                mask |= (UInt32)AccessRights.DeleteAccess;
-            }
-            if (ShareRead)
-            {
-                mask |= (UInt32)AccessRights.ReadAccess;
-            }
-            if (ShareShare)
-            {
-                mask |= (UInt32)AccessRights.ShareAccess;
-            }
-            if (ShareWrite)
-            {
-                mask |= (UInt32)AccessRights.WriteAccess;
-            }
+        //    if (shareAppendTo)
+        //    {
+        //        mask |= (uint)AccessRights.AppendToAccess;
+        //    }
 
+        //    if (shareAssign)
+        //    {
+        //        mask |= (uint)AccessRights.AssignAccess;
+        //    }
 
+        //    if (shareDelete)
+        //    {
+        //        mask |= (uint)AccessRights.DeleteAccess;
+        //    }
 
-            return mask;
+        //    if (shareRead)
+        //    {
+        //        mask |= (uint)AccessRights.ReadAccess;
+        //    }
 
-        }
+        //    if (shareShare)
+        //    {
+        //        mask |= (uint)AccessRights.ShareAccess;
+        //    }
+
+        //    if (shareWrite)
+        //    {
+        //        mask |= (uint)AccessRights.WriteAccess;
+        //    }
+
+        //    return mask;
+        //}
     }
-
 }

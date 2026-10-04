@@ -3,6 +3,7 @@ using System.Activities;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
+
 namespace msdyncrmWorkflowTools.Class
 {
     public class IsMemberOfMarketingList : CodeActivity
@@ -19,8 +20,6 @@ namespace msdyncrmWorkflowTools.Class
             set;
         }
 
-
-
         protected override void Execute(CodeActivityContext executionContext)
         {
             #region "Load CRM Service from context"
@@ -32,19 +31,12 @@ namespace msdyncrmWorkflowTools.Class
 
             #region "Read Parameters"
             var marketingList = MarketingList.Get(executionContext);
-            objCommon.tracingService.Trace(String.Format("marketingList: {0} ", marketingList.Id.ToString()));
-
-
+            objCommon.tracingService.Trace($"marketingList: {marketingList.Id.ToString()} ");
             #endregion
 
-
-            var isMember = CheckIsMemberOfMarketingList(objCommon.service,
-                                                               marketingList.Id,
-                                                               context.PrimaryEntityId);
+            var isMember = CheckIsMemberOfMarketingList(objCommon.service, marketingList.Id, context.PrimaryEntityId);
 
             MemberOfMarketingList.Set(executionContext, isMember);
-
-
         }
 
         public bool CheckIsMemberOfMarketingList(IOrganizationService service, Guid list, Guid id)
@@ -70,7 +62,6 @@ namespace msdyncrmWorkflowTools.Class
 
             return (collection.Entities.Count > 0);
         }
-
         public void CheckMarketingListMemberEntityType(string entityName)
         {
             if (entityName != "account" && entityName != "contact" && entityName != "lead")
@@ -78,6 +69,5 @@ namespace msdyncrmWorkflowTools.Class
                 throw new Exception("Entity type error. Must be account, contact or lead.");
             }
         }
-
     }
 }

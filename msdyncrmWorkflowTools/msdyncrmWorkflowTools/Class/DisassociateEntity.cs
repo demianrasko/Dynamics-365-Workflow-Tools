@@ -4,28 +4,24 @@ using System.Linq;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 
-
 namespace msdyncrmWorkflowTools
 {
-
-   
     public class DisassociateEntity : CodeActivity
     {
         #region "Parameter Definition"
         [RequiredArgument]
         [Input("Relationship Name")]
         [Default("")]        
-        public InArgument<String> RelationshipName { get; set; }
+        public InArgument<string> RelationshipName { get; set; }
 
         [RequiredArgument]
         [Input("Record URL")]
         [ReferenceTarget("")]
-        public InArgument<String> RecordURL { get; set; }
+        public InArgument<string> RecordURL { get; set; }
         #endregion
 
         protected override void Execute(CodeActivityContext executionContext)
         {
-
             #region "Load CRM Service from context"
 
             var objCommon = new Common(executionContext);
@@ -33,32 +29,36 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var _relationshipName = RelationshipName.Get(executionContext);
-            var _recordURL = RecordURL.Get(executionContext);
-            if (_recordURL == null || _recordURL == "")
+            var relationshipName = RelationshipName.Get(executionContext);
+            var recordUrl = RecordURL.Get(executionContext);
+
+            if (string.IsNullOrEmpty(recordUrl))
             {
                 return;
             }
-            var urlParts = _recordURL.Split("?".ToArray());
+
+            var urlParts = recordUrl.Split("?".ToArray());
             var urlParams=urlParts[1].Split("&".ToCharArray());
-            var ParentObjectTypeCode=urlParams[0].Replace("etc=","");
-            var entityName = objCommon.sGetEntityNameFromCode(ParentObjectTypeCode, objCommon.service);
-            var ParentId = urlParams[1].Replace("id=", "");
-            objCommon.tracingService.Trace("ParentObjectTypeCode=" + ParentObjectTypeCode + "--ParentId=" + ParentId);
+            var parentObjectTypeCode=urlParams[0].Replace("etc=",string.Empty);
+            var parentId = urlParams[1].Replace("id=", string.Empty);
+
+            var entityName = objCommon.GetEntityNameFromCode(parentObjectTypeCode, objCommon.service);
+
+            objCommon.tracingService.Trace($"ParentObjectTypeCode={parentObjectTypeCode}--ParentId={parentId}");
             #endregion
-
-
+            
             #region "Disassociate Execution"
 
-            var relatedEntities = new EntityReferenceCollection();
-            relatedEntities.Add(new EntityReference(entityName, new Guid(ParentId)));
-            var relationship = new Relationship(_relationshipName);
+            var relatedEntities = new EntityReferenceCollection
+            {
+                new EntityReference(entityName, new Guid(parentId))
+            };
+
+            var relationship = new Relationship(relationshipName);
+            
             objCommon.service.Disassociate(objCommon.context.PrimaryEntityName, objCommon.context.PrimaryEntityId, relationship,relatedEntities);
             
             #endregion
-
         }
-
-
     }
 }

@@ -3,6 +3,7 @@ using System.Activities;
 using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
+
 namespace msdyncrmWorkflowTools.Class
 {
     public class AddMarketingListToCampaign : CodeActivity
@@ -17,8 +18,6 @@ namespace msdyncrmWorkflowTools.Class
         [ReferenceTarget("campaign")]
         public InArgument<EntityReference> Campaign { get; set; }
 
-
-
         protected override void Execute(CodeActivityContext executionContext)
         {
             #region "Load CRM Service from context"
@@ -29,14 +28,12 @@ namespace msdyncrmWorkflowTools.Class
 
             #region "Read Parameters"
             var marketingList = MarketingList.Get(executionContext);
-            objCommon.tracingService.Trace(String.Format("marketingList: {0} ", marketingList.Id.ToString()));
+            objCommon.tracingService.Trace($"marketingList: {marketingList.Id.ToString()} ");
 
             var campaign = Campaign.Get(executionContext);
-            objCommon.tracingService.Trace(String.Format("campaign: {0} ", campaign.Id.ToString()));
-
+            objCommon.tracingService.Trace($"campaign: {campaign.Id.ToString()} ");
 
             #endregion
-
            
             var request = new AddItemCampaignRequest
             {
@@ -46,9 +43,6 @@ namespace msdyncrmWorkflowTools.Class
             };
 
             objCommon.service.Execute(request);
-            
-
         }
-        
     }
 }

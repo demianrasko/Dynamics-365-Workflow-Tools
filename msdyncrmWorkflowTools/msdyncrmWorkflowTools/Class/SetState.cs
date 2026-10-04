@@ -1,12 +1,9 @@
 ﻿using System.Activities;
-using System.ServiceModel;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 
 namespace msdyncrmWorkflowTools
 {
-
-   
     public class SetState : CodeActivity
     {
         #region "Parameter Definition"
@@ -21,7 +18,6 @@ namespace msdyncrmWorkflowTools
 
         protected override void Execute(CodeActivityContext executionContext)
         {
-
             #region "Load CRM Service from context"
 
             var objCommon = new Common(executionContext);
@@ -29,39 +25,30 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var _state= State.Get(executionContext);
-            var _status = Status.Get(executionContext);
-
-                    
+            var stateValue= State.Get(executionContext);
+            var statusValue = Status.Get(executionContext);
             #endregion
-
 
             #region "SetState Execution"
 
-            try
+            var moniker = new EntityReference
             {
-                var moniker = new EntityReference();
-                moniker.LogicalName = objCommon.context.PrimaryEntityName;
-                moniker.Id = objCommon.context.PrimaryEntityId;
+                LogicalName = objCommon.context.PrimaryEntityName,
+                Id = objCommon.context.PrimaryEntityId
+            };
 
-                var request
-                  = new Microsoft.Xrm.Sdk.OrganizationRequest() { RequestName = "SetState" };
-                request["EntityMoniker"] = moniker;
-                var state = new OptionSetValue(_state);
-                var status = new OptionSetValue(_status);
-                request["State"] = state;
-                request["Status"] = status;
-
-                objCommon.service.Execute(request);
-            }
-            catch (FaultException<OrganizationServiceFault> ex)
+            var request = new OrganizationRequest
             {
-                throw ex;
-            }
+                RequestName = "SetState",
+                ["EntityMoniker"] = moniker
+            };
+
+            request["State"] = new OptionSetValue(stateValue);
+            request["Status"] = new OptionSetValue(statusValue);
+
+            objCommon.service.Execute(request);
+
             #endregion
-
         }
-
-
     }
 }

@@ -39,11 +39,9 @@ namespace msdyncrmWorkflowTools
         
         #endregion
 
-
         protected override void Execute(CodeActivityContext executionContext)
         {
             #region "Load CRM Service from context"
-
             var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("ConcatenateFromQuery -- Start!");
             #endregion
@@ -54,6 +52,7 @@ namespace msdyncrmWorkflowTools
             {
                 return;
             }
+
             objCommon.tracingService.Trace($"FetchXML={fetchXml}");
 
             var attributeFieldName = AttributeName.Get(executionContext);
@@ -88,9 +87,10 @@ namespace msdyncrmWorkflowTools
                 {
                     Query = new FetchExpression(xml)
                 };
-                var returnCollection =
-                    ((RetrieveMultipleResponse) objCommon.service.Execute(fetchRequest1)).EntityCollection;
+
+                var returnCollection = ((RetrieveMultipleResponse) objCommon.service.Execute(fetchRequest1)).EntityCollection;
                 var attributeNamesSentToTrace = false;
+
                 foreach (var entity in returnCollection.Entities)
                 {
                     if (!entity.Attributes.Any())
@@ -119,43 +119,46 @@ namespace msdyncrmWorkflowTools
                         attribute = entity.Attributes.First().Value;
                     }
 
-                    if (attribute == null)
+                    switch (attribute)
                     {
-                        continue;
+                        case null:
+                            continue;
+                        case AliasedValue value:
+                            attribute = value.Value;
+                            break;
                     }
 
-                    if (attribute is AliasedValue)
+                    switch (attribute)
                     {
-                        attribute = ((AliasedValue) attribute).Value;
-                    }
-
-                    if (attribute is EntityReference)
-                    {
-                        attribute = ((EntityReference) attribute).Name;
-                    }
-                    else if (attribute is Money)
-                    {
-                        attribute = ((Money) attribute).Value;
-                    }
-                    else if (attribute is OptionSetValue)
-                    {
-                        attribute = ((OptionSetValue) attribute).Value;
-                        if (entity.FormattedValues.ContainsKey(attributeFieldName))
+                        case EntityReference reference:
+                            attribute = reference.Name;
+                            break;
+                        case Money money:
+                            attribute = money.Value;
+                            break;
+                        case OptionSetValue value:
                         {
-                            attribute = entity.FormattedValues[attributeFieldName];
+                            attribute = value.Value;
+                            if (entity.FormattedValues.ContainsKey(attributeFieldName))
+                            {
+                                attribute = entity.FormattedValues[attributeFieldName];
+                            }
+                            break;
                         }
                     }
 
-                    var attributeValueAsString = string.Format($"{{0:{format}}}", attribute);
+                    var attributeValueAsString = string.Format($"{attribute:format}");
                     stringValues.Add(attributeValueAsString);
                 }
 
-                if (canPerformPaging && returnCollection.MoreRecords)
+                if (!canPerformPaging || !returnCollection.MoreRecords)
                 {
-                    pageNumber++;
-                    pagingCookie = returnCollection.PagingCookie;
-                    hasMoreRecords = returnCollection.MoreRecords;
+                    continue;
                 }
+
+                pageNumber++;
+                pagingCookie = returnCollection.PagingCookie;
+                hasMoreRecords = returnCollection.MoreRecords;
             } while (hasMoreRecords);
 
             if (stringValues.Any())
@@ -172,7 +175,6 @@ namespace msdyncrmWorkflowTools
             objCommon.tracingService.Trace("ConcatenateFromQuery -- Done!");
 
             #endregion
-
         }
         
         public string CreateXml(string xml, string cookie, int page, int count)

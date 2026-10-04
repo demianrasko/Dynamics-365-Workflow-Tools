@@ -5,7 +5,6 @@ using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
 
-
 namespace msdyncrmWorkflowTools.Class
 {
     public class QueueItemCount : CodeActivity
@@ -28,7 +27,6 @@ namespace msdyncrmWorkflowTools.Class
 
         protected override void Execute(CodeActivityContext executionContext)
         {
-
             #region "Load CRM Service from context"
 
             var objCommon = new Common(executionContext);
@@ -38,51 +36,49 @@ namespace msdyncrmWorkflowTools.Class
             #region "Read Parameters"
             var sourceQueue = SourceQueue.Get(executionContext);
 
-            objCommon.tracingService.Trace(String.Format("sourceQueue: {0} ", sourceQueue.Id.ToString()));
+            objCommon.tracingService.Trace($"sourceQueue: {sourceQueue.Id.ToString()} ");
 
             var countOnlyUnassigned = CountOnlyUnassigned.Get(executionContext);
-            objCommon.tracingService.Trace(String.Format("countOnlyUnassigned: {0} ", countOnlyUnassigned.ToString()));
+            objCommon.tracingService.Trace("countOnlyUnassigned: {0} ");
 
 
             #endregion
 
             //query for retrieving all the queueitems from one queue
-            var sFetchXML = new StringBuilder(@"
+            var sFetchXml = new StringBuilder(@"
                     <fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false' aggregate='true'>
                       <entity name='queueitem'>
                         <attribute name='objectid' alias='queueitem_count' aggregate='count'/>
                         <filter type='and'>
                           <condition attribute='statecode' operator='eq' value='0' />");
+            
             if (countOnlyUnassigned)
             {
-                sFetchXML.Append("<condition attribute='workerid' operator='null' />");
+                sFetchXml.Append("<condition attribute='workerid' operator='null' />");
             }
-            sFetchXML.Append(@"
-                            <condition attribute='queueid' operator='eq' uitype='queue' value='"+ sourceQueue.Id.ToString() + @"' />
+
+            sFetchXml.Append(@"
+                            <condition attribute='queueid' operator='eq' uitype='queue' value='" + sourceQueue.Id + @"' />
                         </filter>
                       </entity>
                     </fetch>");
 
-            objCommon.tracingService.Trace(String.Format("FetchXML: {0} ", sFetchXML.ToString()));
-            var queueItemsCount = objCommon.service.RetrieveMultiple(new FetchExpression(sFetchXML.ToString()));
+            objCommon.tracingService.Trace($"FetchXML: {sFetchXml} ");
+            var queueItemsCount = objCommon.service.RetrieveMultiple(new FetchExpression(sFetchXml.ToString()));
 
             if (queueItemsCount.Entities.Count == 0)
             {
-                //no pending queuitems
+                //no pending queue items
                 ItemsCount.Set(executionContext, 0);
                 return;
             }
 
-
             foreach (var c in queueItemsCount.Entities)
             {
-                var aggregate2 = (Int32)((AliasedValue)c["queueitem_count"]).Value;
-                System.Console.WriteLine("Count of all queueItemsCount: " + aggregate2);
+                var aggregate2 = (int)((AliasedValue)c["queueitem_count"]).Value;
+                Console.WriteLine("Count of all queueItemsCount: " + aggregate2);
                 ItemsCount.Set(executionContext, aggregate2);
-
             }
-            
         }
-
     }
 }

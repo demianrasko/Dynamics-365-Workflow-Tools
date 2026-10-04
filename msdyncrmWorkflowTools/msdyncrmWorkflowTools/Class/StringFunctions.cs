@@ -10,7 +10,7 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("Input Text")]
         [Default("")]
-        public InArgument<String> InputText { get; set; }
+        public InArgument<string> InputText { get; set; }
 
         [RequiredArgument]
         [Input("Capitalize All Words")]
@@ -21,7 +21,7 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("Padding: Pad Character")]
         [Default("")]
-        public InArgument<String> PadCharacter { get; set; }
+        public InArgument<string> PadCharacter { get; set; }
 
 
         [RequiredArgument]
@@ -37,11 +37,11 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("Replace: Old Value")]
         [Default("")]
-        public InArgument<String> ReplaceOldValue { get; set; }
+        public InArgument<string> ReplaceOldValue { get; set; }
 
         [Input("Replace: New Value")]
         [Default("")]
-        public InArgument<String> ReplaceNewValue { get; set; }
+        public InArgument<string> ReplaceNewValue { get; set; }
 
         [RequiredArgument]
         [Input("Replace: Case Sensitive")]
@@ -61,17 +61,16 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("Substring: Length")]
         [Default("3")]
-        public InArgument<int> SubStringLength{ get; set; }
+        public InArgument<int> SubStringLength { get; set; }
 
 
         [RequiredArgument]
         [Input("Regular Expression")]
         [Default("")]
-        public InArgument<String> RegularExpression { get; set; }
-
+        public InArgument<string> RegularExpression { get; set; }
 
         [Output("Capitalized Text")]
-        public OutArgument<String> CapitalizedText { get; set; }
+        public OutArgument<string> CapitalizedText { get; set; }
 
         [Output("Text Length")]
         public OutArgument<int> TextLength { get; set; }
@@ -90,13 +89,12 @@ namespace msdyncrmWorkflowTools
 
         [Output("Regex Success")]
         public OutArgument<bool> RegexSuccess { get; set; }
+
         [Output("Regex Text")]
         public OutArgument<string> RegexText { get; set; }
 
-
         [Output("Uppercase Text")]
         public OutArgument<string> UppercaseText { get; set; }
-
 
         [Output("Lowercase Text")]
         public OutArgument<string> LowercaseText { get; set; }
@@ -108,7 +106,6 @@ namespace msdyncrmWorkflowTools
 
         protected override void Execute(CodeActivityContext executionContext)
         {
-
             #region "Load CRM Service from context"
 
             var objCommon = new Common(executionContext);
@@ -136,16 +133,22 @@ namespace msdyncrmWorkflowTools
 
             #endregion
 
-            string capitalizedText="", paddedText = "", replacedText = "", subStringText = "", regexText = "", uppercaseText = "", lowercaseText="";
-            var regexSuccess=false;
+            var capitalizedText = string.Empty;
+            var paddedText = string.Empty;
+            var replacedText = string.Empty;
+            var subStringText = string.Empty;
+            var regexText = string.Empty;
+            var uppercaseText = string.Empty;
+            var lowercaseText = string.Empty;
+
+            var regexSuccess = false;
             var withoutSpaces = "";
             var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
-            var test=commonClass.StringFunctions(capitalizeAllWords, inputText, padCharacter, padontheLeft, finalLengthwithPadding, caseSensitive,
+
+            commonClass.StringFunctions(capitalizeAllWords, inputText, padCharacter, padontheLeft, finalLengthwithPadding, caseSensitive,
                 replaceOldValue, replaceNewValue, subStringLength, startIndex, fromLefttoRight, regularExpression,
-                ref capitalizedText, ref paddedText, ref replacedText, ref subStringText, ref regexText, 
+                ref capitalizedText, ref paddedText, ref replacedText, ref subStringText, ref regexText,
                 ref uppercaseText, ref lowercaseText, ref regexSuccess, ref withoutSpaces);
-                
-            
 
             CapitalizedText.Set(executionContext, capitalizedText);
             TextLength.Set(executionContext, capitalizedText.Length);
@@ -155,14 +158,9 @@ namespace msdyncrmWorkflowTools
             TrimmedText.Set(executionContext, inputText.Trim());
             RegexSuccess.Set(executionContext, regexSuccess);
             RegexText.Set(executionContext, regexText);
-
             UppercaseText.Set(executionContext, uppercaseText);
             LowercaseText.Set(executionContext, lowercaseText);
-
             WithoutSpaces.Set(executionContext, withoutSpaces);
-
         }
-        
-
     }
 }

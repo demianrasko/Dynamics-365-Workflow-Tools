@@ -15,15 +15,15 @@ namespace msdyncrmWorkflowTools.Class
 
         [Input("Account")]
         [ReferenceTarget("account")]
-        public InArgument<EntityReference> account { get; set; }
+        public InArgument<EntityReference> Account { get; set; }
 
         [Input("Contact")]
         [ReferenceTarget("contact")]
-        public InArgument<EntityReference> contact { get; set; }
+        public InArgument<EntityReference> Contact { get; set; }
 
         [Input("Lead")]
         [ReferenceTarget("lead")]
-        public InArgument<EntityReference> lead { get; set; }
+        public InArgument<EntityReference> Lead { get; set; }
 
         protected override void Execute(CodeActivityContext executionContext)
         {
@@ -35,13 +35,13 @@ namespace msdyncrmWorkflowTools.Class
 
             #region "Read Parameters"
             var marketingList = MarketingList.Get(executionContext);
-            objCommon.tracingService.Trace(String.Format("marketingList: {0} ", marketingList.Id.ToString()));
+            objCommon.tracingService.Trace($"marketingList: {marketingList.Id.ToString()} ");
 
-            var account = this.account.Get(executionContext);
+            var account = Account.Get(executionContext);
 
-            var contact = this.contact.Get(executionContext);
+            var contact = Contact.Get(executionContext);
 
-            var lead = this.lead.Get(executionContext);
+            var lead = Lead.Get(executionContext);
 
             #endregion
 
@@ -59,15 +59,16 @@ namespace msdyncrmWorkflowTools.Class
             {
                 idToRemove = lead.Id;
             }
-            objCommon.tracingService.Trace(String.Format("idToRemove: {0} ", idToRemove.ToString()));
 
-            var removeRequest = new RemoveMemberListRequest();
-            removeRequest.ListId = marketingList.Id;
-            removeRequest.EntityId = idToRemove;
-            var removeResponse = (RemoveMemberListResponse)objCommon.service.Execute(removeRequest);
+            objCommon.tracingService.Trace($"idToRemove: {idToRemove.ToString()} ");
 
+            var removeRequest = new RemoveMemberListRequest
+            {
+                ListId = marketingList.Id,
+                EntityId = idToRemove
+            };
+            
+            objCommon.service.Execute(removeRequest);
         }
     }
-
-
 }

@@ -4,13 +4,11 @@ using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
+
 namespace msdyncrmWorkflowTools.Class
 {
     public class RemoveFromAllMarketingLists : CodeActivity
     {
-       
-
-
         protected override void Execute(CodeActivityContext executionContext)
         {
             #region "Load CRM Service from context"
@@ -22,18 +20,15 @@ namespace msdyncrmWorkflowTools.Class
             #endregion
 
             #region "Read Parameters"
-
-
             #endregion
 
+            var entityName=context.PrimaryEntityName;
 
-            var entityName=(context.PrimaryEntityName);
             if (entityName != "account" && entityName != "contact" && entityName != "lead")
             {
                 throw new Exception("MSG_UNSUPPORTED_MARKETING_LIST_MEMBER_TYPE");
             }
-
-
+            
             if (!DoesCrmRecordExist(objCommon.service, context.PrimaryEntityName, context.PrimaryEntityId))
             {
                 return;
@@ -65,31 +60,30 @@ namespace msdyncrmWorkflowTools.Class
             {
                 var ent= (EntityReference)member.Attributes["entityid"];
                 var list = (EntityReference)member.Attributes["listid"];
+            
                 var request = new RemoveMemberListRequest
                 {
                     EntityId = ent.Id,
                     ListId = list.Id
                 };
+
                 objCommon.service.Execute(request);
             }
-
-
         }
 
         public bool DoesCrmRecordExist(IOrganizationService service, string entityName, Guid id)
         {
-            var idColumnName = String.Format("{0}id", entityName);
+            var idColumnName = $"{entityName}id";
 
             var query = new QueryByAttribute(entityName);
 
             query.AddAttributeValue(idColumnName, id);
-            query.ColumnSet = new ColumnSet(new[] { idColumnName });
+            query.ColumnSet = new ColumnSet(idColumnName);
             query.PageInfo = new PagingInfo { Count = 1, PageNumber = 1, PagingCookie = null };
 
             var collection = service.RetrieveMultiple(query);
 
             return (collection.Entities.Count > 0);
         }
-
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Activities;
+﻿using System.Activities;
 using System.Linq;
 using Microsoft.Xrm.Sdk.Workflow;
 
@@ -7,40 +6,35 @@ namespace msdyncrmWorkflowTools
 {
     public class UpdateChildRecords : CodeActivity
     {
-
         [RequiredArgument]
         [Input("Parent Record URL")]
         [ReferenceTarget("")]
-        public InArgument<String> ParentRecordURL { get; set; }
+        public InArgument<string> ParentRecordURL { get; set; }
 
         [RequiredArgument]
         [Input("Relationship Name")]
         [ReferenceTarget("")]
-        public InArgument<String> RelationshipName { get; set; }
+        public InArgument<string> RelationshipName { get; set; }
 
         [Input("Parent Field Name")]
         [ReferenceTarget("")]
-        public InArgument<String> ParentFieldNameToUpdate { get; set; }
+        public InArgument<string> ParentFieldNameToUpdate { get; set; }
 
         [Input("Value to Set")]
         [ReferenceTarget("")]
-        public InArgument<String> ValueToSet{ get; set; }
+        public InArgument<string> ValueToSet{ get; set; }
 
         [RequiredArgument]
         [Input("Child Field Name to Update")]
         [ReferenceTarget("")]
-        public InArgument<String> ChildFieldNameToUpdate { get; set; }
+        public InArgument<string> ChildFieldNameToUpdate { get; set; }
 
         [RequiredArgument]
         [Input("Update only Active")]
-        public InArgument<Boolean> UpdateonlyActive { get; set; }
-
-        //string relationshipName, string parentFieldNameToUpdate, string setValueToUpdate, string childFieldNameToUpdate
-        //string parentEntityId, string parentEntityType, 
+        public InArgument<bool> UpdateonlyActive { get; set; }
 
         protected override void Execute(CodeActivityContext executionContext)
         {
-
             #region "Load CRM Service from context"
 
             var objCommon = new Common(executionContext);
@@ -48,31 +42,34 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var _ParentRecordURL = ParentRecordURL.Get(executionContext);
-            if (_ParentRecordURL == null || _ParentRecordURL == "")
+            var parentRecordUrl = ParentRecordURL.Get(executionContext);
+
+            if (string.IsNullOrEmpty(parentRecordUrl))
             {
                 return;
             }
-            var urlParts = _ParentRecordURL.Split("?".ToArray());
+            
+            var urlParts = parentRecordUrl.Split("?".ToArray());
             var urlParams = urlParts[1].Split("&".ToCharArray());
             var objectTypeCode = urlParams[0].Replace("etc=", "");
-            var parentEntityType = objCommon.sGetEntityNameFromCode(objectTypeCode, objCommon.service);
             var parentEntityId = urlParams[1].Replace("id=", "");
-            objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + parentEntityId);
+            var parentEntityType = objCommon.GetEntityNameFromCode(objectTypeCode, objCommon.service);
 
-            var _RelationshipName = RelationshipName.Get(executionContext);
-            var _ParentFieldNameToUpdate = ParentFieldNameToUpdate.Get(executionContext);
-            var _ValueToSet = ValueToSet.Get(executionContext);
-            var _ChildFieldNameToUpdate = ChildFieldNameToUpdate.Get(executionContext);
-            var _UpdateonlyActive = UpdateonlyActive.Get(executionContext);
+            objCommon.tracingService.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={parentEntityId}");
 
-            objCommon.tracingService.Trace("RelationshipName=" + _RelationshipName + "--_ParentFieldNameToUpdate=" + _ParentFieldNameToUpdate);
-            objCommon.tracingService.Trace("_ValueToSet=" + _ValueToSet + "--_ChildFieldNameToUpdate=" + _ChildFieldNameToUpdate);
+            var relationshipName = RelationshipName.Get(executionContext);
+            var parentFieldNameToUpdate = ParentFieldNameToUpdate.Get(executionContext);
+            var valueToSet = ValueToSet.Get(executionContext);
+            var childFieldNameToUpdate = ChildFieldNameToUpdate.Get(executionContext);
+            var updateOnlyActive = UpdateonlyActive.Get(executionContext);
+
+            objCommon.tracingService.Trace($"{nameof(RelationshipName)}={relationshipName}--_ParentFieldNameToUpdate={parentFieldNameToUpdate}");
+            objCommon.tracingService.Trace($"_ValueToSet={valueToSet}--_ChildFieldNameToUpdate={childFieldNameToUpdate}");
             #endregion
 
             var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service);
-            commonClass.UpdateChildRecords(_RelationshipName, parentEntityType, parentEntityId, _ParentFieldNameToUpdate, _ValueToSet, _ChildFieldNameToUpdate, _UpdateonlyActive);
-            
+
+            commonClass.UpdateChildRecords(relationshipName, parentEntityType, parentEntityId, parentFieldNameToUpdate, valueToSet, childFieldNameToUpdate, updateOnlyActive);
         }
     }
 }

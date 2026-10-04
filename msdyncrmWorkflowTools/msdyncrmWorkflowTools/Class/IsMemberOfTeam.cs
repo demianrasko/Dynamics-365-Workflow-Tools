@@ -2,8 +2,6 @@
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 
-
-
 namespace msdyncrmWorkflowTools.Class
 {
     public class IsMemberOfTeam : CodeActivity
@@ -29,15 +27,11 @@ namespace msdyncrmWorkflowTools.Class
             #endregion
 
             #region "Read Parameters"
-
-           
             var user = User.Get(executionContext);
             var team = Team.Get(executionContext);
-
             #endregion
 
             #region "Is user member of team"
-
             var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
 
             var isMember = commonClass.IsMemberOfTeam(team.Id, user.Id);
@@ -45,9 +39,6 @@ namespace msdyncrmWorkflowTools.Class
             Result.Set(executionContext, isMember);
             
             #endregion
-
-
-
         }
     }
 }

@@ -1,11 +1,9 @@
-﻿using System;
-using System.Activities;
+﻿using System.Activities;
 using System.Text;
 using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
-
 
 namespace msdyncrmWorkflowTools.Class
 {
@@ -30,7 +28,6 @@ namespace msdyncrmWorkflowTools.Class
 
         protected override void Execute(CodeActivityContext executionContext)
         {
-
             #region "Load CRM Service from context"
 
             var objCommon = new Common(executionContext);
@@ -40,18 +37,18 @@ namespace msdyncrmWorkflowTools.Class
             #region "Read Parameters"
             var sourceQueue = SourceQueue.Get(executionContext);
 
-            objCommon.tracingService.Trace(String.Format("sourceQueue: {0} ", sourceQueue.Id.ToString()));
+            objCommon.tracingService.Trace($"sourceQueue: {sourceQueue.Id.ToString()} ");
 
             var removeItems = RemoveItems.Get(executionContext);
-            objCommon.tracingService.Trace(String.Format("removeItems: {0} ", removeItems.ToString()));
+            objCommon.tracingService.Trace($"removeItems: {removeItems.ToString()} ");
 
             var quantity = Quantity.Get(executionContext);
-            objCommon.tracingService.Trace(String.Format("quantity: {0} ", quantity.ToString()));
+            objCommon.tracingService.Trace($"quantity: {quantity.ToString()} ");
 
             #endregion
 
             //query for retrieving all the queueitems from one queue
-            var sFetchXML = new StringBuilder(@"
+            var sFetchXml = new StringBuilder(@"
                     <fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false'>
                       <entity name='queueitem'>
                         <attribute name='enteredon' />
@@ -67,12 +64,12 @@ namespace msdyncrmWorkflowTools.Class
                       </entity>
                     </fetch>");
 
-            objCommon.tracingService.Trace(String.Format("FetchXML: {0} ", sFetchXML.ToString()));
-            var queueItems = objCommon.service.RetrieveMultiple(new FetchExpression(sFetchXML.ToString()));
+            objCommon.tracingService.Trace($"FetchXML: {sFetchXml} ");
+            var queueItems = objCommon.service.RetrieveMultiple(new FetchExpression(sFetchXml.ToString()));
 
+            //no pending queue items
             if (queueItems.Entities.Count == 0)
             {
-                //no pending queuitems
                 return;
             }
 
@@ -86,16 +83,16 @@ namespace msdyncrmWorkflowTools.Class
                     WorkerId = objCommon.context.InitiatingUserId, 
                     RemoveQueueItem = removeItems
                 };
+
                 objCommon.service.Execute(pickFromQueueRequest);
                 count++;
+
+                //only pick the defined Quantity
                 if (count >= quantity)
                 {
-                    //only pick the defined Quantity
                     break;
                 }
             }
-
         }
-
     }
 }

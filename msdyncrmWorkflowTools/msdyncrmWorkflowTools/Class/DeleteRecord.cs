@@ -3,7 +3,6 @@ using System.Activities;
 using System.Linq;
 using Microsoft.Xrm.Sdk.Workflow;
 
-
 namespace msdyncrmWorkflowTools.Class
 {
     public class DeleteRecord : CodeActivity
@@ -15,15 +14,15 @@ namespace msdyncrmWorkflowTools.Class
 
         [Input("Record URL")]
         [ReferenceTarget("")]
-        public InArgument<String> DeleteRecordURL { get; set; }
+        public InArgument<string> DeleteRecordURL { get; set; }
 
         [Input("Entity Type Name")]
         [ReferenceTarget("")]
-        public InArgument<String> EntityTypeName { get; set; }
+        public InArgument<string> EntityTypeName { get; set; }
 
         [Input("Entity Guid")]
         [ReferenceTarget("")]
-        public InArgument<String> EntityGuid { get; set; }
+        public InArgument<string> EntityGuid { get; set; }
 
 
         protected override void Execute(CodeActivityContext executionContext)
@@ -35,31 +34,33 @@ namespace msdyncrmWorkflowTools.Class
             #endregion
 
             #region "Read Parameters"
-            var _deleteRecordURL = DeleteRecordURL.Get(executionContext);
-            var entityName = "";
-            var objectId = "";
-            if (_deleteRecordURL != null)
+            var deleteRecordUrl = DeleteRecordURL.Get(executionContext);
+            var entityName = string.Empty;
+            var objectId = string.Empty;
+
+            if (deleteRecordUrl != null)
             {
-                var urlParts = _deleteRecordURL.Split("?".ToArray());
+                var urlParts = deleteRecordUrl.Split("?".ToArray());
                 var urlParams = urlParts[1].Split("&".ToCharArray());
                 var objectTypeCode = urlParams[0].Replace("etc=", "");
-                entityName = objCommon.sGetEntityNameFromCode(objectTypeCode, objCommon.service);
+                entityName = objCommon.GetEntityNameFromCode(objectTypeCode, objCommon.service);
                 objectId = urlParams[1].Replace("id=", "");
                 objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
             }
-            var _deleteUsingRecordURL = DeleteUsingRecordURL.Get(executionContext);
-            var _entityTypeName = EntityTypeName.Get(executionContext);
-            var _entityGuid = EntityGuid.Get(executionContext);
+
+            var deleteUsingRecordUrl = DeleteUsingRecordURL.Get(executionContext);
+            var entityTypeName = EntityTypeName.Get(executionContext);
+            var entityGuid = EntityGuid.Get(executionContext);
 
             #endregion
 
             #region "Delete Record Execution"
 
-            if (_deleteUsingRecordURL)
+            if (deleteUsingRecordUrl)
             {
-                objCommon.tracingService.Trace("Deleting record by URL: {0}", _deleteRecordURL);
+                objCommon.tracingService.Trace("Deleting record by URL: {0}", deleteRecordUrl);
 
-                if (_deleteRecordURL == null || _deleteRecordURL == "" )
+                if (string.IsNullOrEmpty(deleteRecordUrl) )
                 {
                     throw new InvalidOperationException("ERROR: Delete Record URL to be deleted missing.");
                 }
@@ -67,18 +68,17 @@ namespace msdyncrmWorkflowTools.Class
             }
             else
             {
-                objCommon.tracingService.Trace("Record type to be deleted: "+ _entityTypeName+" and ID:"+ _entityGuid);
-                if (_entityTypeName == null || _entityTypeName == "" || _entityGuid == null || _entityGuid == "")
+                objCommon.tracingService.Trace("Record type to be deleted: "+ entityTypeName+" and ID:"+ entityGuid);
+                if (string.IsNullOrEmpty(entityTypeName) || entityGuid == null || entityGuid == "")
                 {
                     throw new InvalidOperationException("ERROR: Entity Type name or GUID to be deleted missing.");
                 }
-                objCommon.tracingService.Trace("Deleting record by Guid: {0}-{1}", _entityTypeName, _entityGuid);
-                objCommon.service.Delete(_entityTypeName, new Guid (_entityGuid));
+
+                objCommon.tracingService.Trace("Deleting record by Guid: {0}-{1}", entityTypeName, entityGuid);
+                objCommon.service.Delete(entityTypeName, new Guid (entityGuid));
             }
 
-
             #endregion
-
         }
     }
 }

@@ -26,7 +26,7 @@ namespace msdyncrmWorkflowTools
         /// </summary>
         [Input("Keep Existing Values")]
         [Default("false")]
-        public InArgument<Boolean> KeepExistingValues { get; set; }
+        public InArgument<bool> KeepExistingValues { get; set; }
 
         protected override void Execute(CodeActivityContext executionContext)
         {

@@ -18,10 +18,8 @@ namespace msdyncrmWorkflowTools
         [ReferenceTarget("team")]
         public InArgument<EntityReference> Team { get; set; }
 
-
         protected override void Execute(CodeActivityContext executionContext)
         {
-
             #region "Load CRM Service from context"
 
             var objCommon = new Common(executionContext);
@@ -32,14 +30,16 @@ namespace msdyncrmWorkflowTools
             var userReference = User.Get(executionContext);
             var teamReference = Team.Get(executionContext);
 
-            objCommon.tracingService.Trace(String.Format("UserID: {0} - TeamID: {1} ", userReference.Id.ToString(), teamReference.Id.ToString()));
+            objCommon.tracingService.Trace($"UserID: {userReference.Id.ToString()} - TeamID: {teamReference.Id.ToString()} ");
             #endregion
 
-            var req = new AddMembersTeamRequest();
-            req.TeamId = teamReference.Id;
-            req.MemberIds = new[] { userReference.Id};
-            var res = (AddMembersTeamResponse)objCommon.service.Execute(req);
+            var request = new AddMembersTeamRequest
+            {
+                TeamId = teamReference.Id,
+                MemberIds = new[] { userReference.Id }
+            };
 
+            objCommon.service.Execute(request);
         }
     }
 }

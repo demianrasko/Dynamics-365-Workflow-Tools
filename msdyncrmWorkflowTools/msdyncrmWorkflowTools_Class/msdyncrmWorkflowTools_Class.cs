@@ -56,7 +56,32 @@ namespace msdyncrmWorkflowTools
         public void QueryValues()
         {
         }
+        
+        /// <summary>
+        /// Builds the access mask for a GrantAccessRequest from the individual share flags.
+        /// </summary>
+        /// <param name="read">Grant read access.</param>
+        /// <param name="write">Grant write access.</param>
+        /// <param name="append">Grant append access.</param>
+        /// <param name="appendTo">Grant append-to access.</param>
+        /// <param name="delete">Grant delete access.</param>
+        /// <param name="share">Grant share access.</param>
+        /// <param name="assign">Grant assign access.</param>
+        /// <returns>The combined <see cref="AccessRights"/>, or <see cref="AccessRights.None"/> if no flag is set.</returns>
+        public static AccessRights GetMask(bool read, bool write, bool append, bool appendTo, bool delete, bool share, bool assign)
+        {
+            var mask = AccessRights.None;
 
+            if (read) mask |= AccessRights.ReadAccess;
+            if (write) mask |= AccessRights.WriteAccess;
+            if (append) mask |= AccessRights.AppendAccess;
+            if (appendTo) mask |= AccessRights.AppendToAccess;
+            if (delete) mask |= AccessRights.DeleteAccess;
+            if (share) mask |= AccessRights.ShareAccess;
+            if (assign) mask |= AccessRights.AssignAccess;
+
+            return mask;
+        }
 
         public string JsonParser(string Json, string JsonPath)
         {
@@ -314,7 +339,7 @@ namespace msdyncrmWorkflowTools
             var urlParts = recordURL.Split("?".ToArray());
             var urlParams = urlParts[1].Split("&".ToCharArray());
             var objectTypeCode = urlParams[0].Replace("etc=", "");
-            //  entityName =  sGetEntityNameFromCode(objectTypeCode, service);
+            //  entityName =  GetEntityNameFromCode(objectTypeCode, service);
             var objectId = urlParams[1].Replace("id=", "");
             return objectId;
         }
@@ -383,17 +408,17 @@ namespace msdyncrmWorkflowTools
             return true;
         }
 
-        public bool StringFunctions(bool capitalizeAllWords, string inputText, string padCharacter, bool padontheLeft,
-            int finalLengthwithPadding, bool caseSensitive, string replaceOldValue, string replaceNewValue,
-            int subStringLength, int startIndex, bool fromLefttoRight, string regularExpression,
+        public bool StringFunctions(bool capitalizeAllWords, string inputText, string padCharacter, bool padOnTheLeft,
+            int finalLengthWithPadding, bool caseSensitive, string replaceOldValue, string replaceNewValue,
+            int subStringLength, int startIndex, bool fromLeftToRight, string regularExpression,
             ref string capitalizedText, ref string paddedText, ref string replacedText, ref string subStringText, ref string regexText,
                 ref string uppercaseText, ref string lowercaseText, ref bool regexSuccess, ref string withoutSpaces)
         {
-            capitalizedText = "";
+            capitalizedText = string.Empty;
             if (capitalizeAllWords)
             {
                 // All words
-                capitalizedText = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(inputText);
+                capitalizedText = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(inputText);
             }
             else
             {
@@ -402,24 +427,19 @@ namespace msdyncrmWorkflowTools
             }
 
             //padding
-            paddedText = "";
-            if (padCharacter == "")
+            paddedText = string.Empty;
+            if (padCharacter == string.Empty)
+            {
                 padCharacter = " ";
-            if (padontheLeft)
-            {
+            }
 
-                paddedText = inputText.PadLeft(finalLengthwithPadding, padCharacter.ToCharArray()[0]);
-            }
-            else
-            {
-                paddedText = inputText.PadRight(finalLengthwithPadding, padCharacter.ToCharArray()[0]);
-            }
+            paddedText = padOnTheLeft ? inputText.PadLeft(finalLengthWithPadding, padCharacter.ToCharArray()[0]) : inputText.PadRight(finalLengthWithPadding, padCharacter.ToCharArray()[0]);
 
             //replace string
-            replacedText = "";
+            replacedText = string.Empty;
             if (!caseSensitive)
             {
-                if (!String.IsNullOrEmpty(inputText) && !String.IsNullOrEmpty(replaceOldValue))
+                if (!string.IsNullOrEmpty(inputText) && !string.IsNullOrEmpty(replaceOldValue))
                 {
                     replacedText = inputText.Replace(replaceOldValue, replaceNewValue);
                 }
@@ -430,48 +450,57 @@ namespace msdyncrmWorkflowTools
             }
 
             //substring
-            subStringText = "";
+            subStringText = string.Empty;
             if (subStringLength <= 0 || startIndex < 0)
             {
-                subStringText = String.Empty;
+                subStringText = string.Empty;
             }
             else
             {
-                if (!fromLefttoRight)
+                if (!fromLeftToRight)
                 {
                     startIndex = inputText.Length - subStringLength - startIndex;
                 }
-                if (inputText.Length < subStringLength) subStringLength = inputText.Length;
-                if (startIndex < 0) startIndex = 0;
+                
+                if (inputText.Length < subStringLength)
+                {
+                    subStringLength = inputText.Length;
+                }
+
+                if (startIndex < 0)
+                {
+                    startIndex = 0;
+                }
+
                 subStringText = inputText.Substring(startIndex, subStringLength);
             }
 
             //regex
-            regexText = "";
+            regexText = string.Empty;
             regexSuccess = false;
-            if (regularExpression != "")
+            if (regularExpression != string.Empty)
             {
                 var regex = new Regex(regularExpression);
                 var match = regex.Match(inputText);
+
                 if (match.Success)
                 {
                     regexSuccess = true;
                     regexText = match.Value;
                 }
-
             }
 
             uppercaseText = inputText.ToUpper();
             lowercaseText = inputText.ToLower();
 
-            withoutSpaces = inputText.Replace(" ", "");
-            return true;
+            withoutSpaces = inputText.Replace(" ", string.Empty);
 
+            return true;
         }
 
         private static string CompareAndReplace(string text, string old, string @new, StringComparison comparison)
         {
-            if (String.IsNullOrEmpty(text) || String.IsNullOrEmpty(old)) return text;
+            if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(old)) return text;
 
             var result = new StringBuilder();
             var oldLength = old.Length;
@@ -591,12 +620,12 @@ namespace msdyncrmWorkflowTools
                         </filter>
                       </entity>
                     </fetch>";
-            if (tracing != null) tracing.Trace(String.Format("FetchXML: {0} ", fetchXML));
+            if (tracing != null) tracing.Trace(string.Format("FetchXML: {0} ", fetchXML));
             var attachmentFiles = service.RetrieveMultiple(new FetchExpression(fetchXML));
 
             if (attachmentFiles.Entities.Count == 0)
             {
-                if (tracing != null) tracing.Trace(String.Format("No Attachment Files found."));
+                if (tracing != null) tracing.Trace(string.Format("No Attachment Files found."));
                 return;
             }
 
@@ -932,11 +961,11 @@ namespace msdyncrmWorkflowTools
             }
 
         }
-        public Decimal CurrencyConvert(decimal amount, string fromCurrency, string toCurrency)
+        public decimal CurrencyConvert(decimal amount, string fromCurrency, string toCurrency)
         {
 
             var web = new WebClient();
-            var apiURL = String.Format("http://finance.google.com/finance/converter?a={0}&from={1}&to={2}", amount, fromCurrency.ToUpper(), toCurrency.ToUpper());
+            var apiURL = string.Format("http://finance.google.com/finance/converter?a={0}&from={1}&to={2}", amount, fromCurrency.ToUpper(), toCurrency.ToUpper());
             var response = web.DownloadString(apiURL);
             var split = response.Split((new string[] { "<span class=bld>" }), StringSplitOptions.None);
             var value = split[1].Split(' ')[0];

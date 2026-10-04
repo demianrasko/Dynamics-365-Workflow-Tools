@@ -3,7 +3,6 @@ using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 
-
 namespace msdyncrmWorkflowTools.Class
 {
     public class SendEmail : CodeActivity
@@ -17,8 +16,6 @@ namespace msdyncrmWorkflowTools.Class
         [Output("Email Subject")]
         public OutArgument<string> Subject { get; set; }
 
-
-
         protected override void Execute(CodeActivityContext executionContext)
         {
             #region "Load CRM Service from context"
@@ -29,27 +26,22 @@ namespace msdyncrmWorkflowTools.Class
 
             #region "Read Parameters"
             var email = SourceEmail.Get(executionContext);
-
             #endregion
 
             #region "SendEmail Execution"
 
-            
-            var ser = objCommon.service.Execute(
-                new SendEmailRequest()
-                {
-                    EmailId = email.Id,
-                    IssueSend = true
-                }
-              ) as SendEmailResponse;
-
-            if (ser != null)
+            if (objCommon.service.Execute(
+                    new SendEmailRequest
+                    {
+                        EmailId = email.Id,
+                        IssueSend = true
+                    }
+                ) is SendEmailResponse ser)
             {
                 Subject.Set(executionContext, ser.Subject);
             }
 
             #endregion
-
         }
     }
 }

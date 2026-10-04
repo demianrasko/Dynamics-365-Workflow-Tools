@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Activities;
+using System.Globalization;
 using Microsoft.Xrm.Sdk.Workflow;
+
 namespace msdyncrmWorkflowTools.Class
 {
     public class NumericFunctions : CodeActivity
@@ -12,7 +14,6 @@ namespace msdyncrmWorkflowTools.Class
         [RequiredArgument]
         [Input("Number 2")]
         public InArgument<decimal> Number2 { get; set; }
-
 
         [Output("Add")]
         public OutArgument<decimal> Add { get; set; }
@@ -26,7 +27,6 @@ namespace msdyncrmWorkflowTools.Class
         [Output("Divide")]
         public OutArgument<decimal> Divide { get; set; }
 
-
         protected override void Execute(CodeActivityContext executionContext)
         {
             #region "Load CRM Service from context"
@@ -38,13 +38,15 @@ namespace msdyncrmWorkflowTools.Class
             #region "Read Parameters"
             var number1= Number1.Get(executionContext);
             var number2 = Number2.Get(executionContext);
-            objCommon.tracingService.Trace(String.Format("number 1 / number 2: {0} / {1}", number1.ToString(), number2.ToString()));
+
+            objCommon.tracingService.Trace($"number 1 / number 2: {number1.ToString(CultureInfo.InvariantCulture)} / {number2.ToString(CultureInfo.InvariantCulture)}");
 
             #endregion
 
             Add.Set(executionContext, number1+number2);
             Subtract.Set(executionContext, number1 - number2);
             Multiply.Set(executionContext, number1 * number2);
+            
             if (number2 != 0)
             {
                 Divide.Set(executionContext, number1 / number2);
@@ -53,8 +55,6 @@ namespace msdyncrmWorkflowTools.Class
             {
                 Divide.Set(executionContext, 0);
             }
-
         }
-        
     }
 }

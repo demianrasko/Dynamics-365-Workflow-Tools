@@ -33,53 +33,56 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var _orgDBSetting = orgDBSetting.Get(executionContext).ToLower();
-            var _Value = Value.Get(executionContext);
+            var orgDbSetting = orgDBSetting.Get(executionContext).ToLower();
+            var value = Value.Get(executionContext);
             #endregion
 
             #region "OrgDBSettings Update"
-            objCommon.tracingService.Trace("OrgDBSettingsUpdate.Execute - OrgDBSetting = " + _orgDBSetting + ", New Value = " + _Value);
+            objCommon.tracingService.Trace(
+                $"{nameof(OrgDBSettingsUpdate)}.Execute - OrgDBSetting = {orgDbSetting}, New Value = {value}");
 
-            var NumericValue = 0;
-            var BoolValue = false;
-            var StringValue = _Value;
+            var boolValue = false;
 
             try
             {
-                var fetch = @"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false'>" +
-                                 "   <entity name='organization'>" +
-                                 "         <attribute name='" + _orgDBSetting + "' />" +
-                                 "                   <order attribute='name' descending='false' />" +
-                                 "   </entity>" +
-                                 "</fetch>";
+                var fetch =
+                    $"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false'><entity name='organization'><attribute name='{orgDbSetting}'/><order attribute='name' descending='false' /></entity></fetch>";
 
                 objCommon.tracingService.Trace("OrgDBSettingsUpdate.Execute - Fetch = " + fetch);
 
                 var organizationColl = objCommon.service.RetrieveMultiple(new FetchExpression(fetch));
 
-                if (organizationColl != null && organizationColl.Entities.Count > 0)
+                if (organizationColl == null || organizationColl.Entities.Count <= 0)
                 {
-                    if (int.TryParse(_Value, out NumericValue))
-                        organizationColl.Entities[0].Attributes[_orgDBSetting] = NumericValue;
-                    else if (bool.TryParse(_Value, out BoolValue))
-                        organizationColl.Entities[0].Attributes[_orgDBSetting] = BoolValue;
-                    else
-                        organizationColl.Entities[0].Attributes[_orgDBSetting] = StringValue;
-
-                    objCommon.tracingService.Trace("OrgDBSettingsUpdate.Execute - Previous value orgDBSetting. NumericValue = " + NumericValue.ToString() + ", BoolValue = " + BoolValue.ToString() + ", StringValue = " + StringValue);
-
-                    objCommon.service.Update(organizationColl.Entities[0]);
-
-                    objCommon.tracingService.Trace("OrgDBSettingsUpdate.Execute -  Update Ok");
+                    
+                    return;
                 }
+
+                if (int.TryParse(value, out var numericValue))
+                {
+                    organizationColl.Entities[0].Attributes[orgDbSetting] = numericValue;
+                }
+                else if (bool.TryParse(value, out boolValue))
+                {
+                    organizationColl.Entities[0].Attributes[orgDbSetting] = boolValue;
+                }
+                else
+                {
+                    organizationColl.Entities[0].Attributes[orgDbSetting] = value;
+                }
+
+                objCommon.tracingService.Trace(
+                    $"{nameof(OrgDBSettingsUpdate)}.Execute - Previous value orgDBSetting. NumericValue = {numericValue}, BoolValue = {boolValue}, StringValue = {value}");
+
+                objCommon.service.Update(organizationColl.Entities[0]);
+
+                objCommon.tracingService.Trace("OrgDBSettingsUpdate.Execute -  Update Ok");
             }
             catch (Exception e)
             {
-                throw new InvalidPluginExecutionException("[OrgDBSettingsUpdate] ERROR: " + e.ToString());
+                throw new InvalidPluginExecutionException($"[OrgDBSettingsUpdate] ERROR: {e}");
             }
             #endregion
         }
-        
-
     }
 }

@@ -3,8 +3,6 @@ using System.Activities;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 
-
-
 namespace msdyncrmWorkflowTools.Class
 {
     public class SalesLiteratureToEmail : CodeActivity
@@ -36,21 +34,19 @@ namespace msdyncrmWorkflowTools.Class
 
             var salesLiterature = SalesLiterature.Get(executionContext);
 
-            var _FileName = FileName.Get(executionContext);
-            if (_FileName == null || _FileName == "")
+            var fileName = FileName.Get(executionContext);
+            if (string.IsNullOrEmpty(fileName))
             {
                 return;
             }
-            
 
             var email = Email.Get(executionContext);
 
             #endregion
 
             var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
-            commonClass.SalesLiteratureToEmail(_FileName, salesLiterature.Id.ToString(), email.Id.ToString());
 
-
+            commonClass.SalesLiteratureToEmail(fileName, salesLiterature.Id.ToString(), email.Id.ToString());
         }
     }
 }

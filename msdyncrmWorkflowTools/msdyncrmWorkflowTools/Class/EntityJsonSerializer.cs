@@ -17,13 +17,9 @@ namespace msdyncrmWorkflowTools
         [ReferenceTarget("")]
         public InArgument<String> SerializingRecordURL { get; set; }
 
-
-        [Output("Output Json")]
-        public OutArgument<string> OutputJson { get; set; }
+        [Output("Output Json")] public OutArgument<string> OutputJson { get; set; }
 
         #endregion
-
-
 
         protected override void Execute(CodeActivityContext executionContext)
         {
@@ -31,88 +27,89 @@ namespace msdyncrmWorkflowTools
 
             var objCommon = new Common(executionContext);
             objCommon.tracingService.Trace("Load CRM Service from context --- OK");
+
             #endregion
 
             #region "Read Parameters"
-            var _SerializingRecordURL = SerializingRecordURL.Get(executionContext);
-            if (_SerializingRecordURL == null || _SerializingRecordURL == "")
+
+            var serializingRecordUrl = SerializingRecordURL.Get(executionContext);
+
+            if (string.IsNullOrEmpty(serializingRecordUrl))
             {
                 return;
             }
-            var urlParts = _SerializingRecordURL.Split("?".ToArray());
+
+            var urlParts = serializingRecordUrl.Split("?".ToArray());
             var urlParams = urlParts[1].Split("&".ToCharArray());
             var objectTypeCode = urlParams[0].Replace("etc=", "");
-            var entityName = objCommon.sGetEntityNameFromCode(objectTypeCode, objCommon.service);
             var objectId = urlParams[1].Replace("id=", "");
-            objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
+            var entityName = objCommon.GetEntityNameFromCode(objectTypeCode, objCommon.service);
 
+            objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
 
             #endregion
 
             #region "Clone Execution"
 
-            var retrievedObject=objCommon.service.Retrieve(entityName, new Guid(objectId), new ColumnSet(allColumns: true));
+            var retrievedObject =
+                objCommon.service.Retrieve(entityName, new Guid(objectId), new ColumnSet(allColumns: true));
             objCommon.tracingService.Trace("retrieved object OK");
 
-            var newEntity = new Entity(entityName);
-            var PrimaryIdAttribute = "" ;
-            var PrimaryNameAttribute = "";
-            var atts= objCommon.getEntityAttributesToClone(entityName, objCommon.service, ref PrimaryIdAttribute, ref PrimaryNameAttribute);
+            //var newEntity = new Entity(entityName);
+            var primaryIdAttribute = string.Empty;
+            var primaryNameAttribute = string.Empty;
+            var attributesToClone = objCommon.GetEntityAttributesToClone(entityName, objCommon.service,
+                ref primaryIdAttribute, ref primaryNameAttribute);
 
-            var sJson = new StringBuilder("{\""+ entityName + "\": {");
-            
-            sJson.Append("\""+ PrimaryIdAttribute + "\": \""+ objectId + "\"");
-            foreach (var att in atts)
+            var sJson = new StringBuilder("{\"" + entityName + "\": {");
+
+            sJson.Append("\"" + primaryIdAttribute + "\": \"" + objectId + "\"");
+
+            foreach (var att in attributesToClone.Where(att => retrievedObject.Attributes.Contains(att)))
             {
-                if (retrievedObject.Attributes.Contains(att))
-                {
-                    
-                    sJson.Append(",");
-                    
-                    
-                    var t = retrievedObject.Attributes[att].GetType();
+                sJson.Append(",");
 
-                    if  (t.Equals(typeof(string)))
-                    {
-                        sJson.Append("\"" + att + "\" : \"" + retrievedObject.Attributes[att].ToString().Replace("\\","\\\\") + "\"");   
-                    }
-                    else if (t.Equals(typeof(bool)))
-                    {
-                        sJson.Append("\"" + att + "\" : " + retrievedObject.Attributes[att].ToString().ToLower() + "");
-                    }
-                    else if (t.Equals(typeof(OptionSetValue)))
-                    {
-                        var obj = (OptionSetValue)retrievedObject.Attributes[att];
-                        sJson.Append("\"" + att + "\" : " + obj.Value);
-                    }
-                    else if (t.Equals(typeof(Money)))
-                    {
-                        var obj=(Money)retrievedObject.Attributes[att];
-                        sJson.Append("\"" + att + "\" : " + obj.Value);
-                    }
-                    else if (t.Equals(typeof(EntityReference)))
-                    {
-                        var obj=(EntityReference)retrievedObject.Attributes[att];
-                        sJson.Append("\"" + att + "\" : { \"typename\" : \"" + obj.LogicalName.ToLower() + "\", \"id\" :\""+ obj.Id.ToString()+"\", \"name\":\""+obj.Name+"\" }");
-                    }
-                    else 
-                    {
-                        sJson.Append("\"" + att + "\" : " + retrievedObject.Attributes[att]);
-                    }
-                    objCommon.tracingService.Trace("attribute:{0}", att);
+                // TODO: Needs unit tests, if not already created    
+                var t = retrievedObject.Attributes[att].GetType();
+
+                if (t == typeof(string))
+                {
+                    sJson.Append("\"" + att + "\" : \"" +
+                                 retrievedObject.Attributes[att].ToString().Replace("\\", "\\\\") + "\"");
                 }
-                
+                else if (t == typeof(bool))
+                {
+                    sJson.Append("\"" + att + "\" : " + retrievedObject.Attributes[att].ToString().ToLower() + "");
+                }
+                else if (t == typeof(OptionSetValue))
+                {
+                    var obj = (OptionSetValue)retrievedObject.Attributes[att];
+                    sJson.Append("\"" + att + "\" : " + obj.Value);
+                }
+                else if (t == typeof(Money))
+                {
+                    var obj = (Money)retrievedObject.Attributes[att];
+                    sJson.Append("\"" + att + "\" : " + obj.Value);
+                }
+                else if (t == typeof(EntityReference))
+                {
+                    var obj = (EntityReference)retrievedObject.Attributes[att];
+                    sJson.Append("\"" + att + "\" : { \"typename\" : \"" + obj.LogicalName.ToLower() +
+                                 "\", \"id\" :\"" + obj.Id.ToString() + "\", \"name\":\"" + obj.Name + "\" }");
+                }
+                else
+                {
+                    sJson.Append("\"" + att + "\" : " + retrievedObject.Attributes[att]);
+                }
+
+                objCommon.tracingService.Trace("attribute:{0}", att);
             }
+
             sJson.Append("}}");
             objCommon.tracingService.Trace("json object OK");
             OutputJson.Set(executionContext, sJson.ToString());
 
             #endregion
-
         }
-       
-
     }
-
-
 }

@@ -65,108 +65,131 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var _EntityName = EntityName.Get(executionContext);
-            var _Attribute1 = Attribute1.Get(executionContext);
-            var _Attribute2 = Attribute2.Get(executionContext);
-            var _FilterAttribute1 = FilterAttribute1.Get(executionContext);
-            var _FilterAttribute2 = FilterAttribute2.Get(executionContext);
-            var _ValueAttribute1 = ValueAttribute1.Get(executionContext);
-            var _ValueAttribute2 = ValueAttribute2.Get(executionContext);
+            var entityName = EntityName.Get(executionContext);
+            var attribute1 = Attribute1.Get(executionContext);
+            var attribute2 = Attribute2.Get(executionContext);
+            var filterAttribute1 = FilterAttribute1.Get(executionContext);
+            var filterAttribute2 = FilterAttribute2.Get(executionContext);
+            var valueAttribute1 = ValueAttribute1.Get(executionContext);
+            var valueAttribute2 = ValueAttribute2.Get(executionContext);
 
-            objCommon.tracingService.Trace(String.Format("EntityName: {0} - Attribute1:{1} - Attribute2:{2} - FilterAttribute1:{3} - FilterAttribute2:{4} - ValueAttribute1:{5} ValueAttribute2:{6}",
-                _EntityName, _Attribute1, _Attribute2, _FilterAttribute1, _FilterAttribute2, _ValueAttribute1, _ValueAttribute2));
+            objCommon.tracingService.Trace(
+                $"EntityName: {entityName} - Attribute1:{attribute1} - Attribute2:{attribute2} - FilterAttribute1:{filterAttribute1} - FilterAttribute2:{filterAttribute2} - ValueAttribute1:{valueAttribute1} ValueAttribute2:{valueAttribute2}");
             #endregion
             try
             {
-               
-
-
                 #region "QueryExpression Execution"
-                var qe = new QueryExpression();
-                qe.EntityName = _EntityName;
-                qe.ColumnSet = new ColumnSet();
-                if (_Attribute1 != null && _Attribute1 != "") qe.ColumnSet.Columns.Add(_Attribute1);
-                if (_Attribute2 != null && _Attribute2 != "") qe.ColumnSet.Columns.Add(_Attribute2);
+                var qe = new QueryExpression
+                {
+                    EntityName = entityName,
+                    ColumnSet = new ColumnSet()
+                };
+
+                if (!string.IsNullOrEmpty(attribute1)) qe.ColumnSet.Columns.Add(attribute1);
+                if (!string.IsNullOrEmpty(attribute2)) qe.ColumnSet.Columns.Add(attribute2);
 
                 var filter = new FilterExpression(LogicalOperator.And);
-                if (_FilterAttribute1 != null && _FilterAttribute1 != "")
+
+                if (!string.IsNullOrEmpty(filterAttribute1))
                 {
-                    var condition1 = new ConditionExpression();
-                    condition1.AttributeName = _FilterAttribute1;
-                    condition1.Values.Add(_ValueAttribute1);
+                    var condition1 = new ConditionExpression
+                    {
+                        AttributeName = filterAttribute1
+                    };
+
+                    condition1.Values.Add(valueAttribute1);
                     condition1.Operator = ConditionOperator.Equal;
                     filter.Conditions.Add(condition1);
                 }
-                if (_FilterAttribute2 != null && _FilterAttribute2 != "")
+
+                if (!string.IsNullOrEmpty(filterAttribute2))
                 {
-                    var condition2 = new ConditionExpression();
-                    condition2.AttributeName = _FilterAttribute2;
-                    condition2.Values.Add(_ValueAttribute2);
+                    var condition2 = new ConditionExpression
+                    {
+                        AttributeName = filterAttribute2
+                    };
+
+                    condition2.Values.Add(valueAttribute2);
                     condition2.Operator = ConditionOperator.Equal;
                     filter.Conditions.Add(condition2);
                 }
+
                 qe.Criteria = filter;
 
-                objCommon.tracingService.Trace(String.Format("Executing Query..."));
+                objCommon.tracingService.Trace("Executing Query...");
 
                 var results = objCommon.service.RetrieveMultiple(qe);
 
-                objCommon.tracingService.Trace(String.Format("Executed Query Ok, {0} records ...", results.Entities.Count));
+                objCommon.tracingService.Trace($"Executed Query Ok, {results.Entities.Count} records ...");
 
-
-                if (results.Entities.Count > 0)
+                if (results.Entities.Count <= 0)
                 {
-                    objCommon.tracingService.Trace(String.Format("Setting results"));
-                    if (results.Entities[0].Attributes.Contains(_Attribute1))
+                    return;
+                }
+
+                objCommon.tracingService.Trace("Setting results");
+                if (results.Entities[0].Attributes.Contains(attribute1))
+                {
+                    objCommon.tracingService.Trace($"Setting result1: {results.Entities[0].Attributes[attribute1]}");
+
+                    // TODO: Is there a better way to do this?
+                    switch (results.Entities[0].Attributes[attribute1])
                     {
-                        objCommon.tracingService.Trace(String.Format("Setting result1: {0}", results.Entities[0].Attributes[_Attribute1]));
-                        if (results.Entities[0].Attributes[_Attribute1] is Microsoft.Xrm.Sdk.OptionSetValue)
+                        case OptionSetValue _:
                         {
                             objCommon.tracingService.Trace("Value1 Is an OptionSetValue");
-                            var val = (OptionSetValue)results.Entities[0].Attributes[_Attribute1];
+                            var val = (OptionSetValue)results.Entities[0].Attributes[attribute1];
                             ResultValue1.Set(executionContext, val.Value.ToString());
+                            break;
                         }
-                        else if (results.Entities[0].Attributes[_Attribute1] is EntityReference)
+                        case EntityReference _:
                         {
                             objCommon.tracingService.Trace("Value1 Is an EntityReference");
-                            var val = (EntityReference)results.Entities[0].Attributes[_Attribute1];
+                            var val = (EntityReference)results.Entities[0].Attributes[attribute1];
                             ResultValue1.Set(executionContext, val.Id.ToString());
+                            break;
                         }
-                        else
-                        {
-                            ResultValue1.Set(executionContext, results.Entities[0].Attributes[_Attribute1].ToString());
-                        }
+                        default:
+                            ResultValue1.Set(executionContext, results.Entities[0].Attributes[attribute1].ToString());
+                            break;
                     }
-                    if (results.Entities[0].Attributes.Contains(_Attribute2))
+                }
+
+                if (results.Entities[0].Attributes.Contains(attribute2))
+                {
+                    objCommon.tracingService.Trace($"Setting result2: {results.Entities[0].Attributes[attribute2]}");
+
+                    switch (results.Entities[0].Attributes[attribute2])
                     {
-                        objCommon.tracingService.Trace(String.Format("Setting result2: {0}", results.Entities[0].Attributes[_Attribute2]));
-                        if (results.Entities[0].Attributes[_Attribute2] is Microsoft.Xrm.Sdk.OptionSetValue)
+                        case OptionSetValue _:
                         {
                             objCommon.tracingService.Trace("Value2 Is an OptionSetValue");
 
-                            var val = (OptionSetValue)results.Entities[0].Attributes[_Attribute2];
+                            var val = (OptionSetValue)results.Entities[0].Attributes[attribute2];
                             ResultValue2.Set(executionContext, val.Value.ToString());
+                            break;
                         }
-                        else if (results.Entities[0].Attributes[_Attribute2] is EntityReference)
+                        case EntityReference _:
                         {
                             objCommon.tracingService.Trace("Value2 Is an EntityReference");
-                            var val = (EntityReference)results.Entities[0].Attributes[_Attribute2];
+                            var val = (EntityReference)results.Entities[0].Attributes[attribute2];
                             ResultValue2.Set(executionContext, val.Id.ToString());
+                            break;
                         }
-                        else
-                        {
-                            ResultValue2.Set(executionContext, results.Entities[0].Attributes[_Attribute2].ToString());
-                        }
+                        default:
+                            ResultValue2.Set(executionContext, results.Entities[0].Attributes[attribute2].ToString());
+                            break;
                     }
-                    objCommon.tracingService.Trace(String.Format("End setting results"));
                 }
+                
+                objCommon.tracingService.Trace("End setting results");
                 #endregion
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-                objCommon.tracingService.Trace(String.Format("error: {0} - {1}",ex.Message, ex.StackTrace));
-                throw ex;
+                objCommon.tracingService.Trace($"error: {ex.Message} - {ex.StackTrace}");
 
+                throw;
             }
         }
     }

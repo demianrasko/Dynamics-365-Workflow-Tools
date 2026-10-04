@@ -14,15 +14,15 @@ namespace msdyncrmWorkflowTools.Class
 
         [Input("Account")]
         [ReferenceTarget("account")]
-        public InArgument<EntityReference> account { get; set; }
+        public InArgument<EntityReference> Account { get; set; }
 
         [Input("Contact")]
         [ReferenceTarget("contact")]
-        public InArgument<EntityReference> contact { get; set; }
+        public InArgument<EntityReference> Contact { get; set; }
 
         [Input("Lead")]
         [ReferenceTarget("lead")]
-        public InArgument<EntityReference> lead { get; set; }
+        public InArgument<EntityReference> Lead { get; set; }
 
         protected override void Execute(CodeActivityContext executionContext)
         {
@@ -36,11 +36,11 @@ namespace msdyncrmWorkflowTools.Class
             var marketingList = MarketingList.Get(executionContext);
             objCommon.tracingService.Trace(String.Format("marketingList: {0} ", marketingList.Id.ToString()));
 
-            var account = this.account.Get(executionContext);
+            var account = Account.Get(executionContext);
             
-            var contact = this.contact.Get(executionContext);
+            var contact = Contact.Get(executionContext);
            
-            var lead = this.lead.Get(executionContext);
+            var lead = Lead.Get(executionContext);
 
             #endregion
 
@@ -60,12 +60,13 @@ namespace msdyncrmWorkflowTools.Class
             }
             objCommon.tracingService.Trace(String.Format("idToAdd: {0} ", idToAdd.ToString()));
 
-            var addRequest = new AddMemberListRequest();
-            addRequest.ListId = marketingList.Id;
-            addRequest.EntityId = idToAdd;
-            var addResponse = (AddMemberListResponse)objCommon.service.Execute(addRequest);
-            
+            var addRequest = new AddMemberListRequest
+            {
+                ListId = marketingList.Id,
+                EntityId = idToAdd
+            };
+
+            objCommon.service.Execute(addRequest);
         }
-        
     }
 }

@@ -22,7 +22,6 @@ namespace msdyncrmWorkflowTools
 
         protected override void Execute(CodeActivityContext executionContext)
         {
-
             #region "Load CRM Service from context"
 
             var objCommon = new Common(executionContext);
@@ -31,17 +30,18 @@ namespace msdyncrmWorkflowTools
 
             #region "Read Parameters"
             var teamReference = Team.Get(executionContext);
-            EntityReference userReference = null;
+            var userReference = User.Get(executionContext);
             
-            userReference = User.Get(executionContext);
-            
-            objCommon.tracingService.Trace(String.Format("TeamId: {0} ", teamReference.Id.ToString()));
+            objCommon.tracingService.Trace($"TeamId: {teamReference.Id.ToString()} ");
             #endregion
 
             var userId = objCommon.context.InitiatingUserId.ToString();
-            if (userReference != null) userId = userReference.Id.ToString();
+            if (userReference != null)
+            {
+                userId = userReference.Id.ToString();
+            }
 
-            var fetchXML = @"<fetch version=""1.0"" output-format=""xml - platform"" mapping=""logical"" distinct=""true""><entity name=""team"">
+            var fetchXml = @"<fetch version=""1.0"" output-format=""xml - platform"" mapping=""logical"" distinct=""true""><entity name=""team"">
                          <attribute name=""teamid""/>
                          <filter type=""and"">
                           <condition attribute=""teamid"" operator=""eq"" value="""+ teamReference.Id.ToString() + @"""/>
@@ -55,18 +55,14 @@ namespace msdyncrmWorkflowTools
                                                              </link-entity>
                                                            </entity></fetch> ";
 
-            objCommon.tracingService.Trace(String.Format("FetchXML: {0} ", fetchXML));
-            var givenTeams = objCommon.service.RetrieveMultiple(new FetchExpression (fetchXML));
+            objCommon.tracingService.Trace($"FetchXML: {fetchXml} ");
+            var givenTeams = objCommon.service.RetrieveMultiple(new FetchExpression (fetchXml));
 
-            var UserInTeam = (givenTeams.Entities.Count > 0);
+            var userInTeam = (givenTeams.Entities.Count > 0);
 
-            if (UserInTeam)
-                Console.WriteLine("User do not belong to the team.");
-            else
-                Console.WriteLine("User belong to this team.");
+            Console.WriteLine(userInTeam ? "User do not belong to the team." : "User belong to this team.");
 
-            isUserInTeam.Set(executionContext, UserInTeam);
-
+            isUserInTeam.Set(executionContext, userInTeam);
         }
     }
 }

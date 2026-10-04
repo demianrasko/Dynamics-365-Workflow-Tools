@@ -7,13 +7,13 @@ namespace msdyncrmWorkflowTools
     public class DateFunctions : CodeActivity
     {
         #region "Parameter Definition"
+        
         [RequiredArgument]
         [Input("Date 1")]
         public InArgument<DateTime> Date1 { get; set; }
 
         [Input("Date 2")]
         public InArgument<DateTime> Date2 { get; set; }
-        
 
         [Output("Total Days")]
         public OutArgument<double> TotalDays { get; set; }
@@ -29,17 +29,22 @@ namespace msdyncrmWorkflowTools
 
         [Output("Total Seconds")]
         public OutArgument<double> TotalSeconds { get; set; }
-        
+
         [Output("Day Of Week")]
         public OutArgument<int> DayOfWeek { get; set; }
+        
         [Output("Day Of Year")]
         public OutArgument<int> DayOfYear { get; set; }
+        
         [Output("Day")]
         public OutArgument<int> Day { get; set; }
+        
         [Output("Month")]
         public OutArgument<int> Month { get; set; }
+        
         [Output("Year")]
         public OutArgument<int> Year { get; set; }
+        
         [Output("Week Of Year")]
         public OutArgument<int> WeekOfYear { get; set; }
 
@@ -47,7 +52,6 @@ namespace msdyncrmWorkflowTools
 
         protected override void Execute(CodeActivityContext executionContext)
         {
-
             #region "Load CRM Service from context"
 
             var objCommon = new Common(executionContext);
@@ -57,41 +61,33 @@ namespace msdyncrmWorkflowTools
             #region "Read Parameters"
             var date1 = Date1.Get(executionContext);
             var date2 = Date2.Get(executionContext);
-            
+
             #endregion
 
-           
-
             var commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
-            var difference = new TimeSpan();
-            var DayOfWeek = 0;
-            var DayOfYear = 0;
-            var Day = 0;
-            var Month = 0;
-            var Year = 0;
-            var WeekOfYear = 0;
-            commonClass.DateFunctions(date1, date2, ref difference,
-                ref DayOfWeek, ref DayOfYear, ref Day, ref Month, ref Year, ref WeekOfYear);
+            var difference = TimeSpan.Zero;
 
-            
+            var dayOfWeek = 0;
+            var dayOfYear = 0;
+            var day = 0;
+            var month = 0;
+            var year = 0;
+            var weekOfYear = 0;
+
+            commonClass.DateFunctions(date1, date2, ref difference,
+                ref dayOfWeek, ref dayOfYear, ref day, ref month, ref year, ref weekOfYear);
+
             TotalDays.Set(executionContext, difference.TotalDays);
             TotalHours.Set(executionContext, difference.TotalHours);
             TotalMilliseconds.Set(executionContext, difference.TotalMilliseconds);
             TotalMinutes.Set(executionContext, difference.TotalMinutes);
             TotalSeconds.Set(executionContext, difference.TotalSeconds);
-
-
-            this.DayOfWeek.Set(executionContext, DayOfWeek);
-            this.DayOfYear.Set(executionContext, DayOfYear);
-            this.Day.Set(executionContext, Day);
-            this.Month.Set(executionContext, Month);
-            this.Year.Set(executionContext, Year);
-            this.WeekOfYear.Set(executionContext, WeekOfYear);
-
-            
-
+            DayOfWeek.Set(executionContext, dayOfWeek);
+            DayOfYear.Set(executionContext, dayOfYear);
+            Day.Set(executionContext, day);
+            Month.Set(executionContext, month);
+            Year.Set(executionContext, year);
+            WeekOfYear.Set(executionContext, weekOfYear);
         }
-
-
     }
 }

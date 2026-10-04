@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
@@ -28,7 +29,6 @@ namespace msdyncrmWorkflowTools
 
         #endregion
 
-
         protected override void Execute(CodeActivityContext executionContext)
         {
             #region "Load CRM Service from context"
@@ -38,13 +38,13 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "Read Parameters"
-            var _FetchXML = FetchXML.Get(executionContext);
-            if (_FetchXML == null || _FetchXML == "")
+            var fetchXml = FetchXML.Get(executionContext);
+            if (string.IsNullOrEmpty(fetchXml))
             {
                 return;
             }
 
-            objCommon.tracingService.Trace("_FetchXML=" + _FetchXML);
+            objCommon.tracingService.Trace("_FetchXML=" + fetchXml);
 
             var context = executionContext.GetExtension<IWorkflowContext>();
 
@@ -53,20 +53,26 @@ namespace msdyncrmWorkflowTools
             #region "CalculateAgregateDate Execution"
 
             string pagingCookie = null;
-            var pageNumber = 1;
-            var fetchCount = 1;
+            const int pageNumber = 1;
+            const int fetchCount = 1;
             var date = new DateTime(1753, 1, 1);
-            Ok.Set(executionContext, false);
-            _FetchXML = _FetchXML.Replace("{PARENT_GUID}", context.PrimaryEntityId.ToString());
 
-            objCommon.tracingService.Trace(_FetchXML);
-            var xml = CreateXml(_FetchXML, pagingCookie, pageNumber, fetchCount);
+            Ok.Set(executionContext, false);
+
+            fetchXml = fetchXml.Replace("{PARENT_GUID}", context.PrimaryEntityId.ToString());
+
+            objCommon.tracingService.Trace(fetchXml);
+            var xml = CreateXml(fetchXml, null, pageNumber, fetchCount);
+
             var fetchRequest1 = new RetrieveMultipleRequest
             {
                 Query = new FetchExpression(xml)
             };
+            
             var returnCollection = ((RetrieveMultipleResponse)objCommon.service.Execute(fetchRequest1)).EntityCollection;
-            objCommon.tracingService.Trace(string.Format("Count {0}", returnCollection.Entities.Count));
+            
+            objCommon.tracingService.Trace($"Count {returnCollection.Entities.Count}");
+
             if (returnCollection.Entities.Count > 0)
             {
                 if (returnCollection.Entities[0].Attributes.Count > 0)
@@ -74,13 +80,20 @@ namespace msdyncrmWorkflowTools
                     try
                     {
                         var value = returnCollection.Entities[0].Attributes.First().Value;
-                        objCommon.tracingService.Trace(string.Format("Attribute {0} - {1}", returnCollection.Entities[0].Attributes.First().Key, value));
-                        if (value is DateTime)
-                            date = (DateTime)value;
-                        if (value is Microsoft.Xrm.Sdk.AliasedValue)
-                            date = (DateTime)((Microsoft.Xrm.Sdk.AliasedValue)value).Value;
+                        objCommon.tracingService.Trace($"Attribute {returnCollection.Entities[0].Attributes.First().Key} - {value}");
+            
+                        switch (value)
+                        {
+                            case DateTime time:
+                                date = time;
+                                break;
+                            case AliasedValue aliasedValue:
+                                date = (DateTime)aliasedValue.Value;
+                                break;
+                        }
+
                         Ok.Set(executionContext, true);
-                        objCommon.tracingService.Trace(string.Format("date {0}", date));
+                        objCommon.tracingService.Trace($"date {date}");
                     }
                     catch (Exception e)
                     {
@@ -88,18 +101,18 @@ namespace msdyncrmWorkflowTools
                     }
                 }
             }
+
             Value.Set(executionContext, date);
-            objCommon.tracingService.Trace("Calculate Agregate Date --- Done");
+            objCommon.tracingService.Trace("Calculate Aggregate Date --- Done");
 
             #endregion
-
         }
+
         public string CreateXml(string xml, string cookie, int page, int count)
         {
             var stringReader = new StringReader(xml);
             var reader = new XmlTextReader(stringReader);
 
-            // Load document
             var doc = new XmlDocument();
             doc.Load(reader);
 
@@ -134,7 +147,5 @@ namespace msdyncrmWorkflowTools
 
             return sb.ToString();
         }
-
-
     }
 }
