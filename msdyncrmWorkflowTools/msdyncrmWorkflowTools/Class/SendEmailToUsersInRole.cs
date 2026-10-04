@@ -34,8 +34,6 @@ namespace msdyncrmWorkflowTools.Class
             common.Trace($"securityRoleLookup: {securityRoleLookup.Id.ToString()} ");
 
             #endregion
-            common.Trace("Init");
-
             common.SendEmailToUsersInRole(securityRoleLookup, email);
         }
     }

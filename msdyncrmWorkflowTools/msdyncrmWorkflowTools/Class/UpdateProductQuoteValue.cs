@@ -15,7 +15,6 @@ namespace msdyncrmWorkflowTools
         [Input("Discount Amount")]
         public InArgument<decimal> Discountamount { get; set; }
 
-        //"manualdiscountamount"
         [RequiredArgument]
         [Input("Field name to update (manualdiscountamount)")]
         public InArgument<string> Fieldname { get; set; }
@@ -32,7 +31,7 @@ namespace msdyncrmWorkflowTools
                 throw new InvalidPluginExecutionException("Quote Product and Field name are required.");
             }
 
-            common.Trace($"quotedetail: {quoteProduct.Id} Discountamount: {discountAmount} Fieldname: {fieldName}");
+            common.Trace($"quotedetail: {quoteProduct.Id} DiscountAmount: {discountAmount} Fieldname: {fieldName}");
             #endregion
 
             common.Service.Update(new Entity(quoteProduct.LogicalName, quoteProduct.Id)
