@@ -164,6 +164,18 @@ namespace msdyncrmWorkflowTools
             return query;
         }
 
+        /// <summary>Every marketing list membership of a record (account, contact or lead).</summary>
+        public static QueryExpression MarketingListMemberships(Guid memberId)
+        {
+            var query = new QueryExpression("listmember")
+            {
+                ColumnSet = new ColumnSet("listid")
+            };
+            query.Criteria.AddCondition("entityid", ConditionOperator.Equal, memberId);
+
+            return query;
+        }
+
         /// <summary>The marketing list membership of a record (one row) — otherwise no rows.</summary>
         public static QueryExpression MarketingListMembership(Guid listId, Guid memberId)
         {

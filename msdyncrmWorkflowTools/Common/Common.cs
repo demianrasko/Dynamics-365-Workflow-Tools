@@ -726,6 +726,44 @@ namespace msdyncrmWorkflowTools
         }
 
         /// <summary>
+        /// Removes a record (account, contact or lead) from a marketing list.
+        /// </summary>
+        public void RemoveFromMarketingList(Guid listId, Guid memberId)
+        {
+            Trace($"Removing {memberId} from marketing list {listId}");
+
+            Service.Execute(new RemoveMemberListRequest
+            {
+                ListId = listId,
+                EntityId = memberId
+            });
+        }
+
+        /// <summary>
+        /// Removes an account, contact or lead from every marketing list it is a member of.
+        /// </summary>
+        /// <returns>The number of lists the record was removed from.</returns>
+        /// <exception cref="InvalidPluginExecutionException">The record is not an account, contact or lead.</exception>
+        public int RemoveFromAllMarketingLists(EntityReference member)
+        {
+            if (member.LogicalName != "account" && member.LogicalName != "contact" && member.LogicalName != "lead")
+            {
+                throw new InvalidPluginExecutionException("Remove From All Marketing Lists only supports account, contact or lead records.");
+            }
+
+            var memberships = Service.RetrieveMultiple(Queries.MarketingListMemberships(member.Id)).Entities;
+
+            foreach (var membership in memberships)
+            {
+                RemoveFromMarketingList(membership.GetAttributeValue<EntityReference>("listid").Id, member.Id);
+            }
+
+            Trace($"Removed {member.LogicalName} {member.Id} from {memberships.Count} marketing list(s).");
+
+            return memberships.Count;
+        }
+
+        /// <summary>
         /// Whether a record (account, contact or lead) is a member of a marketing list.
         /// </summary>
         /// <param name="listId">The marketing list.</param>

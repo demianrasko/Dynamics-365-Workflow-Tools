@@ -243,5 +243,15 @@ namespace msdyncrmWorkflowTools_Tests
             CollectionAssert.AreEqual(new[] { "name" }, query.ColumnSet.Columns.ToArray());
             AssertCondition(query.Criteria.Conditions.Single(), "accountnumber", ConditionOperator.Equal, "A-1");
         }
+
+        [TestMethod]
+        public void MarketingListMemberships_FiltersOnTheMember()
+        {
+            var query = Queries.MarketingListMemberships(IdA);
+
+            Assert.AreEqual("listmember", query.EntityName);
+            CollectionAssert.AreEqual(new[] { "listid" }, query.ColumnSet.Columns.ToArray());
+            AssertCondition(query.Criteria.Conditions.Single(), "entityid", ConditionOperator.Equal, IdA);
+        }
     }
 }

@@ -1,7 +1,4 @@
-﻿using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Query;
-using System;
+﻿using Microsoft.Xrm.Sdk;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools.Class
@@ -10,68 +7,7 @@ namespace msdyncrmWorkflowTools.Class
     {
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var entityName=common.Context.PrimaryEntityName;
-
-            if (entityName != "account" && entityName != "contact" && entityName != "lead")
-            {
-                throw new InvalidPluginExecutionException("Remove From All Marketing Lists only supports account, contact or lead records.");
-            }
-
-            if (!DoesCrmRecordExist(common.Service, common.Context.PrimaryEntityName, common.Context.PrimaryEntityId))
-            {
-                return;
-            }
-
-            var query = new QueryExpression
-            {
-                EntityName = "listmember",
-                ColumnSet = new ColumnSet("entityid", "listid"),
-
-                Criteria =
-                    {
-                        FilterOperator = LogicalOperator.And,
-                        Conditions =
-                                            {
-                                                new ConditionExpression
-                                                {
-                                                    AttributeName = "entityid",
-                                                    Operator = ConditionOperator.Equal,
-                                                    Values = { common.Context.PrimaryEntityId }
-                                                },
-                                            }
-                    }
-            };
-
-            var listMembers = common.Service.RetrieveMultiple(query).Entities;
-
-            foreach (var member in listMembers)
-            {
-                var ent= (EntityReference)member.Attributes["entityid"];
-                var list = (EntityReference)member.Attributes["listid"];
-
-                var request = new RemoveMemberListRequest
-                {
-                    EntityId = ent.Id,
-                    ListId = list.Id
-                };
-
-                common.Service.Execute(request);
-            }
-        }
-
-        public bool DoesCrmRecordExist(IOrganizationService service, string entityName, Guid id)
-        {
-            var idColumnName = $"{entityName}id";
-
-            var query = new QueryByAttribute(entityName);
-
-            query.AddAttributeValue(idColumnName, id);
-            query.ColumnSet = new ColumnSet(idColumnName);
-            query.PageInfo = new PagingInfo { Count = 1, PageNumber = 1, PagingCookie = null };
-
-            var collection = service.RetrieveMultiple(query);
-
-            return (collection.Entities.Count > 0);
+            common.RemoveFromAllMarketingLists(new EntityReference(common.Context.PrimaryEntityName, common.Context.PrimaryEntityId));
         }
     }
 }

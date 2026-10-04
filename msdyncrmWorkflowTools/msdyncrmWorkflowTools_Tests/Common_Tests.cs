@@ -394,6 +394,34 @@ namespace msdyncrmWorkflowTools_Tests
         }
 
         [TestMethod]
+        public void RemoveFromAllMarketingLists_RemovesTheRecordFromEachList()
+        {
+            var lists = new[] { Guid.NewGuid(), Guid.NewGuid() };
+            service.OnExecute = r => new OrganizationResponse();
+            service.OnRetrieveMultiple = query => Collection(lists.Select(l => new Entity("listmember", Guid.NewGuid()) { ["listid"] = new EntityReference("list", l) }).ToArray());
+
+            var removed = common.RemoveFromAllMarketingLists(new EntityReference("contact", RecordId));
+
+            Assert.AreEqual(2, removed);
+            CollectionAssert.AreEqual(lists, service.Executed.Cast<RemoveMemberListRequest>().Select(r => r.ListId).ToArray());
+            Assert.IsTrue(service.Executed.Cast<RemoveMemberListRequest>().All(r => r.EntityId == RecordId));
+        }
+
+        [TestMethod]
+        public void RemoveFromAllMarketingLists_NoMembershipsRemovesNothing()
+        {
+            Assert.AreEqual(0, common.RemoveFromAllMarketingLists(new EntityReference("lead", RecordId)));
+            Assert.AreEqual(0, service.Executed.Count);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidPluginExecutionException))]
+        public void RemoveFromAllMarketingLists_OtherRecordTypesThrow()
+        {
+            common.RemoveFromAllMarketingLists(new EntityReference("incident", RecordId));
+        }
+
+        [TestMethod]
         public void GetAbsoluteUrlFromLocation_NoLocationIsNotFound()
         {
             Assert.AreEqual("URL Not found", common.GetAbsoluteUrlFromLocation(new EntityCollection()));

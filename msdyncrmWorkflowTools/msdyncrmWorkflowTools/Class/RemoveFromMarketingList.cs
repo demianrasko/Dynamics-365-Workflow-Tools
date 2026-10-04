@@ -1,6 +1,5 @@
 ﻿// Not in the Power Platform build: it needs Dynamics 365 tables (lead, list or salesliterature).
 #if !POWERPLATFORM
-using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 using System;
@@ -56,15 +55,7 @@ namespace msdyncrmWorkflowTools.Class
                 idToRemove = leadReference.Id;
             }
 
-            common.Trace($"idToRemove: {idToRemove.ToString()} ");
-
-            var request = new RemoveMemberListRequest
-            {
-                ListId = marketingList.Id,
-                EntityId = idToRemove
-            };
-
-            common.Service.Execute(request);
+            common.RemoveFromMarketingList(marketingList.Id, idToRemove);
         }
     }
 }
