@@ -120,7 +120,7 @@ namespace msdyncrmWorkflowTools
                 Target = refObject,
                 PrincipalAccess = new PrincipalAccess
                 {
-                    AccessMask = Common.GetMask(
+                    AccessMask = Utility.GetMask(
                         read: ShareRead.Get(executionContext),
                         write: ShareWrite.Get(executionContext),
                         append: ShareAppend.Get(executionContext),

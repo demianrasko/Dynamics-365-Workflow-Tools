@@ -371,7 +371,9 @@
     <Compile Include="Newtonsoft\WriteState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Class\CheckUserInRole.cs" />
-    <Compile Include="SupportingClasses\Utility.cs" />
+    <Compile Include="..\Common\Utility.cs">
+      <Link>Utility.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="codes.snk" />

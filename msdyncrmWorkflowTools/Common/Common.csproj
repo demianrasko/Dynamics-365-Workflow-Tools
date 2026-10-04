@@ -74,6 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common.cs" />
+    <Compile Include="Utility.cs" />
     <Compile Include="Newtonsoft\Bson\BsonBinaryType.cs" />
     <Compile Include="Newtonsoft\Bson\BsonBinaryWriter.cs" />
     <Compile Include="Newtonsoft\Bson\BsonObjectId.cs" />
