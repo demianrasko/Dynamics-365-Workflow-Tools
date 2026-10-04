@@ -400,9 +400,9 @@ namespace msdyncrmWorkflowTools
                         {
                             ["partyid"] = new EntityReference(partyid.LogicalName, partyid.Id)
                         };
-                       
+
                         Trace("attribute:{0}:{1}:{2}", attribute2, partyid.LogicalName, partyid.Id.ToString());
-                        
+
                         newPartyList.Entities.Add(party);
                     }
 
@@ -620,7 +620,7 @@ namespace msdyncrmWorkflowTools
                     ["partyid"] = new EntityReference("systemuser", userId)
                 }
             };
-            
+
             toEntities.Add(activityParty);
 
             var email = new Entity("email")
@@ -1146,7 +1146,7 @@ namespace msdyncrmWorkflowTools
             #region "Query Attachments"
             var fileNamePattern = $"%{fileName}%";
             Trace($"Sales literature items: file name like '{fileNamePattern}', sales literature {salesLiteratureId}");
-            
+
             var attachmentFiles = Service.RetrieveMultiple(Queries.SalesLiteratureItems(fileNamePattern, new Guid(salesLiteratureId)));
 
             if (attachmentFiles.Entities.Count == 0)
@@ -1343,7 +1343,7 @@ namespace msdyncrmWorkflowTools
             {
                 Name = relationshipName
             };
-            
+
             var response = (RetrieveRelationshipResponse)Service.Execute(request);
             var rel = (OneToManyRelationshipMetadata)response.RelationshipMetadata;
             var childEntityType = rel.ReferencingEntity;
@@ -1429,6 +1429,7 @@ namespace msdyncrmWorkflowTools
                 };
 
                 if (metadata.AttributeType != null)
+                {
                     switch (metadata.AttributeType.Value.ToString())
                     {
                         case "Boolean":
@@ -1468,6 +1469,7 @@ namespace msdyncrmWorkflowTools
                             break;
                         }
                     }
+                }
 
                 Service.Update(entity);
             }

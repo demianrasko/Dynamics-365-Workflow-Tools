@@ -648,74 +648,63 @@ namespace msdyncrmWorkflowTools
             ref string capitalizedText, ref string paddedText, ref string replacedText, ref string subStringText, ref string regexText,
                 ref string uppercaseText, ref string lowercaseText, ref bool regexSuccess, ref string withoutSpaces)
         {
-            capitalizedText = string.Empty;
+            inputText = inputText ?? string.Empty;
+
+            // capitalize all words, or the first letter only
             if (capitalizeAllWords)
             {
-                // All words
                 capitalizedText = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(inputText);
             }
             else
             {
-                // First Letter only
-                capitalizedText = inputText.Substring(0, 1).ToUpper() + inputText.Substring(1);
+                capitalizedText = inputText.Length == 0 ? string.Empty : inputText.Substring(0, 1).ToUpper() + inputText.Substring(1);
             }
 
-            //padding
-            paddedText = string.Empty;
-            if (padCharacter == string.Empty)
+            // padding (a space when no pad character is given)
+            var pad = string.IsNullOrEmpty(padCharacter) ? ' ' : padCharacter[0];
+            paddedText = padOnTheLeft ? inputText.PadLeft(finalLengthWithPadding, pad) : inputText.PadRight(finalLengthWithPadding, pad);
+
+            // replace
+            if (string.IsNullOrEmpty(replaceOldValue))
             {
-                padCharacter = " ";
+                replacedText = inputText;
             }
-
-            paddedText = padOnTheLeft ? inputText.PadLeft(finalLengthWithPadding, padCharacter.ToCharArray()[0]) : inputText.PadRight(finalLengthWithPadding, padCharacter.ToCharArray()[0]);
-
-            //replace string
-            replacedText = string.Empty;
-            if (!caseSensitive)
+            else if (caseSensitive)
             {
-                if (!string.IsNullOrEmpty(inputText) && !string.IsNullOrEmpty(replaceOldValue))
-                {
-                    replacedText = inputText.Replace(replaceOldValue, replaceNewValue);
-                }
+                replacedText = inputText.Replace(replaceOldValue, replaceNewValue ?? string.Empty);
             }
             else
             {
-                replacedText = CompareAndReplace(inputText, replaceOldValue, replaceNewValue, StringComparison.CurrentCultureIgnoreCase);
+                replacedText = CompareAndReplace(inputText, replaceOldValue, replaceNewValue ?? string.Empty, StringComparison.CurrentCultureIgnoreCase);
             }
 
-            //substring
+            // substring, cut short at the end of the text
             subStringText = string.Empty;
-            if (subStringLength <= 0 || startIndex < 0)
-            {
-                subStringText = string.Empty;
-            }
-            else
+            if (subStringLength > 0 && startIndex >= 0)
             {
                 if (!fromLeftToRight)
                 {
                     startIndex = inputText.Length - subStringLength - startIndex;
                 }
 
-                if (inputText.Length < subStringLength)
-                {
-                    subStringLength = inputText.Length;
-                }
-
                 if (startIndex < 0)
                 {
+                    subStringLength += startIndex;
                     startIndex = 0;
                 }
 
-                subStringText = inputText.Substring(startIndex, subStringLength);
+                if (startIndex < inputText.Length && subStringLength > 0)
+                {
+                    subStringText = inputText.Substring(startIndex, Math.Min(subStringLength, inputText.Length - startIndex));
+                }
             }
 
-            //regex
+            // regex
             regexText = string.Empty;
             regexSuccess = false;
-            if (regularExpression != string.Empty)
+            if (!string.IsNullOrEmpty(regularExpression))
             {
-                var regex = new Regex(regularExpression);
-                var match = regex.Match(inputText);
+                var match = new Regex(regularExpression).Match(inputText);
 
                 if (match.Success)
                 {
@@ -744,7 +733,7 @@ namespace msdyncrmWorkflowTools
             var pos = 0;
             var next = text.IndexOf(old, comparison);
 
-            while (next > 0)
+            while (next >= 0)
             {
                 result.Append(text, pos, next - pos);
                 result.Append(@new);

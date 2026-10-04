@@ -48,5 +48,120 @@ namespace msdyncrmWorkflowTools_Tests
             Assert.AreEqual(lowercaseText, "demian");
             Assert.AreEqual(regexSuccess, false);
         }
+
+        private sealed class Result
+        {
+            public string Capitalized, Padded, Replaced, SubString, Regex, Upper, Lower, WithoutSpaces;
+            public bool RegexSuccess;
+        }
+
+        private static Result Run(string input, bool capitalizeAllWords = true, string padCharacter = "", bool padOnTheLeft = false,
+            int finalLength = 10, bool caseSensitive = false, string oldValue = "", string newValue = "",
+            int subStringLength = 3, int startIndex = 0, bool fromLeftToRight = true, string regularExpression = "")
+        {
+            var r = new Result();
+            Utility.StringFunctions(capitalizeAllWords, input, padCharacter, padOnTheLeft, finalLength, caseSensitive, oldValue, newValue,
+                subStringLength, startIndex, fromLeftToRight, regularExpression,
+                ref r.Capitalized, ref r.Padded, ref r.Replaced, ref r.SubString, ref r.Regex,
+                ref r.Upper, ref r.Lower, ref r.RegexSuccess, ref r.WithoutSpaces);
+
+            return r;
+        }
+
+        [TestMethod]
+        public void Capitalize_AllWordsOrFirstLetterOnly()
+        {
+            Assert.AreEqual("Hello World", Run("hello world").Capitalized);
+            Assert.AreEqual("Hello world", Run("hello world", capitalizeAllWords: false).Capitalized);
+        }
+
+        [TestMethod]
+        public void Pad_RightWithSpacesByDefaultOrLeftWithACharacter()
+        {
+            Assert.AreEqual("abc   ", Run("abc", finalLength: 6).Padded);
+            Assert.AreEqual("000abc", Run("abc", padCharacter: "0", padOnTheLeft: true, finalLength: 6).Padded);
+            Assert.AreEqual("abcdef", Run("abcdef", finalLength: 3).Padded);
+        }
+
+        [TestMethod]
+        public void Replace_CaseSensitiveOnlyMatchesTheSameCase()
+        {
+            Assert.AreEqual("x b A", Run("a b A", caseSensitive: true, oldValue: "a", newValue: "x").Replaced);
+        }
+
+        [TestMethod]
+        public void Replace_CaseInsensitiveMatchesEveryCase()
+        {
+            Assert.AreEqual("x b x", Run("a b A", caseSensitive: false, oldValue: "a", newValue: "x").Replaced);
+        }
+
+        [TestMethod]
+        public void Replace_MatchAtTheStartIsReplaced()
+        {
+            Assert.AreEqual("zzbczzbc", Run("abcabc", caseSensitive: false, oldValue: "a", newValue: "zz").Replaced);
+        }
+
+        [TestMethod]
+        public void Replace_NoOldValueKeepsTheText()
+        {
+            Assert.AreEqual("abc", Run("abc", caseSensitive: true).Replaced);
+            Assert.AreEqual("abc", Run("abc", caseSensitive: false).Replaced);
+        }
+
+        [TestMethod]
+        public void SubString_FromTheLeftOrTheRight()
+        {
+            Assert.AreEqual("bcd", Run("abcdef", subStringLength: 3, startIndex: 1).SubString);
+            Assert.AreEqual("cde", Run("abcdef", subStringLength: 3, startIndex: 1, fromLeftToRight: false).SubString);
+        }
+
+        [TestMethod]
+        public void SubString_PastTheEndIsCutShortInsteadOfThrowing()
+        {
+            Assert.AreEqual("ef", Run("abcdef", subStringLength: 5, startIndex: 4).SubString);
+            Assert.AreEqual(string.Empty, Run("abc", subStringLength: 2, startIndex: 10).SubString);
+            Assert.AreEqual("abc", Run("abc", subStringLength: 10, startIndex: 0, fromLeftToRight: false).SubString);
+        }
+
+        [TestMethod]
+        public void SubString_ZeroLengthOrNegativeStartIsEmpty()
+        {
+            Assert.AreEqual(string.Empty, Run("abc", subStringLength: 0).SubString);
+            Assert.AreEqual(string.Empty, Run("abc", startIndex: -1).SubString);
+        }
+
+        [TestMethod]
+        public void Regex_ReturnsTheFirstMatch()
+        {
+            var r = Run("Order 12345 shipped", regularExpression: @"\d+");
+
+            Assert.IsTrue(r.RegexSuccess);
+            Assert.AreEqual("12345", r.Regex);
+            Assert.IsFalse(Run("no digits", regularExpression: @"\d+").RegexSuccess);
+        }
+
+        [TestMethod]
+        public void CaseAndSpaces()
+        {
+            var r = Run("Mixed Case Text");
+
+            Assert.AreEqual("MIXED CASE TEXT", r.Upper);
+            Assert.AreEqual("mixed case text", r.Lower);
+            Assert.AreEqual("MixedCaseText", r.WithoutSpaces);
+        }
+
+        [TestMethod]
+        public void NullInputsDoNotThrow()
+        {
+            var r = Run(null, capitalizeAllWords: false, padCharacter: null, oldValue: null, newValue: null, regularExpression: null);
+
+            Assert.AreEqual(string.Empty, r.Capitalized);
+            Assert.AreEqual(new string(' ', 10), r.Padded);
+            Assert.AreEqual(string.Empty, r.Replaced);
+            Assert.AreEqual(string.Empty, r.SubString);
+            Assert.IsFalse(r.RegexSuccess);
+            Assert.AreEqual(string.Empty, r.Upper);
+            Assert.AreEqual(string.Empty, r.WithoutSpaces);
+        }
     }
 }
