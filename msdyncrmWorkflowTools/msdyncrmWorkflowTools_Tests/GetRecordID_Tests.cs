@@ -9,13 +9,13 @@ namespace msdyncrmWorkflowTools_Tests
         [TestMethod]
         public void GetRecordID1()
         {
-            var objectID = Utility.GetRecordID("https://demianrasko.crm4.dynamics.com:443/main.aspx?etc=4207&id=d3c3b3b2-ae19-e811-811f-5065f38a3a01&histKey=885118818&newWindow=true&pagetype=entityrecord");
+            var objectID = Utility.GetRecordId("https://demianrasko.crm4.dynamics.com:443/main.aspx?etc=4207&id=d3c3b3b2-ae19-e811-811f-5065f38a3a01&histKey=885118818&newWindow=true&pagetype=entityrecord");
             Assert.AreEqual(objectID, "d3c3b3b2-ae19-e811-811f-5065f38a3a01");
         }
         [TestMethod]
         public void GetRecordID2()
         {
-            var objectID = Utility.GetRecordID(string.Empty);
+            var objectID = Utility.GetRecordId(string.Empty);
             Assert.AreEqual(objectID, string.Empty);
         }
     }

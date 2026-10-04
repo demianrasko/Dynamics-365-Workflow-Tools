@@ -576,6 +576,7 @@ namespace msdyncrmWorkflowTools
                 }
             }
 
+            // TODO: Verify this is the functionality we want
             if (failures.Count > 0)
             {
                 Trace($"The email could not be sent to {failures.Count} of {userList.Entities.Count} users. {string.Join("; ", failures)}");
@@ -639,9 +640,9 @@ namespace msdyncrmWorkflowTools
                         }
             };
 
-            var appmodules = Service.RetrieveMultiple(query).Entities;
+            var collection = Service.RetrieveMultiple(query).Entities;
 
-            return appmodules.First()["appmoduleid"].ToString();
+            return collection.First()["appmoduleid"].ToString();
         }
 
         public string GetAppRecordUrl(string recordUrl, string appModuleUniqueName)

@@ -221,16 +221,12 @@ namespace msdyncrmWorkflowTools
                 id = parameters[1].Replace("id=", string.Empty);
             }
 
-            return new RecordUrl(objectTypeCode, id);
+            return new RecordUrl(objectTypeCode, id, null);
         }
 
-        public static string GetRecordID(string recordURL)
+        public static string GetRecordId(string recordUrl)
         {
-            if (string.IsNullOrEmpty(recordURL))
-            {
-                return string.Empty;
-            }
-            return ParseRecordUrl(recordURL).Id;
+            return string.IsNullOrEmpty(recordUrl) ? string.Empty : ParseRecordUrl(recordUrl).Id;
         }
 
         /// <summary>
@@ -242,8 +238,8 @@ namespace msdyncrmWorkflowTools
             var stringReader = new StringReader(xml);
             var reader = new XmlTextReader(stringReader);
 
-            // Load document
             var doc = new XmlDocument();
+
             doc.Load(reader);
 
             return CreateXml(doc, cookie, page, count);
@@ -258,27 +254,30 @@ namespace msdyncrmWorkflowTools
             {
                 return string.Empty;
             }
-            var attrs = doc.DocumentElement.Attributes;
+            var attributes = doc.DocumentElement.Attributes;
 
             if (cookie != null)
             {
-                var pagingAttr = doc.CreateAttribute("paging-cookie");
-                pagingAttr.Value = cookie;
-                attrs.Append(pagingAttr);
+                var pagingCookie = doc.CreateAttribute("paging-cookie");
+
+                pagingCookie.Value = cookie;
+                attributes.Append(pagingCookie);
             }
 
             if (page > 0)
             {
-                var pageAttr = doc.CreateAttribute("page");
-                pageAttr.Value = Convert.ToString(page);
-                attrs.Append(pageAttr);
+                var pageAttribute = doc.CreateAttribute("page");
+
+                pageAttribute.Value = Convert.ToString(page);
+                attributes.Append(pageAttribute);
             }
 
             if (count > 0)
             {
-                var countAttr = doc.CreateAttribute("count");
-                countAttr.Value = Convert.ToString(count);
-                attrs.Append(countAttr);
+                var countAttribute = doc.CreateAttribute("count");
+
+                countAttribute.Value = Convert.ToString(count);
+                attributes.Append(countAttribute);
             }
 
             var sb = new StringBuilder(1024);
@@ -334,6 +333,7 @@ namespace msdyncrmWorkflowTools
         }
 
         #region Attribute values
+
         /// <summary>
         /// Converts a Dataverse attribute value to the string a workflow output expects.
         /// </summary>
@@ -345,22 +345,26 @@ namespace msdyncrmWorkflowTools
         /// <param name="value">The attribute value, e.g. entity.Attributes["name"]. Null returns null.</param>
         public static string AttributeValueToString(object value)
         {
-            switch (value)
+            while (true)
             {
-                case null:
-                    return null;
-                case AliasedValue aliasedValue:
-                    return AttributeValueToString(aliasedValue.Value);
-                case OptionSetValue optionSetValue:
-                    return optionSetValue.Value.ToString();
-                case OptionSetValueCollection optionSetValues:
-                    return string.Join(",", optionSetValues.Select(o => o.Value));
-                case EntityReference entityReference:
-                    return entityReference.Id.ToString();
-                case Money money:
-                    return money.Value.ToString();
-                default:
-                    return value.ToString();
+                switch (value)
+                {
+                    case null:
+                        return null;
+                    case AliasedValue aliasedValue:
+                        value = aliasedValue.Value;
+                        continue;
+                    case OptionSetValue optionSetValue:
+                        return optionSetValue.Value.ToString();
+                    case OptionSetValueCollection optionSetValues:
+                        return string.Join(",", optionSetValues.Select(o => o.Value));
+                    case EntityReference entityReference:
+                        return entityReference.Id.ToString();
+                    case Money money:
+                        return money.Value.ToString(CultureInfo.InvariantCulture);
+                    default:
+                        return value.ToString();
+                }
             }
         }
 
@@ -625,8 +629,9 @@ namespace msdyncrmWorkflowTools
             JObject json;
             try
             {
-                using (var reader = new Newtonsoft.Json.JsonTextReader(new StringReader(response ?? string.Empty)) { FloatParseHandling = Newtonsoft.Json.FloatParseHandling.Decimal })
+                using (var reader = new Newtonsoft.Json.JsonTextReader(new StringReader(response ?? string.Empty)))
                 {
+                    reader.FloatParseHandling = Newtonsoft.Json.FloatParseHandling.Decimal;
                     json = JObject.Load(reader);
                 }
             }
@@ -636,14 +641,15 @@ namespace msdyncrmWorkflowTools
             }
 
             var rate = json["rates"]?[toCurrency];
-            if (rate == null || rate.Type == JTokenType.Null)
+            if (rate != null && rate.Type != JTokenType.Null)
             {
-                var reason = (string)json["message"] ?? "no rate returned";
-                throw new InvalidPluginExecutionException(
-                    $"Currency conversion from {fromCurrency} to {toCurrency} is not available ({reason}). Supported currencies are the ECB reference currencies, e.g. USD, EUR, GBP, JPY, CAD, AUD, CHF.");
+                return rate.Value<decimal>();
             }
 
-            return rate.Value<decimal>();
+            var reason = (string)json["message"] ?? "no rate returned";
+
+            throw new InvalidPluginExecutionException(
+                $"Currency conversion from {fromCurrency} to {toCurrency} is not available ({reason}). Supported currencies are the ECB reference currencies, e.g. USD, EUR, GBP, JPY, CAD, AUD, CHF.");
         }
         #endregion
 
@@ -825,14 +831,18 @@ namespace msdyncrmWorkflowTools
     /// </summary>
     public sealed class RecordUrl
     {
-        public RecordUrl(string objectTypeCode, string id)
+        public RecordUrl(string objectTypeCode, string id, string entityName)
         {
             ObjectTypeCode = objectTypeCode;
             Id = id;
+            EntityName = entityName;
         }
 
         /// <summary>The entity type code from the "etc" parameter.</summary>
         public string ObjectTypeCode { get; }
+
+        /// <summary>The entity name.</summary>
+        public string EntityName { get; }
 
         /// <summary>The record id from the "id" parameter.</summary>
         public string Id { get; }
