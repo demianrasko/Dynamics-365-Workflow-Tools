@@ -6,8 +6,6 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
-
-   
     public class CalculateRollupField : WorkflowActivityBase
     {
         #region "Parameter Definition"
@@ -24,7 +22,6 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-
             #region "Read Parameters"
             var _FieldName = FieldName.Get(executionContext);
             common.Trace("_FieldName=" + _FieldName);
@@ -36,12 +33,11 @@ namespace msdyncrmWorkflowTools
             }
             common.Trace("_ParentRecordURL=" + _ParentRecordURL);
             var parsedUrl = Utility.ParseRecordUrl(_ParentRecordURL);
-            
+
             var ParentObjectTypeCode=parsedUrl.ObjectTypeCode;
             var ParentId = parsedUrl.Id;
             common.Trace("ParentObjectTypeCode=" + ParentObjectTypeCode + "--ParentId=" + ParentId);
             #endregion
-
 
             #region "CalculateRollupField Execution"
             var ParentEntityName = common.GetEntityNameFromCode(ParentObjectTypeCode);
@@ -50,9 +46,6 @@ namespace msdyncrmWorkflowTools
             calculateRollup.Target = new EntityReference(ParentEntityName, new Guid(ParentId));
             var resp = (CalculateRollupFieldResponse)common.service.Execute(calculateRollup);
             #endregion
-            
         }
-
-        
     }
 }

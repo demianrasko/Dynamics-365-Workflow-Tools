@@ -24,7 +24,6 @@ namespace msdyncrmWorkflowTools.Class
         [ReferenceTarget("")]
         public InArgument<string> EntityGuid { get; set; }
 
-
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"

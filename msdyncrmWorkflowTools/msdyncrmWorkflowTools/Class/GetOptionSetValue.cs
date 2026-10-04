@@ -20,7 +20,6 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-
             var sourceEntityReference = GetSourceEntityReference(common, executionContext, common.service);
             var attributeName = GetAttributeName(common, executionContext);
 
@@ -36,15 +35,12 @@ namespace msdyncrmWorkflowTools
             return new DynamicUrlParser(sourceRecordUrl).ToEntityReference(organizationService);
         }
 
-
         private string GetAttributeName(Common common, CodeActivityContext executionContext)
         {
             var attributeName = AttributeName.Get<string>(executionContext) ?? throw new InvalidPluginExecutionException("Attribute Name is empty");
             common.Trace("Attribute name:'{0}'", attributeName);
             return attributeName;
         }
-
-        
 
         private int GetValue(EntityReference sourceEntityReference, string attributeName, Common common, IOrganizationService organizationService)
         {
@@ -67,7 +63,7 @@ namespace msdyncrmWorkflowTools
             {
                 value = ((OptionSetValue)sourceEntity.Attributes[attributeName]).Value;
             }
-            
+
             return value;
         }
     }

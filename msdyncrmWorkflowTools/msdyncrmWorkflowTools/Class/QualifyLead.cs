@@ -37,7 +37,7 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("LeadStatus")]
         public InArgument<int> LeadStatus { get; set; }
-        
+
         #endregion
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {

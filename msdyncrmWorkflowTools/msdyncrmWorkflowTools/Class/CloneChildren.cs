@@ -53,8 +53,6 @@ namespace msdyncrmWorkflowTools
 
         #endregion
 
-
-
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
@@ -94,7 +92,6 @@ namespace msdyncrmWorkflowTools
             var destinationId = parsedDestinationUrl.Id;
             common.Trace("ObjectTypeCode=" + destinationObjectTypeCode + "--ParentId=" + destinationId);
 
-
             //Optional
             var _oldParentFieldName = OldParentFieldNameToUpdate.Get(executionContext);
             var prefix = Prefix.Get(executionContext);
@@ -102,9 +99,8 @@ namespace msdyncrmWorkflowTools
 
             #endregion
 
-
             var children = common.GetChildRecords(_relationshipName, parentId);
-             
+
             foreach (var item in children.Entities)
             {
                 var newRecordId = common.CloneRecord(item.LogicalName, item.Id.ToString(), fieldstoIgnore, prefix);
@@ -118,14 +114,7 @@ namespace msdyncrmWorkflowTools
                 }
 
                 common.service.Update(update);
-
             }
-            
-
         }
-
-
-
     }
-
 }

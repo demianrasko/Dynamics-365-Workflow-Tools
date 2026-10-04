@@ -20,8 +20,6 @@ namespace msdyncrmWorkflowTools
         #endregion
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            
-
             #region "Read Parameters"
             var _goal = Goal.Get(executionContext);
             var _goalguid = GoalGuid.Get(executionContext);
@@ -29,11 +27,9 @@ namespace msdyncrmWorkflowTools
             {
                 return;
             }
-            
 
             common.Trace("GoalID=" + _goal.Id.ToString());
             #endregion
-
 
             #region "GoalRequest Execution"
             var id = string.Empty;
@@ -51,9 +47,7 @@ namespace msdyncrmWorkflowTools
             };
             common.service.Execute(recalculateRequest);
 
-
             #endregion
-
         }
     }
 }

@@ -35,7 +35,7 @@ namespace msdyncrmWorkflowTools.Class
             common.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={objectId}");
 
             var process = Process.Get(executionContext);
-            
+
             #endregion
 
             #region "SetProcess Execution"

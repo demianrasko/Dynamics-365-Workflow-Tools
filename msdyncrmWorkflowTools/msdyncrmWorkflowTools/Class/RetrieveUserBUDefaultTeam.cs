@@ -12,27 +12,22 @@ namespace msdyncrmWorkflowTools
         [ReferenceTarget("systemuser")]
         public InArgument<EntityReference> User { get; set; }
 
-        
         [Output("DefaultTeam")]
         [ReferenceTarget("team")]
         public OutArgument<EntityReference> DefaultTeam { get; set; }
-        
+
         #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-
             #region "Read Parameters"
             var user = User.Get(executionContext);
-            
 
             #endregion
 
-           
             var team = common.retrieveUserBUDefaultTeam(user.Id.ToString());
-            
+
             DefaultTeam.Set(executionContext, team);
-            
         }
     }
 }

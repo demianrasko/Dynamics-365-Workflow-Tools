@@ -37,7 +37,6 @@ namespace msdyncrmWorkflowTools.Class
 
             #endregion
 
-
             common.SalesLiteratureToEmail(fileName, salesLiterature.Id.ToString(), email.Id.ToString());
         }
     }

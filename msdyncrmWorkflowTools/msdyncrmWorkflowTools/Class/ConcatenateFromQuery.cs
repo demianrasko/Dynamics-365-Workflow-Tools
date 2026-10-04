@@ -30,10 +30,9 @@ namespace msdyncrmWorkflowTools
         [Default("")]
         public InArgument<string> FormatString { get; set; }
 
-
         [Output("ConcatenatedString")]
         public OutArgument<string> ConcatenatedString { get; set; }
-        
+
         #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
@@ -66,7 +65,7 @@ namespace msdyncrmWorkflowTools
 
             #region "Concatenation Execution"
             string pagingCookie = null;
-            
+
             var hasMoreRecords = false;
             var canPerformPaging = fetchXml.IndexOf("top=", StringComparison.CurrentCultureIgnoreCase) < 0;
             var pageNumber = canPerformPaging ? 1 : 0;
@@ -107,7 +106,6 @@ namespace msdyncrmWorkflowTools
                         if (entity.Attributes.ContainsKey(attributeFieldName))
                         {
                             attribute = entity.Attributes[attributeFieldName];
-
                         }
                     }
                     else
@@ -172,9 +170,5 @@ namespace msdyncrmWorkflowTools
 
             #endregion
         }
-        
-
-
     }
-
 }

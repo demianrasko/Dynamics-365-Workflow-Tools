@@ -51,8 +51,6 @@ namespace msdyncrmWorkflowTools_Tests
             Assert.AreEqual(uppercaseText, "DEMIAN");
             Assert.AreEqual(lowercaseText, "demian");
             Assert.AreEqual(regexSuccess, false);
-
-
         }
     }
 }

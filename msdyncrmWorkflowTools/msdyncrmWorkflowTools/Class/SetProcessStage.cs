@@ -26,7 +26,7 @@ namespace msdyncrmWorkflowTools.Class
         {
             #region "Read Parameters"
             var cloningRecordUrl = ClonningRecordURL.Get(executionContext);
-            
+
             if (string.IsNullOrEmpty(cloningRecordUrl))
             {
                 throw new InvalidPluginExecutionException("Record URL is required.");
@@ -85,7 +85,7 @@ namespace msdyncrmWorkflowTools.Class
             if (procOpp1Resp.Processes.Entities.Count > 0)
             {
                 var activeProcessInstance = procOpp1Resp.Processes.Entities[0];
-            
+
                 processOpp1Id = activeProcessInstance.Id; // Id of the active process instance, which will be used
                                                            // later to retrieve the active path of the process instance
 

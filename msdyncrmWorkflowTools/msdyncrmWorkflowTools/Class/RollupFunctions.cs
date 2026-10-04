@@ -32,19 +32,19 @@ namespace msdyncrmWorkflowTools
 
         [Output("Min")]
         public OutArgument<decimal> Min { get; set; }
-        
+
         #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
             var fetchXml = FetchXML.Get(executionContext);
-            
+
             if (string.IsNullOrEmpty(fetchXml))
             {
                 throw new InvalidPluginExecutionException("FetchXML is required.");
             }
-            
+
             common.Trace("_FetchXML=" + fetchXml);
 
             var context = executionContext.GetExtension<IWorkflowContext>();
@@ -69,17 +69,17 @@ namespace msdyncrmWorkflowTools
                 };
 
                 var returnCollection = ((RetrieveMultipleResponse)common.service.Execute(fetchRequest1)).EntityCollection;
-                
+
                 foreach (var c in returnCollection.Entities)
                 {
                     var attribute=new KeyValuePair<string, object>();
-                
+
                     foreach (var att in c.Attributes)
                     {
                         attribute = att;
                         break;
                     }
-                    
+
                     common.Trace($"Value: {attribute.Value}");
                     objNumbers.Add(attribute.Value);
                 }
@@ -93,9 +93,9 @@ namespace msdyncrmWorkflowTools
                     break;
                 }
             }
-            
+
             common.Trace("Query Data --- Done");
-            
+
             decimal count = 0;
             decimal sum = 0;
             decimal min = 0;
@@ -111,16 +111,22 @@ namespace msdyncrmWorkflowTools
 
                     sum += number;
 
-                    if (number < min || count == 1) min = number;
-                    if (number > max || count == 1) max = number;
+                    if (number < min || count == 1)
+                    {
+                        min = number;
+                    }
+                    if (number > max || count == 1)
+                    {
+                        max = number;
+                    }
                 }
-                
+
                 if (count > 0)
                 {
                     average = sum / count;
                 }
             }
-            
+
             Count.Set(executionContext, count);
             Sum.Set(executionContext, sum);
             Average.Set(executionContext, average);
@@ -129,7 +135,7 @@ namespace msdyncrmWorkflowTools
 
             #endregion
         }
-               
+
         public string ExtractNodeValue(XmlNode parentNode, string name)
         {
             var childNode = parentNode.SelectSingleNode(name);

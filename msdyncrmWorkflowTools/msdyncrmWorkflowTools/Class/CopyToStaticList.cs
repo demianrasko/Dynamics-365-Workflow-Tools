@@ -12,25 +12,15 @@ namespace msdyncrmWorkflowTools.Class
         [ReferenceTarget("list")]
         public InArgument<EntityReference> MarketingList { get; set; }
 
-        
-
-
-
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
             var marketingList = MarketingList.Get(executionContext);
-            common.Trace(string.Format("marketingList: {0} ", marketingList.Id.ToString()));
-
-            
+            common.Trace($"marketingList: {marketingList.Id.ToString()} ");
 
             #endregion
 
-
             common.service.Execute(new CopyDynamicListToStaticRequest { ListId = marketingList.Id });
-
-
         }
-        
     }
 }

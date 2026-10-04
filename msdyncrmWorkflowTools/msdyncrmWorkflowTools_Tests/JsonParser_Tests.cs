@@ -3,12 +3,10 @@ using msdyncrmWorkflowTools;
 
 namespace msdyncrmWorkflowTools_Tests
 {
-    
     [TestClass]
     public class JsonParser_Tests
     {
         CrmService objService = new CrmService();
-        
 
         [TestMethod]
         public void JsonParser1()
@@ -92,8 +90,5 @@ namespace msdyncrmWorkflowTools_Tests
 
             Assert.AreEqual(res, "{\r\n  \"values\": [\r\n    {\r\n      \"Author\": \"Lisa Simpson\",\r\n      \"Response Date\": \"2018-02-21T08:13:34.284Z\"\r\n    }\r\n  ],\r\n  \"SurveyId\": \"5114FA48-1DE6-E711-80E3-005056B37A5C\"\r\n}");
         }
-
-
     }
 }
-

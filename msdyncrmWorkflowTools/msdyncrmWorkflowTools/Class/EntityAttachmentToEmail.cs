@@ -50,7 +50,10 @@ namespace msdyncrmWorkflowTools.Class
             common.Trace("ParentObjectTypeCode=" + parentObjectTypeCode + "--ParentId=" + parentId);
 
             // Treat file name
-            if (fileName == "*") fileName = string.Empty;
+            if (fileName == "*")
+            {
+                fileName = string.Empty;
+            }
             fileName = fileName.Replace("*", "%");
 
             #endregion

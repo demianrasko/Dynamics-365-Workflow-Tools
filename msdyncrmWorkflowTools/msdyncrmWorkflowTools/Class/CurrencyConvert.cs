@@ -21,19 +21,14 @@ namespace msdyncrmWorkflowTools
         [Default("")]
         public InArgument<string> ToCurrency { get; set; }
 
-        
         [Output("Result")]
         public OutArgument<decimal> Result { get; set; }
-
-       
 
         #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-
             #region "Read Parameters"
-            
 
             var amount = Amount.Get(executionContext);
             var fromCurrency= FromCurrency.Get(executionContext);
@@ -42,21 +37,7 @@ namespace msdyncrmWorkflowTools
             #endregion
             var result=common.CurrencyConvert(amount,fromCurrency, toCurrency);
 
-
             Result.Set(executionContext, result);
-                    
-
         }
-     
-
-        
-
-
-
-
     }
-
-    
-
-
 }

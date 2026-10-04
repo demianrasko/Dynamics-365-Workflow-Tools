@@ -40,7 +40,10 @@ namespace msdyncrmWorkflowTools
                             found++;
                             break;
                     }
-                    if (found > 1) break;
+                    if (found > 1)
+                    {
+                        break;
+                    }
                 }
             }
             catch (Exception ex)
@@ -58,7 +61,7 @@ namespace msdyncrmWorkflowTools
         {
             var entityFilter = new MetadataFilterExpression(LogicalOperator.And);
             entityFilter.Conditions.Add(new MetadataConditionExpression("ObjectTypeCode ", MetadataConditionOperator.Equals, EntityTypeCode));
-            
+
             var propertyExpression = new MetadataPropertiesExpression { AllProperties = false };
             propertyExpression.PropertyNames.Add("LogicalName");
 

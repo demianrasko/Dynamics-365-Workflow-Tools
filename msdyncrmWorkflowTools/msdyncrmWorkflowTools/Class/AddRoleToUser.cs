@@ -15,7 +15,7 @@ namespace msdyncrmWorkflowTools
         [Input("User")]
         [ReferenceTarget("systemuser")]
         public InArgument<EntityReference> User { get; set; }
-        
+
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
@@ -34,7 +34,7 @@ namespace msdyncrmWorkflowTools
             }
 
             var entRoleId = roleId.Value;
-            
+
             common.service.Associate(
                 "systemuser",
                 userReference.Id,

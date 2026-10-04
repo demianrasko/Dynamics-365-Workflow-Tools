@@ -14,7 +14,6 @@ namespace msdyncrmWorkflowTools.Class
         [ReferenceTarget("queue")]
         public InArgument<EntityReference> SourceQueue { get; set; }
 
-
         [RequiredArgument]
         [Input("Count Only Unassigned Items")]
         public InArgument<bool> CountOnlyUnassigned { get; set; }
@@ -34,7 +33,6 @@ namespace msdyncrmWorkflowTools.Class
             var countOnlyUnassigned = CountOnlyUnassigned.Get(executionContext);
             common.Trace("countOnlyUnassigned: {0}", countOnlyUnassigned);
 
-
             #endregion
 
             //query for retrieving all the queueitems from one queue
@@ -44,7 +42,7 @@ namespace msdyncrmWorkflowTools.Class
                         <attribute name='objectid' alias='queueitem_count' aggregate='count'/>
                         <filter type='and'>
                           <condition attribute='statecode' operator='eq' value='0' />");
-            
+
             if (countOnlyUnassigned)
             {
                 sFetchXml.Append("<condition attribute='workerid' operator='null' />");

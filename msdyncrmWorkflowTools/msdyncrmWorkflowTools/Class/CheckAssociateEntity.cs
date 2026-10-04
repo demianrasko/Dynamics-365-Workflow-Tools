@@ -4,8 +4,6 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
-
-   
     public class CheckAssociateEntity : WorkflowActivityBase
     {
         #region "Parameter Definition"
@@ -19,14 +17,12 @@ namespace msdyncrmWorkflowTools
         [ReferenceTarget("")]
         public InArgument<string> RecordURL { get; set; }
 
-
         [Output("Result")]
         public OutArgument<bool> Result { get; set; }
         #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-
             #region "Read Parameters"
             var _relationshipName = RelationshipName.Get(executionContext);
             var _recordURL = RecordURL.Get(executionContext);
@@ -41,7 +37,6 @@ namespace msdyncrmWorkflowTools
             common.Trace("ParentObjectTypeCode=" + ParentObjectTypeCode + "--ParentId=" + ParentId);
             #endregion
 
-
             #region "Associate Execution"
 
             var relations = common.GetAssociations(common.context.PrimaryEntityName, common.context.PrimaryEntityId,_relationshipName, entityName, ParentId);
@@ -55,9 +50,6 @@ namespace msdyncrmWorkflowTools
                 Result.Set(executionContext, false);
             }
             #endregion
-
         }
-
-
     }
 }

@@ -5,8 +5,6 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
-
-
     public class CountChildEntityRecords : WorkflowActivityBase
     {
         #region "Parameter Definition"
@@ -25,14 +23,12 @@ namespace msdyncrmWorkflowTools
         [ReferenceTarget("")]
         public InArgument<string> RecordURL { get; set; }
 
-
         [Output("Result")]
         public OutArgument<int> Result { get; set; }
         #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-
             #region "Read Parameters"
             var _childEntityName = ChildEntityName.Get(executionContext);
             var _parentLookupName = ParentLookupName.Get(executionContext);
@@ -49,7 +45,6 @@ namespace msdyncrmWorkflowTools
             common.Trace("ParentObjectTypeCode=" + ParentObjectTypeCode + "--ParentId=" + ParentEntityId);
             #endregion
 
-
             #region "Process"
 
             var fetchXml = @"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='true'>
@@ -60,7 +55,7 @@ namespace msdyncrmWorkflowTools
                                 </entity>
                             </fetch>";
             fetchXml = string.Format(fetchXml, _childEntityName, _parentLookupName, ParentEntityId);
-            common.Trace(string.Format("FetchXML: {0} ", fetchXml));
+            common.Trace($"FetchXML: {fetchXml} ");
             var results = common.service.RetrieveMultiple(new FetchExpression(fetchXml));
 
             Result.Set(executionContext, results.Entities.Count);

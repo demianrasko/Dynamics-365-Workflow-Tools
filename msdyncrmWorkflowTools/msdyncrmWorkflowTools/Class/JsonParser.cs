@@ -16,29 +16,27 @@ namespace msdyncrmWorkflowTools
         [Default("")]
         public InArgument<string> JSONPath { get; set; }
 
-
-      
         [Output("JSON Result")]
         public OutArgument<string> JSONResult { get; set; }
-        
+
         #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-
             #region "Read Parameters"
             var json = JSON.Get(executionContext);
             var jsonPath = JSONPath.Get(executionContext);
 
             #endregion
 
-           
             var res=common.JsonParser(json, jsonPath);
 
-            if (res == null) res = string.Empty;
+            if (res == null)
+            {
+                res = string.Empty;
+            }
 
             JSONResult.Set(executionContext, res);
-            
         }
     }
 }

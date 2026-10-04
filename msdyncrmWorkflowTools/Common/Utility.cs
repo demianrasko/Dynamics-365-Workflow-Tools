@@ -126,13 +126,34 @@ namespace msdyncrmWorkflowTools
         {
             var mask = AccessRights.None;
 
-            if (read) mask |= AccessRights.ReadAccess;
-            if (write) mask |= AccessRights.WriteAccess;
-            if (append) mask |= AccessRights.AppendAccess;
-            if (appendTo) mask |= AccessRights.AppendToAccess;
-            if (delete) mask |= AccessRights.DeleteAccess;
-            if (share) mask |= AccessRights.ShareAccess;
-            if (assign) mask |= AccessRights.AssignAccess;
+            if (read)
+            {
+                mask |= AccessRights.ReadAccess;
+            }
+            if (write)
+            {
+                mask |= AccessRights.WriteAccess;
+            }
+            if (append)
+            {
+                mask |= AccessRights.AppendAccess;
+            }
+            if (appendTo)
+            {
+                mask |= AccessRights.AppendToAccess;
+            }
+            if (delete)
+            {
+                mask |= AccessRights.DeleteAccess;
+            }
+            if (share)
+            {
+                mask |= AccessRights.ShareAccess;
+            }
+            if (assign)
+            {
+                mask |= AccessRights.AssignAccess;
+            }
 
             return mask;
         }

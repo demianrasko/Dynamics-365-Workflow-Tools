@@ -21,7 +21,6 @@ namespace msdyncrmWorkflowTools
         [ReferenceTarget("systemuser")]
         public InArgument<EntityReference> User { get; set; }
 
-
         /// <summary>
         /// Share Read privilege.
         /// </summary>
@@ -71,10 +70,8 @@ namespace msdyncrmWorkflowTools
         [Default("False")]
         public InArgument<bool> ShareShare { get; set; }
 
-
         List<EntityReference> principals = new List<EntityReference>();
         #endregion
-
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
@@ -100,7 +97,7 @@ namespace msdyncrmWorkflowTools
             }
 
             #endregion
-            
+
             #region "ApplyRoutingRuteamReferenceleRequest Execution"
             var entityName = common.GetEntityNameFromCode(objectTypeCode);
 

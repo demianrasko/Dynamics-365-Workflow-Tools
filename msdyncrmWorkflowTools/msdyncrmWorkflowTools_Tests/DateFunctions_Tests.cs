@@ -34,7 +34,6 @@ namespace msdyncrmWorkflowTools_Tests
             Assert.AreEqual(Year, 2017);
 
             Assert.AreEqual(WeekOfYear, 18);
-            
         }
 
         [TestMethod]
@@ -59,12 +58,9 @@ namespace msdyncrmWorkflowTools_Tests
             Assert.AreEqual(Month, 5);
             Assert.AreEqual(Year, 2019);
             Assert.AreEqual(WeekOfYear, 18);
-
-
         }
     }
 }
-
 
 /*
     

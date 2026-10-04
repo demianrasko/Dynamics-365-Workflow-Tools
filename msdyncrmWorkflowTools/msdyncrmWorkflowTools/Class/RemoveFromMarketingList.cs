@@ -61,7 +61,7 @@ namespace msdyncrmWorkflowTools.Class
                 ListId = marketingList.Id,
                 EntityId = idToRemove
             };
-            
+
             common.service.Execute(removeRequest);
         }
     }

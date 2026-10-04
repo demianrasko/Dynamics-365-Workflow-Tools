@@ -12,7 +12,7 @@ namespace msdyncrmWorkflowTools.Class
         [Input("Record ID")]
         [ReferenceTarget("")]
         public InArgument<string> RecordID { get; set; }
-        
+
         [Input("Process")]
         [ReferenceTarget("workflow")]
         public InArgument<EntityReference> Process { get; set; }
@@ -21,7 +21,7 @@ namespace msdyncrmWorkflowTools.Class
         {
             #region "Read Parameters"
             var recordId = RecordID.Get(executionContext);
-            
+
             var process = Process.Get(executionContext);
             #endregion
 

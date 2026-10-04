@@ -17,7 +17,6 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-
             var recordId = GetRecordIdFromURL(executionContext);
 
             var locatioColl = GetSharepointLocation(common.service, recordId);

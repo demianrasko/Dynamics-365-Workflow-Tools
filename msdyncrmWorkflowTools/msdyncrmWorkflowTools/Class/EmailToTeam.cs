@@ -20,7 +20,7 @@ namespace msdyncrmWorkflowTools.Class
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
-           
+
             var email = Email.Get(executionContext);
             var team = Team.Get(executionContext);
 
@@ -43,27 +43,25 @@ namespace msdyncrmWorkflowTools.Class
 
             if (retrievedUsers.Entities.Count == 0)
             {
-               
                 return;
             }
 
             #endregion
             #region "Update the "To" field on the Email"
             var emailEnt = new Entity("email",email.Id);
-            
+
             var to = new EntityCollection();
 
             foreach (var user in retrievedUsers.Entities)
             {
                 var userId = user.Id;
-              
+
                 var to1 = new Entity("activityparty")
                 {
                     ["partyid"] = new EntityReference("systemuser", userId)
                 };
 
                 to.Entities.Add(to1);
-
             }
             emailEnt["to"] = to;
 

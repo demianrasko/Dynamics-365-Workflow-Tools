@@ -4,14 +4,12 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
-  
     public class CreateTeam : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("Team Name")]
         [Default("")]
         public InArgument<string> TeamName{ get; set; }
-
 
         [RequiredArgument]
         [Input("Team Type")]
@@ -27,14 +25,12 @@ namespace msdyncrmWorkflowTools
         [ReferenceTarget("businessunit")]
         public InArgument<EntityReference> BusinessUnit { get; set; }
 
-
         [Output("Team")]
         [ReferenceTarget("team")]
         public OutArgument<EntityReference> createdTeam { get; set; }
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-
             #region "Read Parameters"
             var _teamName = TeamName.Get(executionContext);
             var _teamType = TeamType.Get(executionContext);
@@ -44,14 +40,12 @@ namespace msdyncrmWorkflowTools
             common.Trace("_teamName=" + _teamName );
             #endregion
 
-
             #region "Associate Execution"
 
             var createdTeamId= common.CreateTeam(_teamName,_teamType, _administrator, _businessUnit);
             createdTeam.Set(executionContext, new EntityReference("team", createdTeamId));
 
             #endregion
-
         }
     }
 }

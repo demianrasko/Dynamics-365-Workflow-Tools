@@ -13,7 +13,6 @@ namespace msdyncrmWorkflowTools
         [ReferenceTarget("")]
         public InArgument<string> ClonningRecordURL { get; set; }
 
-        
         [Input("Prefix")]
         [Default("")]
         public InArgument<string> Prefix { get; set; }
@@ -25,7 +24,6 @@ namespace msdyncrmWorkflowTools
         [Output("Cloned Guid")]
         public OutArgument<string> ClonedGuid { get; set; }
 
-        
         #endregion
 
         /*private EntityCollection getActivityObject(Entity entNewActivity, string activityFieldName)
@@ -38,7 +36,6 @@ namespace msdyncrmWorkflowTools
 
             return toFrom;
         }*/
-
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
@@ -62,15 +59,10 @@ namespace msdyncrmWorkflowTools
 
             var createdGUID = common.CloneRecord(entityName, objectId, fieldstoIgnore, prefix);
             ClonedGuid.Set(executionContext, createdGUID.ToString());
-            
 
             common.Trace("cloned object OK");
 
             #endregion
-
         }
-
-        
     }
-
 }

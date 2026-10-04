@@ -16,12 +16,10 @@ namespace msdyncrmWorkflowTools
         [Default("true")]
         public InArgument<bool> CapitalizeAllWords { get; set; }
 
-
         [RequiredArgument]
         [Input("Padding: Pad Character")]
         [Default("")]
         public InArgument<string> PadCharacter { get; set; }
-
 
         [RequiredArgument]
         [Input("Padding: Pad on the Left")]
@@ -61,7 +59,6 @@ namespace msdyncrmWorkflowTools
         [Input("Substring: Length")]
         [Default("3")]
         public InArgument<int> SubStringLength { get; set; }
-
 
         [RequiredArgument]
         [Input("Regular Expression")]
@@ -107,7 +104,10 @@ namespace msdyncrmWorkflowTools
         {
             #region "Read Parameters"
             var inputText = InputText.Get(executionContext);
-            if (inputText == null) inputText = string.Empty;
+            if (inputText == null)
+            {
+                inputText = string.Empty;
+            }
             var capitalizeAllWords = CapitalizeAllWords.Get(executionContext);
 
             var padCharacter = PadCharacter.Get(executionContext);
@@ -116,7 +116,10 @@ namespace msdyncrmWorkflowTools
 
             var replaceOldValue = ReplaceOldValue.Get(executionContext);
             var replaceNewValue = ReplaceNewValue.Get(executionContext);
-            if (replaceNewValue == null) replaceNewValue = string.Empty;
+            if (replaceNewValue == null)
+            {
+                replaceNewValue = string.Empty;
+            }
             var caseSensitive = CaseSensitive.Get(executionContext);
 
             var fromLefttoRight = FromLefttoRight.Get(executionContext);

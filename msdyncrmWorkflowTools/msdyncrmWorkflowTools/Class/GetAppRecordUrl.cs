@@ -23,19 +23,14 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-
             #region "Read Parameters"
             var recordURL = RecordURL.Get(executionContext);
             var appModuleUniqueName = AppModuleUniqueName.Get(executionContext);
             #endregion
 
-            
             var appRecordUrl = common.GetAppRecordUrl(recordURL, appModuleUniqueName);
 
             AppRecordUrl.Set(executionContext, appRecordUrl);
-
         }
-        
-
     }
 }

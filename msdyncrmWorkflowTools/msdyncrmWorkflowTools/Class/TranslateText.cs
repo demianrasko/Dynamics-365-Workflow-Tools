@@ -25,10 +25,9 @@ namespace msdyncrmWorkflowTools
         [Default("")]
         public InArgument<string> Region { get; set; }
 
-
         [Output("Translated Text")]
         public OutArgument<string> TranslatedText { get; set; }
-        
+
         #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
@@ -39,7 +38,7 @@ namespace msdyncrmWorkflowTools
             var authenticationKey = Authenticationkey.Get(executionContext);
             var region = Region.Get(executionContext);
             #endregion
-            
+
             var res=common.TranslateText(textToTranslate, language, authenticationKey, region) ?? string.Empty;
 
             TranslatedText.Set(executionContext, res);

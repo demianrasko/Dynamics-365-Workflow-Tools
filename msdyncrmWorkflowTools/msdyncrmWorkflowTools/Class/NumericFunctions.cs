@@ -39,7 +39,7 @@ namespace msdyncrmWorkflowTools.Class
             Add.Set(executionContext, number1+number2);
             Subtract.Set(executionContext, number1 - number2);
             Multiply.Set(executionContext, number1 * number2);
-            
+
             if (number2 != 0)
             {
                 Divide.Set(executionContext, number1 / number2);

@@ -30,7 +30,7 @@ namespace msdyncrmWorkflowTools.Class
             var isMember = common.IsMemberOfTeam(team.Id, user.Id);
 
             Result.Set(executionContext, isMember);
-            
+
             #endregion
         }
     }

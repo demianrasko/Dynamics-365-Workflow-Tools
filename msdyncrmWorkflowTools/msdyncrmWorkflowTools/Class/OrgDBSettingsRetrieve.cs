@@ -12,7 +12,6 @@ namespace msdyncrmWorkflowTools
         [Default("")]
         public InArgument<string> orgDBSetting { get; set; }
 
-
         [Output("String Value")]
         public OutArgument<string> StringValue { get; set; }
 
@@ -22,12 +21,10 @@ namespace msdyncrmWorkflowTools
         [Output("Bool Value")]
         public OutArgument<bool> BoolValue { get; set; }
 
-
         #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-
             #region "Read Parameters"
             var orgDbSetting = orgDBSetting.Get(executionContext).ToLower();
             #endregion

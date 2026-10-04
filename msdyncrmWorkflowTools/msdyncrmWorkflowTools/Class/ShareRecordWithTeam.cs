@@ -70,7 +70,6 @@ namespace msdyncrmWorkflowTools
         [Default("False")]
         public InArgument<bool> ShareShare { get; set; }
 
-
         List<EntityReference> principals = new List<EntityReference>();
         #endregion
 
@@ -88,7 +87,7 @@ namespace msdyncrmWorkflowTools
             var parsedUrl = Utility.ParseRecordUrl(sharingRecordUrl);
             var objectTypeCode = parsedUrl.ObjectTypeCode;
             var objectId = parsedUrl.Id;
-            
+
             common.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={objectId}");
 
             principals.Clear();

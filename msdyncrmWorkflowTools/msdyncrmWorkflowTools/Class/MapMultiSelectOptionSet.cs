@@ -29,7 +29,6 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-
             var sourceAttributes = GetSourceAttributes(executionContext, common);
             var targetAttributes = GetTargetAttributes(executionContext, common);
             var sourceEntityReference = GetSourceEntityReference(executionContext, common.service);
@@ -40,11 +39,11 @@ namespace msdyncrmWorkflowTools
             {
                 common.service.Update(targetEntity);
                 common.Trace("Target entity record updated correctly.");
-
             }
             else
+            {
                 common.Trace("Target entity record was NOT updated. ");
-
+            }
         }
 
         private EntityReference GetSourceEntityReference(CodeActivityContext executionContext, IOrganizationService organizationService)
@@ -70,7 +69,9 @@ namespace msdyncrmWorkflowTools
                 return null;
             }
             else
+            {
                 return sourceAttributesArray;
+            }
         }
 
         private string[] GetTargetAttributes(CodeActivityContext executionContext, Common common)
@@ -84,13 +85,17 @@ namespace msdyncrmWorkflowTools
                 return null;
             }
             else
+            {
                 return targetAttributesArray;
+            }
         }
 
         private Entity BuildTargetEntity(EntityReference sourceEntityReference, EntityReference targetEntityReference, string[] sourceAttributes, string[] targetAttributes, Common common, IOrganizationService organizationService, CodeActivityContext executionContext)
         {
             if (sourceEntityReference == null || targetEntityReference == null || sourceAttributes == null || targetAttributes == null)
+            {
                 return null;
+            }
 
             var numberSourceAttribute = sourceAttributes.Length;
             var numberTargetAttribute = targetAttributes.Length;
@@ -110,7 +115,6 @@ namespace msdyncrmWorkflowTools
             OptionSetValueCollection sourceNewValues = null;
             OptionSetValueCollection targetExistingValues = null;
 
-
             for (var i = 0; i < numberSourceAttribute; i++)
             {
                 var sourceAttribute = sourceAttributes[i];
@@ -125,11 +129,14 @@ namespace msdyncrmWorkflowTools
                         attributeMappedCounter++;
                     }
                     else
+                    {
                         common.Trace("Attribute '{0}' is not an Option Set", sourceAttribute);
+                    }
                 }
                 else
+                {
                     common.Trace("Attribute '{0}' wasn't found in source record", sourceAttribute);
-
+                }
             }
 
             common.Trace("Target entity record has been built correctly. '{0}' of '{1}' attributes were mapped. ", attributeMappedCounter, numberSourceAttribute);
@@ -143,16 +150,22 @@ namespace msdyncrmWorkflowTools
             var attributeValues = KeepExistingValues.Get<bool>(executionContext);
 
             if (attributeValues == false)
+            {
                 return null;
+            }
 
             var record = organizationService.Retrieve(targetEntityReference.LogicalName, targetEntityReference.Id, new ColumnSet(new string[] { attributeName }));
 
             common.Trace("Existing values have been retrieved correctly");
 
             if (record.Contains(attributeName))
+            {
                 return record[attributeName] as OptionSetValueCollection;
+            }
             else
+            {
                 return null;
+            }
         }
 
         private OptionSetValueCollection MergeOptionSetCollections(OptionSetValueCollection newValues, OptionSetValueCollection existingValues, Common common)
@@ -160,23 +173,30 @@ namespace msdyncrmWorkflowTools
             common.Trace("Merging new and exiting multi-select optionset values");
 
             if (existingValues == null && newValues == null)
+            {
                 return new OptionSetValueCollection();
+            }
 
             if (existingValues == null)
+            {
                 return newValues;
+            }
 
             if (newValues == null)
+            {
                 return existingValues;
+            }
 
             foreach (var newValue in newValues)
             {
                 if (!existingValues.Contains(newValue))
+                {
                     existingValues.Add(newValue);
+                }
             }
 
             common.Trace("New and exiting multi-select optionset values have been merged correctly. Total options: {0} ", existingValues.Count);
             return existingValues;
         }
-
     }
 }

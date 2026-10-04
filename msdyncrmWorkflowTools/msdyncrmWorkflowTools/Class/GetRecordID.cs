@@ -11,7 +11,6 @@ namespace msdyncrmWorkflowTools
         [Default("")]
         public InArgument<string> RecordURL { get; set; }
 
-
         [Output("Record ID")]
         public OutArgument<string> RecordID { get; set; }
 
@@ -19,20 +18,14 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-
             #region "Read Parameters"
             var recordURL = RecordURL.Get(executionContext);
-
 
             #endregion
 
             var recordID=common.GetRecordID(recordURL);
-                
-           
+
             RecordID.Set(executionContext, recordID);
-
         }
-        
-
     }
 }

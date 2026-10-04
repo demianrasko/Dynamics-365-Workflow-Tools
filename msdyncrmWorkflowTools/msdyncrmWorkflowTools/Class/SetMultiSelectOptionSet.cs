@@ -28,16 +28,13 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-
             var sourceEntityReference = GetTargetEntityReference(executionContext,common, common.service);
             var attributeName = GetAttributeName(executionContext,common);
             var newValues = GetNewAttributeValues(executionContext, common);
             var existingValues = GetExistingAttributeValues(sourceEntityReference, attributeName,executionContext, common, common.service);
 
-
             //UpdateRecord(sourceEntityReference, attributeName, values,common.service,common);
             UpdateRecord(sourceEntityReference, attributeName, newValues, existingValues, common.service, common);
-
         }
 
         private EntityReference GetTargetEntityReference(CodeActivityContext executionContext, Common common, IOrganizationService organizationService)
@@ -122,7 +119,7 @@ namespace msdyncrmWorkflowTools
                 throw new InvalidPluginExecutionException(
                     $"Unexpected null parameters when trying to update record. Record reference '{targetEntityReference}' - attibute name '{attributeName}' - values '{newValues}'");
             }
-            
+
             var targetEntity = new Entity(targetEntityReference.LogicalName, targetEntityReference.Id)
                 {
                     [attributeName] = MergeOptionSetCollections(newValues, existingValues, common)
@@ -159,7 +156,7 @@ namespace msdyncrmWorkflowTools
             }
 
             common.Trace("New and exiting multi-select optionset values have been merged correctly. Total options: {0} ", existingValues.Count);
-            
+
             return existingValues;
         }
     }

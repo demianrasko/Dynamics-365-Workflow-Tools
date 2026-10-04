@@ -42,7 +42,7 @@ namespace msdyncrmWorkflowTools
             {
                 throw new InvalidPluginExecutionException("Parent Record URL is required.");
             }
-            
+
             var parsedUrl = Utility.ParseRecordUrl(parentRecordUrl);
             var objectTypeCode = parsedUrl.ObjectTypeCode;
             var parentEntityId = parsedUrl.Id;
@@ -59,7 +59,6 @@ namespace msdyncrmWorkflowTools
             common.Trace($"{nameof(RelationshipName)}={relationshipName}--_ParentFieldNameToUpdate={parentFieldNameToUpdate}");
             common.Trace($"_ValueToSet={valueToSet}--_ChildFieldNameToUpdate={childFieldNameToUpdate}");
             #endregion
-
 
             common.UpdateChildRecords(relationshipName, parentEntityType, parentEntityId, parentFieldNameToUpdate, valueToSet, childFieldNameToUpdate, updateOnlyActive);
         }

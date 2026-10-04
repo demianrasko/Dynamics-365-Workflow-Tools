@@ -56,9 +56,9 @@ namespace msdyncrmWorkflowTools
             {
                 Query = new FetchExpression(xml)
             };
-            
+
             var returnCollection = ((RetrieveMultipleResponse)common.service.Execute(fetchRequest1)).EntityCollection;
-            
+
             common.Trace($"Count {returnCollection.Entities.Count}");
 
             if (returnCollection.Entities.Count > 0)
@@ -69,7 +69,7 @@ namespace msdyncrmWorkflowTools
                     {
                         var value = returnCollection.Entities[0].Attributes.First().Value;
                         common.Trace($"Attribute {returnCollection.Entities[0].Attributes.First().Key} - {value}");
-            
+
                         switch (value)
                         {
                             case DateTime time:

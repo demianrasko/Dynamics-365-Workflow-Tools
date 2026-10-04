@@ -37,14 +37,17 @@ namespace msdyncrmWorkflowTools
             var parsedUrl = Utility.ParseRecordUrl(sharingRecordUrl);
             var objectTypeCode = parsedUrl.ObjectTypeCode;
             var objectId = parsedUrl.Id;
-            
+
             common.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={objectId}");
 
             var teamReference = Team.Get(executionContext);
 
-            if (teamReference != null) principals.Add(teamReference);
+            if (teamReference != null)
+            {
+                principals.Add(teamReference);
+            }
             #endregion
-            
+
             #region "ApplyRoutingRuteamReferenceleRequest Execution"
             var entityName = common.GetEntityNameFromCode(objectTypeCode);
 
@@ -58,7 +61,7 @@ namespace msdyncrmWorkflowTools
             foreach (var principalObject in principals)
             {
                 request.Revokee = principalObject;
-                
+
                 common.service.Execute(request);
             }
 

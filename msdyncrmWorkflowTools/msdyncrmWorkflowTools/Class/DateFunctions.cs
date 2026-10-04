@@ -7,7 +7,7 @@ namespace msdyncrmWorkflowTools
     public class DateFunctions : WorkflowActivityBase
     {
         #region "Parameter Definition"
-        
+
         [RequiredArgument]
         [Input("Date 1")]
         public InArgument<DateTime> Date1 { get; set; }
@@ -32,19 +32,19 @@ namespace msdyncrmWorkflowTools
 
         [Output("Day Of Week")]
         public OutArgument<int> DayOfWeek { get; set; }
-        
+
         [Output("Day Of Year")]
         public OutArgument<int> DayOfYear { get; set; }
-        
+
         [Output("Day")]
         public OutArgument<int> Day { get; set; }
-        
+
         [Output("Month")]
         public OutArgument<int> Month { get; set; }
-        
+
         [Output("Year")]
         public OutArgument<int> Year { get; set; }
-        
+
         [Output("Week Of Year")]
         public OutArgument<int> WeekOfYear { get; set; }
 

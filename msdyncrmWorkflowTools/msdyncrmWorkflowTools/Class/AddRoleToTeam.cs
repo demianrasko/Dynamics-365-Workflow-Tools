@@ -18,10 +18,8 @@ namespace msdyncrmWorkflowTools
         [ReferenceTarget("team")]
         public InArgument<EntityReference> Team { get; set; }
 
-
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-
             #region "Read Parameters"
             var roleReference = Role.Get(executionContext);
             var teamReference = Team.Get(executionContext);
@@ -42,7 +40,7 @@ namespace msdyncrmWorkflowTools
             {
                 return;
             }
-            
+
             common.Trace("Associate | RoleId: {0} - TeamID: {1} ", entRoleId, teamReference.Id);
 
             common.service.Associate(
@@ -63,7 +61,6 @@ namespace msdyncrmWorkflowTools
 
             query.Criteria.AddCondition("roleid", ConditionOperator.Equal, rolesId);
             query.Criteria.AddCondition("teamid", ConditionOperator.Equal, teamId);
-
 
             var entityCollection = organizationService.RetrieveMultiple(query);
 

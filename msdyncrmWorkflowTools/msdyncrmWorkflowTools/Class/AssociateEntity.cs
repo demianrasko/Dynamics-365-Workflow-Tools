@@ -26,8 +26,6 @@ namespace msdyncrmWorkflowTools
         [ReferenceTarget("")]
         public InArgument<string> RecordURL { get; set; }
 
-        
-
         #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)

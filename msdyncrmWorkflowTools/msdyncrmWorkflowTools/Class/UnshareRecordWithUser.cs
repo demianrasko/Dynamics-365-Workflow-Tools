@@ -28,7 +28,7 @@ namespace msdyncrmWorkflowTools
         {
             #region "Read Parameters"
             var sharingRecordUrl = SharingRecordURL.Get(executionContext);
-            
+
             if (string.IsNullOrEmpty(sharingRecordUrl))
             {
                 throw new InvalidPluginExecutionException("Sharing Record URL is required.");
@@ -37,7 +37,7 @@ namespace msdyncrmWorkflowTools
             var parsedUrl = Utility.ParseRecordUrl(sharingRecordUrl);
             var objectTypeCode = parsedUrl.ObjectTypeCode;
             var objectId = parsedUrl.Id;
-            
+
             common.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={objectId}");
 
             var user = User.Get(executionContext);

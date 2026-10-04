@@ -15,7 +15,6 @@ namespace msdyncrmWorkflowTools.Class
         [ReferenceTarget("queue")]
         public InArgument<EntityReference> SourceQueue { get; set; }
 
-
         [RequiredArgument]
         [Input("Remove Items From Source Queue")]
         public InArgument<bool> RemoveItems { get; set; }

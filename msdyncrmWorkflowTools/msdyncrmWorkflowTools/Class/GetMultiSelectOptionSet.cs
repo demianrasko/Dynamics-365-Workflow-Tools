@@ -21,7 +21,6 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-
             var sourceEntityReference = GetSourceEntityReference(common, executionContext, common.service);
             var attributeName = GetAttributeName(common, executionContext);
 
@@ -37,14 +36,12 @@ namespace msdyncrmWorkflowTools
             return new DynamicUrlParser(sourceRecordUrl).ToEntityReference(organizationService);
         }
 
-
         private string GetAttributeName(Common common, CodeActivityContext executionContext)
         {
             var attributeName = AttributeName.Get<string>(executionContext) ?? throw new InvalidPluginExecutionException("Attribute Name is empty");
             common.Trace("Attribute name:'{0}'", attributeName);
             return attributeName;
         }
-
 
         private string GetSelectedValues(EntityReference sourceEntityReference, string attributeName, Common common, IOrganizationService organizationService)
         {
@@ -65,7 +62,9 @@ namespace msdyncrmWorkflowTools
 
             var optionSetValues = sourceEntity[attributeName] as OptionSetValueCollection;
             if (optionSetValues == null)
+            {
                 return string.Empty;
+            }
 
             var numberOptions = optionSetValues.Count;
 
@@ -84,7 +83,9 @@ namespace msdyncrmWorkflowTools
                 value = optionSetValues[i];
                 stringBuilder.Append(value.Value);
                 if ((i + 1) < numberOptions)
+                {
                     stringBuilder.Append(",");
+                }
             }
 
             var values = stringBuilder.ToString();

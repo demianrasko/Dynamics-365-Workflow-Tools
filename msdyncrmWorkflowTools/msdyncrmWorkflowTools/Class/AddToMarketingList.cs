@@ -32,12 +32,12 @@ namespace msdyncrmWorkflowTools.Class
         {
             #region "Read Parameters"
             var marketingList = MarketingList.Get(executionContext);
-            common.Trace(string.Format("marketingList: {0} ", marketingList.Id.ToString()));
+            common.Trace($"marketingList: {marketingList.Id.ToString()} ");
 
             var accountReference = account.Get(executionContext);
-            
+
             var contactReference = contact.Get(executionContext);
-           
+
             var leadReference = lead.Get(executionContext);
 
             #endregion
@@ -56,7 +56,7 @@ namespace msdyncrmWorkflowTools.Class
             {
                 idToAdd = leadReference.Id;
             }
-            common.Trace(string.Format("idToAdd: {0} ", idToAdd.ToString()));
+            common.Trace($"idToAdd: {idToAdd.ToString()} ");
 
             var addRequest = new AddMemberListRequest
             {

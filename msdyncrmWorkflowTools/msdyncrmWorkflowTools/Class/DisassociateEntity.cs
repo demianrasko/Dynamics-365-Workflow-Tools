@@ -38,7 +38,7 @@ namespace msdyncrmWorkflowTools
 
             common.Trace($"ParentObjectTypeCode={parentObjectTypeCode}--ParentId={parentId}");
             #endregion
-            
+
             #region "Disassociate Execution"
 
             var relatedEntities = new EntityReferenceCollection
@@ -47,9 +47,9 @@ namespace msdyncrmWorkflowTools
             };
 
             var relationship = new Relationship(relationshipName);
-            
+
             common.service.Disassociate(common.context.PrimaryEntityName, common.context.PrimaryEntityId, relationship,relatedEntities);
-            
+
             #endregion
         }
     }

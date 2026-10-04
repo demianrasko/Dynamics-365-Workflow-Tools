@@ -24,7 +24,7 @@ namespace msdyncrmWorkflowTools
             #region "Read Parameters"
             var teamReference = Team.Get(executionContext);
             var userReference = User.Get(executionContext);
-            
+
             common.Trace($"TeamId: {teamReference.Id.ToString()} ");
             #endregion
 

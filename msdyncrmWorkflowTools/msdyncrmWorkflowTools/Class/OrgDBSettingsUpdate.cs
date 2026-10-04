@@ -17,13 +17,10 @@ namespace msdyncrmWorkflowTools
         [Default("")]
         public InArgument<string> Value { get; set; }
 
-        
-
         #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-
             #region "Read Parameters"
             var orgDbSetting = orgDBSetting.Get(executionContext).ToLower();
             var value = Value.Get(executionContext);
@@ -44,7 +41,6 @@ namespace msdyncrmWorkflowTools
 
             if (organizationColl == null || organizationColl.Entities.Count <= 0)
             {
-                
                 return;
             }
 

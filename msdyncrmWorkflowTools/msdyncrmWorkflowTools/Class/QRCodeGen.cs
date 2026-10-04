@@ -15,8 +15,6 @@ using System.ServiceModel;
 
 namespace msdyncrmWorkflowTools
 {
-
-   
     public class QRCodeGen : CodeActivity
     {
             #region "Parameter Definition"
@@ -44,7 +42,6 @@ namespace msdyncrmWorkflowTools
 
         protected override void Execute(CodeActivityContext executionContext)
         {
-
             #region "Load CRM Service from context"
 
             Common common = new Common(executionContext);
@@ -91,10 +88,7 @@ namespace msdyncrmWorkflowTools
                 _fileName = "QR." + _imageFormat;
             }
 
-
-
             #endregion
-
 
             #region "QR Execution"
 
@@ -102,8 +96,6 @@ namespace msdyncrmWorkflowTools
             {
                 common.tracingService.Trace("Start QR Creation");
                 common.QRCode(entityName, ParentId, _QRInfo, _noteSubject, _noteText, _fileName);
-
-
             }
             catch (FaultException<OrganizationServiceFault> ex)
             {
@@ -120,9 +112,6 @@ namespace msdyncrmWorkflowTools
                 throw ex;
             }
             #endregion
-
         }
-
-
         }
     }

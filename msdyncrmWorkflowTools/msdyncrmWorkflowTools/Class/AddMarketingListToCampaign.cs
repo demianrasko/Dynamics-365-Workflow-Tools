@@ -27,7 +27,7 @@ namespace msdyncrmWorkflowTools.Class
             common.Trace($"campaign: {campaign.Id.ToString()} ");
 
             #endregion
-           
+
             var request = new AddItemCampaignRequest
             {
                 CampaignId = campaign.Id,

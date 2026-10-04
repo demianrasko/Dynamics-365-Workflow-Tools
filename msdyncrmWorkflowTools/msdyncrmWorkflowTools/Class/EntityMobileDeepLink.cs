@@ -13,7 +13,6 @@ namespace msdyncrmWorkflowTools
         [ReferenceTarget("")]
         public InArgument<string> RecordURL { get; set; }
 
-
         [Output("Mobile Deep Link Edit")]
         public OutArgument<string> MobileDeepLinkEdit { get; set; }
 
@@ -24,8 +23,6 @@ namespace msdyncrmWorkflowTools
         public OutArgument<string> MobileDeepLinkDefaultView { get; set; }
 
         #endregion
-
-
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
@@ -41,14 +38,13 @@ namespace msdyncrmWorkflowTools
             var objectId = parsedUrl.Id;
             common.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
 
-
             #endregion
 
             #region "Generating Mobile Deep Links Execution"
 
-            var recordURLEdit = string.Format("ms-dynamicsxrm://?pagetype=entity&etn={0}&id={1}", entityName, objectId);
-            var recordURLNew = string.Format("ms-dynamicsxrm://?pagetype=create&etn={0}", entityName);
-            var recordURLDefaultView = string.Format("ms-dynamicsxrm://?pagetype=view&etn={0}", entityName);
+            var recordURLEdit = $"ms-dynamicsxrm://?pagetype=entity&etn={entityName}&id={objectId}";
+            var recordURLNew = $"ms-dynamicsxrm://?pagetype=create&etn={entityName}";
+            var recordURLDefaultView = $"ms-dynamicsxrm://?pagetype=view&etn={entityName}";
 
             common.Trace("MobileDeepLinkEdit: "+ recordURLEdit);
             common.Trace("MobileDeepLinkNew: "+ recordURLNew);
@@ -61,10 +57,6 @@ namespace msdyncrmWorkflowTools
             common.Trace("returned object links OK");
 
             #endregion
-
         }
-
-        
     }
-
 }

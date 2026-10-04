@@ -24,26 +24,19 @@ namespace msdyncrmWorkflowTools.Class
             set;
         }
 
-
-
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
             var securityRoleLookup = SecurityRoleLookup.Get(executionContext);
-            common.Trace(string.Format("marketingList: {0} ", securityRoleLookup.Id.ToString()));
+            common.Trace($"marketingList: {securityRoleLookup.Id.ToString()} ");
 
             var emailTemplateLookup = EmailTemplateLookup.Get(executionContext);
-            common.Trace(string.Format("campaign: {0} ", emailTemplateLookup.Id.ToString()));
-
+            common.Trace($"campaign: {emailTemplateLookup.Id.ToString()} ");
 
             #endregion
             common.Trace("Init");
 
             common.SendEmailFromTemplateToUsersInRole(securityRoleLookup,emailTemplateLookup);
-
-
         }
-
-
     }
 }

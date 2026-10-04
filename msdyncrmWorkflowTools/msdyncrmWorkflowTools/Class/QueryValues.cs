@@ -32,26 +32,20 @@ namespace msdyncrmWorkflowTools
         [ReferenceTarget("")]
         public InArgument<string> ValueAttribute1 { get; set; }
 
-        
         [Input("FilterAttribute2")]
         [ReferenceTarget("")]
         public InArgument<string> FilterAttribute2 { get; set; }
 
-        
         [Input("ValueAttribute2")]
         [ReferenceTarget("")]
         public InArgument<string> ValueAttribute2 { get; set; }
 
-
-
         [Output("ResultValue1")]
         public OutArgument<string> ResultValue1 { get; set; }
-
 
         [Output("ResultValue2")]
         public OutArgument<string> ResultValue2 { get; set; }
 
-        
         #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
@@ -76,8 +70,14 @@ namespace msdyncrmWorkflowTools
                 TopCount = 1
             };
 
-            if (!string.IsNullOrEmpty(attribute1)) qe.ColumnSet.Columns.Add(attribute1);
-            if (!string.IsNullOrEmpty(attribute2)) qe.ColumnSet.Columns.Add(attribute2);
+            if (!string.IsNullOrEmpty(attribute1))
+            {
+                qe.ColumnSet.Columns.Add(attribute1);
+            }
+            if (!string.IsNullOrEmpty(attribute2))
+            {
+                qe.ColumnSet.Columns.Add(attribute2);
+            }
 
             var filter = new FilterExpression(LogicalOperator.And);
 

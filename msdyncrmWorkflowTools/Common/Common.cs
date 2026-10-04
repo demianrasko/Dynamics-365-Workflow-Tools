@@ -39,7 +39,6 @@ namespace msdyncrmWorkflowTools
             httpClient = new HttpClient();
             httpClient.Timeout = new TimeSpan(0, 0, 30); //30 second timeout as recommend by Microsoft Support to prevent TimeOut on Sandbox
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));//ACCEPT header
-
         }
 
         /// <summary>
@@ -99,12 +98,12 @@ namespace msdyncrmWorkflowTools
         {
             var entityFilter = new MetadataFilterExpression(LogicalOperator.And);
             entityFilter.Conditions.Add(new MetadataConditionExpression("ObjectTypeCode", MetadataConditionOperator.Equals, Convert.ToInt32(objectTypeCode)));
-            
+
             var entityQueryExpression = new EntityQueryExpression()
             {
                 Criteria = entityFilter
             };
-            
+
             var request = new RetrieveMetadataChangesRequest()
             {
                 Query = entityQueryExpression,
@@ -117,7 +116,7 @@ namespace msdyncrmWorkflowTools
 
             return entityMetadata.SchemaName.ToLower();
         }
-        
+
         public EntityCollection GetAssociations(string primaryEntityName, Guid primaryEntityId, string relationshipName, string entityName, string parentId)
         {
             //
@@ -137,9 +136,9 @@ namespace msdyncrmWorkflowTools
                                         </link-entity>
                                       </entity>
                                     </fetch>";
-            
+
             Trace($"FetchXML: {fetchXml} ");
-            
+
             var relations = service.RetrieveMultiple(new FetchExpression(fetchXml));
 
             return relations;
@@ -190,14 +189,14 @@ namespace msdyncrmWorkflowTools
 
             fieldstoIgnore = fieldstoIgnore.ToLower();
             Trace($"{nameof(fieldstoIgnore)}={fieldstoIgnore}");
-            
+
             var retrievedObject = service.Retrieve(entityName, new Guid(objectId), new ColumnSet(allColumns: true));
             Trace("retrieved object OK");
 
             var newEntity = new Entity(entityName);
             var primaryIdAttribute = string.Empty;
             var primaryNameAttribute = string.Empty;
-            
+
             var attributesToClone = GetEntityAttributesToClone(entityName, ref primaryIdAttribute, ref primaryNameAttribute);
 
             foreach (var att in attributesToClone)
@@ -209,7 +208,6 @@ namespace msdyncrmWorkflowTools
                         continue;
                     }
                 }
-
 
                 if ((!retrievedObject.Attributes.Contains(att) || att == "statuscode" || att == "statecode")
                     && !att.StartsWith("partylist-"))
@@ -239,7 +237,7 @@ namespace msdyncrmWorkflowTools
 
                     Trace(fetchParty);
                     var returnCollection = ((RetrieveMultipleResponse)service.Execute(request)).EntityCollection;
-                    
+
                     Trace("attribute:{0}", att2);
 
                     var party = new Entity("activityparty");
@@ -262,7 +260,7 @@ namespace msdyncrmWorkflowTools
                 {
                     retrievedObject.Attributes[att] = prefix + retrievedObject.Attributes[att];
                 }
-                
+
                 newEntity.Attributes.Add(att, retrievedObject.Attributes[att]);
             }
 
@@ -273,7 +271,6 @@ namespace msdyncrmWorkflowTools
             if (newEntity.Attributes.Contains("statuscode") && newEntity.Attributes.Contains("statecode"))
             {
                 var record = service.Retrieve(entityName, id, new ColumnSet("statuscode", "statecode"));
-
 
                 if (retrievedObject.Attributes["statuscode"] != record.Attributes["statuscode"] ||
                     retrievedObject.Attributes["statecode"] != record.Attributes["statecode"])
@@ -291,15 +288,16 @@ namespace msdyncrmWorkflowTools
             return id;
         }
 
-
-
         public void QueryValues()
         {
         }
-        
+
         public string JsonParser(string Json, string JsonPath)
         {
-            if (JsonPath == null) JsonPath = string.Empty;
+            if (JsonPath == null)
+            {
+                JsonPath = string.Empty;
+            }
             var o = JObject.Parse(Json);
             var name = string.Empty;
             if (o.SelectToken(JsonPath) != null)
@@ -307,7 +305,6 @@ namespace msdyncrmWorkflowTools
                 name = o.SelectToken(JsonPath).ToString();
             }
             return name;
-
         }
 
         public void DeleteAudit(string entityname, string entityid)
@@ -316,7 +313,6 @@ namespace msdyncrmWorkflowTools
 
         public void DeleteRecordAuditHistory(string logicalName, string id)
         {
-            
             var delRequest = new DeleteRecordChangeHistoryRequest();
 
             var objt = new EntityReference(logicalName, new Guid(id));
@@ -351,7 +347,6 @@ namespace msdyncrmWorkflowTools
                                 </fetch> ";
 
             var team = service.RetrieveMultiple(new FetchExpression(fetch));
-
 
             teamres.Id = team.Entities[0].Id;
             return teamres;
@@ -440,7 +435,6 @@ namespace msdyncrmWorkflowTools
             var userList = service.RetrieveMultiple(new FetchExpression(BuildFetchXml(securityRoleLookup.Id)));
             Trace("Retrieved Data");
 
-
             var emailEnt = new Entity("email", email.Id);
 
             var to = new EntityCollection();
@@ -454,7 +448,6 @@ namespace msdyncrmWorkflowTools
                 to1["partyid"] = new EntityReference("systemuser", userId);
 
                 to.Entities.Add(to1);
-
             }
             emailEnt["to"] = to;
 
@@ -478,8 +471,6 @@ namespace msdyncrmWorkflowTools
                 {
                     Trace("user creating email");
                     var sent = SendEmailFromTemplate(emailTemplateLookup, user.Id);
-
-
                 }
                 catch (System.Exception ex)
                 {
@@ -489,11 +480,8 @@ namespace msdyncrmWorkflowTools
             return true;
         }
 
-
-
         public bool SendEmailFromTemplate(EntityReference template, Guid userId)
         {
-
             var toEntities = new List<Entity>();
             var activityParty = new Entity();
             activityParty.LogicalName = "activityparty";
@@ -516,7 +504,6 @@ namespace msdyncrmWorkflowTools
             };
 
             var emailUsingTemplateResp = (SendEmailFromTemplateResponse)service.Execute(emailUsingTemplateReq);
-
 
             return true;
         }
@@ -545,7 +532,6 @@ namespace msdyncrmWorkflowTools
 
         public string GetRecordID(string recordURL)
         {
-
             if (recordURL == null || recordURL == string.Empty)
             {
                 return string.Empty;
@@ -670,7 +656,7 @@ namespace msdyncrmWorkflowTools
                 {
                     startIndex = inputText.Length - subStringLength - startIndex;
                 }
-                
+
                 if (inputText.Length < subStringLength)
                 {
                     subStringLength = inputText.Length;
@@ -709,7 +695,10 @@ namespace msdyncrmWorkflowTools
 
         private static string CompareAndReplace(string text, string old, string @new, StringComparison comparison)
         {
-            if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(old)) return text;
+            if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(old))
+            {
+                return text;
+            }
 
             var result = new StringBuilder();
             var oldLength = old.Length;
@@ -728,12 +717,10 @@ namespace msdyncrmWorkflowTools
             return result.ToString();
         }
 
-
         public void DeleteOptionValue(bool globalOptionSet, string attributeName, string entityName, int optionValue)
         {
             if (globalOptionSet)
             {
-
                 var deleteOptionValueRequest =
                   new DeleteOptionValueRequest
                   {
@@ -754,13 +741,14 @@ namespace msdyncrmWorkflowTools
                    };
                 service.Execute(insertOptionValueRequest);
             }
-
         }
 
         public void SalesLiteratureToEmail(string _FileName, string salesLiteratureId, string emailid)
         {
             if (_FileName == "*")
+            {
                 _FileName = string.Empty;
+            }
             _FileName = _FileName.Replace("*", "%");
 
             #region "Query Attachments"
@@ -779,15 +767,14 @@ namespace msdyncrmWorkflowTools
                         </filter>
                       </entity>
                     </fetch>";
-            Trace(string.Format("FetchXML: {0} ", fetchXML));
+            Trace($"FetchXML: {fetchXML} ");
             var attachmentFiles = service.RetrieveMultiple(new FetchExpression(fetchXML));
 
             if (attachmentFiles.Entities.Count == 0)
             {
-                Trace(string.Format("No Attachment Files found."));
+                Trace("No Attachment Files found.");
                 return;
             }
-
 
             #endregion
 
@@ -819,21 +806,15 @@ namespace msdyncrmWorkflowTools
                 }
 
                 service.Create(_Attachment);
-
-
             }
 
             #endregion
         }
 
-
-
         public bool InsertOptionValue(bool globalOptionSet, string attributeName, string entityName, string optionText, int optionValue, int languageCode)
         {
-            
             if (globalOptionSet)
             {
-                
                 var insertOptionValueRequest =
                   new InsertOptionValueRequest
                   {
@@ -857,7 +838,6 @@ namespace msdyncrmWorkflowTools
                 var insertOptionValue = ((InsertOptionValueResponse)service.Execute(insertOptionValueRequest)).NewOptionValue;
             }
             return true;
-
         }
 
         public Guid CreateTeam(string teamName, int teamType, EntityReference administrator, EntityReference businessUnit)
@@ -867,7 +847,7 @@ namespace msdyncrmWorkflowTools
             team.Attributes.Add("name", teamName);
             team.Attributes.Add("teamtype", new OptionSetValue(teamType));
             team.Attributes.Add("businessunitid",  businessUnit);
-              
+
             var _teamId = service.Create(team);
 
             return _teamId;
@@ -877,7 +857,6 @@ namespace msdyncrmWorkflowTools
             try
             {
                 var relations = getAssociations(PrimaryEntityName, PrimaryEntityId, _relationshipName, _relationshipEntityName, entityName, ParentId);
-
 
                 if (relations.Entities.Count == 0)
                 {
@@ -902,7 +881,6 @@ namespace msdyncrmWorkflowTools
                 // throw ex;
                 //}
             }
-
         }
 
         public void EntityAttachmentToEmail(string fileName, string parentId, EntityReference email, bool retrieveActivityMimeAttachment, bool mostRecent, int? topRecords = 0)
@@ -1072,8 +1050,6 @@ namespace msdyncrmWorkflowTools
             var childEntityType = rel.ReferencingEntity;
             var childEntityFieldName = rel.ReferencingAttribute;
 
-
-
             //2) retrieve all child records
             var querybyattribute = new QueryByAttribute(childEntityType);
             querybyattribute.ColumnSet = new ColumnSet(childEntityFieldName);
@@ -1148,8 +1124,6 @@ namespace msdyncrmWorkflowTools
 
             return Utility.ParseCurrencyConversion(response, from, to);
         }
-
-
 
         public void UpdateChildRecords(string relationshipName, string parentEntityType, string parentEntityId, string parentFieldNameToUpdate, string setValueToUpdate, string childFieldNameToUpdate, bool _UpdateonlyActive)
         {
@@ -1227,7 +1201,6 @@ namespace msdyncrmWorkflowTools
                 {
                     if (valueToUpdate is bool)
                     {
-
                         if ((bool)valueToUpdate == true)
                         {
                             valueToUpdate = "1";
@@ -1245,7 +1218,6 @@ namespace msdyncrmWorkflowTools
                     {
                         entUpdate.Attributes.Add(childFieldNameToUpdate, false);
                     }
-
                 }
                 else
                 {
@@ -1280,11 +1252,8 @@ namespace msdyncrmWorkflowTools
                     }
                 }
 
-
                 service.Update(entUpdate);
             }
-
-
         }
         /// <summary>
         /// Forces a synchronous Execution of an HttpRequest
@@ -1310,7 +1279,7 @@ namespace msdyncrmWorkflowTools
             }
             else if (task.IsCanceled)
             {
-                throw new TimeoutException(string.Format("Timeout waiting for HttpResponse {1}:{0}", message.RequestUri, message.Method));
+                throw new TimeoutException($"Timeout waiting for HttpResponse {message.Method}:{message.RequestUri}");
             }
             return result;
         }

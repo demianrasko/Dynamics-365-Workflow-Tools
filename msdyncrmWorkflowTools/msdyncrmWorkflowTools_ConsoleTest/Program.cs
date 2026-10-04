@@ -14,7 +14,6 @@ namespace msdyncrmWorkflowTools_ConsoleTest
         {
             var classObj = new Common(service);
 
-
             //classObj.DeleteRecordAuditHistory("account", "475B158C-541C-E511-80D3-3863BB347BA8");
             /*classObj.QRCode("account", "7DF24294-9EC4-E711-8116-5065F38A3A01", "www.demianrasko.com", "Demian QR Code", "www.demianrasko.com", "QrDemian.bmp");
             classObj.QRCode("account", "7DF24294-9EC4-E711-8116-5065F38A3A01", "www.demianrasko.com", "Demian QR Code", "www.demianrasko.com", "QrDemian.gif");
@@ -22,7 +21,6 @@ namespace msdyncrmWorkflowTools_ConsoleTest
             */
 
             //EntityReference team=classObj.retrieveUserBUDefaultTeam("A292B22E-C957-4B97-BED1-EA0A504954C7");
-
 
             // classObj.SalesLiteratureToEmail("*.*", "978CE02B-E72D-E711-80F6-5065F38B5621", "9588F65E-EA2D-E711-80F6-5065F38B5621");
 
@@ -63,27 +61,20 @@ namespace msdyncrmWorkflowTools_ConsoleTest
         }
         public static IOrganizationService GetCrmService()
         {
-
             const string crmServerUrl = "https://XXX.crm4.dynamics.com";
             const string userName = "XXX@XXX.com";
             const string password = "XXX";
             //SecureString theSecureString = new NetworkCredential("", password).SecurePassword;
 
-
-            var connectionStringCrmOnline = string.Format("Url={0}; Username={1}; Password={2};AuthType=Office365", crmServerUrl, userName, password);
-
+            var connectionStringCrmOnline = $"Url={crmServerUrl}; Username={userName}; Password={password};AuthType=Office365";
 
             //CrmServiceClient crmSvc = new CrmServiceClient(userName, theSecureString, "EMEA", "org1c3835c3");
 
             var conn = new CrmServiceClient(connectionStringCrmOnline);
-            
-            
+
             var _service = (IOrganizationService)conn.OrganizationWebProxyClient != null ? (IOrganizationService)conn.OrganizationWebProxyClient : (IOrganizationService)conn.OrganizationServiceProxy;
 
-
-           
             return _service;
         }
-
     }
 }

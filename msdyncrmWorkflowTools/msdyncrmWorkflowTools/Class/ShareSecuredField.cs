@@ -11,7 +11,6 @@ namespace msdyncrmWorkflowTools
     {
         #region "Parameter Definition"
 
-
         [RequiredArgument]
         [Input("Record URL")]
         [ReferenceTarget("")]
@@ -39,15 +38,12 @@ namespace msdyncrmWorkflowTools
         [Default("true")]
         public InArgument<bool> AllowUpdate { get; set; }
 
-
         #endregion
 
-        
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Load CRM Service from context"
 
-            
             common.Trace("Entered ShareSecuredField.Execute(), Activity Instance Id: {0}, Workflow Instance Id: {1}", executionContext.ActivityInstanceId, executionContext.WorkflowInstanceId);
 
             #endregion
@@ -68,20 +64,15 @@ namespace msdyncrmWorkflowTools
 
             #region "Clone Execution"
 
-
             ExecuteCore(executionContext, common.context, common.service, entityName, new Guid (objectId));
-
 
             common.Trace("OK");
 
             #endregion
-
         }
 
         private void ExecuteCore(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service, string entityName, Guid entityId)
         {
-            
-
             //string entityName = context.PrimaryEntityName;
             //Guid entityId = context.PrimaryEntityId;
             var attributeName = AttributeName.Get(executionContext);
@@ -169,8 +160,5 @@ namespace msdyncrmWorkflowTools
                 }
             }
         }
-
-
     }
-
 }

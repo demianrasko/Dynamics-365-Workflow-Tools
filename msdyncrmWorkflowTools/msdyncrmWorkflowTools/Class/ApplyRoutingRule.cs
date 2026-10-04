@@ -26,20 +26,20 @@ namespace msdyncrmWorkflowTools
             var parsedUrl = Utility.ParseRecordUrl(incidentRecordUrl);
             var parentObjectTypeCode = parsedUrl.ObjectTypeCode;
             var parentId = parsedUrl.Id;
-            
+
             common.Trace("ParentObjectTypeCode=" + parentObjectTypeCode + "--ParentId=" + parentId);
             #endregion
 
             #region "ApplyRoutingRuleRequest Execution"
             var entityName = common.GetEntityNameFromCode(parentObjectTypeCode);
-            
+
             var request = new ApplyRoutingRuleRequest
             {
                 Target = new EntityReference(entityName, new Guid(parentId))
             };
-            
+
             common.service.Execute(request);
-            
+
             #endregion
         }
     }

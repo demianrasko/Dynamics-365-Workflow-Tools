@@ -21,31 +21,22 @@ namespace msdyncrmWorkflowTools
         [Default("")]
         public InArgument<string> BingMapsKey { get; set; }
 
-
-      
-
-
         [Output("Latitude")]
         public OutArgument<decimal> Latitude { get; set; }
 
         [Output("Longitude")]
         public OutArgument<decimal> Longitude { get; set; }
 
-       
-
         #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-
             #region "Read Parameters"
-            
 
             var address = Address.Get(executionContext);
             var bingMapsKey = BingMapsKey.Get(executionContext);
-            
+
             #endregion
-            
 
             var locationsRequest = CreateRequest(address, bingMapsKey);
             var locationsResponse = MakeRequest(locationsRequest);
@@ -55,7 +46,6 @@ namespace msdyncrmWorkflowTools
                 Latitude.Set(executionContext, Convert.ToDecimal(locationsResponse.ResourceSets[0].Resources[0].GeocodePoints[0].Coordinates[0]));
                 Longitude.Set(executionContext, Convert.ToDecimal(locationsResponse.ResourceSets[0].Resources[0].GeocodePoints[0].Coordinates[1]));
             }        
-
         }
         public  string CreateRequest(string queryString, string bingMapsKey)
         {
@@ -72,10 +62,9 @@ namespace msdyncrmWorkflowTools
             using (var response = request.GetResponse() as HttpWebResponse)
             {
                 if (response.StatusCode != HttpStatusCode.OK)
-                    throw new InvalidPluginExecutionException(string.Format(
-                    "Bing Maps server error (HTTP {0}: {1}).",
-                    response.StatusCode,
-                    response.StatusDescription));
+                {
+                    throw new InvalidPluginExecutionException($"Bing Maps server error (HTTP {response.StatusCode}: {response.StatusDescription}).");
+                }
 
                 var jsonSerializer = new DataContractJsonSerializer(typeof(Response));
                 var objResponse = jsonSerializer.ReadObject(response.GetResponseStream());
@@ -84,14 +73,8 @@ namespace msdyncrmWorkflowTools
                 return jsonResponse;
             }
         }
-
-
-
-
     }
 
-
-    
         [DataContract]
         public class Response
         {
@@ -113,7 +96,6 @@ namespace msdyncrmWorkflowTools
             public ResourceSet[] ResourceSets { get; set; }
         }
 
-
         [DataContract]
         public class ResourceSet
         {
@@ -133,7 +115,6 @@ namespace msdyncrmWorkflowTools
             [DataMember(Name = "coordinates")]
             public double[] Coordinates { get; set; }
         }
-
 
         [DataContract]
         public class BoundingBox
@@ -196,7 +177,4 @@ namespace msdyncrmWorkflowTools
             [DataMember(Name = "postalCode")]
             public string PostalCode { get; set; }
         }
-    
-
-
 }

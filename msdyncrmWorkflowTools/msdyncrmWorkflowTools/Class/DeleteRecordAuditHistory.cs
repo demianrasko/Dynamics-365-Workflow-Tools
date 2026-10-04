@@ -15,7 +15,6 @@ namespace msdyncrmWorkflowTools.Class
         {
             #region "Read Parameters"
 
-
             var _RecordURL = RecordURL.Get(executionContext);
             if (_RecordURL == null || _RecordURL == string.Empty)
             {
@@ -27,19 +26,13 @@ namespace msdyncrmWorkflowTools.Class
             var objectId = parsedUrl.Id;
             common.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
 
-
             #endregion
 
             #region "DeleteRecordAuditHistory"
 
-
             common.DeleteRecordAuditHistory(entityName,objectId);
-            
 
             #endregion
-
-
-
         }
     }
 }
