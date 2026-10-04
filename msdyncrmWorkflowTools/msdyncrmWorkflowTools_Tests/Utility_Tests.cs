@@ -500,5 +500,12 @@ namespace msdyncrmWorkflowTools_Tests
             Assert.AreEqual(id, parsed.Id);
             Assert.AreEqual("contact", parsed.EntityName);
         }
+
+        [TestMethod]
+        public void ParseCategories_TrimsAndRemovesEmptyAndDuplicateEntries()
+        {
+            CollectionAssert.AreEqual(new[] { "Billing", "support" }, Utility.ParseCategories(" Billing, ,support,Support , billing"));
+            Assert.AreEqual(0, Utility.ParseCategories(null).Count);
+        }
     }
 }

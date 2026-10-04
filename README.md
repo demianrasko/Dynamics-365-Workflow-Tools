@@ -92,6 +92,12 @@ To see how to use each of the tools includes in this solution, please access to 
 * 78 [Set Lookup Field from Record URL](/docs/SetLookupFieldFromRecordUrl.md) thanks to [beyro](https://github.com/beyro)
 * 79 [Resolve Case](/docs/ResolveCase.md) thanks to [Chris Milton](https://github.com/ChrisMilton)
 * 80 [Get Record URL](/docs/GetRecordUrl.md) thanks to [vinaymenda](https://github.com/vinaymenda)
+* 81 [AI Classify Text](/docs/AI%20Classify%20Text.md) thanks to [rwilson504](https://github.com/rwilson504)
+* 82 [AI Draft Reply](/docs/AI%20Draft%20Reply.md) thanks to [rwilson504](https://github.com/rwilson504)
+* 83 [AI Sentiment Detect](/docs/AI%20Sentiment%20Detect.md) thanks to [rwilson504](https://github.com/rwilson504)
+* 84 [AI Summarize Record](/docs/AI%20Summarize%20Record.md) thanks to [rwilson504](https://github.com/rwilson504)
+* 85 [AI Summarize Text](/docs/AI%20Summarize%20Text.md) thanks to [rwilson504](https://github.com/rwilson504)
+* 86 [AI Translate Text](/docs/AI%20Translate%20Text.md) thanks to [rwilson504](https://github.com/rwilson504)
 
 
 

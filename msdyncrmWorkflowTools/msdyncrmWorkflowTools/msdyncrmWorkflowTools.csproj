@@ -168,6 +168,12 @@
     <Compile Include="Class\IsMemberOfMarketingList.cs" />
     <Compile Include="Class\CopyToStaticList.cs" />
     <Compile Include="Class\CopyMarketingListMembers.cs" />
+    <Compile Include="Class\AIClassifyText.cs" />
+    <Compile Include="Class\AIDraftReply.cs" />
+    <Compile Include="Class\AISentimentDetect.cs" />
+    <Compile Include="Class\AISummarizeRecord.cs" />
+    <Compile Include="Class\AISummarizeText.cs" />
+    <Compile Include="Class\AITranslateText.cs" />
     <Compile Include="Class\AddMarketingListToCampaign.cs" />
     <Compile Include="Class\QualifyLead.cs" />
     <Compile Include="Class\EntityJsonSerializer.cs" />

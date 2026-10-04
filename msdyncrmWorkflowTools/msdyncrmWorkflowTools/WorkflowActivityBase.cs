@@ -46,5 +46,27 @@ namespace msdyncrmWorkflowTools
         /// <param name="executionContext">The workflow execution context, for reading and writing arguments.</param>
         /// <param name="common">Organization service, tracing, workflow context and the shared helpers.</param>
         protected abstract void ExecuteActivity(CodeActivityContext executionContext, Common common);
+
+        /// <summary>
+        /// Runs a call whose errors are reported through the activity's "Failed" and "Failure Message" outputs
+        /// instead of failing the workflow (the AI activities work this way), and sets the result output.
+        /// </summary>
+        protected static void SetResultOrFailure(CodeActivityContext executionContext, Common common, Func<string> call,
+            OutArgument<string> result, OutArgument<bool> failed, OutArgument<string> failureMessage)
+        {
+            try
+            {
+                result.Set(executionContext, call() ?? string.Empty);
+                failed.Set(executionContext, false);
+                failureMessage.Set(executionContext, string.Empty);
+            }
+            catch (Exception ex)
+            {
+                common.Trace("{0}", Utility.HandleExceptions(ex));
+                result.Set(executionContext, string.Empty);
+                failed.Set(executionContext, true);
+                failureMessage.Set(executionContext, ex.Message);
+            }
+        }
     }
 }

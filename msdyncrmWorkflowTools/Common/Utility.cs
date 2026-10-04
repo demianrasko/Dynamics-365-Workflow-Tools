@@ -491,6 +491,20 @@ namespace msdyncrmWorkflowTools
         }
 
         /// <summary>
+        /// Splits a comma-separated category list for AIClassify: trimmed, no empty entries, no duplicates
+        /// (ignoring case), in the original order.
+        /// </summary>
+        public static List<string> ParseCategories(string categories)
+        {
+            return (categories ?? string.Empty)
+                .Split(',')
+                .Select(c => c.Trim())
+                .Where(c => c.Length > 0)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+        }
+
+        /// <summary>
         /// The marketing list member a workflow step was given: the account, else the contact, else the lead.
         /// </summary>
         /// <exception cref="InvalidPluginExecutionException">None of them is set.</exception>
