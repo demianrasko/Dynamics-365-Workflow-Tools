@@ -195,5 +195,39 @@ namespace msdyncrmWorkflowTools_Tests
             public void Associate(string entityName, Guid entityId, Relationship relationship, EntityReferenceCollection relatedEntities) => throw new NotSupportedException();
             public void Disassociate(string entityName, Guid entityId, Relationship relationship, EntityReferenceCollection relatedEntities) => throw new NotSupportedException();
         }
+
+        [TestMethod]
+        public void ManyToManyRelated_MatchesThePrimaryRecordOnTheIntersect()
+        {
+            var query = Queries.ManyToManyRelated("contact", "contactid", "contactid", "new_account_contact", "accountid", IdA);
+
+            Assert.AreEqual("contact", query.EntityName);
+            var intersect = query.LinkEntities.Single();
+            Assert.AreEqual("new_account_contact", intersect.LinkToEntityName);
+            Assert.AreEqual("contactid", intersect.LinkFromAttributeName);
+            Assert.AreEqual("contactid", intersect.LinkToAttributeName);
+            AssertCondition(intersect.LinkCriteria.Conditions.Single(), "accountid", ConditionOperator.Equal, IdA);
+        }
+
+        [TestMethod]
+        public void ChildRecordsFetchXml_AddsTheUserFilterAndEscapesValues()
+        {
+            var fetch = Queries.ChildRecordsFetchXml("contact", "parentcustomerid", IdA, "<condition attribute='lastname' operator='eq' value='O&apos;Brien' />");
+            var xml = System.Xml.Linq.XElement.Parse(fetch);
+            var conditions = xml.Element("entity").Element("filter").Elements("condition").ToList();
+
+            Assert.AreEqual("contact", (string)xml.Element("entity").Attribute("name"));
+            Assert.AreEqual(2, conditions.Count);
+            Assert.AreEqual(IdA.ToString(), (string)conditions[0].Attribute("value"));
+            Assert.AreEqual("O'Brien", (string)conditions[1].Attribute("value"));
+        }
+
+        [TestMethod]
+        public void ChildRecordsFetchXml_WithoutFilter()
+        {
+            var xml = System.Xml.Linq.XElement.Parse(Queries.ChildRecordsFetchXml("contact", "parentcustomerid", IdA, null));
+
+            Assert.AreEqual(1, xml.Element("entity").Element("filter").Elements("condition").Count());
+        }
     }
 }

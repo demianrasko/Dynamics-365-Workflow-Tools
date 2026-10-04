@@ -127,6 +127,16 @@
     <Compile Include="Class\JsonParser.cs" />
     <Compile Include="Class\DateFunctions.cs" />
     <Compile Include="Class\OrgDBSettingsUpdate.cs" />
+    <Compile Include="Class\CreateOpportunityProduct.cs" />
+    <Compile Include="Class\CreateQuoteFromOpportunity.cs" />
+    <Compile Include="Class\DistributeWFActivityManyToMany.cs" />
+    <Compile Include="Class\DistributeWFActivityOneToMany.cs" />
+    <Compile Include="Class\ExecuteWorkflowForRecordsinQuery.cs" />
+    <Compile Include="Class\ResolveCase.cs" />
+    <Compile Include="Class\SetLookupFieldFromRecordUrl.cs" />
+    <Compile Include="Class\UpdateProductQuoteValue.cs" />
+    <Compile Include="Class\UpdateQuoteValue.cs" />
+    <Compile Include="Class\WinQuote.cs" />
     <Compile Include="Class\UpdateChildRecords.cs" />
     <Compile Include="Class\AddUserToTeam.cs" />
     <Compile Include="Class\SetState.cs" />

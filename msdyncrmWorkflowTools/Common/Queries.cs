@@ -212,5 +212,55 @@ namespace msdyncrmWorkflowTools
 
             return query;
         }
+
+        /// <summary>
+        /// Records of <paramref name="relatedEntityName"/> associated with a record through an N:N intersect entity.
+        /// The record is matched on the intersect entity itself, which also works for self-referencing relationships.
+        /// </summary>
+        /// <param name="relatedEntityName">Entity to return.</param>
+        /// <param name="relatedPrimaryKey">Primary key of <paramref name="relatedEntityName"/>.</param>
+        /// <param name="relatedIntersectAttribute">Intersect attribute that holds the related record's id.</param>
+        /// <param name="intersectEntityName">The N:N intersect entity.</param>
+        /// <param name="primaryIntersectAttribute">Intersect attribute that holds the primary record's id.</param>
+        /// <param name="primaryId">Id of the primary record.</param>
+        public static QueryExpression ManyToManyRelated(string relatedEntityName, string relatedPrimaryKey, string relatedIntersectAttribute, string intersectEntityName, string primaryIntersectAttribute, Guid primaryId)
+        {
+            var query = new QueryExpression(relatedEntityName)
+            {
+                ColumnSet = new ColumnSet(false)
+            };
+
+            var intersect = query.AddLink(intersectEntityName, relatedPrimaryKey, relatedIntersectAttribute);
+            intersect.LinkCriteria.AddCondition(primaryIntersectAttribute, ConditionOperator.Equal, primaryId);
+
+            return query;
+        }
+
+        /// <summary>
+        /// FetchXML for the child records of a parent, with an optional extra FetchXML filter fragment supplied by the
+        /// user (conditions and/or filter elements). Values are written by XElement, so they are escaped.
+        /// </summary>
+        public static string ChildRecordsFetchXml(string childEntityName, string parentLookupName, Guid parentId, string filterFragment)
+        {
+            var filter = new System.Xml.Linq.XElement("filter",
+                new System.Xml.Linq.XAttribute("type", "and"),
+                new System.Xml.Linq.XElement("condition",
+                    new System.Xml.Linq.XAttribute("attribute", parentLookupName),
+                    new System.Xml.Linq.XAttribute("operator", "eq"),
+                    new System.Xml.Linq.XAttribute("value", parentId)));
+
+            if (!string.IsNullOrWhiteSpace(filterFragment))
+            {
+                filter.Add(System.Xml.Linq.XElement.Parse($"<x>{filterFragment}</x>").Elements());
+            }
+
+            var fetch = new System.Xml.Linq.XElement("fetch",
+                new System.Xml.Linq.XAttribute("mapping", "logical"),
+                new System.Xml.Linq.XElement("entity",
+                    new System.Xml.Linq.XAttribute("name", childEntityName),
+                    filter));
+
+            return fetch.ToString(System.Xml.Linq.SaveOptions.DisableFormatting);
+        }
     }
 }

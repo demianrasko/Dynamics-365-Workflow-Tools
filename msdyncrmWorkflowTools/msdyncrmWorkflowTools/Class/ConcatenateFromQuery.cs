@@ -30,6 +30,9 @@ namespace msdyncrmWorkflowTools
         [Default("")]
         public InArgument<string> FormatString { get; set; }
 
+        [Input("TopRecordCount")]
+        public InArgument<int> TopRecordCount { get; set; }
+
         [Output("ConcatenatedString")]
         public OutArgument<string> ConcatenatedString { get; set; }
 
@@ -58,6 +61,9 @@ namespace msdyncrmWorkflowTools
 
             var format = FormatString.Get(executionContext);
             common.Trace($"FormatString={format}");
+
+            var topRecordCount = TopRecordCount.Get(executionContext);
+            common.Trace($"TopRecordCount={topRecordCount}");
 
             var context = executionContext.GetExtension<IWorkflowContext>();
 
@@ -141,8 +147,18 @@ namespace msdyncrmWorkflowTools
                         }
                     }
 
-                    var attributeValueAsString = string.Format($"{attribute:format}");
+                    var attributeValueAsString = string.Format($"{{0:{format}}}", attribute);
                     stringValues.Add(attributeValueAsString);
+
+                    if (topRecordCount > 0 && stringValues.Count >= topRecordCount)
+                    {
+                        break;
+                    }
+                }
+
+                if (topRecordCount > 0 && stringValues.Count >= topRecordCount)
+                {
+                    break;
                 }
 
                 if (!canPerformPaging || !returnCollection.MoreRecords)

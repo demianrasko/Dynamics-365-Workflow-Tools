@@ -157,6 +157,122 @@ namespace msdyncrmWorkflowTools
             }
         }
 
+        /// <summary>
+        /// Converts FetchXML to a QueryExpression (FetchXmlToQueryExpressionRequest), so it can be paged and counted.
+        /// </summary>
+        public QueryExpression FetchXmlToQueryExpression(string fetchXml)
+        {
+            var response = (FetchXmlToQueryExpressionResponse)service.Execute(new FetchXmlToQueryExpressionRequest { FetchXml = fetchXml });
+            return response.Query;
+        }
+
+        /// <summary>
+        /// Labels of an option set (choice) or multi-select option set attribute, by value, in the user's language.
+        /// </summary>
+        public Dictionary<int, string> GetOptionSetLabels(string entityName, string attributeName)
+        {
+            var response = (RetrieveAttributeResponse)service.Execute(new RetrieveAttributeRequest
+            {
+                EntityLogicalName = entityName,
+                LogicalName = attributeName,
+                RetrieveAsIfPublished = false
+            });
+
+            if (!(response.AttributeMetadata is EnumAttributeMetadata metadata))
+            {
+                throw new InvalidPluginExecutionException($"Attribute {attributeName} is not an option set (choice) attribute.");
+            }
+
+            return metadata.OptionSet.Options
+                .Where(o => o.Value.HasValue)
+                .ToDictionary(
+                    o => o.Value.Value,
+                    o => o.Label?.UserLocalizedLabel?.Label ?? o.Label?.LocalizedLabels.FirstOrDefault()?.Label ?? o.Value.Value.ToString());
+        }
+
+        /// <summary>
+        /// Returns the ids of every record a query returns, page by page (no 5,000-row limit).
+        /// </summary>
+        public List<Guid> RetrieveAllIds(QueryExpression query)
+        {
+            query.ColumnSet = new ColumnSet(false);
+            query.PageInfo = new PagingInfo { PageNumber = 1, Count = 5000 };
+
+            var ids = new List<Guid>();
+
+            while (true)
+            {
+                var page = service.RetrieveMultiple(query);
+                ids.AddRange(page.Entities.Select(e => e.Id));
+
+                if (!page.MoreRecords)
+                {
+                    return ids;
+                }
+
+                query.PageInfo.PageNumber++;
+                query.PageInfo.PagingCookie = page.PagingCookie;
+            }
+        }
+
+        /// <summary>
+        /// Starts an on-demand workflow for each record.
+        /// </summary>
+        public void ExecuteWorkflow(Guid workflowId, IEnumerable<Guid> recordIds)
+        {
+            foreach (var recordId in recordIds)
+            {
+                service.Execute(new ExecuteWorkflowRequest { EntityId = recordId, WorkflowId = workflowId });
+            }
+        }
+
+        /// <summary>
+        /// Ids of the records on the "many" side of a 1:N relationship whose lookup points at <paramref name="parentId"/>.
+        /// </summary>
+        public List<Guid> GetOneToManyRelatedIds(string relationshipName, Guid parentId)
+        {
+            var response = (RetrieveRelationshipResponse)service.Execute(new RetrieveRelationshipRequest { Name = relationshipName, RetrieveAsIfPublished = false });
+
+            if (!(response.RelationshipMetadata is OneToManyRelationshipMetadata relationship))
+            {
+                throw new InvalidPluginExecutionException($"Relationship '{relationshipName}' is not One to Many.");
+            }
+
+            return RetrieveAllIds(Queries.ChildRecords(relationship.ReferencingEntity, relationship.ReferencingAttribute, parentId));
+        }
+
+        /// <summary>
+        /// Ids of the records associated with a record through an N:N relationship. For a self-referencing
+        /// relationship both directions are included and the record itself is left out.
+        /// </summary>
+        public List<Guid> GetManyToManyRelatedIds(string relationshipName, string primaryEntityName, Guid primaryEntityId)
+        {
+            var response = (RetrieveRelationshipResponse)service.Execute(new RetrieveRelationshipRequest { Name = relationshipName, RetrieveAsIfPublished = false });
+
+            if (!(response.RelationshipMetadata is ManyToManyRelationshipMetadata relationship))
+            {
+                throw new InvalidPluginExecutionException($"Relationship '{relationshipName}' is not Many to Many.");
+            }
+
+            var intersect = relationship.IntersectEntityName;
+
+            if (relationship.Entity1LogicalName == primaryEntityName && relationship.Entity2LogicalName == primaryEntityName)
+            {
+                var ids = new HashSet<Guid>(RetrieveAllIds(Queries.ManyToManyRelated(primaryEntityName, $"{primaryEntityName}id", relationship.Entity2IntersectAttribute, intersect, relationship.Entity1IntersectAttribute, primaryEntityId)));
+                ids.UnionWith(RetrieveAllIds(Queries.ManyToManyRelated(primaryEntityName, $"{primaryEntityName}id", relationship.Entity1IntersectAttribute, intersect, relationship.Entity2IntersectAttribute, primaryEntityId)));
+                ids.Remove(primaryEntityId);
+
+                return ids.ToList();
+            }
+
+            if (relationship.Entity1LogicalName == primaryEntityName)
+            {
+                return RetrieveAllIds(Queries.ManyToManyRelated(relationship.Entity2LogicalName, relationship.Entity2IntersectAttribute, relationship.Entity2IntersectAttribute, intersect, relationship.Entity1IntersectAttribute, primaryEntityId));
+            }
+
+            return RetrieveAllIds(Queries.ManyToManyRelated(relationship.Entity1LogicalName, relationship.Entity1IntersectAttribute, relationship.Entity1IntersectAttribute, intersect, relationship.Entity2IntersectAttribute, primaryEntityId));
+        }
+
         public List<string> GetEntityAttributesToClone(string entityName, ref string primaryIdAttribute, ref string primaryNameAttribute)
         {
             var atts = new List<string>();

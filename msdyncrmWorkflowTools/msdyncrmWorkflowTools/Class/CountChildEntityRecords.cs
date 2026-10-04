@@ -23,6 +23,10 @@ namespace msdyncrmWorkflowTools
         [ReferenceTarget("")]
         public InArgument<string> RecordURL { get; set; }
 
+        [Input("FetchXML Filter (Child)")]
+        [ReferenceTarget("")]
+        public InArgument<string> FilterExpressionXml { get; set; }
+
         [Output("Result")]
         public OutArgument<int> Result { get; set; }
         #endregion
@@ -47,7 +51,12 @@ namespace msdyncrmWorkflowTools
 
             #region "Process"
 
-            var count = common.CountRecords(Queries.ChildRecords(_childEntityName, _parentLookupName, new Guid(ParentEntityId)));
+            var filterExpressionXml = FilterExpressionXml.Get(executionContext);
+            var query = string.IsNullOrWhiteSpace(filterExpressionXml)
+                ? Queries.ChildRecords(_childEntityName, _parentLookupName, new Guid(ParentEntityId))
+                : common.FetchXmlToQueryExpression(Queries.ChildRecordsFetchXml(_childEntityName, _parentLookupName, new Guid(ParentEntityId), filterExpressionXml));
+
+            var count = common.CountRecords(query);
             common.Trace($"{_childEntityName} records with {_parentLookupName} = {ParentEntityId}: {count}");
 
             Result.Set(executionContext, count);
