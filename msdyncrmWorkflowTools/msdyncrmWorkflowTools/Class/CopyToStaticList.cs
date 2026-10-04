@@ -1,4 +1,6 @@
-﻿using Microsoft.Crm.Sdk.Messages;
+﻿// Not in the Power Platform build: it needs Dynamics 365 tables (lead, list or salesliterature).
+#if !POWERPLATFORM
+using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
@@ -24,3 +26,4 @@ namespace msdyncrmWorkflowTools.Class
         }
     }
 }
+#endif

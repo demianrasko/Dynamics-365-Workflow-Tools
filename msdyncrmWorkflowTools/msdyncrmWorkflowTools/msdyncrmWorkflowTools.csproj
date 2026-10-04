@@ -40,6 +40,17 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <!--
+    Power Platform build for Dataverse environments without the Dynamics 365 apps:
+      msbuild msdyncrmWorkflowTools.csproj /p:Configuration=Release /p:PowerPlatform=true
+    It defines POWERPLATFORM, which leaves out the activities wrapped in #if !POWERPLATFORM because they need
+    Dynamics 365 tables, and builds into its own bin and obj folders.
+  -->
+  <PropertyGroup Condition=" '$(PowerPlatform)' == 'true' ">
+    <DefineConstants>$(DefineConstants);POWERPLATFORM</DefineConstants>
+    <OutputPath>bin\$(Configuration)-PowerPlatform\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)-PowerPlatform\</IntermediateOutputPath>
+  </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>

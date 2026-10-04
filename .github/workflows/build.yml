@@ -24,6 +24,9 @@ jobs:
       - name: Build (Release)
         run: msbuild msdyncrmWorkflowTools\msdyncrmWorkflowTools.sln /p:Configuration=Release /m /nologo /v:m
 
+      - name: Build Power Platform assembly (Release)
+        run: msbuild msdyncrmWorkflowTools\msdyncrmWorkflowTools\msdyncrmWorkflowTools.csproj /p:Configuration=Release /p:PowerPlatform=true /nologo /v:m
+
       - name: Run tests
         shell: pwsh
         run: |
@@ -43,3 +46,9 @@ jobs:
         with:
           name: msdyncrmWorkflowTools
           path: msdyncrmWorkflowTools\msdyncrmWorkflowTools\bin\Release\msdyncrmWorkflowTools.dll
+
+      - name: Upload Power Platform workflow assembly
+        uses: actions/upload-artifact@v7
+        with:
+          name: msdyncrmWorkflowTools-PowerPlatform
+          path: msdyncrmWorkflowTools\msdyncrmWorkflowTools\bin\Release-PowerPlatform\msdyncrmWorkflowTools.dll
