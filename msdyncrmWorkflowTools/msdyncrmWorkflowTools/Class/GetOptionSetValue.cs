@@ -18,48 +18,48 @@ namespace msdyncrmWorkflowTools
         [Output("Value")]
         public OutArgument<int> SelectedValue { get; set; }
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
 
-            var sourceEntityReference = GetSourceEntityReference(objCommon, executionContext, objCommon.service);
-            var attributeName = GetAttributeName(objCommon, executionContext);
+            var sourceEntityReference = GetSourceEntityReference(common, executionContext, common.service);
+            var attributeName = GetAttributeName(common, executionContext);
 
-            var value= GetValue(sourceEntityReference, attributeName, objCommon, objCommon.service);
+            var value= GetValue(sourceEntityReference, attributeName, common, common.service);
 
             SelectedValue.Set(executionContext, value);
         }
 
-        private EntityReference GetSourceEntityReference(Common objCommon, CodeActivityContext executionContext, IOrganizationService organizationService)
+        private EntityReference GetSourceEntityReference(Common common, CodeActivityContext executionContext, IOrganizationService organizationService)
         {
             var sourceRecordUrl = SourceRecordUrl.Get<string>(executionContext) ?? throw new InvalidPluginExecutionException("Source URL is empty");
-            objCommon.Trace("Source Record URL:'{0}'", sourceRecordUrl);
+            common.Trace("Source Record URL:'{0}'", sourceRecordUrl);
             return new DynamicUrlParser(sourceRecordUrl).ToEntityReference(organizationService);
         }
 
 
-        private string GetAttributeName(Common objCommon, CodeActivityContext executionContext)
+        private string GetAttributeName(Common common, CodeActivityContext executionContext)
         {
             var attributeName = AttributeName.Get<string>(executionContext) ?? throw new InvalidPluginExecutionException("Attribute Name is empty");
-            objCommon.Trace("Attribute name:'{0}'", attributeName);
+            common.Trace("Attribute name:'{0}'", attributeName);
             return attributeName;
         }
 
         
 
-        private int GetValue(EntityReference sourceEntityReference, string attributeName, Common objCommon, IOrganizationService organizationService)
+        private int GetValue(EntityReference sourceEntityReference, string attributeName, Common common, IOrganizationService organizationService)
         {
             if (sourceEntityReference == null || attributeName == null)
             {
-                objCommon.Trace("Null parameters have been passed, so string will be empty");
+                common.Trace("Null parameters have been passed, so string will be empty");
                 return 0;
             }
 
             var sourceEntity = organizationService.Retrieve(sourceEntityReference.LogicalName, sourceEntityReference.Id, new ColumnSet(attributeName));
-            objCommon.Trace("Source record has been retrieved correctly. Id:{0}", sourceEntity.Id);
+            common.Trace("Source record has been retrieved correctly. Id:{0}", sourceEntity.Id);
 
             if (!sourceEntity.Contains(attributeName))
             {
-                objCommon.Trace("Attribues {0} was not found", attributeName);
+                common.Trace("Attribues {0} was not found", attributeName);
                 return 0;
             }
             var value = 0;

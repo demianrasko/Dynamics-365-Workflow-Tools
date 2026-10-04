@@ -23,7 +23,7 @@ namespace msdyncrmWorkflowTools
         public OutArgument<bool> Result { get; set; }
         #endregion
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
 
             #region "Read Parameters"
@@ -35,15 +35,15 @@ namespace msdyncrmWorkflowTools
             }
             var parsedUrl = Utility.ParseRecordUrl(_recordURL);
             var ParentObjectTypeCode=parsedUrl.ObjectTypeCode;
-            var entityName = objCommon.GetEntityNameFromCode(ParentObjectTypeCode);
+            var entityName = common.GetEntityNameFromCode(ParentObjectTypeCode);
             var ParentId = parsedUrl.Id;
-            objCommon.Trace("ParentObjectTypeCode=" + ParentObjectTypeCode + "--ParentId=" + ParentId);
+            common.Trace("ParentObjectTypeCode=" + ParentObjectTypeCode + "--ParentId=" + ParentId);
             #endregion
 
 
             #region "Associate Execution"
 
-            var relations = objCommon.GetAssociations(objCommon.context.PrimaryEntityName, objCommon.context.PrimaryEntityId,_relationshipName, entityName, ParentId);
+            var relations = common.GetAssociations(common.context.PrimaryEntityName, common.context.PrimaryEntityId,_relationshipName, entityName, ParentId);
 
             if (relations.Entities.Count > 0)
             {

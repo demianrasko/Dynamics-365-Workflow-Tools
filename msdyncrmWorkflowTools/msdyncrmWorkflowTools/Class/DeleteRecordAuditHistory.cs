@@ -10,7 +10,7 @@ namespace msdyncrmWorkflowTools.Class
         [ReferenceTarget("")]
         public InArgument<string> RecordURL { get; set; }
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
 
@@ -22,9 +22,9 @@ namespace msdyncrmWorkflowTools.Class
             }
             var parsedUrl = Utility.ParseRecordUrl(_RecordURL);
             var objectTypeCode = parsedUrl.ObjectTypeCode;
-            var entityName = objCommon.GetEntityNameFromCode(objectTypeCode);
+            var entityName = common.GetEntityNameFromCode(objectTypeCode);
             var objectId = parsedUrl.Id;
-            objCommon.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
+            common.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
 
 
             #endregion
@@ -32,7 +32,7 @@ namespace msdyncrmWorkflowTools.Class
             #region "DeleteRecordAuditHistory"
 
 
-            objCommon.DeleteRecordAuditHistory(entityName,objectId);
+            common.DeleteRecordAuditHistory(entityName,objectId);
             
 
             #endregion

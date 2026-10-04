@@ -35,7 +35,7 @@ namespace msdyncrmWorkflowTools
 
         #endregion
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
 
             #region "Read Parameters"

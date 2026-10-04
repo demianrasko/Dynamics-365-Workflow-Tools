@@ -103,7 +103,7 @@ namespace msdyncrmWorkflowTools
 
         #endregion
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
             var inputText = InputText.Get(executionContext);
@@ -137,7 +137,7 @@ namespace msdyncrmWorkflowTools
             var regexSuccess = false;
             var withoutSpaces = string.Empty;
 
-            objCommon.StringFunctions(capitalizeAllWords, inputText, padCharacter, padontheLeft, finalLengthwithPadding, caseSensitive,
+            common.StringFunctions(capitalizeAllWords, inputText, padCharacter, padontheLeft, finalLengthwithPadding, caseSensitive,
                 replaceOldValue, replaceNewValue, subStringLength, startIndex, fromLefttoRight, regularExpression,
                 ref capitalizedText, ref paddedText, ref replacedText, ref subStringText, ref regexText,
                 ref uppercaseText, ref lowercaseText, ref regexSuccess, ref withoutSpaces);

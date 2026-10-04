@@ -36,10 +36,10 @@ namespace msdyncrmWorkflowTools
         
         #endregion
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Load CRM Service from context"
-            objCommon.Trace("ConcatenateFromQuery -- Start!");
+            common.Trace("ConcatenateFromQuery -- Start!");
             #endregion
 
             #region "Read Parameters"
@@ -49,16 +49,16 @@ namespace msdyncrmWorkflowTools
                 return;
             }
 
-            objCommon.Trace($"FetchXML={fetchXml}");
+            common.Trace($"FetchXML={fetchXml}");
 
             var attributeFieldName = AttributeName.Get(executionContext);
-            objCommon.Trace($"AttributeName={attributeFieldName}");
+            common.Trace($"AttributeName={attributeFieldName}");
 
             var separator = Separator.Get(executionContext);
-            objCommon.Trace($"Separator={separator}");
+            common.Trace($"Separator={separator}");
 
             var format = FormatString.Get(executionContext);
-            objCommon.Trace($"FormatString={format}");
+            common.Trace($"FormatString={format}");
 
             var context = executionContext.GetExtension<IWorkflowContext>();
 
@@ -74,7 +74,7 @@ namespace msdyncrmWorkflowTools
             var stringValues = new List<string>();
             do
             {
-                objCommon.Trace($"Fetch PageNumber={pageNumber}");
+                common.Trace($"Fetch PageNumber={pageNumber}");
 
                 fetchXml = fetchXml.Replace("{PARENT_GUID}", context.PrimaryEntityId.ToString());
 
@@ -84,7 +84,7 @@ namespace msdyncrmWorkflowTools
                     Query = new FetchExpression(xml)
                 };
 
-                var returnCollection = ((RetrieveMultipleResponse) objCommon.service.Execute(fetchRequest1)).EntityCollection;
+                var returnCollection = ((RetrieveMultipleResponse) common.service.Execute(fetchRequest1)).EntityCollection;
                 var attributeNamesSentToTrace = false;
 
                 foreach (var entity in returnCollection.Entities)
@@ -97,7 +97,7 @@ namespace msdyncrmWorkflowTools
                     if (!attributeNamesSentToTrace)
                     {
                         var attributeNames = entity.Attributes.Select(a => a.Key).Aggregate((x, y) => x + "," + y);
-                        objCommon.Trace($"List of attributes available: {attributeNames}");
+                        common.Trace($"List of attributes available: {attributeNames}");
                         attributeNamesSentToTrace = true;
                     }
 
@@ -160,15 +160,15 @@ namespace msdyncrmWorkflowTools
             if (stringValues.Any())
             {
                 var concatenatedString = stringValues.Aggregate((x, y) => x + separator + y);
-                objCommon.Trace($"Concatenated string: {concatenatedString}");
+                common.Trace($"Concatenated string: {concatenatedString}");
                 ConcatenatedString.Set(executionContext,concatenatedString);
             }
             else
             {
-                objCommon.Trace("No data found to concatenate");
+                common.Trace("No data found to concatenate");
             }
 
-            objCommon.Trace("ConcatenateFromQuery -- Done!");
+            common.Trace("ConcatenateFromQuery -- Done!");
 
             #endregion
         }

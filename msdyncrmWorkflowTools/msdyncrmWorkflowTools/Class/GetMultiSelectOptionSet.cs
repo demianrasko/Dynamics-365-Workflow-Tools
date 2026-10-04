@@ -19,47 +19,47 @@ namespace msdyncrmWorkflowTools
         [Output("Selected Values")]
         public OutArgument<string> SelectedValues { get; set; }
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
 
-            var sourceEntityReference = GetSourceEntityReference(objCommon, executionContext, objCommon.service);
-            var attributeName = GetAttributeName(objCommon, executionContext);
+            var sourceEntityReference = GetSourceEntityReference(common, executionContext, common.service);
+            var attributeName = GetAttributeName(common, executionContext);
 
-            var selectedValues = GetSelectedValues(sourceEntityReference, attributeName, objCommon, objCommon.service);
+            var selectedValues = GetSelectedValues(sourceEntityReference, attributeName, common, common.service);
 
             SelectedValues.Set(executionContext, selectedValues);
         }
 
-        private EntityReference GetSourceEntityReference(Common objCommon, CodeActivityContext executionContext, IOrganizationService organizationService)
+        private EntityReference GetSourceEntityReference(Common common, CodeActivityContext executionContext, IOrganizationService organizationService)
         {
             var sourceRecordUrl = SourceRecordUrl.Get<string>(executionContext) ?? throw new InvalidPluginExecutionException("Source URL is empty");
-            objCommon.Trace("Source Record URL:'{0}'", sourceRecordUrl);
+            common.Trace("Source Record URL:'{0}'", sourceRecordUrl);
             return new DynamicUrlParser(sourceRecordUrl).ToEntityReference(organizationService);
         }
 
 
-        private string GetAttributeName(Common objCommon, CodeActivityContext executionContext)
+        private string GetAttributeName(Common common, CodeActivityContext executionContext)
         {
             var attributeName = AttributeName.Get<string>(executionContext) ?? throw new InvalidPluginExecutionException("Attribute Name is empty");
-            objCommon.Trace("Attribute name:'{0}'", attributeName);
+            common.Trace("Attribute name:'{0}'", attributeName);
             return attributeName;
         }
 
 
-        private string GetSelectedValues(EntityReference sourceEntityReference, string attributeName, Common objCommon, IOrganizationService organizationService)
+        private string GetSelectedValues(EntityReference sourceEntityReference, string attributeName, Common common, IOrganizationService organizationService)
         {
             if (sourceEntityReference == null || attributeName == null)
             {
-                objCommon.Trace("Null parameters have been passed, so string will be empty");
+                common.Trace("Null parameters have been passed, so string will be empty");
                 return string.Empty;
             }
 
             var sourceEntity = organizationService.Retrieve(sourceEntityReference.LogicalName, sourceEntityReference.Id, new ColumnSet(attributeName));
-            objCommon.Trace("Source record has been retrieved correctly. Id:{0}", sourceEntity.Id);
+            common.Trace("Source record has been retrieved correctly. Id:{0}", sourceEntity.Id);
 
             if (!sourceEntity.Contains(attributeName))
             {
-                objCommon.Trace("Attribues {0} was not found", attributeName);
+                common.Trace("Attribues {0} was not found", attributeName);
                 return string.Empty;
             }
 
@@ -71,11 +71,11 @@ namespace msdyncrmWorkflowTools
 
             if (numberOptions == 0)
             {
-                objCommon.Trace("No selected options");
+                common.Trace("No selected options");
                 return string.Empty;
             }
 
-            objCommon.Trace("Number of selected options: {0}", numberOptions);
+            common.Trace("Number of selected options: {0}", numberOptions);
 
             var stringBuilder = new StringBuilder();
             OptionSetValue value = null;
@@ -88,7 +88,7 @@ namespace msdyncrmWorkflowTools
             }
 
             var values = stringBuilder.ToString();
-            objCommon.Trace("Values have been retrieved correctly. Values: {0}", values);
+            common.Trace("Values have been retrieved correctly. Values: {0}", values);
 
             return values;
         }

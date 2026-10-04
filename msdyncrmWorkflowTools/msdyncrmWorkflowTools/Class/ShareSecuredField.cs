@@ -43,12 +43,12 @@ namespace msdyncrmWorkflowTools
         #endregion
 
         
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Load CRM Service from context"
 
             
-            objCommon.Trace("Entered ShareSecuredField.Execute(), Activity Instance Id: {0}, Workflow Instance Id: {1}", executionContext.ActivityInstanceId, executionContext.WorkflowInstanceId);
+            common.Trace("Entered ShareSecuredField.Execute(), Activity Instance Id: {0}, Workflow Instance Id: {1}", executionContext.ActivityInstanceId, executionContext.WorkflowInstanceId);
 
             #endregion
 
@@ -60,19 +60,19 @@ namespace msdyncrmWorkflowTools
             }
             var parsedUrl = Utility.ParseRecordUrl(_RecordURL);
             var objectTypeCode = parsedUrl.ObjectTypeCode;
-            var entityName = objCommon.GetEntityNameFromCode(objectTypeCode);
+            var entityName = common.GetEntityNameFromCode(objectTypeCode);
             var objectId = parsedUrl.Id;
-            objCommon.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
+            common.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
 
             #endregion
 
             #region "Clone Execution"
 
 
-            ExecuteCore(executionContext, objCommon.context, objCommon.service, entityName, new Guid (objectId));
+            ExecuteCore(executionContext, common.context, common.service, entityName, new Guid (objectId));
 
 
-            objCommon.Trace("OK");
+            common.Trace("OK");
 
             #endregion
 

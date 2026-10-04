@@ -22,33 +22,33 @@ namespace msdyncrmWorkflowTools
         public InArgument<string> ParentRecordURL { get; set; }
         #endregion
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
 
             #region "Read Parameters"
             var _FieldName = FieldName.Get(executionContext);
-            objCommon.Trace("_FieldName=" + _FieldName);
+            common.Trace("_FieldName=" + _FieldName);
             var _ParentRecordURL = ParentRecordURL.Get(executionContext);
 
             if (_ParentRecordURL == null || _ParentRecordURL == string.Empty)
             {
                 return;
             }
-            objCommon.Trace("_ParentRecordURL=" + _ParentRecordURL);
+            common.Trace("_ParentRecordURL=" + _ParentRecordURL);
             var parsedUrl = Utility.ParseRecordUrl(_ParentRecordURL);
             
             var ParentObjectTypeCode=parsedUrl.ObjectTypeCode;
             var ParentId = parsedUrl.Id;
-            objCommon.Trace("ParentObjectTypeCode=" + ParentObjectTypeCode + "--ParentId=" + ParentId);
+            common.Trace("ParentObjectTypeCode=" + ParentObjectTypeCode + "--ParentId=" + ParentId);
             #endregion
 
 
             #region "CalculateRollupField Execution"
-            var ParentEntityName = objCommon.GetEntityNameFromCode(ParentObjectTypeCode);
+            var ParentEntityName = common.GetEntityNameFromCode(ParentObjectTypeCode);
             var calculateRollup = new CalculateRollupFieldRequest();
             calculateRollup.FieldName = _FieldName;
             calculateRollup.Target = new EntityReference(ParentEntityName, new Guid(ParentId));
-            var resp = (CalculateRollupFieldResponse)objCommon.service.Execute(calculateRollup);
+            var resp = (CalculateRollupFieldResponse)common.service.Execute(calculateRollup);
             #endregion
             
         }

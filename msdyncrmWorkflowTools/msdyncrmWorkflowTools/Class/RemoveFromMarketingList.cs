@@ -25,11 +25,11 @@ namespace msdyncrmWorkflowTools.Class
         [ReferenceTarget("lead")]
         public InArgument<EntityReference> Lead { get; set; }
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
             var marketingList = MarketingList.Get(executionContext);
-            objCommon.Trace($"marketingList: {marketingList.Id.ToString()} ");
+            common.Trace($"marketingList: {marketingList.Id.ToString()} ");
 
             var account = Account.Get(executionContext);
 
@@ -54,7 +54,7 @@ namespace msdyncrmWorkflowTools.Class
                 idToRemove = lead.Id;
             }
 
-            objCommon.Trace($"idToRemove: {idToRemove.ToString()} ");
+            common.Trace($"idToRemove: {idToRemove.ToString()} ");
 
             var removeRequest = new RemoveMemberListRequest
             {
@@ -62,7 +62,7 @@ namespace msdyncrmWorkflowTools.Class
                 EntityId = idToRemove
             };
             
-            objCommon.service.Execute(removeRequest);
+            common.service.Execute(removeRequest);
         }
     }
 }

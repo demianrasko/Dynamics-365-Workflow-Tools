@@ -21,7 +21,7 @@ namespace msdyncrmWorkflowTools.Class
         [ReferenceTarget("email")]
         public InArgument<EntityReference> Email { get; set; }
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
 
@@ -38,7 +38,7 @@ namespace msdyncrmWorkflowTools.Class
             #endregion
 
 
-            objCommon.SalesLiteratureToEmail(fileName, salesLiterature.Id.ToString(), email.Id.ToString());
+            common.SalesLiteratureToEmail(fileName, salesLiterature.Id.ToString(), email.Id.ToString());
         }
     }
 }

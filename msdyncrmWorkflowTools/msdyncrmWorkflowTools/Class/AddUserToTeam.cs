@@ -17,13 +17,13 @@ namespace msdyncrmWorkflowTools
         [ReferenceTarget("team")]
         public InArgument<EntityReference> Team { get; set; }
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
             var userReference = User.Get(executionContext);
             var teamReference = Team.Get(executionContext);
 
-            objCommon.Trace($"UserID: {userReference.Id.ToString()} - TeamID: {teamReference.Id.ToString()} ");
+            common.Trace($"UserID: {userReference.Id.ToString()} - TeamID: {teamReference.Id.ToString()} ");
             #endregion
 
             var request = new AddMembersTeamRequest
@@ -32,7 +32,7 @@ namespace msdyncrmWorkflowTools
                 MemberIds = new[] { userReference.Id }
             };
 
-            objCommon.service.Execute(request);
+            common.service.Execute(request);
         }
     }
 }

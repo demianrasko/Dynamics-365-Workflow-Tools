@@ -25,14 +25,14 @@ namespace msdyncrmWorkflowTools
 
         #endregion
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
 
             #region "Read Parameters"
             var _TexttoEncrypt = TexttoEncrypt.Get(executionContext);
            
 
-            objCommon.Trace(string.Format("_TexttoEncrypt: {0} ",_TexttoEncrypt));
+            common.Trace(string.Format("_TexttoEncrypt: {0} ",_TexttoEncrypt));
             #endregion
 
 

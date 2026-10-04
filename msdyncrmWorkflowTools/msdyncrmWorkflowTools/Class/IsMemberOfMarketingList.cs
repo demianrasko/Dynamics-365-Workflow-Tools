@@ -20,20 +20,20 @@ namespace msdyncrmWorkflowTools.Class
             set;
         }
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Load CRM Service from context"
 
             var context = executionContext.GetExtension<IWorkflowContext>();
-            objCommon.Trace("Load CRM Service from context --- OK");
+            common.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
             var marketingList = MarketingList.Get(executionContext);
-            objCommon.Trace($"marketingList: {marketingList.Id.ToString()} ");
+            common.Trace($"marketingList: {marketingList.Id.ToString()} ");
             #endregion
 
-            var isMember = CheckIsMemberOfMarketingList(objCommon.service, marketingList.Id, context.PrimaryEntityId);
+            var isMember = CheckIsMemberOfMarketingList(common.service, marketingList.Id, context.PrimaryEntityId);
 
             MemberOfMarketingList.Set(executionContext, isMember);
         }

@@ -15,20 +15,20 @@ namespace msdyncrmWorkflowTools
         [Output("SharepointLocationURL")]
         public OutArgument<string> SharepointLocationURL { get; set; }
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
 
             var recordId = GetRecordIdFromURL(executionContext);
 
-            var locatioColl = GetSharepointLocation(objCommon.service, recordId);
+            var locatioColl = GetSharepointLocation(common.service, recordId);
 
             string absoluteURL;
-            absoluteURL = GetAbsoluteURLFromLocation(objCommon, locatioColl);
+            absoluteURL = GetAbsoluteURLFromLocation(common, locatioColl);
 
             SharepointLocationURL.Set(executionContext, absoluteURL);
         }
 
-        private static string GetAbsoluteURLFromLocation(Common objCommon, EntityCollection locatioColl)
+        private static string GetAbsoluteURLFromLocation(Common common, EntityCollection locatioColl)
         {
             string absoluteURL;
             if (locatioColl.Entities.Count > 0)
@@ -37,10 +37,10 @@ namespace msdyncrmWorkflowTools
                 {
                     Target = new EntityReference(locatioColl[0].LogicalName, locatioColl[0].Id)
                 };
-                var retriveResponse = (RetrieveAbsoluteAndSiteCollectionUrlResponse)objCommon.service.Execute(retrieveRequest);
+                var retriveResponse = (RetrieveAbsoluteAndSiteCollectionUrlResponse)common.service.Execute(retrieveRequest);
 
                 absoluteURL = retriveResponse.AbsoluteUrl.ToString();
-                objCommon.Trace("Absolute URL of document location record is '{0}'." + retriveResponse.AbsoluteUrl.ToString());
+                common.Trace("Absolute URL of document location record is '{0}'." + retriveResponse.AbsoluteUrl.ToString());
             }
             else
             {

@@ -27,7 +27,7 @@ namespace msdyncrmWorkflowTools
         
         #endregion
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
             var textToTranslate = TextToTranslate.Get(executionContext);
@@ -35,7 +35,7 @@ namespace msdyncrmWorkflowTools
             var authenticationKey = Authenticationkey.Get(executionContext);
             #endregion
             
-            var res=objCommon.TranslateText(textToTranslate, language, authenticationKey) ?? string.Empty;
+            var res=common.TranslateText(textToTranslate, language, authenticationKey) ?? string.Empty;
 
             TranslatedText.Set(executionContext, res);
         }

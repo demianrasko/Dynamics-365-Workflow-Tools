@@ -57,7 +57,7 @@ namespace msdyncrmWorkflowTools
         [Default("false")]
         public InArgument<bool> IsSendAsAllowed { get; set; }
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
 
             #region "Read Parameters"
@@ -71,7 +71,7 @@ namespace msdyncrmWorkflowTools
             var defaultCalendarView = DefaultCalendarView.Get(executionContext);
             var isSendAsAllowed = IsSendAsAllowed.Get(executionContext);
 
-            objCommon.Trace($"UserID: {userReference.Id.ToString()} ");
+            common.Trace($"UserID: {userReference.Id.ToString()} ");
             #endregion
 
             var newSettings = new Entity("usersettings");
@@ -110,7 +110,7 @@ namespace msdyncrmWorkflowTools
 
             newSettings.Attributes.Add("issendasallowed", isSendAsAllowed);
 
-            objCommon.service.Update(newSettings);
+            common.service.Update(newSettings);
         }
     }
 }

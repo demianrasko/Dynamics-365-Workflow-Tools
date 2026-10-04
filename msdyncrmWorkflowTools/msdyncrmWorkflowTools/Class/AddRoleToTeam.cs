@@ -19,17 +19,17 @@ namespace msdyncrmWorkflowTools
         public InArgument<EntityReference> Team { get; set; }
 
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
 
             #region "Read Parameters"
             var roleReference = Role.Get(executionContext);
             var teamReference = Team.Get(executionContext);
 
-            objCommon.Trace("RoleId: {0} - TeamID: {1} ", roleReference.Id, teamReference.Id);
+            common.Trace("RoleId: {0} - TeamID: {1} ", roleReference.Id, teamReference.Id);
             #endregion
 
-            var roleId = Utility.GetRoleIdInBusinessUnit(objCommon.service, objCommon.tracingService, new EntityReference("team", teamReference.Id), roleReference.Id);
+            var roleId = Utility.GetRoleIdInBusinessUnit(common.service, common.tracingService, new EntityReference("team", teamReference.Id), roleReference.Id);
 
             if (roleId == null)
             {
@@ -38,14 +38,14 @@ namespace msdyncrmWorkflowTools
 
             var entRoleId = roleId.Value;
 
-            if (IsAssociate(objCommon.service, teamReference.Id, entRoleId))
+            if (IsAssociate(common.service, teamReference.Id, entRoleId))
             {
                 return;
             }
             
-            objCommon.Trace("Associate | RoleId: {0} - TeamID: {1} ", entRoleId, teamReference.Id);
+            common.Trace("Associate | RoleId: {0} - TeamID: {1} ", entRoleId, teamReference.Id);
 
-            objCommon.service.Associate(
+            common.service.Associate(
                 "team",
                 teamReference.Id,
                 new Relationship("teamroles_association"),

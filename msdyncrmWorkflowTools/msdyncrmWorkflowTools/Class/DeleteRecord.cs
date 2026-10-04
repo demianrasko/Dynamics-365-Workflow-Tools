@@ -25,7 +25,7 @@ namespace msdyncrmWorkflowTools.Class
         public InArgument<string> EntityGuid { get; set; }
 
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
             var deleteRecordUrl = DeleteRecordURL.Get(executionContext);
@@ -36,9 +36,9 @@ namespace msdyncrmWorkflowTools.Class
             {
                 var parsedUrl = Utility.ParseRecordUrl(deleteRecordUrl);
                 var objectTypeCode = parsedUrl.ObjectTypeCode;
-                entityName = objCommon.GetEntityNameFromCode(objectTypeCode);
+                entityName = common.GetEntityNameFromCode(objectTypeCode);
                 objectId = parsedUrl.Id;
-                objCommon.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
+                common.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
             }
 
             var deleteUsingRecordUrl = DeleteUsingRecordURL.Get(executionContext);
@@ -51,24 +51,24 @@ namespace msdyncrmWorkflowTools.Class
 
             if (deleteUsingRecordUrl)
             {
-                objCommon.Trace("Deleting record by URL: {0}", deleteRecordUrl);
+                common.Trace("Deleting record by URL: {0}", deleteRecordUrl);
 
                 if (string.IsNullOrEmpty(deleteRecordUrl) )
                 {
                     throw new InvalidPluginExecutionException("ERROR: Delete Record URL to be deleted missing.");
                 }
-                objCommon.service.Delete(entityName, new Guid (objectId));
+                common.service.Delete(entityName, new Guid (objectId));
             }
             else
             {
-                objCommon.Trace("Record type to be deleted: "+ entityTypeName+" and ID:"+ entityGuid);
+                common.Trace("Record type to be deleted: "+ entityTypeName+" and ID:"+ entityGuid);
                 if (string.IsNullOrEmpty(entityTypeName) || entityGuid == null || entityGuid == string.Empty)
                 {
                     throw new InvalidPluginExecutionException("ERROR: Entity Type name or GUID to be deleted missing.");
                 }
 
-                objCommon.Trace("Deleting record by Guid: {0}-{1}", entityTypeName, entityGuid);
-                objCommon.service.Delete(entityTypeName, new Guid (entityGuid));
+                common.Trace("Deleting record by Guid: {0}-{1}", entityTypeName, entityGuid);
+                common.service.Delete(entityTypeName, new Guid (entityGuid));
             }
 
             #endregion

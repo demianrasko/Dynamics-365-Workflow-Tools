@@ -17,7 +17,7 @@ namespace msdyncrmWorkflowTools.Class
         [ReferenceTarget("workflow")]
         public InArgument<EntityReference> Process { get; set; }
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
             var recordId = RecordID.Get(executionContext);
@@ -33,7 +33,7 @@ namespace msdyncrmWorkflowTools.Class
                 WorkflowId = process.Id
             };
 
-            objCommon.service.Execute(request);
+            common.service.Execute(request);
 
             #endregion
         }

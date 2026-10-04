@@ -39,7 +39,7 @@ namespace msdyncrmWorkflowTools
         }*/
 
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
             var _ClonningRecordURL = ClonningRecordURL.Get(executionContext);
@@ -49,9 +49,9 @@ namespace msdyncrmWorkflowTools
             }
             var parsedUrl = Utility.ParseRecordUrl(_ClonningRecordURL);
             var objectTypeCode = parsedUrl.ObjectTypeCode;
-            var entityName = objCommon.GetEntityNameFromCode(objectTypeCode);
+            var entityName = common.GetEntityNameFromCode(objectTypeCode);
             var objectId = parsedUrl.Id;
-            objCommon.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
+            common.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
 
             var prefix = Prefix.Get(executionContext);
             var fieldstoIgnore = FieldstoIgnore.Get(executionContext);
@@ -59,11 +59,11 @@ namespace msdyncrmWorkflowTools
 
             #region "Clone Execution"
 
-            var createdGUID = objCommon.CloneRecord(entityName, objectId, fieldstoIgnore, prefix);
+            var createdGUID = common.CloneRecord(entityName, objectId, fieldstoIgnore, prefix);
             ClonedGuid.Set(executionContext, createdGUID.ToString());
             
 
-            objCommon.Trace("cloned object OK");
+            common.Trace("cloned object OK");
 
             #endregion
 

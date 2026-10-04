@@ -21,7 +21,7 @@ namespace msdyncrmWorkflowTools
 
         #endregion
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
 
             #region "Read Parameters"
@@ -30,7 +30,7 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             
-            var appRecordUrl = objCommon.GetAppRecordUrl(recordURL, appModuleUniqueName);
+            var appRecordUrl = common.GetAppRecordUrl(recordURL, appModuleUniqueName);
 
             AppRecordUrl.Set(executionContext, appRecordUrl);
 

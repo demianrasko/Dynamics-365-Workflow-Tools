@@ -26,18 +26,18 @@ namespace msdyncrmWorkflowTools.Class
 
         #endregion
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
             var sourceQueue = SourceQueue.Get(executionContext);
 
-            objCommon.Trace($"sourceQueue: {sourceQueue.Id.ToString()} ");
+            common.Trace($"sourceQueue: {sourceQueue.Id.ToString()} ");
 
             var removeItems = RemoveItems.Get(executionContext);
-            objCommon.Trace($"removeItems: {removeItems.ToString()} ");
+            common.Trace($"removeItems: {removeItems.ToString()} ");
 
             var quantity = Quantity.Get(executionContext);
-            objCommon.Trace($"quantity: {quantity.ToString()} ");
+            common.Trace($"quantity: {quantity.ToString()} ");
 
             #endregion
 
@@ -58,8 +58,8 @@ namespace msdyncrmWorkflowTools.Class
                       </entity>
                     </fetch>");
 
-            objCommon.Trace($"FetchXML: {sFetchXml} ");
-            var queueItems = objCommon.service.RetrieveMultiple(new FetchExpression(sFetchXml.ToString()));
+            common.Trace($"FetchXML: {sFetchXml} ");
+            var queueItems = common.service.RetrieveMultiple(new FetchExpression(sFetchXml.ToString()));
 
             //no pending queue items
             if (queueItems.Entities.Count == 0)
@@ -74,11 +74,11 @@ namespace msdyncrmWorkflowTools.Class
                 var pickFromQueueRequest = new PickFromQueueRequest
                 {
                     QueueItemId = queItem.Id,
-                    WorkerId = objCommon.context.InitiatingUserId, 
+                    WorkerId = common.context.InitiatingUserId, 
                     RemoveQueueItem = removeItems
                 };
 
-                objCommon.service.Execute(pickFromQueueRequest);
+                common.service.Execute(pickFromQueueRequest);
                 count++;
 
                 //only pick the defined Quantity

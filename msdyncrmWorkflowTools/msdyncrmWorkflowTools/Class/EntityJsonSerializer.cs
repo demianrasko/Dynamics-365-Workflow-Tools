@@ -21,7 +21,7 @@ namespace msdyncrmWorkflowTools
 
         #endregion
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
 
@@ -35,22 +35,22 @@ namespace msdyncrmWorkflowTools
             var parsedUrl = Utility.ParseRecordUrl(serializingRecordUrl);
             var objectTypeCode = parsedUrl.ObjectTypeCode;
             var objectId = parsedUrl.Id;
-            var entityName = objCommon.GetEntityNameFromCode(objectTypeCode);
+            var entityName = common.GetEntityNameFromCode(objectTypeCode);
 
-            objCommon.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
+            common.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
 
             #endregion
 
             #region "Clone Execution"
 
             var retrievedObject =
-                objCommon.service.Retrieve(entityName, new Guid(objectId), new ColumnSet(allColumns: true));
-            objCommon.Trace("retrieved object OK");
+                common.service.Retrieve(entityName, new Guid(objectId), new ColumnSet(allColumns: true));
+            common.Trace("retrieved object OK");
 
             //var newEntity = new Entity(entityName);
             var primaryIdAttribute = string.Empty;
             var primaryNameAttribute = string.Empty;
-            var attributesToClone = objCommon.GetEntityAttributesToClone(entityName, ref primaryIdAttribute, ref primaryNameAttribute);
+            var attributesToClone = common.GetEntityAttributesToClone(entityName, ref primaryIdAttribute, ref primaryNameAttribute);
 
             var sJson = new StringBuilder("{\"" + entityName + "\": {");
 
@@ -93,11 +93,11 @@ namespace msdyncrmWorkflowTools
                     sJson.Append("\"" + att + "\" : " + retrievedObject.Attributes[att]);
                 }
 
-                objCommon.Trace("attribute:{0}", att);
+                common.Trace("attribute:{0}", att);
             }
 
             sJson.Append("}}");
-            objCommon.Trace("json object OK");
+            common.Trace("json object OK");
             OutputJson.Set(executionContext, sJson.ToString());
 
             #endregion

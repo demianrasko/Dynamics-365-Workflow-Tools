@@ -26,13 +26,13 @@ namespace msdyncrmWorkflowTools.Class
         [Output("Divide")]
         public OutArgument<decimal> Divide { get; set; }
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
             var number1= Number1.Get(executionContext);
             var number2 = Number2.Get(executionContext);
 
-            objCommon.Trace($"number 1 / number 2: {number1.ToString(CultureInfo.InvariantCulture)} / {number2.ToString(CultureInfo.InvariantCulture)}");
+            common.Trace($"number 1 / number 2: {number1.ToString(CultureInfo.InvariantCulture)} / {number2.ToString(CultureInfo.InvariantCulture)}");
 
             #endregion
 

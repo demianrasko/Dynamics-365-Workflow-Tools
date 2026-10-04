@@ -19,14 +19,14 @@ namespace msdyncrmWorkflowTools.Class
 
 
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
             var sourceList = SourceList.Get(executionContext);
-            objCommon.Trace(string.Format("marketingList: {0} ", sourceList.Id.ToString()));
+            common.Trace(string.Format("marketingList: {0} ", sourceList.Id.ToString()));
 
             var targetList = TargetList.Get(executionContext);
-            objCommon.Trace(string.Format("campaign: {0} ", targetList.Id.ToString()));
+            common.Trace(string.Format("campaign: {0} ", targetList.Id.ToString()));
 
 
             #endregion
@@ -37,7 +37,7 @@ namespace msdyncrmWorkflowTools.Class
                 TargetListId = targetList.Id
             };
 
-            objCommon.service.Execute(request);
+            common.service.Execute(request);
 
 
         }

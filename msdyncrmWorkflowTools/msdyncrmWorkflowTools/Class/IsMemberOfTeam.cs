@@ -18,7 +18,7 @@ namespace msdyncrmWorkflowTools.Class
 
         [Output("Result")]
         public OutArgument<bool> Result { get; set; }
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
             var user = User.Get(executionContext);
@@ -27,7 +27,7 @@ namespace msdyncrmWorkflowTools.Class
 
             #region "Is user member of team"
 
-            var isMember = objCommon.IsMemberOfTeam(team.Id, user.Id);
+            var isMember = common.IsMemberOfTeam(team.Id, user.Id);
 
             Result.Set(executionContext, isMember);
             

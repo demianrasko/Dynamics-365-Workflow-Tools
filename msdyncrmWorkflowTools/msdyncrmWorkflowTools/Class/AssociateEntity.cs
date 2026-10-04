@@ -30,7 +30,7 @@ namespace msdyncrmWorkflowTools
 
         #endregion
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
             var relationshipName = RelationshipName.Get(executionContext);
@@ -44,22 +44,22 @@ namespace msdyncrmWorkflowTools
 
             var parsedUrl = Utility.ParseRecordUrl(recordUrl);
             var parentObjectTypeCode=parsedUrl.ObjectTypeCode;
-            var entityName = objCommon.GetEntityNameFromCode(parentObjectTypeCode);
+            var entityName = common.GetEntityNameFromCode(parentObjectTypeCode);
             var parentId = parsedUrl.Id;
 
-            objCommon.Trace($"ParentObjectTypeCode={parentObjectTypeCode}--ParentId={parentId}");
+            common.Trace($"ParentObjectTypeCode={parentObjectTypeCode}--ParentId={parentId}");
             #endregion
 
             #region "Associate Execution"
 
             try
             {
-                objCommon.AssociateEntity(objCommon.context.PrimaryEntityName, objCommon.context.PrimaryEntityId, relationshipName, relationshipEntityName, entityName, parentId);
+                common.AssociateEntity(common.context.PrimaryEntityName, common.context.PrimaryEntityId, relationshipName, relationshipEntityName, entityName, parentId);
             }
             catch (FaultException<OrganizationServiceFault> ex) when (ex.Detail.ErrorCode == DuplicateRecordErrorCode)
             {
                 // The records are already associated: nothing to do. Every other error goes to WorkflowActivityBase.
-                objCommon.Trace("The records are already associated: {0}", ex.Message);
+                common.Trace("The records are already associated: {0}", ex.Message);
             }
             #endregion
         }

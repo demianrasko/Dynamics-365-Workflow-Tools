@@ -33,7 +33,7 @@ namespace msdyncrmWorkflowTools
        
         #endregion
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
 
             #region "Read Parameters"
@@ -43,13 +43,13 @@ namespace msdyncrmWorkflowTools
             
             var _OptionValue = OptionValue.Get(executionContext);
             
-            objCommon.Trace("_AttributeName=" + _AttributeName + "--_EntityName=" + _EntityName );
+            common.Trace("_AttributeName=" + _AttributeName + "--_EntityName=" + _EntityName );
             #endregion
 
 
             #region "Insert Option Value"
 
-            objCommon.DeleteOptionValue(_GlobalOptionSet,_AttributeName, _EntityName,  _OptionValue);
+            common.DeleteOptionValue(_GlobalOptionSet,_AttributeName, _EntityName,  _OptionValue);
 
             
             #endregion

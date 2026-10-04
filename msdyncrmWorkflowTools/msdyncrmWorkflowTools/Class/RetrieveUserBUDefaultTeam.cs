@@ -19,7 +19,7 @@ namespace msdyncrmWorkflowTools
         
         #endregion
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
 
             #region "Read Parameters"
@@ -29,7 +29,7 @@ namespace msdyncrmWorkflowTools
             #endregion
 
            
-            var team = objCommon.retrieveUserBUDefaultTeam(user.Id.ToString());
+            var team = common.retrieveUserBUDefaultTeam(user.Id.ToString());
             
             DefaultTeam.Set(executionContext, team);
             

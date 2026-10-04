@@ -22,7 +22,7 @@ namespace msdyncrmWorkflowTools.Class
         [Input("Process Stage Name")]
         public InArgument<string> ProcessStage { get; set; }
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
             var cloningRecordUrl = ClonningRecordURL.Get(executionContext);
@@ -35,9 +35,9 @@ namespace msdyncrmWorkflowTools.Class
             var parsedUrl = Utility.ParseRecordUrl(cloningRecordUrl);
             var objectTypeCode = parsedUrl.ObjectTypeCode;
             var objectId = parsedUrl.Id;
-            var entityName = objCommon.GetEntityNameFromCode(objectTypeCode);
+            var entityName = common.GetEntityNameFromCode(objectTypeCode);
 
-            objCommon.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={objectId}");
+            common.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={objectId}");
 
             var process = Process.Get(executionContext);
             var processStage = ProcessStage.Get(executionContext);
@@ -49,7 +49,7 @@ namespace msdyncrmWorkflowTools.Class
             Guid? stageId = null;
             if (processStage != null)
             {
-                objCommon.Trace("[Dynamics.ChangeBPFandPhase.Execute] Process stage: " + processStage);
+                common.Trace("[Dynamics.ChangeBPFandPhase.Execute] Process stage: " + processStage);
                 Entity stageReference;
 
                 var queryStage = new QueryExpression("processstage")
@@ -60,8 +60,8 @@ namespace msdyncrmWorkflowTools.Class
 
                 queryStage.Criteria.AddCondition(new ConditionExpression("processid", ConditionOperator.Equal, process.Id));
 
-                objCommon.Trace("[Dynamics.ChangeBPFandPhase.Execute] Fetching the requested Stage.");
-                stageReference = objCommon.service.RetrieveMultiple(queryStage).Entities.FirstOrDefault();
+                common.Trace("[Dynamics.ChangeBPFandPhase.Execute] Fetching the requested Stage.");
+                stageReference = common.service.RetrieveMultiple(queryStage).Entities.FirstOrDefault();
                 if (stageReference == null)
                 {
                     throw new InvalidPluginExecutionException(nameof(Process) + " stage " + processStage + " not found");
@@ -77,7 +77,7 @@ namespace msdyncrmWorkflowTools.Class
                 EntityLogicalName = entityName
             };
 
-            var procOpp1Resp = (RetrieveProcessInstancesResponse)objCommon.service.Execute(procOpp1Req);
+            var procOpp1Resp = (RetrieveProcessInstancesResponse)common.service.Execute(procOpp1Req);
 
             // Declare variables to store values returned in response
             var processOpp1Id = Guid.Empty;
@@ -90,25 +90,25 @@ namespace msdyncrmWorkflowTools.Class
                 processOpp1Id = activeProcessInstance.Id; // Id of the active process instance, which will be used
                                                            // later to retrieve the active path of the process instance
 
-                objCommon.Trace("Current active process instance for the Opportunity record: '{0}'", activeProcessInstance["name"].ToString());
+                common.Trace("Current active process instance for the Opportunity record: '{0}'", activeProcessInstance["name"].ToString());
 
                 // Get the BPF underlying entity logical name
                 const string uniqueProcessNameAttribute = "uniquename";
-                var processEntity = objCommon.service.Retrieve("workflow", process.Id, new ColumnSet(uniqueProcessNameAttribute));
+                var processEntity = common.service.Retrieve("workflow", process.Id, new ColumnSet(uniqueProcessNameAttribute));
                 procInstanceLogicalName = processEntity.Attributes[uniqueProcessNameAttribute].ToString();
             }
             else
             {
-                objCommon.Trace("No process instances found for the opportunity record; aborting the sample.");
+                common.Trace("No process instances found for the opportunity record; aborting the sample.");
                 Environment.Exit(1);
             }
 
-            objCommon.Trace("Starting the update");
+            common.Trace("Starting the update");
             var processInstanceToUpdate= new Entity(procInstanceLogicalName, processOpp1Id);
             processInstanceToUpdate.Attributes.Add("activestageid", new EntityReference("processstage", stageId.Value));
-            objCommon.Trace("Starting the update2");
-            objCommon.service.Update(processInstanceToUpdate);
-            objCommon.Trace("Starting the update3");
+            common.Trace("Starting the update2");
+            common.service.Update(processInstanceToUpdate);
+            common.Trace("Starting the update3");
             #endregion
         }
     }

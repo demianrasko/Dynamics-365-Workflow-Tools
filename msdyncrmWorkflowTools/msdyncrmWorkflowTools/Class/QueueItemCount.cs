@@ -24,15 +24,15 @@ namespace msdyncrmWorkflowTools.Class
 
         #endregion
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
             var sourceQueue = SourceQueue.Get(executionContext);
 
-            objCommon.Trace($"sourceQueue: {sourceQueue.Id.ToString()} ");
+            common.Trace($"sourceQueue: {sourceQueue.Id.ToString()} ");
 
             var countOnlyUnassigned = CountOnlyUnassigned.Get(executionContext);
-            objCommon.Trace("countOnlyUnassigned: {0}", countOnlyUnassigned);
+            common.Trace("countOnlyUnassigned: {0}", countOnlyUnassigned);
 
 
             #endregion
@@ -56,8 +56,8 @@ namespace msdyncrmWorkflowTools.Class
                       </entity>
                     </fetch>");
 
-            objCommon.Trace($"FetchXML: {sFetchXml} ");
-            var queueItemsCount = objCommon.service.RetrieveMultiple(new FetchExpression(sFetchXml.ToString()));
+            common.Trace($"FetchXML: {sFetchXml} ");
+            var queueItemsCount = common.service.RetrieveMultiple(new FetchExpression(sFetchXml.ToString()));
 
             if (queueItemsCount.Entities.Count == 0)
             {
@@ -69,7 +69,7 @@ namespace msdyncrmWorkflowTools.Class
             foreach (var c in queueItemsCount.Entities)
             {
                 var aggregate2 = (int)((AliasedValue)c["queueitem_count"]).Value;
-                objCommon.Trace("{0}", "Count of all queueItemsCount: " + aggregate2);
+                common.Trace("{0}", "Count of all queueItemsCount: " + aggregate2);
                 ItemsCount.Set(executionContext, aggregate2);
             }
         }

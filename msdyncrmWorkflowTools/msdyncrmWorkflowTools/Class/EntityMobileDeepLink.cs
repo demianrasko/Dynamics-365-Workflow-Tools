@@ -26,7 +26,7 @@ namespace msdyncrmWorkflowTools
 
 
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
             var _recordURL = RecordURL.Get(executionContext);
@@ -36,9 +36,9 @@ namespace msdyncrmWorkflowTools
             }
             var parsedUrl = Utility.ParseRecordUrl(_recordURL);
             var objectTypeCode = parsedUrl.ObjectTypeCode;
-            var entityName = objCommon.GetEntityNameFromCode(objectTypeCode);
+            var entityName = common.GetEntityNameFromCode(objectTypeCode);
             var objectId = parsedUrl.Id;
-            objCommon.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
+            common.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
 
 
             #endregion
@@ -49,15 +49,15 @@ namespace msdyncrmWorkflowTools
             var recordURLNew = string.Format("ms-dynamicsxrm://?pagetype=create&etn={0}", entityName);
             var recordURLDefaultView = string.Format("ms-dynamicsxrm://?pagetype=view&etn={0}", entityName);
 
-            objCommon.Trace("MobileDeepLinkEdit: "+ recordURLEdit);
-            objCommon.Trace("MobileDeepLinkNew: "+ recordURLNew);
-            objCommon.Trace("MobileDeepLinkDefaultView: "+ recordURLDefaultView);
+            common.Trace("MobileDeepLinkEdit: "+ recordURLEdit);
+            common.Trace("MobileDeepLinkNew: "+ recordURLNew);
+            common.Trace("MobileDeepLinkDefaultView: "+ recordURLDefaultView);
 
             MobileDeepLinkEdit.Set(executionContext, recordURLEdit);
             MobileDeepLinkNew.Set(executionContext, recordURLNew);
             MobileDeepLinkDefaultView.Set(executionContext, recordURLDefaultView);
 
-            objCommon.Trace("returned object links OK");
+            common.Trace("returned object links OK");
 
             #endregion
 

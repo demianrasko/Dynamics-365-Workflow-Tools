@@ -16,7 +16,7 @@ namespace msdyncrmWorkflowTools
 
         #endregion
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
 
             #region "Read Parameters"
@@ -24,7 +24,7 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             
-            var appModuleId = objCommon.GetAppModuleId(appModuleUniqueName);
+            var appModuleId = common.GetAppModuleId(appModuleUniqueName);
                 
             AppModuleId.Set(executionContext, appModuleId);
 

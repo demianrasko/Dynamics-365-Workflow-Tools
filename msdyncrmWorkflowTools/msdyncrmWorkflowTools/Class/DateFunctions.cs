@@ -50,7 +50,7 @@ namespace msdyncrmWorkflowTools
 
         #endregion
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
             var date1 = Date1.Get(executionContext);
@@ -67,7 +67,7 @@ namespace msdyncrmWorkflowTools
             var year = 0;
             var weekOfYear = 0;
 
-            objCommon.DateFunctions(date1, date2, ref difference,
+            common.DateFunctions(date1, date2, ref difference,
                 ref dayOfWeek, ref dayOfYear, ref day, ref month, ref year, ref weekOfYear);
 
             TotalDays.Set(executionContext, difference.TotalDays);

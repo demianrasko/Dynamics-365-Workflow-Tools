@@ -16,7 +16,7 @@ namespace msdyncrmWorkflowTools.Class
         [Output("Email Subject")]
         public OutArgument<string> Subject { get; set; }
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
             var email = SourceEmail.Get(executionContext);
@@ -24,7 +24,7 @@ namespace msdyncrmWorkflowTools.Class
 
             #region "SendEmail Execution"
 
-            if (objCommon.service.Execute(
+            if (common.service.Execute(
                     new SendEmailRequest
                     {
                         EmailId = email.Id,

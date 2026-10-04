@@ -23,7 +23,7 @@ namespace msdyncrmWorkflowTools
         public OutArgument<bool> Ok { get; set; }
         #endregion
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
             var fetchXml = FetchXML.Get(executionContext);
@@ -32,7 +32,7 @@ namespace msdyncrmWorkflowTools
                 return;
             }
 
-            objCommon.Trace("_FetchXML=" + fetchXml);
+            common.Trace("_FetchXML=" + fetchXml);
 
             var context = executionContext.GetExtension<IWorkflowContext>();
 
@@ -49,7 +49,7 @@ namespace msdyncrmWorkflowTools
 
             fetchXml = fetchXml.Replace("{PARENT_GUID}", context.PrimaryEntityId.ToString());
 
-            objCommon.Trace(fetchXml);
+            common.Trace(fetchXml);
             var xml = Utility.CreateXml(fetchXml, null, pageNumber, fetchCount);
 
             var fetchRequest1 = new RetrieveMultipleRequest
@@ -57,9 +57,9 @@ namespace msdyncrmWorkflowTools
                 Query = new FetchExpression(xml)
             };
             
-            var returnCollection = ((RetrieveMultipleResponse)objCommon.service.Execute(fetchRequest1)).EntityCollection;
+            var returnCollection = ((RetrieveMultipleResponse)common.service.Execute(fetchRequest1)).EntityCollection;
             
-            objCommon.Trace($"Count {returnCollection.Entities.Count}");
+            common.Trace($"Count {returnCollection.Entities.Count}");
 
             if (returnCollection.Entities.Count > 0)
             {
@@ -68,7 +68,7 @@ namespace msdyncrmWorkflowTools
                     try
                     {
                         var value = returnCollection.Entities[0].Attributes.First().Value;
-                        objCommon.Trace($"Attribute {returnCollection.Entities[0].Attributes.First().Key} - {value}");
+                        common.Trace($"Attribute {returnCollection.Entities[0].Attributes.First().Key} - {value}");
             
                         switch (value)
                         {
@@ -81,18 +81,18 @@ namespace msdyncrmWorkflowTools
                         }
 
                         Ok.Set(executionContext, true);
-                        objCommon.Trace($"date {date}");
+                        common.Trace($"date {date}");
                     }
                     catch (Exception e)
                     {
                         // Deliberately not rethrown: the "Ok" output stays false and the workflow decides what to do.
-                        objCommon.Trace(Utility.HandleExceptions(e));
+                        common.Trace(Utility.HandleExceptions(e));
                     }
                 }
             }
 
             Value.Set(executionContext, date);
-            objCommon.Trace("Calculate Aggregate Date --- Done");
+            common.Trace("Calculate Aggregate Date --- Done");
 
             #endregion
         }

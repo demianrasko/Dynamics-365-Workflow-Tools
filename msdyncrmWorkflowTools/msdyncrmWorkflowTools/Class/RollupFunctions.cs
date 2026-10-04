@@ -35,7 +35,7 @@ namespace msdyncrmWorkflowTools
         
         #endregion
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
             var fetchXml = FetchXML.Get(executionContext);
@@ -45,7 +45,7 @@ namespace msdyncrmWorkflowTools
                 return;
             }
             
-            objCommon.Trace("_FetchXML=" + fetchXml);
+            common.Trace("_FetchXML=" + fetchXml);
 
             var context = executionContext.GetExtension<IWorkflowContext>();
 
@@ -68,7 +68,7 @@ namespace msdyncrmWorkflowTools
                     Query = new FetchExpression(xml)
                 };
 
-                var returnCollection = ((RetrieveMultipleResponse)objCommon.service.Execute(fetchRequest1)).EntityCollection;
+                var returnCollection = ((RetrieveMultipleResponse)common.service.Execute(fetchRequest1)).EntityCollection;
                 
                 foreach (var c in returnCollection.Entities)
                 {
@@ -80,7 +80,7 @@ namespace msdyncrmWorkflowTools
                         break;
                     }
                     
-                    objCommon.Trace($"Value: {attribute.Value}");
+                    common.Trace($"Value: {attribute.Value}");
                     objNumbers.Add(attribute.Value);
                 }
                 if (returnCollection.MoreRecords)
@@ -94,7 +94,7 @@ namespace msdyncrmWorkflowTools
                 }
             }
             
-            objCommon.Trace("Query Data --- Done");
+            common.Trace("Query Data --- Done");
             
             decimal count = 0;
             decimal sum = 0;

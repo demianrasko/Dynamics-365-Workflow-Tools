@@ -18,24 +18,24 @@ namespace msdyncrmWorkflowTools
     {
         protected sealed override void Execute(CodeActivityContext executionContext)
         {
-            var objCommon = new Common(executionContext);
-            objCommon.Trace("{0} started", GetType().Name);
+            var common = new Common(executionContext);
+            common.Trace("{0} started", GetType().Name);
 
             try
             {
-                ExecuteActivity(executionContext, objCommon);
-                objCommon.Trace("{0} finished", GetType().Name);
+                ExecuteActivity(executionContext, common);
+                common.Trace("{0} finished", GetType().Name);
             }
             catch (InvalidPluginExecutionException ex)
             {
                 // Messages raised on purpose (validation etc.): show them to the user as-is.
-                objCommon.Trace(Utility.HandleExceptions(ex));
+                common.Trace(Utility.HandleExceptions(ex));
                 throw;
             }
             catch (Exception ex)
             {
                 // Anything else: full details to the trace log, readable message to the user.
-                objCommon.Trace(Utility.HandleExceptions(ex));
+                common.Trace(Utility.HandleExceptions(ex));
                 throw new InvalidPluginExecutionException($"{GetType().Name}: {ex.Message}", ex);
             }
         }
@@ -44,7 +44,7 @@ namespace msdyncrmWorkflowTools
         /// The activity's work. Throw <see cref="InvalidPluginExecutionException"/> for messages the user should see.
         /// </summary>
         /// <param name="executionContext">The workflow execution context, for reading and writing arguments.</param>
-        /// <param name="objCommon">Organization service, tracing, workflow context and the shared helpers.</param>
-        protected abstract void ExecuteActivity(CodeActivityContext executionContext, Common objCommon);
+        /// <param name="common">Organization service, tracing, workflow context and the shared helpers.</param>
+        protected abstract void ExecuteActivity(CodeActivityContext executionContext, Common common);
     }
 }

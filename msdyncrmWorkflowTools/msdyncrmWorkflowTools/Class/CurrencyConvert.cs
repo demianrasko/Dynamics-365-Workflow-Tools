@@ -29,7 +29,7 @@ namespace msdyncrmWorkflowTools
 
         #endregion
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
 
             #region "Read Parameters"
@@ -40,7 +40,7 @@ namespace msdyncrmWorkflowTools
             var toCurrency = ToCurrency.Get(executionContext);
 
             #endregion
-            var result=objCommon.CurrencyConvert(amount,fromCurrency, toCurrency);
+            var result=common.CurrencyConvert(amount,fromCurrency, toCurrency);
 
 
             Result.Set(executionContext, result);

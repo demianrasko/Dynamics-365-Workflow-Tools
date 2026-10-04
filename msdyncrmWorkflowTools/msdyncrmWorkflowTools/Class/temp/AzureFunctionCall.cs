@@ -37,19 +37,19 @@ namespace msdyncrmWorkflowTools
 
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
+            Common common = new Common(executionContext);
+            common.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
 
             String _functionURL= this.FunctionURL.Get(executionContext);
             String _jsonData = this.JsonData.Get(executionContext);
-            objCommon.tracingService.Trace("FunctionURL:"+ _functionURL + " -- JsonData:"+ _jsonData);
+            common.tracingService.Trace("FunctionURL:"+ _functionURL + " -- JsonData:"+ _jsonData);
 
             #endregion
 
-            string result=objCommon.AzureFunctionCall(_jsonData,_functionURL);
+            string result=common.AzureFunctionCall(_jsonData,_functionURL);
 
             this.Result.Set(executionContext, result);
         }

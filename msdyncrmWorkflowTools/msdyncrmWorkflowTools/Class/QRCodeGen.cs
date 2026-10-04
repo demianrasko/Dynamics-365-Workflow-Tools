@@ -47,8 +47,8 @@ namespace msdyncrmWorkflowTools
 
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
+            Common common = new Common(executionContext);
+            common.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
@@ -60,27 +60,27 @@ namespace msdyncrmWorkflowTools
             string[] urlParts = _recordURL.Split("?".ToArray());
             string[] urlParams = urlParts[1].Split("&".ToCharArray());
             string ParentObjectTypeCode = urlParams[0].Replace("etc=", "");
-            string entityName = objCommon.sGetEntityNameFromCode(ParentObjectTypeCode, objCommon.service);
+            string entityName = common.sGetEntityNameFromCode(ParentObjectTypeCode, common.service);
             string ParentId = urlParams[1].Replace("id=", "");
-            objCommon.tracingService.Trace("ParentObjectTypeCode=" + ParentObjectTypeCode + "--ParentId=" + ParentId);
+            common.tracingService.Trace("ParentObjectTypeCode=" + ParentObjectTypeCode + "--ParentId=" + ParentId);
 
             string _QRInfo = this.QRInfo.Get(executionContext);
-            objCommon.tracingService.Trace("QR Ok");
+            common.tracingService.Trace("QR Ok");
             string _noteSubject = this.noteSubject.Get(executionContext);
             if (_noteSubject == null || _noteSubject == "")
             {
                 _noteSubject = "QR";
             }
-            objCommon.tracingService.Trace("noteSubject Ok");
+            common.tracingService.Trace("noteSubject Ok");
 
             string _noteText = this.noteText.Get(executionContext);
-            objCommon.tracingService.Trace("noteText Ok");
+            common.tracingService.Trace("noteText Ok");
 
             string _fileName = this.fileName.Get(executionContext);
-            objCommon.tracingService.Trace("FileName Ok");
+            common.tracingService.Trace("FileName Ok");
 
             string _imageFormat = "jpg";//this.imageFormat.Get(executionContext);
-            objCommon.tracingService.Trace("ImageFormat Ok");
+            common.tracingService.Trace("ImageFormat Ok");
 
             if (_imageFormat == null || _imageFormat == "")
             {
@@ -100,14 +100,14 @@ namespace msdyncrmWorkflowTools
 
             try
             {
-                objCommon.tracingService.Trace("Start QR Creation");
-                objCommon.QRCode(entityName, ParentId, _QRInfo, _noteSubject, _noteText, _fileName);
+                common.tracingService.Trace("Start QR Creation");
+                common.QRCode(entityName, ParentId, _QRInfo, _noteSubject, _noteText, _fileName);
 
 
             }
             catch (FaultException<OrganizationServiceFault> ex)
             {
-                objCommon.tracingService.Trace("Error : {0} - {1}", ex.Message, ex.StackTrace);
+                common.tracingService.Trace("Error : {0} - {1}", ex.Message, ex.StackTrace);
                 throw ex;
                 // if (ex.Detail.ErrorCode != 2147220937)//ignore if the error is a duplicate insert
                 //{
@@ -116,7 +116,7 @@ namespace msdyncrmWorkflowTools
             }
             catch (System.Exception ex)
             {
-                objCommon.tracingService.Trace("Error : {0} - {1}", ex.Message, ex.StackTrace);
+                common.tracingService.Trace("Error : {0} - {1}", ex.Message, ex.StackTrace);
                 throw ex;
             }
             #endregion

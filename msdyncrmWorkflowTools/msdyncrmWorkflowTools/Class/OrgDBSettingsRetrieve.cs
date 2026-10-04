@@ -25,7 +25,7 @@ namespace msdyncrmWorkflowTools
 
         #endregion
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
 
             #region "Read Parameters"
@@ -33,30 +33,30 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "OrgDBSettings Update"
-            objCommon.Trace("OrgDBSettingsUpdate.Execute - OrgDBSetting = " + orgDbSetting );
+            common.Trace("OrgDBSettingsUpdate.Execute - OrgDBSetting = " + orgDbSetting );
 
             var boolValue = false;
 
             var fetch =
                 $"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false'><entity name='organization'><attribute name='{orgDbSetting}'/><order attribute='name' descending='false' /></entity></fetch>";
 
-            objCommon.Trace("OrgDBSettingsUpdate.Execute - Fetch = " + fetch);
+            common.Trace("OrgDBSettingsUpdate.Execute - Fetch = " + fetch);
 
-            var organizationColl = objCommon.service.RetrieveMultiple(new FetchExpression(fetch));
+            var organizationColl = common.service.RetrieveMultiple(new FetchExpression(fetch));
 
             var stringValue = organizationColl.Entities[0].Attributes[orgDbSetting].ToString();
 
             if (int.TryParse(stringValue, out var numericValue))
             {
-                objCommon.Trace("Numeric Value");
+                common.Trace("Numeric Value");
             }
             else if (bool.TryParse(stringValue, out boolValue))
             {
-                objCommon.Trace("Bool Value");
+                common.Trace("Bool Value");
             }
             else
             {
-                objCommon.Trace("String Value");
+                common.Trace("String Value");
             }
 
             StringValue.Set(executionContext, stringValue);

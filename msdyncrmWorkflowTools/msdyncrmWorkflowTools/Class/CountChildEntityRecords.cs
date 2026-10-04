@@ -29,23 +29,23 @@ namespace msdyncrmWorkflowTools
         public OutArgument<int> Result { get; set; }
         #endregion
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
 
             #region "Read Parameters"
             var _childEntityName = ChildEntityName.Get(executionContext);
             var _parentLookupName = ParentLookupName.Get(executionContext);
             var _recordURL = RecordURL.Get(executionContext);
-            objCommon.Trace("ChildEntityName=" + _childEntityName + "--ParentLookupName=" + _parentLookupName + "--RecordURL=" + _recordURL);
+            common.Trace("ChildEntityName=" + _childEntityName + "--ParentLookupName=" + _parentLookupName + "--RecordURL=" + _recordURL);
             if (_recordURL == null || _recordURL == string.Empty)
             {
                 return;
             }
             var parsedUrl = Utility.ParseRecordUrl(_recordURL);
             var ParentObjectTypeCode = parsedUrl.ObjectTypeCode;
-            var ParenEntityName = objCommon.GetEntityNameFromCode(ParentObjectTypeCode);
+            var ParenEntityName = common.GetEntityNameFromCode(ParentObjectTypeCode);
             var ParentEntityId = parsedUrl.Id;
-            objCommon.Trace("ParentObjectTypeCode=" + ParentObjectTypeCode + "--ParentId=" + ParentEntityId);
+            common.Trace("ParentObjectTypeCode=" + ParentObjectTypeCode + "--ParentId=" + ParentEntityId);
             #endregion
 
 
@@ -59,8 +59,8 @@ namespace msdyncrmWorkflowTools
                                 </entity>
                             </fetch>";
             fetchXml = string.Format(fetchXml, _childEntityName, _parentLookupName, ParentEntityId);
-            objCommon.Trace(string.Format("FetchXML: {0} ", fetchXml));
-            var results = objCommon.service.RetrieveMultiple(new FetchExpression(fetchXml));
+            common.Trace(string.Format("FetchXML: {0} ", fetchXml));
+            var results = common.service.RetrieveMultiple(new FetchExpression(fetchXml));
 
             Result.Set(executionContext, results.Entities.Count);
             #endregion

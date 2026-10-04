@@ -15,15 +15,15 @@ namespace msdyncrmWorkflowTools
         [Output("isUserInRole")]
         public OutArgument<bool> isUserInRole { get; set; }
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
             var roleReference = Role.Get(executionContext);
 
-            objCommon.Trace($"RoleId: {roleReference.Id.ToString()} ");
+            common.Trace($"RoleId: {roleReference.Id.ToString()} ");
             #endregion
 
-            objCommon.Trace("Checking association between user and role.");
+            common.Trace("Checking association between user and role.");
 
             var systemUserLink = new LinkEntity
             {
@@ -36,7 +36,7 @@ namespace msdyncrmWorkflowTools
                 Conditions =
                 {
                     new ConditionExpression(
-                        "systemuserid", ConditionOperator.Equal, objCommon.context.InitiatingUserId)
+                        "systemuserid", ConditionOperator.Equal, common.context.InitiatingUserId)
                 }
             }
             };
@@ -66,13 +66,13 @@ namespace msdyncrmWorkflowTools
             };
 
             // Retrieve matching roles.
-            var matchEntities = objCommon.service.RetrieveMultiple(linkQuery);
+            var matchEntities = common.service.RetrieveMultiple(linkQuery);
 
             // if an entity is returned then the user is a member
             // of the role
             var userInRole = (matchEntities.Entities.Count > 0);
 
-            objCommon.Trace("{0}", userInRole ? "User do not belong to the role." : "User belong to this role.");
+            common.Trace("{0}", userInRole ? "User do not belong to the role." : "User belong to this role.");
 
             isUserInRole.Set(executionContext, userInRole);
         }

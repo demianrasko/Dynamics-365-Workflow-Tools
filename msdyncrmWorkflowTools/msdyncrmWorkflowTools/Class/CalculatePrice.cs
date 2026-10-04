@@ -14,7 +14,7 @@ namespace msdyncrmWorkflowTools
         [ReferenceTarget("")]
         public InArgument<string> TargetRecordURL { get; set; }
         #endregion
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
             var targetRecordUrl = TargetRecordURL.Get(executionContext);
@@ -27,11 +27,11 @@ namespace msdyncrmWorkflowTools
             var parentObjectTypeCode = parsedUrl.ObjectTypeCode;
             var parentId = parsedUrl.Id;
 
-            objCommon.Trace($"ParentObjectTypeCode={parentObjectTypeCode}--ParentId={parentId}");
+            common.Trace($"ParentObjectTypeCode={parentObjectTypeCode}--ParentId={parentId}");
             #endregion
 
             #region "ApplyRoutingRuleRequest Execution"
-            var entityName = objCommon.GetEntityNameFromCode(parentObjectTypeCode);
+            var entityName = common.GetEntityNameFromCode(parentObjectTypeCode);
 
             var target = new EntityReference(entityName, new Guid(parentId));
 
@@ -40,7 +40,7 @@ namespace msdyncrmWorkflowTools
                 Target = target
             };
 
-            objCommon.service.Execute(calcReq);
+            common.service.Execute(calcReq);
 
             #endregion
         }

@@ -30,7 +30,7 @@ namespace msdyncrmWorkflowTools.Class
         [Input("Top Attachments (Most Recent)")]
         public InArgument<int> TopRecords { get; set; }
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
 
@@ -47,7 +47,7 @@ namespace msdyncrmWorkflowTools.Class
             var parentObjectTypeCode = parsedUrl.ObjectTypeCode;
             var parentId = parsedUrl.Id;
 
-            objCommon.Trace("ParentObjectTypeCode=" + parentObjectTypeCode + "--ParentId=" + parentId);
+            common.Trace("ParentObjectTypeCode=" + parentObjectTypeCode + "--ParentId=" + parentId);
 
             // Treat file name
             if (fileName == "*") fileName = string.Empty;
@@ -55,7 +55,7 @@ namespace msdyncrmWorkflowTools.Class
 
             #endregion
 
-            objCommon.EntityAttachmentToEmail(fileName, parentId, email, retrieveActivityMimeAttachment, mostRecent, topRecords);
+            common.EntityAttachmentToEmail(fileName, parentId, email, retrieveActivityMimeAttachment, mostRecent, topRecords);
         }
     }
 }

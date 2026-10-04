@@ -18,7 +18,7 @@ namespace msdyncrmWorkflowTools
         public InArgument<string> GoalGuid { get; set; }
 
         #endregion
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             
 
@@ -31,7 +31,7 @@ namespace msdyncrmWorkflowTools
             }
             
 
-            objCommon.Trace("GoalID=" + _goal.Id.ToString());
+            common.Trace("GoalID=" + _goal.Id.ToString());
             #endregion
 
 
@@ -49,7 +49,7 @@ namespace msdyncrmWorkflowTools
             {
                 Target = new EntityReference("goal", new Guid (id))
             };
-            objCommon.service.Execute(recalculateRequest);
+            common.service.Execute(recalculateRequest);
 
 
             #endregion

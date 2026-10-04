@@ -19,7 +19,7 @@ namespace msdyncrmWorkflowTools
         public InArgument<string> RecordURL { get; set; }
         #endregion
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
             var relationshipName = RelationshipName.Get(executionContext);
@@ -34,9 +34,9 @@ namespace msdyncrmWorkflowTools
             var parentObjectTypeCode=parsedUrl.ObjectTypeCode;
             var parentId = parsedUrl.Id;
 
-            var entityName = objCommon.GetEntityNameFromCode(parentObjectTypeCode);
+            var entityName = common.GetEntityNameFromCode(parentObjectTypeCode);
 
-            objCommon.Trace($"ParentObjectTypeCode={parentObjectTypeCode}--ParentId={parentId}");
+            common.Trace($"ParentObjectTypeCode={parentObjectTypeCode}--ParentId={parentId}");
             #endregion
             
             #region "Disassociate Execution"
@@ -48,7 +48,7 @@ namespace msdyncrmWorkflowTools
 
             var relationship = new Relationship(relationshipName);
             
-            objCommon.service.Disassociate(objCommon.context.PrimaryEntityName, objCommon.context.PrimaryEntityId, relationship,relatedEntities);
+            common.service.Disassociate(common.context.PrimaryEntityName, common.context.PrimaryEntityId, relationship,relatedEntities);
             
             #endregion
         }

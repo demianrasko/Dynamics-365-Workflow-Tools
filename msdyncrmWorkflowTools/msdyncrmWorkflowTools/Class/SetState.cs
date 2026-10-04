@@ -16,7 +16,7 @@ namespace msdyncrmWorkflowTools
         public InArgument<int> Status { get; set; }
         #endregion
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
             var stateValue= State.Get(executionContext);
@@ -27,8 +27,8 @@ namespace msdyncrmWorkflowTools
 
             var moniker = new EntityReference
             {
-                LogicalName = objCommon.context.PrimaryEntityName,
-                Id = objCommon.context.PrimaryEntityId
+                LogicalName = common.context.PrimaryEntityName,
+                Id = common.context.PrimaryEntityId
             };
 
             var request = new OrganizationRequest
@@ -40,7 +40,7 @@ namespace msdyncrmWorkflowTools
             request["State"] = new OptionSetValue(stateValue);
             request["Status"] = new OptionSetValue(statusValue);
 
-            objCommon.service.Execute(request);
+            common.service.Execute(request);
 
             #endregion
         }

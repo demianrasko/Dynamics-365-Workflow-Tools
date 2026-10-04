@@ -16,18 +16,18 @@ namespace msdyncrmWorkflowTools.Class
 
 
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
             var marketingList = MarketingList.Get(executionContext);
-            objCommon.Trace(string.Format("marketingList: {0} ", marketingList.Id.ToString()));
+            common.Trace(string.Format("marketingList: {0} ", marketingList.Id.ToString()));
 
             
 
             #endregion
 
 
-            objCommon.service.Execute(new CopyDynamicListToStaticRequest { ListId = marketingList.Id });
+            common.service.Execute(new CopyDynamicListToStaticRequest { ListId = marketingList.Id });
 
 
         }

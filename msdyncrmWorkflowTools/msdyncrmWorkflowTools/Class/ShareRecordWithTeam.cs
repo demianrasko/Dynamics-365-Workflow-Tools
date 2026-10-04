@@ -74,7 +74,7 @@ namespace msdyncrmWorkflowTools
         List<EntityReference> principals = new List<EntityReference>();
         #endregion
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
             var sharingRecordUrl = SharingRecordURL.Get(executionContext);
@@ -89,7 +89,7 @@ namespace msdyncrmWorkflowTools
             var objectTypeCode = parsedUrl.ObjectTypeCode;
             var objectId = parsedUrl.Id;
             
-            objCommon.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={objectId}");
+            common.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={objectId}");
 
             principals.Clear();
 
@@ -101,11 +101,11 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "ApplyRoutingRuteamReferenceleRequest Execution"
-            var entityName = objCommon.GetEntityNameFromCode(objectTypeCode);
+            var entityName = common.GetEntityNameFromCode(objectTypeCode);
 
             var refObject = new EntityReference(entityName, new Guid(objectId));
 
-            objCommon.Trace("Grant Request--- Start");
+            common.Trace("Grant Request--- Start");
 
             var grantRequest = new GrantAccessRequest
             {
@@ -127,10 +127,10 @@ namespace msdyncrmWorkflowTools
             {
                 grantRequest.PrincipalAccess.Principal = principalObject2;
 
-                objCommon.service.Execute(grantRequest);
+                common.service.Execute(grantRequest);
             }
 
-            objCommon.Trace("Grant Request--- end");
+            common.Trace("Grant Request--- end");
 
             #endregion
         }

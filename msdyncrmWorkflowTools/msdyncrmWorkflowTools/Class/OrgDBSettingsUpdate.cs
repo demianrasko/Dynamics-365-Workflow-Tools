@@ -21,7 +21,7 @@ namespace msdyncrmWorkflowTools
 
         #endregion
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
 
             #region "Read Parameters"
@@ -30,7 +30,7 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "OrgDBSettings Update"
-            objCommon.Trace(
+            common.Trace(
                 $"{nameof(OrgDBSettingsUpdate)}.Execute - OrgDBSetting = {orgDbSetting}, New Value = {value}");
 
             var boolValue = false;
@@ -38,9 +38,9 @@ namespace msdyncrmWorkflowTools
             var fetch =
                 $"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false'><entity name='organization'><attribute name='{orgDbSetting}'/><order attribute='name' descending='false' /></entity></fetch>";
 
-            objCommon.Trace("OrgDBSettingsUpdate.Execute - Fetch = " + fetch);
+            common.Trace("OrgDBSettingsUpdate.Execute - Fetch = " + fetch);
 
-            var organizationColl = objCommon.service.RetrieveMultiple(new FetchExpression(fetch));
+            var organizationColl = common.service.RetrieveMultiple(new FetchExpression(fetch));
 
             if (organizationColl == null || organizationColl.Entities.Count <= 0)
             {
@@ -61,12 +61,12 @@ namespace msdyncrmWorkflowTools
                 organizationColl.Entities[0].Attributes[orgDbSetting] = value;
             }
 
-            objCommon.Trace(
+            common.Trace(
                 $"{nameof(OrgDBSettingsUpdate)}.Execute - Previous value orgDBSetting. NumericValue = {numericValue}, BoolValue = {boolValue}, StringValue = {value}");
 
-            objCommon.service.Update(organizationColl.Entities[0]);
+            common.service.Update(organizationColl.Entities[0]);
 
-            objCommon.Trace("OrgDBSettingsUpdate.Execute -  Update Ok");
+            common.Trace("OrgDBSettingsUpdate.Execute -  Update Ok");
             #endregion
         }
     }

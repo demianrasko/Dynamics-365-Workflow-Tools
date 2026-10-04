@@ -17,14 +17,14 @@ namespace msdyncrmWorkflowTools.Class
         [ReferenceTarget("campaign")]
         public InArgument<EntityReference> Campaign { get; set; }
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
             var marketingList = MarketingList.Get(executionContext);
-            objCommon.Trace($"marketingList: {marketingList.Id.ToString()} ");
+            common.Trace($"marketingList: {marketingList.Id.ToString()} ");
 
             var campaign = Campaign.Get(executionContext);
-            objCommon.Trace($"campaign: {campaign.Id.ToString()} ");
+            common.Trace($"campaign: {campaign.Id.ToString()} ");
 
             #endregion
            
@@ -35,7 +35,7 @@ namespace msdyncrmWorkflowTools.Class
                 EntityName = "list",
             };
 
-            objCommon.service.Execute(request);
+            common.service.Execute(request);
         }
     }
 }

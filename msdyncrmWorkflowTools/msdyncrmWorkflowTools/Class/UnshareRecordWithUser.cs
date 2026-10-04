@@ -24,7 +24,7 @@ namespace msdyncrmWorkflowTools
         List<EntityReference> principals = new List<EntityReference>();
         #endregion
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
             var sharingRecordUrl = SharingRecordURL.Get(executionContext);
@@ -38,7 +38,7 @@ namespace msdyncrmWorkflowTools
             var objectTypeCode = parsedUrl.ObjectTypeCode;
             var objectId = parsedUrl.Id;
             
-            objCommon.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={objectId}");
+            common.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={objectId}");
 
             var user = User.Get(executionContext);
 
@@ -50,7 +50,7 @@ namespace msdyncrmWorkflowTools
             #endregion
 
             #region "ApplyRoutingRuteamReferenceleRequest Execution"
-            var entityName = objCommon.GetEntityNameFromCode(objectTypeCode);
+            var entityName = common.GetEntityNameFromCode(objectTypeCode);
 
             var refObject = new EntityReference(entityName, new Guid(objectId));
 
@@ -62,10 +62,10 @@ namespace msdyncrmWorkflowTools
             foreach (var principalObject in principals)
             {
                 request.Revokee = principalObject;
-                objCommon.service.Execute(request);
+                common.service.Execute(request);
             }
 
-            objCommon.Trace("Revoked Permissions--- OK");
+            common.Trace("Revoked Permissions--- OK");
             #endregion
         }
     }

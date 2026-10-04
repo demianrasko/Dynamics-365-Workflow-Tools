@@ -39,7 +39,7 @@ namespace msdyncrmWorkflowTools
         public InArgument<int> LeadStatus { get; set; }
         
         #endregion
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
             var lead = Lead.Get(executionContext);
@@ -56,7 +56,7 @@ namespace msdyncrmWorkflowTools
             var existingContact = ExistingContact.Get(executionContext);
             var leadStatus = LeadStatus.Get(executionContext);
 
-            objCommon.Trace("LeadID=" + lead.Id);
+            common.Trace("LeadID=" + lead.Id);
             #endregion
 
             #region "QualifyLead Execution"
@@ -65,7 +65,7 @@ namespace msdyncrmWorkflowTools
                 ColumnSet = new ColumnSet("basecurrencyid")
             };
 
-            var result = objCommon.service.RetrieveMultiple(query);
+            var result = common.service.RetrieveMultiple(query);
             var currencyId = (EntityReference)result.Entities[0]["basecurrencyid"];
 
             var qualifyIntoOpportunityReq = new QualifyLeadRequest
@@ -88,8 +88,8 @@ namespace msdyncrmWorkflowTools
             qualifyIntoOpportunityReq.Status = new OptionSetValue(leadStatus);
             qualifyIntoOpportunityReq.LeadId = new EntityReference("lead", lead.Id);
 
-            objCommon.service.Execute(qualifyIntoOpportunityReq);
-            objCommon.Trace("  Executed OK.");
+            common.service.Execute(qualifyIntoOpportunityReq);
+            common.Trace("  Executed OK.");
 
             #endregion
         }

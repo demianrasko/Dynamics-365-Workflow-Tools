@@ -40,7 +40,7 @@ namespace msdyncrmWorkflowTools
         public InArgument<int> LanguageCode { get; set; }
         #endregion
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
 
             #region "Read Parameters"
@@ -51,13 +51,13 @@ namespace msdyncrmWorkflowTools
             var _OptionValue = OptionValue.Get(executionContext);
             var _LanguageCode = LanguageCode.Get(executionContext);
 
-            objCommon.Trace("_AttributeName=" + _AttributeName + "--_EntityName=" + _EntityName+ "--_OptionText="+ _OptionText+ "--_LanguageCode="+ _LanguageCode.ToString());
+            common.Trace("_AttributeName=" + _AttributeName + "--_EntityName=" + _EntityName+ "--_OptionText="+ _OptionText+ "--_LanguageCode="+ _LanguageCode.ToString());
             #endregion
 
 
             #region "Insert Option Value"
 
-            objCommon.InsertOptionValue(_GlobalOptionSet,_AttributeName, _EntityName, _OptionText, _OptionValue, _LanguageCode);
+            common.InsertOptionValue(_GlobalOptionSet,_AttributeName, _EntityName, _OptionText, _OptionValue, _LanguageCode);
 
             
             #endregion

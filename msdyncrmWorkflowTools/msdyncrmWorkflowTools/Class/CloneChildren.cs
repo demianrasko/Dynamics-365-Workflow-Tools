@@ -55,7 +55,7 @@ namespace msdyncrmWorkflowTools
 
 
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
 
@@ -79,9 +79,9 @@ namespace msdyncrmWorkflowTools
 
             var parsedUrl = Utility.ParseRecordUrl(_source);
             var parentObjectTypeCode = parsedUrl.ObjectTypeCode;
-            var parentEntityName = objCommon.GetEntityNameFromCode(parentObjectTypeCode);
+            var parentEntityName = common.GetEntityNameFromCode(parentObjectTypeCode);
             var parentId = parsedUrl.Id;
-            objCommon.Trace("ObjectTypeCode=" + parentObjectTypeCode + "--ParentId=" + parentId);
+            common.Trace("ObjectTypeCode=" + parentObjectTypeCode + "--ParentId=" + parentId);
 
             var _destination = TargetRecordUrl.Get(executionContext);
             if (_destination == null || _destination == string.Empty)
@@ -90,9 +90,9 @@ namespace msdyncrmWorkflowTools
             }
             var parsedDestinationUrl = Utility.ParseRecordUrl(_destination);
             var destinationObjectTypeCode = parsedDestinationUrl.ObjectTypeCode;
-            var destinationEntityName = objCommon.GetEntityNameFromCode(destinationObjectTypeCode);
+            var destinationEntityName = common.GetEntityNameFromCode(destinationObjectTypeCode);
             var destinationId = parsedDestinationUrl.Id;
-            objCommon.Trace("ObjectTypeCode=" + destinationObjectTypeCode + "--ParentId=" + destinationId);
+            common.Trace("ObjectTypeCode=" + destinationObjectTypeCode + "--ParentId=" + destinationId);
 
 
             //Optional
@@ -103,11 +103,11 @@ namespace msdyncrmWorkflowTools
             #endregion
 
 
-            var children = objCommon.GetChildRecords(_relationshipName, parentId);
+            var children = common.GetChildRecords(_relationshipName, parentId);
              
             foreach (var item in children.Entities)
             {
-                var newRecordId = objCommon.CloneRecord(item.LogicalName, item.Id.ToString(), fieldstoIgnore, prefix);
+                var newRecordId = common.CloneRecord(item.LogicalName, item.Id.ToString(), fieldstoIgnore, prefix);
 
                 var update = new Entity(item.LogicalName);
                 update.Id = newRecordId;
@@ -117,7 +117,7 @@ namespace msdyncrmWorkflowTools
                     update.Attributes.Add(_oldParentFieldName, null);
                 }
 
-                objCommon.service.Update(update);
+                common.service.Update(update);
 
             }
             

@@ -27,23 +27,23 @@ namespace msdyncrmWorkflowTools
         [Default("false")]
         public InArgument<bool> KeepExistingValues { get; set; }
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
 
-            var sourceAttributes = GetSourceAttributes(executionContext, objCommon);
-            var targetAttributes = GetTargetAttributes(executionContext, objCommon);
-            var sourceEntityReference = GetSourceEntityReference(executionContext, objCommon.service);
-            var targetEntityReference = GetTargetEntityReference(executionContext, objCommon.service);
-            var targetEntity = BuildTargetEntity(sourceEntityReference, targetEntityReference, sourceAttributes, targetAttributes,objCommon,objCommon.service, executionContext);
+            var sourceAttributes = GetSourceAttributes(executionContext, common);
+            var targetAttributes = GetTargetAttributes(executionContext, common);
+            var sourceEntityReference = GetSourceEntityReference(executionContext, common.service);
+            var targetEntityReference = GetTargetEntityReference(executionContext, common.service);
+            var targetEntity = BuildTargetEntity(sourceEntityReference, targetEntityReference, sourceAttributes, targetAttributes,common,common.service, executionContext);
 
             if (targetEntity != null)
             {
-                objCommon.service.Update(targetEntity);
-                objCommon.Trace("Target entity record updated correctly.");
+                common.service.Update(targetEntity);
+                common.Trace("Target entity record updated correctly.");
 
             }
             else
-                objCommon.Trace("Target entity record was NOT updated. ");
+                common.Trace("Target entity record was NOT updated. ");
 
         }
 
@@ -59,35 +59,35 @@ namespace msdyncrmWorkflowTools
             return new DynamicUrlParser(targetRecordUrl).ToEntityReference(organizationService);
         }
 
-        private string[] GetSourceAttributes(CodeActivityContext executionContext, Common objCommon)
+        private string[] GetSourceAttributes(CodeActivityContext executionContext, Common common)
         {
             var sourceAttributes = SourceAttributes.Get<string>(executionContext) ?? throw new InvalidPluginExecutionException("Source Attributes is empty");
             var sourceAttributesArray = sourceAttributes.Split(',');
 
             if (sourceAttributesArray == null || sourceAttributesArray.Length == 0)
             {
-                objCommon.Trace("No source attributes could be found");
+                common.Trace("No source attributes could be found");
                 return null;
             }
             else
                 return sourceAttributesArray;
         }
 
-        private string[] GetTargetAttributes(CodeActivityContext executionContext, Common objCommon)
+        private string[] GetTargetAttributes(CodeActivityContext executionContext, Common common)
         {
             var targetAttributes = TargetAttributes.Get<string>(executionContext) ?? throw new InvalidPluginExecutionException("Target Attributes is empty");
             var targetAttributesArray = targetAttributes.Split(',');
 
             if (targetAttributesArray == null || targetAttributesArray.Length == 0)
             {
-                objCommon.Trace("No target attributes could be found");
+                common.Trace("No target attributes could be found");
                 return null;
             }
             else
                 return targetAttributesArray;
         }
 
-        private Entity BuildTargetEntity(EntityReference sourceEntityReference, EntityReference targetEntityReference, string[] sourceAttributes, string[] targetAttributes, Common objCommon, IOrganizationService organizationService, CodeActivityContext executionContext)
+        private Entity BuildTargetEntity(EntityReference sourceEntityReference, EntityReference targetEntityReference, string[] sourceAttributes, string[] targetAttributes, Common common, IOrganizationService organizationService, CodeActivityContext executionContext)
         {
             if (sourceEntityReference == null || targetEntityReference == null || sourceAttributes == null || targetAttributes == null)
                 return null;
@@ -96,12 +96,12 @@ namespace msdyncrmWorkflowTools
             var numberTargetAttribute = targetAttributes.Length;
             if (numberSourceAttribute != numberTargetAttribute)
             {
-                objCommon.Trace("Number of source attributes ({0}) doesn't match the number of target attributes ({1}).", numberSourceAttribute, numberTargetAttribute);
+                common.Trace("Number of source attributes ({0}) doesn't match the number of target attributes ({1}).", numberSourceAttribute, numberTargetAttribute);
                 return null;
             }
 
             var sourceEntity = organizationService.Retrieve(sourceEntityReference.LogicalName, sourceEntityReference.Id, new ColumnSet(sourceAttributes));
-            objCommon.Trace("Source record has been retrieved correctly. Id:{0}", sourceEntity.Id);
+            common.Trace("Source record has been retrieved correctly. Id:{0}", sourceEntity.Id);
 
             var targetEntity = new Entity(targetEntityReference.LogicalName, targetEntityReference.Id);
             string targetAttribute = null;
@@ -120,25 +120,25 @@ namespace msdyncrmWorkflowTools
                     if (typeof(OptionSetValueCollection).Equals(sourceNewValues.GetType()))
                     {
                         targetAttribute = targetAttributes[i];
-                        targetExistingValues = GetExistingAttributeValues(targetEntity.ToEntityReference(), targetAttribute, objCommon, organizationService, executionContext);
-                        targetEntity.Attributes.Add(targetAttribute, MergeOptionSetCollections(sourceNewValues, targetExistingValues,objCommon));
+                        targetExistingValues = GetExistingAttributeValues(targetEntity.ToEntityReference(), targetAttribute, common, organizationService, executionContext);
+                        targetEntity.Attributes.Add(targetAttribute, MergeOptionSetCollections(sourceNewValues, targetExistingValues,common));
                         attributeMappedCounter++;
                     }
                     else
-                        objCommon.Trace("Attribute '{0}' is not an Option Set", sourceAttribute);
+                        common.Trace("Attribute '{0}' is not an Option Set", sourceAttribute);
                 }
                 else
-                    objCommon.Trace("Attribute '{0}' wasn't found in source record", sourceAttribute);
+                    common.Trace("Attribute '{0}' wasn't found in source record", sourceAttribute);
 
             }
 
-            objCommon.Trace("Target entity record has been built correctly. '{0}' of '{1}' attributes were mapped. ", attributeMappedCounter, numberSourceAttribute);
+            common.Trace("Target entity record has been built correctly. '{0}' of '{1}' attributes were mapped. ", attributeMappedCounter, numberSourceAttribute);
 
             return targetEntity;
         }
-        private OptionSetValueCollection GetExistingAttributeValues(EntityReference targetEntityReference, string attributeName, Common objCommon, IOrganizationService organizationService, CodeActivityContext executionContext)
+        private OptionSetValueCollection GetExistingAttributeValues(EntityReference targetEntityReference, string attributeName, Common common, IOrganizationService organizationService, CodeActivityContext executionContext)
         {
-            objCommon.Trace("Retrieving existing values");
+            common.Trace("Retrieving existing values");
 
             var attributeValues = KeepExistingValues.Get<bool>(executionContext);
 
@@ -147,7 +147,7 @@ namespace msdyncrmWorkflowTools
 
             var record = organizationService.Retrieve(targetEntityReference.LogicalName, targetEntityReference.Id, new ColumnSet(new string[] { attributeName }));
 
-            objCommon.Trace("Existing values have been retrieved correctly");
+            common.Trace("Existing values have been retrieved correctly");
 
             if (record.Contains(attributeName))
                 return record[attributeName] as OptionSetValueCollection;
@@ -155,9 +155,9 @@ namespace msdyncrmWorkflowTools
                 return null;
         }
 
-        private OptionSetValueCollection MergeOptionSetCollections(OptionSetValueCollection newValues, OptionSetValueCollection existingValues, Common objCommon)
+        private OptionSetValueCollection MergeOptionSetCollections(OptionSetValueCollection newValues, OptionSetValueCollection existingValues, Common common)
         {
-            objCommon.Trace("Merging new and exiting multi-select optionset values");
+            common.Trace("Merging new and exiting multi-select optionset values");
 
             if (existingValues == null && newValues == null)
                 return new OptionSetValueCollection();
@@ -174,7 +174,7 @@ namespace msdyncrmWorkflowTools
                     existingValues.Add(newValue);
             }
 
-            objCommon.Trace("New and exiting multi-select optionset values have been merged correctly. Total options: {0} ", existingValues.Count);
+            common.Trace("New and exiting multi-select optionset values have been merged correctly. Total options: {0} ", existingValues.Count);
             return existingValues;
         }
 

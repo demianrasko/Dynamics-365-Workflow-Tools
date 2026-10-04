@@ -9,13 +9,13 @@ namespace msdyncrmWorkflowTools.Class
 {
     public class RemoveFromAllMarketingLists : WorkflowActivityBase
     {
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Load CRM Service from context"
 
             var context = executionContext.GetExtension<IWorkflowContext>();
 
-            objCommon.Trace("Load CRM Service from context --- OK");
+            common.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
@@ -28,7 +28,7 @@ namespace msdyncrmWorkflowTools.Class
                 throw new InvalidPluginExecutionException("Remove From All Marketing Lists only supports account, contact or lead records.");
             }
             
-            if (!DoesCrmRecordExist(objCommon.service, context.PrimaryEntityName, context.PrimaryEntityId))
+            if (!DoesCrmRecordExist(common.service, context.PrimaryEntityName, context.PrimaryEntityId))
             {
                 return;
             }
@@ -53,7 +53,7 @@ namespace msdyncrmWorkflowTools.Class
                     }
             };
 
-            var listMembers = objCommon.service.RetrieveMultiple(query).Entities;
+            var listMembers = common.service.RetrieveMultiple(query).Entities;
 
             foreach (var member in listMembers)
             {
@@ -66,7 +66,7 @@ namespace msdyncrmWorkflowTools.Class
                     ListId = list.Id
                 };
 
-                objCommon.service.Execute(request);
+                common.service.Execute(request);
             }
         }
 

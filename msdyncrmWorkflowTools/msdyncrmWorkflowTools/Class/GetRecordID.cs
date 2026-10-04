@@ -17,7 +17,7 @@ namespace msdyncrmWorkflowTools
 
         #endregion
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
 
             #region "Read Parameters"
@@ -26,7 +26,7 @@ namespace msdyncrmWorkflowTools
 
             #endregion
 
-            var recordID=objCommon.GetRecordID(recordURL);
+            var recordID=common.GetRecordID(recordURL);
                 
            
             RecordID.Set(executionContext, recordID);

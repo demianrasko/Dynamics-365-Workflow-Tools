@@ -40,8 +40,8 @@ namespace msdyncrmWorkflowTools
 
             #region "Load CRM Service from context"
 
-            Common objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
+            Common common = new Common(executionContext);
+            common.tracingService.Trace("Load CRM Service from context --- OK");
             #endregion
 
             #region "Read Parameters"
@@ -50,11 +50,11 @@ namespace msdyncrmWorkflowTools
             string _texttoAnalyze = this.TexttoAnalyze.Get(executionContext);
             string _language = this.Language.Get(executionContext);
 
-            objCommon.tracingService.Trace("_subscriptionKey:" + _subscriptionKey + " -- TexttoAnalyze:" + TexttoAnalyze + " -- _language:"+ _language);
+            common.tracingService.Trace("_subscriptionKey:" + _subscriptionKey + " -- TexttoAnalyze:" + TexttoAnalyze + " -- _language:"+ _language);
 
             #endregion
 
-            string result=objCommon.AzureTextAnalyticsSentiment(_subscriptionKey, _texttoAnalyze, _language);
+            string result=common.AzureTextAnalyticsSentiment(_subscriptionKey, _texttoAnalyze, _language);
 
             this.Result.Set(executionContext, result);
         }

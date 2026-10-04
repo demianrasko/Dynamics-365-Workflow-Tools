@@ -18,12 +18,12 @@ namespace msdyncrmWorkflowTools.Class
 
 
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Load CRM Service from context"
 
             var context = executionContext.GetExtension<IWorkflowContext>();
-            objCommon.Trace("Load CRM Service from context --- OK");
+            common.Trace("Load CRM Service from context --- OK");
             #endregion
 
             InitiatingUser.Set(executionContext, new EntityReference("systemuser", context.InitiatingUserId));

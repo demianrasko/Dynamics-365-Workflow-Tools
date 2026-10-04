@@ -55,7 +55,7 @@ namespace msdyncrmWorkflowTools
         
         #endregion
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
             var entityName = EntityName.Get(executionContext);
@@ -66,7 +66,7 @@ namespace msdyncrmWorkflowTools
             var valueAttribute1 = ValueAttribute1.Get(executionContext);
             var valueAttribute2 = ValueAttribute2.Get(executionContext);
 
-            objCommon.Trace(
+            common.Trace(
                 $"EntityName: {entityName} - Attribute1:{attribute1} - Attribute2:{attribute2} - FilterAttribute1:{filterAttribute1} - FilterAttribute2:{filterAttribute2} - ValueAttribute1:{valueAttribute1} ValueAttribute2:{valueAttribute2}");
             #endregion
             #region "QueryExpression Execution"
@@ -107,35 +107,35 @@ namespace msdyncrmWorkflowTools
 
             qe.Criteria = filter;
 
-            objCommon.Trace("Executing Query...");
+            common.Trace("Executing Query...");
 
-            var results = objCommon.service.RetrieveMultiple(qe);
+            var results = common.service.RetrieveMultiple(qe);
 
-            objCommon.Trace($"Executed Query Ok, {results.Entities.Count} records ...");
+            common.Trace($"Executed Query Ok, {results.Entities.Count} records ...");
 
             if (results.Entities.Count <= 0)
             {
                 return;
             }
 
-            objCommon.Trace("Setting results");
+            common.Trace("Setting results");
             if (results.Entities[0].Attributes.Contains(attribute1))
             {
-                objCommon.Trace($"Setting result1: {results.Entities[0].Attributes[attribute1]}");
+                common.Trace($"Setting result1: {results.Entities[0].Attributes[attribute1]}");
 
                 // TODO: Is there a better way to do this?
                 switch (results.Entities[0].Attributes[attribute1])
                 {
                     case OptionSetValue _:
                     {
-                        objCommon.Trace("Value1 Is an OptionSetValue");
+                        common.Trace("Value1 Is an OptionSetValue");
                         var val = (OptionSetValue)results.Entities[0].Attributes[attribute1];
                         ResultValue1.Set(executionContext, val.Value.ToString());
                         break;
                     }
                     case EntityReference _:
                     {
-                        objCommon.Trace("Value1 Is an EntityReference");
+                        common.Trace("Value1 Is an EntityReference");
                         var val = (EntityReference)results.Entities[0].Attributes[attribute1];
                         ResultValue1.Set(executionContext, val.Id.ToString());
                         break;
@@ -148,13 +148,13 @@ namespace msdyncrmWorkflowTools
 
             if (results.Entities[0].Attributes.Contains(attribute2))
             {
-                objCommon.Trace($"Setting result2: {results.Entities[0].Attributes[attribute2]}");
+                common.Trace($"Setting result2: {results.Entities[0].Attributes[attribute2]}");
 
                 switch (results.Entities[0].Attributes[attribute2])
                 {
                     case OptionSetValue _:
                     {
-                        objCommon.Trace("Value2 Is an OptionSetValue");
+                        common.Trace("Value2 Is an OptionSetValue");
 
                         var val = (OptionSetValue)results.Entities[0].Attributes[attribute2];
                         ResultValue2.Set(executionContext, val.Value.ToString());
@@ -162,7 +162,7 @@ namespace msdyncrmWorkflowTools
                     }
                     case EntityReference _:
                     {
-                        objCommon.Trace("Value2 Is an EntityReference");
+                        common.Trace("Value2 Is an EntityReference");
                         var val = (EntityReference)results.Entities[0].Attributes[attribute2];
                         ResultValue2.Set(executionContext, val.Id.ToString());
                         break;
@@ -173,7 +173,7 @@ namespace msdyncrmWorkflowTools
                 }
             }
             
-            objCommon.Trace("End setting results");
+            common.Trace("End setting results");
             #endregion
         }
     }

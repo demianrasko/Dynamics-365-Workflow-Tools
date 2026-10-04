@@ -17,7 +17,7 @@ namespace msdyncrmWorkflowTools.Class
         [ReferenceTarget("team")]
         public InArgument<EntityReference> Team { get; set; }
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
            
@@ -39,7 +39,7 @@ namespace msdyncrmWorkflowTools.Class
             teamLink.LinkCriteria.AddCondition(teamCondition);
             userQuery.LinkEntities.Add(teamLink);
 
-            var retrievedUsers = objCommon.service.RetrieveMultiple(userQuery);
+            var retrievedUsers = common.service.RetrieveMultiple(userQuery);
 
             if (retrievedUsers.Entities.Count == 0)
             {
@@ -67,7 +67,7 @@ namespace msdyncrmWorkflowTools.Class
             }
             emailEnt["to"] = to;
 
-            objCommon.service.Update(emailEnt);
+            common.service.Update(emailEnt);
 
             #endregion
         }

@@ -19,16 +19,16 @@ namespace msdyncrmWorkflowTools
         [Output("isUserInTeam")]
         public OutArgument<bool> isUserInTeam { get; set; }
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
             var teamReference = Team.Get(executionContext);
             var userReference = User.Get(executionContext);
             
-            objCommon.Trace($"TeamId: {teamReference.Id.ToString()} ");
+            common.Trace($"TeamId: {teamReference.Id.ToString()} ");
             #endregion
 
-            var userId = objCommon.context.InitiatingUserId.ToString();
+            var userId = common.context.InitiatingUserId.ToString();
             if (userReference != null)
             {
                 userId = userReference.Id.ToString();
@@ -48,12 +48,12 @@ namespace msdyncrmWorkflowTools
                                                              </link-entity>
                                                            </entity></fetch> ";
 
-            objCommon.Trace($"FetchXML: {fetchXml} ");
-            var givenTeams = objCommon.service.RetrieveMultiple(new FetchExpression (fetchXml));
+            common.Trace($"FetchXML: {fetchXml} ");
+            var givenTeams = common.service.RetrieveMultiple(new FetchExpression (fetchXml));
 
             var userInTeam = (givenTeams.Entities.Count > 0);
 
-            objCommon.Trace("{0}", userInTeam ? "User do not belong to the team." : "User belong to this team.");
+            common.Trace("{0}", userInTeam ? "User do not belong to the team." : "User belong to this team.");
 
             isUserInTeam.Set(executionContext, userInTeam);
         }

@@ -23,7 +23,7 @@ namespace msdyncrmWorkflowTools
         
         #endregion
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
 
             #region "Read Parameters"
@@ -33,7 +33,7 @@ namespace msdyncrmWorkflowTools
             #endregion
 
            
-            var res=objCommon.JsonParser(json, jsonPath);
+            var res=common.JsonParser(json, jsonPath);
 
             if (res == null) res = string.Empty;
 

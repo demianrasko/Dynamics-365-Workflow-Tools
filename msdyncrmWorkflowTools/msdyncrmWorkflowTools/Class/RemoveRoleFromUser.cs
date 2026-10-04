@@ -16,16 +16,16 @@ namespace msdyncrmWorkflowTools
         [ReferenceTarget("systemuser")]
         public InArgument<EntityReference> User { get; set; }
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
             var roleReference = Role.Get(executionContext);
             var userReference = User.Get(executionContext);
 
-            objCommon.Trace($"RoleId: {roleReference.Id.ToString()} - UserID: {userReference.Id.ToString()} ");
+            common.Trace($"RoleId: {roleReference.Id.ToString()} - UserID: {userReference.Id.ToString()} ");
             #endregion
 
-            var roleId = Utility.GetRoleIdInBusinessUnit(objCommon.service, objCommon.tracingService, new EntityReference("systemuser", userReference.Id), roleReference.Id);
+            var roleId = Utility.GetRoleIdInBusinessUnit(common.service, common.tracingService, new EntityReference("systemuser", userReference.Id), roleReference.Id);
 
             if (roleId == null)
             {
@@ -34,7 +34,7 @@ namespace msdyncrmWorkflowTools
 
             var entRoleId = roleId.Value;
 
-            objCommon.service.Disassociate(
+            common.service.Disassociate(
                 "systemuser",
                 userReference.Id,
                 new Relationship("systemuserroles_association"), 

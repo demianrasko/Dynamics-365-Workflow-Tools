@@ -26,20 +26,20 @@ namespace msdyncrmWorkflowTools.Class
 
 
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
             var email = Email.Get(executionContext);
-            objCommon.Trace(string.Format("email: {0} ", email.Id.ToString()));
+            common.Trace(string.Format("email: {0} ", email.Id.ToString()));
 
             var securityRoleLookup = SecurityRoleLookup.Get(executionContext);
-            objCommon.Trace(string.Format("securityRoleLookup: {0} ", securityRoleLookup.Id.ToString()));
+            common.Trace(string.Format("securityRoleLookup: {0} ", securityRoleLookup.Id.ToString()));
 
 
             #endregion
-            objCommon.Trace("Init");
+            common.Trace("Init");
 
-            objCommon.SendEmailToUsersInRole(securityRoleLookup, email);
+            common.SendEmailToUsersInRole(securityRoleLookup, email);
 
 
         }

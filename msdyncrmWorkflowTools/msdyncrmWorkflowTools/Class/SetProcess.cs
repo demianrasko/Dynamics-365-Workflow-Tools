@@ -17,7 +17,7 @@ namespace msdyncrmWorkflowTools.Class
         [ReferenceTarget("workflow")]
         public InArgument<EntityReference> Process { get; set; }
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
             var cloningRecordUrl = ClonningRecordURL.Get(executionContext);
@@ -30,9 +30,9 @@ namespace msdyncrmWorkflowTools.Class
             var parsedUrl = Utility.ParseRecordUrl(cloningRecordUrl);
             var objectTypeCode = parsedUrl.ObjectTypeCode;
             var objectId = parsedUrl.Id;
-            var entityName = objCommon.GetEntityNameFromCode(objectTypeCode);
+            var entityName = common.GetEntityNameFromCode(objectTypeCode);
 
-            objCommon.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={objectId}");
+            common.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={objectId}");
 
             var process = Process.Get(executionContext);
             
@@ -46,7 +46,7 @@ namespace msdyncrmWorkflowTools.Class
                 NewProcess = process
             };
 
-            objCommon.service.Execute(req);
+            common.service.Execute(req);
 
             #endregion
         }

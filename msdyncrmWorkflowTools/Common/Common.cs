@@ -948,7 +948,7 @@ namespace msdyncrmWorkflowTools
             catch (Exception ex)
             {
                 Trace("Error : {0} - {1}", ex.Message, ex.StackTrace);
-                //    objCommon.tracingService.Trace("Error : {0} - {1}", ex.Message, ex.StackTrace);//
+                //    common.tracingService.Trace("Error : {0} - {1}", ex.Message, ex.StackTrace);//
                 //throw ex;
                 // if (ex.Detail.ErrorCode != 2147220937)//ignore if the error is a duplicate insert
                 //{

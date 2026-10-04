@@ -32,7 +32,7 @@ namespace msdyncrmWorkflowTools
         [Input("Update only Active")]
         public InArgument<bool> UpdateonlyActive { get; set; }
 
-        protected override void ExecuteActivity(CodeActivityContext executionContext, Common objCommon)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             #region "Read Parameters"
             var parentRecordUrl = ParentRecordURL.Get(executionContext);
@@ -45,9 +45,9 @@ namespace msdyncrmWorkflowTools
             var parsedUrl = Utility.ParseRecordUrl(parentRecordUrl);
             var objectTypeCode = parsedUrl.ObjectTypeCode;
             var parentEntityId = parsedUrl.Id;
-            var parentEntityType = objCommon.GetEntityNameFromCode(objectTypeCode);
+            var parentEntityType = common.GetEntityNameFromCode(objectTypeCode);
 
-            objCommon.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={parentEntityId}");
+            common.Trace($"ObjectTypeCode={objectTypeCode}--ParentId={parentEntityId}");
 
             var relationshipName = RelationshipName.Get(executionContext);
             var parentFieldNameToUpdate = ParentFieldNameToUpdate.Get(executionContext);
@@ -55,12 +55,12 @@ namespace msdyncrmWorkflowTools
             var childFieldNameToUpdate = ChildFieldNameToUpdate.Get(executionContext);
             var updateOnlyActive = UpdateonlyActive.Get(executionContext);
 
-            objCommon.Trace($"{nameof(RelationshipName)}={relationshipName}--_ParentFieldNameToUpdate={parentFieldNameToUpdate}");
-            objCommon.Trace($"_ValueToSet={valueToSet}--_ChildFieldNameToUpdate={childFieldNameToUpdate}");
+            common.Trace($"{nameof(RelationshipName)}={relationshipName}--_ParentFieldNameToUpdate={parentFieldNameToUpdate}");
+            common.Trace($"_ValueToSet={valueToSet}--_ChildFieldNameToUpdate={childFieldNameToUpdate}");
             #endregion
 
 
-            objCommon.UpdateChildRecords(relationshipName, parentEntityType, parentEntityId, parentFieldNameToUpdate, valueToSet, childFieldNameToUpdate, updateOnlyActive);
+            common.UpdateChildRecords(relationshipName, parentEntityType, parentEntityId, parentFieldNameToUpdate, valueToSet, childFieldNameToUpdate, updateOnlyActive);
         }
     }
 }
