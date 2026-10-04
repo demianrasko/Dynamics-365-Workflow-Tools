@@ -15,5 +15,5 @@ The Parameters are:
 * TimeZoneCode: Specify TimeZoneCode for users. Use Get-CrmTimeZones to see all options 0 for ignore the value. example of all values are here: http://www.powerobjects.com/2014/07/25/importing-values-time-zone-fields-dynamics-crm/
 * HelpLanguageId: Specify Unique identifier of the Help language. 0 for ignore
 * UILanguageId: Specify Unique identifier of the language in which to view the user interface (UI). 0 for ignore
-* DefaultCalendarView: specify the default calendar view values:  0 to Show the day by default. 2 to Show the month by default.  1 to Show the week by default
-* IsSendAsAllowed
+* DefaultCalendarView: specify the default calendar view values:  0 to Show the day by default. 2 to Show the month by default.  1 to Show the week by default. -1 (the default for new steps) to leave it unchanged
+* IsSendAsAllowed: always written, so set it to the user's current value when the step is only meant to change other settings

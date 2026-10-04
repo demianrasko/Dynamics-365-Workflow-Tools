@@ -1,15 +1,11 @@
 ﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
-using System.Linq;
 
 namespace msdyncrmWorkflowTools
 {
     public class SetUserSettings : WorkflowActivityBase
     {
-        /// <summary>The records-per-page values Dataverse accepts for paginglimit.</summary>
-        private static readonly int[] ValidPagingLimits = { 25, 50, 75, 100, 250 };
-
         [RequiredArgument]
         [Input("User")]
         [ReferenceTarget(EntityNames.SystemUser)]
@@ -45,15 +41,10 @@ namespace msdyncrmWorkflowTools
         public InArgument<int> UILanguageId { get; set; }
         //Specify Unique identifier of the language in which to view the user interface (UI). 0 for ignore
 
-        //specify the default calendar view values: Day
-        /*
-            0: Show the day by default.
-            2: Show the month by default.
-            1: Show the week by default
-        */
+        //Specify the default calendar view: 0: day, 1: week, 2: month. -1 for ignore
         [RequiredArgument]
         [Input("DefaultCalendarView")]
-        [Default("0")]
+        [Default("-1")]
         public InArgument<int> DefaultCalendarView { get; set; }
 
         [RequiredArgument]
@@ -63,66 +54,15 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
-
-            var userReference = User.Get(executionContext);
-            var pagingLimit = PagingLimit.Get(executionContext);
-            var advancedFindStartupMode = AdvancedFindStartupMode.Get(executionContext);
-            var timeZoneCode = TimeZoneCode.Get(executionContext);
-            var helpLanguageId = HelpLanguageId.Get(executionContext);
-            var uiLanguageId = UILanguageId.Get(executionContext);
-            var defaultCalendarView = DefaultCalendarView.Get(executionContext);
-            var isSendAsAllowed = IsSendAsAllowed.Get(executionContext);
-
-            common.Trace($"UserID: {userReference.Id.ToString()} ");
-            #endregion
-
-            var newSettings = new Entity(EntityNames.UserSettings);
-            newSettings.Attributes.Add("systemuserid", userReference.Id);
-
-            // TODO: Find a better way to do this
-            if (pagingLimit != 0)
-            {
-                if (!ValidPagingLimits.Contains(pagingLimit))
-                {
-                    throw new InvalidPluginExecutionException(
-                        $"PagingLimit must be 25, 50, 75, 100 or 250 (or 0 to leave it unchanged), not {pagingLimit}.");
-                }
-
-                newSettings.Attributes.Add("paginglimit", pagingLimit);
-            }
-
-            if (advancedFindStartupMode == 1 || advancedFindStartupMode == 2)
-            {
-                newSettings.Attributes.Add("advancedfindstartupmode", advancedFindStartupMode);
-            }
-
-            if (timeZoneCode != 0)
-            {
-                newSettings.Attributes.Add("timezonecode", timeZoneCode);
-            }
-
-            if (helpLanguageId != 0)
-            {
-                newSettings.Attributes.Add("helplanguageid", helpLanguageId);
-            }
-
-            if (uiLanguageId != 0)
-            {
-                newSettings.Attributes.Add("uilanguageid", uiLanguageId);
-            }
-
-            // TODO: Investigate DefaultCalendarView and IsSendAsAllowed. Both are written on every run:
-            // DefaultCalendarView defaults to 0 (Day), which passes the check below, and IsSendAsAllowed defaults
-            // to false, so a step meant to change another setting also resets the user's calendar view and Send As.
-            if (defaultCalendarView == 0 || defaultCalendarView == 1 || defaultCalendarView == 2)
-            {
-                newSettings.Attributes.Add("defaultcalendarview", defaultCalendarView);
-            }
-
-            newSettings.Attributes.Add("issendasallowed", isSendAsAllowed);
-
-            common.Service.Update(newSettings);
+            common.SetUserSettings(
+                User.Get(executionContext).Id,
+                PagingLimit.Get(executionContext),
+                AdvancedFindStartupMode.Get(executionContext),
+                TimeZoneCode.Get(executionContext),
+                HelpLanguageId.Get(executionContext),
+                UILanguageId.Get(executionContext),
+                DefaultCalendarView.Get(executionContext),
+                IsSendAsAllowed.Get(executionContext));
         }
     }
 }

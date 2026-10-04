@@ -1679,7 +1679,7 @@ namespace msdyncrmWorkflowTools
         }
         #endregion
 
-        #region Queues and organization settings
+        #region Queues and settings
         /// <summary>
         /// Picks the newest unassigned items of a queue for a worker.
         /// </summary>
@@ -1740,9 +1740,30 @@ namespace msdyncrmWorkflowTools
 
             return true;
         }
+
+        /// <summary>
+        /// Updates a user's personal settings (see <see cref="Utility.BuildUserSettings"/> for which are written).
+        /// </summary>
+        public void SetUserSettings(Guid userId, int pagingLimit, int advancedFindStartupMode, int timeZoneCode,
+            int helpLanguageId, int uiLanguageId, int defaultCalendarView, bool isSendAsAllowed)
+        {
+            Trace($"Updating the settings of user {userId}");
+
+            Service.Update(Utility.BuildUserSettings(userId, pagingLimit, advancedFindStartupMode, timeZoneCode,
+                helpLanguageId, uiLanguageId, defaultCalendarView, isSendAsAllowed));
+        }
         #endregion
 
         #region Sales and marketing
+        /// <summary>
+        /// Recalculates the prices of an opportunity, quote, order or invoice.
+        /// </summary>
+        public void CalculatePrice(EntityReference target)
+        {
+            Trace($"Calculating the price of {target.LogicalName} {target.Id}");
+            Service.Execute(new CalculatePriceRequest { Target = target });
+        }
+
 
         /// <summary>
         /// Qualifies a lead, optionally creating an account, contact and opportunity (in the organization's base

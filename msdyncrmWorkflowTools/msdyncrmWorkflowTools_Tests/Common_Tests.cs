@@ -928,6 +928,30 @@ namespace msdyncrmWorkflowTools_Tests
             Assert.AreEqual(related, call.Related.Single());
             Assert.AreSame(first, common.RetrieveFirst(new QueryExpression("contact")));
         }
+
+        [TestMethod]
+        public void SetUserSettings_UpdatesTheUsersSettings()
+        {
+            var userId = Guid.NewGuid();
+
+            common.SetUserSettings(userId, 50, 0, 0, 0, 0, -1, true);
+
+            var settings = service.Updated.Single();
+            Assert.AreEqual(EntityNames.UserSettings, settings.LogicalName);
+            Assert.AreEqual(userId, settings["systemuserid"]);
+            Assert.AreEqual(50, settings["paginglimit"]);
+        }
+
+        [TestMethod]
+        public void CalculatePrice_ExecutesTheRequest()
+        {
+            var quote = new EntityReference(EntityNames.Quote, RecordId);
+            service.OnExecute = r => new CalculatePriceResponse();
+
+            common.CalculatePrice(quote);
+
+            Assert.AreEqual(quote, ((CalculatePriceRequest)service.Executed.Single()).Target);
+        }
         #endregion
 
         #region AI functions

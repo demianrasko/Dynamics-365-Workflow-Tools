@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Xrm.Sdk;
 using msdyncrmWorkflowTools;
+using System;
 using System.Linq;
 
 namespace msdyncrmWorkflowTools_Tests
@@ -514,6 +515,48 @@ namespace msdyncrmWorkflowTools_Tests
             Assert.AreEqual(42, Utility.ConvertSettingValue("42"));
             Assert.AreEqual(true, Utility.ConvertSettingValue("True"));
             Assert.AreEqual("abc", Utility.ConvertSettingValue("abc"));
+        }
+
+        [TestMethod]
+        public void BuildUserSettings_WritesOnlyTheSuppliedSettings()
+        {
+            var userId = Guid.NewGuid();
+
+            var settings = Utility.BuildUserSettings(userId, 0, 0, 0, 0, 0, -1, false);
+
+            CollectionAssert.AreEquivalent(new[] { "systemuserid", "issendasallowed" }, settings.Attributes.Keys.ToArray());
+            Assert.AreEqual(userId, settings["systemuserid"]);
+            Assert.AreEqual(false, settings["issendasallowed"]);
+        }
+
+        [TestMethod]
+        public void BuildUserSettings_WritesEverySuppliedSetting()
+        {
+            var settings = Utility.BuildUserSettings(Guid.NewGuid(), 250, 2, 85, 1033, 1036, 0, true);
+
+            Assert.AreEqual(250, settings["paginglimit"]);
+            Assert.AreEqual(2, settings["advancedfindstartupmode"]);
+            Assert.AreEqual(85, settings["timezonecode"]);
+            Assert.AreEqual(1033, settings["helplanguageid"]);
+            Assert.AreEqual(1036, settings["uilanguageid"]);
+            Assert.AreEqual(0, settings["defaultcalendarview"]);
+            Assert.AreEqual(true, settings["issendasallowed"]);
+        }
+
+        [TestMethod]
+        public void BuildUserSettings_IgnoresOutOfRangeModes()
+        {
+            var settings = Utility.BuildUserSettings(Guid.NewGuid(), 0, 3, 0, 0, 0, 5, false);
+
+            Assert.IsFalse(settings.Contains("advancedfindstartupmode"));
+            Assert.IsFalse(settings.Contains("defaultcalendarview"));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidPluginExecutionException))]
+        public void BuildUserSettings_RejectsAnInvalidPagingLimit()
+        {
+            Utility.BuildUserSettings(Guid.NewGuid(), 30, 0, 0, 0, 0, -1, false);
         }
     }
 }

@@ -508,6 +508,64 @@ namespace msdyncrmWorkflowTools
             return value;
         }
 
+        /// <summary>The records-per-page values Dataverse accepts for usersettings.paginglimit.</summary>
+        private static readonly int[] ValidPagingLimits = { 25, 50, 75, 100, 250 };
+
+        /// <summary>
+        /// The usersettings update for SetUserSettings, holding only the settings that were supplied:
+        /// 0 leaves a number unchanged, as does an AdvancedFind mode other than 1 or 2 and a calendar view
+        /// other than 0, 1 or 2. Send As is always written.
+        /// </summary>
+        /// <exception cref="InvalidPluginExecutionException">The paging limit is not 0, 25, 50, 75, 100 or 250.</exception>
+        public static Entity BuildUserSettings(Guid userId, int pagingLimit, int advancedFindStartupMode, int timeZoneCode,
+            int helpLanguageId, int uiLanguageId, int defaultCalendarView, bool isSendAsAllowed)
+        {
+            var settings = new Entity(EntityNames.UserSettings)
+            {
+                ["systemuserid"] = userId
+            };
+
+            if (pagingLimit != 0)
+            {
+                if (!ValidPagingLimits.Contains(pagingLimit))
+                {
+                    throw new InvalidPluginExecutionException(
+                        $"PagingLimit must be 25, 50, 75, 100 or 250 (or 0 to leave it unchanged), not {pagingLimit}.");
+                }
+
+                settings["paginglimit"] = pagingLimit;
+            }
+
+            if (advancedFindStartupMode == 1 || advancedFindStartupMode == 2)
+            {
+                settings["advancedfindstartupmode"] = advancedFindStartupMode;
+            }
+
+            if (timeZoneCode != 0)
+            {
+                settings["timezonecode"] = timeZoneCode;
+            }
+
+            if (helpLanguageId != 0)
+            {
+                settings["helplanguageid"] = helpLanguageId;
+            }
+
+            if (uiLanguageId != 0)
+            {
+                settings["uilanguageid"] = uiLanguageId;
+            }
+
+            if (defaultCalendarView >= 0 && defaultCalendarView <= 2)
+            {
+                settings["defaultcalendarview"] = defaultCalendarView;
+            }
+
+            settings["issendasallowed"] = isSendAsAllowed;
+
+            return settings;
+        }
+
         /// <summary>
         /// Splits a comma-separated category list for AIClassify: trimmed, no empty entries, no duplicates
         /// (ignoring case), in the original order.
