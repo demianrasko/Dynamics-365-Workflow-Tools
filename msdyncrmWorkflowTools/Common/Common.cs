@@ -10,11 +10,7 @@ using System.Activities;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.ServiceModel;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace msdyncrmWorkflowTools
 {
@@ -24,21 +20,6 @@ namespace msdyncrmWorkflowTools
         public IWorkflowContext context;
         public IOrganizationServiceFactory serviceFactory;
         public IOrganizationService service;
-
-        //Shared HttpClient
-        private static HttpClient httpClient;
-
-        /// <summary>
-        /// Class Constructor: Inits Singletion objects
-        /// </summary>
-        static Common()
-        {
-            //Setup a commong HttpClient as a best practice to avoid leaving open connections
-            //more details https://docs.microsoft.com/en-us/azure/architecture/antipatterns/improper-instantiation/
-            httpClient = new HttpClient();
-            httpClient.Timeout = new TimeSpan(0, 0, 30); //30 second timeout as recommend by Microsoft Support to prevent TimeOut on Sandbox
-            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));//ACCEPT header
-        }
 
         /// <summary>
         /// Used by the workflow activities: pulls the tracing service, workflow context and organization service from the execution context.
@@ -433,10 +414,6 @@ namespace msdyncrmWorkflowTools
             Trace("cloned object OK");
 
             return id;
-        }
-
-        public void DeleteAudit(string entityname, string entityid)
-        {
         }
 
         public void DeleteRecordAuditHistory(string logicalName, string id)
@@ -977,71 +954,6 @@ namespace msdyncrmWorkflowTools
             return retrieved;
         }
 
-        /// <summary>
-        /// Translates text with Azure AI Translator (Text Translation v3.0).
-        /// </summary>
-        /// <param name="textToTranslate">Text to translate; the source language is detected automatically.</param>
-        /// <param name="language">Target language code, e.g. "en", "es", "pt", "fr-ca".</param>
-        /// <param name="key">Translator resource key (Ocp-Apim-Subscription-Key).</param>
-        /// <param name="region">Azure region of the Translator resource, e.g. "westeurope". Required for regional and
-        /// multi-service resources; leave empty for a global Translator resource.</param>
-        /// <returns>The translated text, or an empty string when there is nothing to translate.</returns>
-        public string TranslateText(string textToTranslate, string language, string key, string region = null)
-        {
-            if (string.IsNullOrEmpty(textToTranslate))
-            {
-                return string.Empty;
-            }
-
-            var url = "https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&to=" +
-                      Uri.EscapeDataString((language ?? string.Empty).Trim());
-
-            var request = new HttpRequestMessage(HttpMethod.Post, url)
-            {
-                Content = new StringContent(Utility.BuildTranslatorRequest(textToTranslate), Encoding.UTF8, "application/json")
-            };
-            request.Headers.Add("Ocp-Apim-Subscription-Key", key);
-
-            if (!string.IsNullOrWhiteSpace(region))
-            {
-                request.Headers.Add("Ocp-Apim-Subscription-Region", region.Trim());
-            }
-
-            var response = ExecuteAsyncRequest(request);
-            Trace("Translator response: {0}", response);
-
-            return Utility.ParseTranslatorResponse(response);
-        }
-        /// <summary>
-        /// Converts an amount between currencies using the European Central Bank reference rates published by
-        /// Frankfurter (https://frankfurter.dev, free, no API key). Rates are updated once per working day.
-        /// </summary>
-        /// <remarks>Only the ~30 currencies the ECB publishes are supported (USD, EUR, GBP, JPY, CAD, AUD, ...).</remarks>
-        /// <param name="amount">Amount in <paramref name="fromCurrency"/>.</param>
-        /// <param name="fromCurrency">ISO 4217 code, e.g. USD.</param>
-        /// <param name="toCurrency">ISO 4217 code, e.g. EUR.</param>
-        /// <returns>The converted amount in <paramref name="toCurrency"/>.</returns>
-        public decimal CurrencyConvert(decimal amount, string fromCurrency, string toCurrency)
-        {
-            var from = (fromCurrency ?? string.Empty).Trim().ToUpperInvariant();
-            var to = (toCurrency ?? string.Empty).Trim().ToUpperInvariant();
-
-            if (from == to)
-            {
-                return amount;
-            }
-
-            var url = string.Format(CultureInfo.InvariantCulture,
-                "https://api.frankfurter.dev/v1/latest?amount={0}&base={1}&symbols={2}",
-                amount, Uri.EscapeDataString(from), Uri.EscapeDataString(to));
-
-            Trace("Currency conversion request: {0}", url);
-            var response = ExecuteAsyncRequest(new HttpRequestMessage(HttpMethod.Get, url));
-            Trace("Currency conversion response: {0}", response);
-
-            return Utility.ParseCurrencyConversion(response, from, to);
-        }
-
         public void UpdateChildRecords(string relationshipName, string parentEntityType, string parentEntityId, string parentFieldNameToUpdate, string setValueToUpdate, string childFieldNameToUpdate, bool _UpdateonlyActive)
         {
             //1) Get child lookup field name
@@ -1159,43 +1071,6 @@ namespace msdyncrmWorkflowTools
 
                 service.Update(entUpdate);
             }
-        }
-        /// <summary>
-        /// Sends an HTTP request synchronously (shared HttpClient, 30-second timeout) and returns the response body.
-        /// </summary>
-        /// <remarks>
-        /// An error status with a JSON body is returned to the caller, which turns the API's own error message into a
-        /// readable exception (Frankfurter, Translator). Any other error status throws with the status and the start of the body.
-        /// </remarks>
-        /// <param name="message">The request to send.</param>
-        /// <returns>The response body.</returns>
-        private string ExecuteAsyncRequest(HttpRequestMessage message)
-        {
-            HttpResponseMessage response;
-            string body;
-
-            try
-            {
-                // Task.Run keeps the async calls off any synchronization context; GetResult blocks without spinning
-                response = Task.Run(() => httpClient.SendAsync(message)).GetAwaiter().GetResult();
-                body = Task.Run(() => response.Content.ReadAsStringAsync()).GetAwaiter().GetResult();
-            }
-            catch (TaskCanceledException)
-            {
-                throw new TimeoutException($"Timeout waiting for HttpResponse {message.Method}:{message.RequestUri}");
-            }
-
-            Trace("HTTP {0} {1} from {2}", (int)response.StatusCode, response.ReasonPhrase, message.RequestUri.Host);
-
-            var mediaType = response.Content.Headers.ContentType?.MediaType ?? string.Empty;
-            if (!response.IsSuccessStatusCode && mediaType.IndexOf("json", StringComparison.OrdinalIgnoreCase) < 0)
-            {
-                var detail = body.Length > 500 ? $"{body.Substring(0, 500)}..." : body;
-                throw new InvalidPluginExecutionException(
-                    $"HTTP {(int)response.StatusCode} {response.ReasonPhrase} from {message.RequestUri.Host}: {detail}");
-            }
-
-            return body;
         }
     }
 }
