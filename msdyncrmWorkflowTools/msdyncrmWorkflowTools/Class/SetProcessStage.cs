@@ -50,7 +50,6 @@ namespace msdyncrmWorkflowTools.Class
             if (processStage != null)
             {
                 common.Trace("[Dynamics.ChangeBPFandPhase.Execute] Process stage: " + processStage);
-                Entity stageReference;
 
                 var queryStage = new QueryExpression("processstage")
                 {
@@ -61,7 +60,7 @@ namespace msdyncrmWorkflowTools.Class
                 queryStage.Criteria.AddCondition(new ConditionExpression("processid", ConditionOperator.Equal, process.Id));
 
                 common.Trace("[Dynamics.ChangeBPFandPhase.Execute] Fetching the requested Stage.");
-                stageReference = common.service.RetrieveMultiple(queryStage).Entities.FirstOrDefault();
+                var stageReference = common.service.RetrieveMultiple(queryStage).Entities.FirstOrDefault();
                 if (stageReference == null)
                 {
                     throw new InvalidPluginExecutionException(nameof(Process) + " stage " + processStage + " not found");
