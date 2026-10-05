@@ -163,5 +163,20 @@ namespace msdyncrmWorkflowTools_IntegrationTests
 
             return false;
         }
+
+        /// <summary>Whether a table exists.</summary>
+        protected bool TableExists(string logicalName)
+        {
+            try
+            {
+                Service.Execute(new RetrieveEntityRequest { LogicalName = logicalName, EntityFilters = EntityFilters.Entity });
+
+                return true;
+            }
+            catch (FaultException<OrganizationServiceFault>)
+            {
+                return false;
+            }
+        }
     }
 }

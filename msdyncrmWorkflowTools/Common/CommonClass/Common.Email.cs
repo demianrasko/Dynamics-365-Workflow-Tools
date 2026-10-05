@@ -130,9 +130,20 @@ namespace msdyncrmWorkflowTools
             return members.Count;
         }
 
+        /// <summary>
+        /// Addresses an email to the enabled users who have a security role, and sends it.
+        /// </summary>
+        /// <exception cref="InvalidPluginExecutionException">No enabled user has the role (Dataverse can't send an
+        /// email without recipients).</exception>
         public void SendEmailToUsersInRole(EntityReference securityRoleLookup, EntityReference emailReference)
         {
-            var userIds = Service.RetrieveMultiple(UsersInRoleQuery(securityRoleLookup.Id)).Entities.Select(e => e.Id);
+            var userIds = Service.RetrieveMultiple(UsersInRoleQuery(securityRoleLookup.Id)).Entities.Select(e => e.Id).ToList();
+
+            if (userIds.Count == 0)
+            {
+                throw new InvalidPluginExecutionException(
+                    $"No enabled user has the security role {securityRoleLookup.Name ?? securityRoleLookup.Id.ToString()}, so there is nobody to send the email to.");
+            }
 
             SetEmailRecipients(emailReference.Id, userIds);
 

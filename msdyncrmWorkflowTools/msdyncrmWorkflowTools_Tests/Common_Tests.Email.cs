@@ -141,5 +141,12 @@ namespace msdyncrmWorkflowTools_Tests
             AssertCondition(anyPattern.Conditions[1], AttributeNames.FileName, ConditionOperator.Like, "%.docx");
             Assert.IsFalse(query.Criteria.Conditions.Any(c => c.AttributeName == AttributeNames.FileName));
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidPluginExecutionException))]
+        public void SendEmailToUsersInRole_NoUsersThrows()
+        {
+            common.SendEmailToUsersInRole(new EntityReference(EntityNames.Role, Guid.NewGuid()), new EntityReference(EntityNames.Email, RecordId));
+        }
     }
 }

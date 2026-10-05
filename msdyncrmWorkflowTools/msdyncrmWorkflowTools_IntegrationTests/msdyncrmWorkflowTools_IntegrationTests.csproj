@@ -87,8 +87,10 @@
   <ItemGroup>
     <Compile Include="DataverseConnection.cs" />
     <Compile Include="IntegrationTestBase.cs" />
+    <Compile Include="IntegrationTestBase.Email.cs" />
     <Compile Include="IntegrationTestBase.Helpers.cs" />
     <Compile Include="IntegrationTestBase.Metadata.cs" />
+    <Compile Include="IntegrationTestBase.Processes.cs" />
     <Compile Include="IntegrationTestBase.Queries.cs" />
     <Compile Include="IntegrationTestBase.QueuesAndSettings.cs" />
     <Compile Include="IntegrationTestBase.RecordUrls.cs" />
