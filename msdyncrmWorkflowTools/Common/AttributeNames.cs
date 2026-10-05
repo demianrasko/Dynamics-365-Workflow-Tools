@@ -43,6 +43,8 @@
 
         public const string DefaultCalendarView = "defaultcalendarview";
 
+        public const string DefaultValue = "defaultvalue";
+
         public const string Description = "description";
 
         public const string DocumentBody = "documentbody";
@@ -50,6 +52,8 @@
         public const string EnteredOn = "enteredon";
 
         public const string EntityId = "entityid";
+
+        public const string EnvironmentVariableDefinitionId = "environmentvariabledefinitionid";
 
         public const string FileName = "filename";
 
@@ -121,6 +125,8 @@
 
         public const string SalesLiteratureItemId = "salesliteratureitemid";
 
+        public const string SchemaName = "schemaname";
+
         public const string SharePointDocumentLocationId = "sharepointdocumentlocationid";
 
         public const string StageName = "stagename";
@@ -150,6 +156,8 @@
         public const string UomId = "uomid";
 
         public const string UpdateAccess = "updateaccess";
+
+        public const string Value = "value";
 
         public const string WorkerId = "workerid";
     }

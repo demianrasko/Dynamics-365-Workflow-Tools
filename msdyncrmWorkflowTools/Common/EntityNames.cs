@@ -25,6 +25,10 @@
 
         public const string Email = "email";
 
+        public const string EnvironmentVariableDefinition = "environmentvariabledefinition";
+
+        public const string EnvironmentVariableValue = "environmentvariablevalue";
+
         public const string Goal = "goal";
 
         public const string Incident = "incident";

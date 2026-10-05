@@ -106,6 +106,7 @@ To see how to use each of the tools includes in this solution, please access to 
 * 92 [Distribute Workflow (One To Many)](/docs/DistributeWFActivityOneToMany.md)
 * 93 [Distribute Workflow (Many To Many)](/docs/DistributeWFActivityManyToMany.md)
 * 94 [Execute Workflow For Records In Query](/docs/ExecuteWorkflowForRecordsinQuery.md)
+* 95 [Get Environment Variable](/docs/GetEnvironmentVariable.md)
 
 
 

@@ -160,6 +160,7 @@
     <Compile Include="Class\GetSharepointLocationURL.cs" />
     <Compile Include="Class\IsMemberOfTeam.cs" />
     <Compile Include="Class\GetAppRecordUrl.cs" />
+    <Compile Include="Class\GetEnvironmentVariable.cs" />
     <Compile Include="Class\GetAppModuleID.cs" />
     <Compile Include="Class\GetRecordID.cs" />
     <Compile Include="Class\GetRecordUrl.cs" />

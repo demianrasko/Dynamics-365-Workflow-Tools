@@ -76,5 +76,34 @@ namespace msdyncrmWorkflowTools_Tests
             Assert.AreEqual(2, common.CountQueueItems(queueId, true));
             Assert.AreEqual(EntityNames.QueueItem, ((QueryExpression)service.Queries.Single()).EntityName);
         }
+
+        [TestMethod]
+        public void GetEnvironmentVariable_PrefersTheCurrentValue()
+        {
+            service.OnRetrieveMultiple = query => Collection(new Entity(EntityNames.EnvironmentVariableDefinition, Guid.NewGuid())
+            {
+                [AttributeNames.DefaultValue] = "default",
+                [Common.EnvironmentVariableValueAlias] = new AliasedValue(EntityNames.EnvironmentVariableValue, AttributeNames.Value, "current")
+            });
+
+            Assert.AreEqual("current", common.GetEnvironmentVariable(" new_ApiUrl "));
+
+            var sent = (QueryExpression)service.Queries.Single();
+            AssertCondition(sent.Criteria.Conditions.Single(), AttributeNames.SchemaName, ConditionOperator.Equal, "new_ApiUrl");
+            Assert.AreEqual(JoinOperator.LeftOuter, sent.LinkEntities.Single().JoinOperator);
+        }
+
+        [TestMethod]
+        public void GetEnvironmentVariable_FallsBackToTheDefaultOrNull()
+        {
+            service.OnRetrieveMultiple = query => Collection(new Entity(EntityNames.EnvironmentVariableDefinition, Guid.NewGuid()) { [AttributeNames.DefaultValue] = "default" });
+            Assert.AreEqual("default", common.GetEnvironmentVariable("new_ApiUrl"));
+
+            service.OnRetrieveMultiple = query => Collection(new Entity(EntityNames.EnvironmentVariableDefinition, Guid.NewGuid()));
+            Assert.IsNull(common.GetEnvironmentVariable("new_ApiUrl"));
+
+            service.OnRetrieveMultiple = query => Collection();
+            Assert.IsNull(common.GetEnvironmentVariable("new_Missing"));
+        }
     }
 }

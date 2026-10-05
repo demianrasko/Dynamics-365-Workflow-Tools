@@ -127,5 +127,59 @@ namespace msdyncrmWorkflowTools
         {
             return CountRecords(QueueItemsQuery(queueId, onlyUnassigned));
         }
+
+        /// <summary>
+        /// The value of an environment variable: its current value when one is set, otherwise its default value.
+        /// </summary>
+        /// <param name="schemaName">Schema name of the environment variable, e.g. "new_ApiUrl".</param>
+        /// <returns>The value, or null when there is no such variable or it has neither a current nor a default value.</returns>
+        public string GetEnvironmentVariable(string schemaName)
+        {
+            var definition = RetrieveFirst(EnvironmentVariableQuery(schemaName.Trim()));
+
+            if (definition == null)
+            {
+                Trace($"Environment variable {schemaName} was not found.");
+
+                return null;
+            }
+
+            var currentValue = definition.GetAttributeValue<AliasedValue>(EnvironmentVariableValueAlias)?.Value as string;
+
+            if (currentValue != null)
+            {
+                Trace($"Environment variable {schemaName} has a current value.");
+
+                return currentValue;
+            }
+
+            Trace($"Environment variable {schemaName} uses its default value.");
+
+            return definition.GetAttributeValue<string>(AttributeNames.DefaultValue);
+        }
+
+        /// <summary>Alias of the current-value link in <see cref="EnvironmentVariableQuery"/>.</summary>
+        public const string EnvironmentVariableValueAlias = "currentvalue." + AttributeNames.Value;
+
+        /// <summary>
+        /// The environment variable definition with this schema name, with its default value and, through an outer
+        /// link, its current value (aliased <see cref="EnvironmentVariableValueAlias"/>).
+        /// </summary>
+        public static QueryExpression EnvironmentVariableQuery(string schemaName)
+        {
+            var query = new QueryExpression(EntityNames.EnvironmentVariableDefinition)
+            {
+                ColumnSet = new ColumnSet(AttributeNames.DefaultValue),
+                TopCount = 1
+            };
+            query.Criteria.AddCondition(AttributeNames.SchemaName, ConditionOperator.Equal, schemaName);
+
+            var currentValue = query.AddLink(EntityNames.EnvironmentVariableValue, AttributeNames.EnvironmentVariableDefinitionId,
+                AttributeNames.EnvironmentVariableDefinitionId, JoinOperator.LeftOuter);
+            currentValue.EntityAlias = "currentvalue";
+            currentValue.Columns = new ColumnSet(AttributeNames.Value);
+
+            return query;
+        }
     }
 }
