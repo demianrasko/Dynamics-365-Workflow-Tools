@@ -24,9 +24,15 @@ namespace msdyncrmWorkflowTools_IntegrationTests
         /// <summary>A multi-select choice column on account with three options.</summary>
         protected const string TestChoices = "new_wfttestchoices";
 
+        /// <summary>A text column on account with field security turned on.</summary>
+        protected const string TestSecret = "new_wfttestsecret";
+
         private static readonly ConcurrentDictionary<string, int[]> OptionValues = new ConcurrentDictionary<string, int[]>();
 
-        /// <summary>The option values of a test column on account, creating the column first when it doesn't exist.</summary>
+        /// <summary>
+        /// The option values of a test column on account (none for <see cref="TestSecret"/>), creating the column first
+        /// when it doesn't exist.
+        /// </summary>
         protected int[] TestOptions(string column)
         {
             return OptionValues.GetOrAdd($"{ConnectionVariable}|{column}", _ => EnsureTestColumn(column));
@@ -36,7 +42,9 @@ namespace msdyncrmWorkflowTools_IntegrationTests
         {
             var metadata = RetrieveColumn(column) ?? CreateTestColumn(column);
 
-            return ((EnumAttributeMetadata)metadata).OptionSet.Options.Select(o => o.Value.Value).OrderBy(v => v).ToArray();
+            return metadata is EnumAttributeMetadata choice
+                ? choice.OptionSet.Options.Select(o => o.Value.Value).OrderBy(v => v).ToArray()
+                : new int[0];
         }
 
         private AttributeMetadata RetrieveColumn(string column)
@@ -71,7 +79,11 @@ namespace msdyncrmWorkflowTools_IntegrationTests
 
             AttributeMetadata attribute;
 
-            if (column == TestChoices)
+            if (column == TestSecret)
+            {
+                attribute = new StringAttributeMetadata { MaxLength = 100, IsSecured = true };
+            }
+            else if (column == TestChoices)
             {
                 attribute = new MultiSelectPicklistAttributeMetadata { OptionSet = options };
             }

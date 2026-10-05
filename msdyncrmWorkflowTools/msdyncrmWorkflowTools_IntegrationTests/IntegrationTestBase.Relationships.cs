@@ -60,5 +60,35 @@ namespace msdyncrmWorkflowTools_IntegrationTests
             Assert.AreEqual(1, Common.CountChildRecords(EntityNames.Contact, "parentcustomerid", account.Id,
                 "<condition attribute='lastname' operator='like' value='%0' />"));
         }
+
+        [TestMethod]
+        public void OneToMany_ChildRecordsAndRelatedIds()
+        {
+            var account = Create(new Entity(EntityNames.Account) { [AttributeNames.Name] = UniqueName("parent") });
+            var contacts = new[] { CreateContact(account), CreateContact(account) };
+
+            CollectionAssert.AreEquivalent(contacts.Select(c => c.Id).ToList(), Common.GetOneToManyRelatedIds("contact_customer_accounts", account.Id));
+            CollectionAssert.AreEquivalent(contacts.Select(c => c.Id).ToList(),
+                Common.GetChildRecords("contact_customer_accounts", account.Id).Entities.Select(e => e.Id).ToList());
+        }
+
+        [TestMethod]
+        public void ManyToMany_AssociateFindAndDisassociate()
+        {
+            var team = CreateTeam();
+            var roleId = RoleTheUserDoesNotHave();
+
+            Assert.AreEqual(0, Common.GetAssociations(EntityNames.Team, team.Id, EntityNames.TeamRoles, EntityNames.Role, roleId).Entities.Count);
+
+            Common.AssociateEntity(EntityNames.Team, team.Id, "teamroles_association", EntityNames.TeamRoles, EntityNames.Role, roleId);
+            Common.AssociateEntity(EntityNames.Team, team.Id, "teamroles_association", EntityNames.TeamRoles, EntityNames.Role, roleId);
+
+            Assert.AreEqual(1, Common.GetAssociations(EntityNames.Team, team.Id, EntityNames.TeamRoles, EntityNames.Role, roleId).Entities.Count);
+            CollectionAssert.AreEqual(new[] { roleId }, Common.GetManyToManyRelatedIds("teamroles_association", EntityNames.Team, team.Id));
+
+            Common.DisassociateEntity(team, "teamroles_association", new EntityReference(EntityNames.Role, roleId));
+
+            Assert.AreEqual(0, Common.GetManyToManyRelatedIds("teamroles_association", EntityNames.Team, team.Id).Count);
+        }
     }
 }

@@ -1,6 +1,8 @@
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using msdyncrmWorkflowTools;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace msdyncrmWorkflowTools_IntegrationTests
@@ -44,6 +46,48 @@ namespace msdyncrmWorkflowTools_IntegrationTests
         protected static int[] Values(OptionSetValueCollection values)
         {
             return values.Select(v => v.Value).ToArray();
+        }
+
+        /// <summary>Creates an owner team in the application user's business unit (deleted after the test).</summary>
+        protected EntityReference CreateTeam()
+        {
+            return Create(new Entity(EntityNames.Team)
+            {
+                [AttributeNames.Name] = UniqueName("team"),
+                [AttributeNames.BusinessUnitId] = new EntityReference(EntityNames.BusinessUnit, BusinessUnitId),
+                [AttributeNames.TeamType] = new OptionSetValue(0)
+            });
+        }
+
+        /// <summary>
+        /// A security role of the application user's business unit that the application user doesn't have
+        /// (Basic User when there is one).
+        /// </summary>
+        protected Guid RoleTheUserDoesNotHave()
+        {
+            var userRoles = new HashSet<Guid>(Service.RetrieveMultiple(new QueryExpression(EntityNames.SystemUserRoles)
+            {
+                ColumnSet = new ColumnSet(AttributeNames.RoleId),
+                Criteria = { Conditions = { new ConditionExpression(AttributeNames.SystemUserId, ConditionOperator.Equal, UserId) } }
+            }).Entities.Select(e => e.GetAttributeValue<Guid>(AttributeNames.RoleId)));
+
+            var roles = Service.RetrieveMultiple(new QueryExpression(EntityNames.Role)
+            {
+                ColumnSet = new ColumnSet(AttributeNames.Name),
+                Criteria = { Conditions = { new ConditionExpression(AttributeNames.BusinessUnitId, ConditionOperator.Equal, BusinessUnitId) } }
+            }).Entities.Where(r => !userRoles.Contains(r.Id)).ToList();
+
+            return (roles.FirstOrDefault(r => r.GetAttributeValue<string>(AttributeNames.Name) == "Basic User") ?? roles.First()).Id;
+        }
+
+        /// <summary>A security role the application user has.</summary>
+        protected Guid RoleTheUserHas()
+        {
+            return Service.RetrieveMultiple(new QueryExpression(EntityNames.SystemUserRoles)
+            {
+                ColumnSet = new ColumnSet(AttributeNames.RoleId),
+                Criteria = { Conditions = { new ConditionExpression(AttributeNames.SystemUserId, ConditionOperator.Equal, UserId) } }
+            }).Entities.First().GetAttributeValue<Guid>(AttributeNames.RoleId);
         }
     }
 }

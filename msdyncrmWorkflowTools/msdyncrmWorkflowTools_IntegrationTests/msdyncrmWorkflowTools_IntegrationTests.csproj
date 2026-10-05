@@ -91,6 +91,7 @@
     <Compile Include="IntegrationTestBase.Metadata.cs" />
     <Compile Include="IntegrationTestBase.Queries.cs" />
     <Compile Include="IntegrationTestBase.QueuesAndSettings.cs" />
+    <Compile Include="IntegrationTestBase.RecordUrls.cs" />
     <Compile Include="IntegrationTestBase.Records.cs" />
     <Compile Include="IntegrationTestBase.Relationships.cs" />
     <Compile Include="IntegrationTestBase.Schema.cs" />
