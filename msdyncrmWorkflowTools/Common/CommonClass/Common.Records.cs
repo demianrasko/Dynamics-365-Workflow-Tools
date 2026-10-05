@@ -145,7 +145,7 @@ namespace msdyncrmWorkflowTools
                     var returnCollection = Service.RetrieveMultiple(
                         ActivityPartiesQuery(objectId, int.Parse(participationTypeMask)));
 
-                    Trace("attribute:{0}", attribute2);
+                    Trace($"attribute:{attribute2}");
 
                     foreach (var ent in returnCollection.Entities)
                     {
@@ -157,7 +157,7 @@ namespace msdyncrmWorkflowTools
                             [AttributeNames.PartyId] = new EntityReference(partyid.LogicalName, partyid.Id)
                         };
 
-                        Trace("attribute:{0}:{1}:{2}", attribute2, partyid.LogicalName, partyid.Id.ToString());
+                        Trace($"attribute:{attribute2}:{partyid.LogicalName}:{partyid.Id}");
 
                         newPartyList.Entities.Add(party);
                     }
@@ -166,7 +166,7 @@ namespace msdyncrmWorkflowTools
                     continue;
                 }
 
-                Trace("attribute:{0}", attribute);
+                Trace($"attribute:{attribute}");
 
                 if (attribute == primaryNameAttribute && prefix != null)
                 {

@@ -63,7 +63,7 @@ namespace msdyncrmWorkflowTools
             }
             catch (Exception ex)
             {
-                Trace("Error : {0} - {1}", ex.Message, ex.StackTrace);
+                Trace($"Error : {ex.Message} - {ex.StackTrace}");
             }
         }
 

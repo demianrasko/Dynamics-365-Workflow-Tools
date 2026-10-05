@@ -19,12 +19,12 @@ namespace msdyncrmWorkflowTools
         protected sealed override void Execute(CodeActivityContext executionContext)
         {
             var common = new Common(executionContext);
-            common.Trace("{0} started", GetType().Name);
+            common.Trace($"{GetType().Name} started");
 
             try
             {
                 ExecuteActivity(executionContext, common);
-                common.Trace("{0} finished", GetType().Name);
+                common.Trace($"{GetType().Name} finished");
             }
             catch (InvalidPluginExecutionException ex)
             {
@@ -62,7 +62,7 @@ namespace msdyncrmWorkflowTools
             }
             catch (Exception ex)
             {
-                common.Trace("{0}", Utility.HandleExceptions(ex));
+                common.Trace(Utility.HandleExceptions(ex));
                 result.Set(executionContext, string.Empty);
                 failed.Set(executionContext, true);
                 failureMessage.Set(executionContext, ex.Message);

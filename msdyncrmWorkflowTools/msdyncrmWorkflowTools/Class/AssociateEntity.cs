@@ -47,7 +47,7 @@ namespace msdyncrmWorkflowTools
             catch (FaultException<OrganizationServiceFault> ex) when (ex.Detail.ErrorCode == DuplicateRecordErrorCode)
             {
                 // The records are already associated: nothing to do. Every other error goes to WorkflowActivityBase.
-                common.Trace("The records are already associated: {0}", ex.Message);
+                common.Trace($"The records are already associated: {ex.Message}");
             }
         }
     }

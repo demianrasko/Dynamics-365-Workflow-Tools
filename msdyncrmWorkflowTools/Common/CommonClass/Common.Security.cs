@@ -275,7 +275,7 @@ namespace msdyncrmWorkflowTools
             var givenRole = givenRoles.Entities[0];
             var rootRole = (EntityReference)givenRole.Attributes[AttributeNames.ParentRootRoleId];
 
-            Trace("Role {0} is retrieved.", givenRole.Id);
+            Trace($"Role {givenRole.Id} is retrieved.");
 
             var businessUnitRoleQuery = new QueryExpression
             {

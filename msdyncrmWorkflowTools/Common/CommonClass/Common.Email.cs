@@ -64,7 +64,7 @@ namespace msdyncrmWorkflowTools
                 }
                 catch (FaultException<OrganizationServiceFault> ex)
                 {
-                    Trace("{0}", Utility.HandleExceptions(ex));
+                    Trace(Utility.HandleExceptions(ex));
                     failures.Add($"{user.Id}: {ex.Detail.Message}");
                 }
             }
@@ -159,7 +159,7 @@ namespace msdyncrmWorkflowTools
 
             foreach (var file in attachmentFiles.Entities)
             {
-                Trace("Entities Count: {0} ", i);
+                Trace($"Entities Count: {i}");
 
                 var attachment = new Entity(EntityNames.ActivityMimeAttachment)
                 {
@@ -182,7 +182,7 @@ namespace msdyncrmWorkflowTools
                 {
                     Trace("Is Most Recent");
 
-                    var alreadyAttached = attachedFiles.Where(f => f[AttributeNames.FileName].ToString() == file.GetAttributeValue<string>(AttributeNames.FileName)).FirstOrDefault();
+                    var alreadyAttached = attachedFiles.FirstOrDefault(f => f[AttributeNames.FileName].ToString() == file.GetAttributeValue<string>(AttributeNames.FileName));
 
                     if (alreadyAttached == null)
                     {
