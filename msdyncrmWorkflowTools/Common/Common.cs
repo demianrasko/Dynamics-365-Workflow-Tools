@@ -453,12 +453,14 @@ namespace msdyncrmWorkflowTools
         {
             Trace($"Setting {record.LogicalName} {record.Id} to state {state}, status {status}");
 
-            Service.Execute(new OrganizationRequest("SetState")
+            var request = new SetStateRequest
             {
-                ["EntityMoniker"] = record,
-                ["State"] = new OptionSetValue(state),
-                ["Status"] = new OptionSetValue(status)
-            });
+                EntityMoniker = record,
+                State = new OptionSetValue(state),
+                Status = new OptionSetValue(status)
+            };
+
+            Service.Execute(request);
         }
 
         /// <summary>
