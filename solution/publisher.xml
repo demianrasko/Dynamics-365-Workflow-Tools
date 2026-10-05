@@ -1,7 +1,7 @@
     <Publisher>
       <UniqueName>demianadolforaschkovanmvp</UniqueName>
       <LocalizedNames>
-        <LocalizedName description="Demian Adolfo Raschkovan (MVP)" languagecode="1033" />
+        <LocalizedName description="Demian Adolfo Raschkovan (MVP)" languagecode="3082" />
       </LocalizedNames>
       <Descriptions />
       <EMailAddress xsi:nil="true"></EMailAddress>
@@ -12,7 +12,7 @@
         <Address>
           <AddressNumber>1</AddressNumber>
           <AddressTypeCode>1</AddressTypeCode>
-          <City xsi:nil="true"></City>
+          <City>Madrid</City>
           <County xsi:nil="true"></County>
           <Country xsi:nil="true"></Country>
           <Fax xsi:nil="true"></Fax>

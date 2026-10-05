@@ -5,6 +5,7 @@
   "assemblyName": "powerplatformWorkflowTools",
   "assemblyId": "2825fa3f-0bc1-f111-a05a-6045bd061c5d",
   "buildFolder": "Release-PowerPlatform",
+  "activityNames": "words",
   "activities": {
     "msdyncrmWorkflowTools.AIClassifyText": {
       "id": "0d4af17f-0bc1-f111-a05a-70a8a5b106ad",

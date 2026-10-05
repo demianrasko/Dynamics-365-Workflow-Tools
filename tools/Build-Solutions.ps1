@@ -124,7 +124,15 @@ foreach ($identityFile in Get-ChildItem $identityFolder -Filter *.json | Where-O
     $added = @($assembly.Types | Where-Object { -not $identity.activities.ContainsKey($_) })
 
     foreach ($type in $added) {
-        $identity.activities[$type] = [ordered]@{ id = [guid]::NewGuid().ToString(); name = ConvertTo-DisplayName $type; friendlyName = $type }
+        # "typeName": named like Demian's published solution (the class name, a GUID as friendly name);
+        # "words": "Get Environment Variable", with the class name as friendly name
+        $identity.activities[$type] = if ($identity.activityNames -eq 'typeName') {
+            [ordered]@{ id = [guid]::NewGuid().ToString(); name = $type; friendlyName = [guid]::NewGuid().ToString() }
+        }
+        else {
+            [ordered]@{ id = [guid]::NewGuid().ToString(); name = ConvertTo-DisplayName $type; friendlyName = $type }
+        }
+
         Write-Host "  new activity: $type ($($identity.activities[$type].name))" -ForegroundColor Yellow
     }
 

@@ -3,398 +3,484 @@
   "displayName": "Dynamics 365 Workflow Tools",
   "description": "Custom workflow activities for Dynamics 365 and Dataverse. Documentation: https://github.com/demianrasko/Dynamics-365-Workflow-Tools",
   "assemblyName": "msdyncrmWorkflowTools",
-  "assemblyId": "64513acd-77a9-4773-858a-e839e34526bc",
+  "assemblyId": "d0c76739-4e9b-42ab-9c29-85ae3b0b8546",
   "buildFolder": "Release",
+  "activityNames": "typeName",
   "activities": {
     "msdyncrmWorkflowTools.AddRoleToTeam": {
-      "id": "f9ae7755-9398-48a5-9a2c-1149d3bdbacd",
-      "name": "Add Role To Team",
-      "friendlyName": "2c4be142-20a7-499c-a2e1-0e5b7b943583"
+      "id": "9fb8fe2e-d0d8-4159-ad6f-7a070ed84002",
+      "name": "msdyncrmWorkflowTools.AddRoleToTeam",
+      "friendlyName": "6297e66a-5951-4c8c-841a-ddeda6533eda"
     },
     "msdyncrmWorkflowTools.AddRoleToUser": {
-      "id": "f1fb4e72-1bf4-4815-b6ec-bbc24e209e8e",
-      "name": "Add Role To User",
-      "friendlyName": "8939a698-2623-4b26-99b2-b8d655fd8035"
+      "id": "adb9afeb-2f1c-47e1-a979-669def1f926f",
+      "name": "msdyncrmWorkflowTools.AddRoleToUser",
+      "friendlyName": "e6db7357-c450-414e-9299-3a1779f4debf"
     },
     "msdyncrmWorkflowTools.AddUserToTeam": {
-      "id": "d82b600d-b6c0-46a2-b070-9b58f91e64be",
-      "name": "Add User To Team",
-      "friendlyName": "c0fc2ba5-abe2-486d-9d83-f2637bae3cac"
+      "id": "9b085978-c46d-4fb5-8bf6-199449418c39",
+      "name": "msdyncrmWorkflowTools.AddUserToTeam",
+      "friendlyName": "cb7064f4-b174-4e70-9790-583115380b38"
+    },
+    "msdyncrmWorkflowTools.AIClassifyText": {
+      "id": "594de90f-e18e-4efd-9412-1798e98754ad",
+      "name": "msdyncrmWorkflowTools.AIClassifyText",
+      "friendlyName": "bac00611-3ba8-46b3-be2a-f79d54f23879"
+    },
+    "msdyncrmWorkflowTools.AIDraftReply": {
+      "id": "469ff9e1-9902-4004-9c2e-c4054c6d15b5",
+      "name": "msdyncrmWorkflowTools.AIDraftReply",
+      "friendlyName": "0a5e461f-a44d-4025-b413-c59fbed9ff6f"
+    },
+    "msdyncrmWorkflowTools.AISentimentDetect": {
+      "id": "2c54eca0-fc9c-4722-b104-4c269553a6b1",
+      "name": "msdyncrmWorkflowTools.AISentimentDetect",
+      "friendlyName": "70c1ec27-e183-49e5-aa23-86731bc21ca0"
+    },
+    "msdyncrmWorkflowTools.AISummarizeRecord": {
+      "id": "8d7107cd-37d3-4c98-b947-91b3a433b7df",
+      "name": "msdyncrmWorkflowTools.AISummarizeRecord",
+      "friendlyName": "b1ef9065-c55a-45b7-b617-a446695ca271"
+    },
+    "msdyncrmWorkflowTools.AISummarizeText": {
+      "id": "586afb61-452d-4e1b-9f30-49859871e115",
+      "name": "msdyncrmWorkflowTools.AISummarizeText",
+      "friendlyName": "ea0c3563-9038-4b6e-b12d-8c47a9d86425"
+    },
+    "msdyncrmWorkflowTools.AITranslateText": {
+      "id": "9a11ab8a-5190-4756-9cec-cdb32d3c9281",
+      "name": "msdyncrmWorkflowTools.AITranslateText",
+      "friendlyName": "a8f50d46-d95d-4a48-b5db-1acc4c3ebefb"
     },
     "msdyncrmWorkflowTools.ApplyRoutingRule": {
-      "id": "63d97738-d2b8-4a31-9e7d-7e937734c345",
-      "name": "Apply Routing Rule",
-      "friendlyName": "8d8049c5-1722-4228-b8d3-d8660f615eec"
+      "id": "b1bd73cb-d3f1-4d4b-8433-ee78e9ea802b",
+      "name": "msdyncrmWorkflowTools.ApplyRoutingRule",
+      "friendlyName": "76b72c71-e513-47d1-a0fd-5063f29903b3"
     },
     "msdyncrmWorkflowTools.AssociateEntity": {
-      "id": "617bb5a6-2438-4062-a421-8f60b388dc1f",
-      "name": "Associate Entity",
-      "friendlyName": "b66c9525-b7a8-4a79-90fa-384ad70b4e33"
+      "id": "f5bceedd-628d-431d-8ddd-5992600678e5",
+      "name": "msdyncrmWorkflowTools.AssociateEntity",
+      "friendlyName": "0bcab8eb-0682-4b84-b470-104d6315aebf"
     },
     "msdyncrmWorkflowTools.CalculateAgregateDate": {
-      "id": "62e60e6e-4b37-491c-8f41-c4bb73a73ff5",
-      "name": "Calculate Agregate Date",
-      "friendlyName": "a3030290-17cd-431d-84f7-7b81ddcc4c43"
+      "id": "e230f157-0629-45a9-b6b5-50e0c5ec6779",
+      "name": "msdyncrmWorkflowTools.CalculateAgregateDate",
+      "friendlyName": "e2d1cb67-3d63-4985-ad5e-91db36693254"
     },
     "msdyncrmWorkflowTools.CalculatePrice": {
-      "id": "8c4fd531-2dcb-49d2-9269-f0f252281564",
-      "name": "Calculate Price",
-      "friendlyName": "0e7e6668-d8bd-4934-9720-4b4a2e876636"
+      "id": "13ef657d-bfea-4c3c-ae50-453d8b7b2ba6",
+      "name": "msdyncrmWorkflowTools.CalculatePrice",
+      "friendlyName": "ca86d268-0dad-4136-88b0-57415a52a6a1"
     },
     "msdyncrmWorkflowTools.CalculateRollupField": {
-      "id": "9af1400a-14da-4dfe-b7a9-08cc6cefe6e1",
-      "name": "Calculate Rollup Field",
-      "friendlyName": "3cc23a63-8e7c-441c-a121-7c41ddd2d07e"
+      "id": "be2ec1cb-17d5-41ed-bf2d-498197c860ee",
+      "name": "msdyncrmWorkflowTools.CalculateRollupField",
+      "friendlyName": "d7ddd35f-33fc-4f11-82f3-a488a4579130"
     },
     "msdyncrmWorkflowTools.CheckAssociateEntity": {
-      "id": "cacc8994-e38a-4065-99cb-89c40a6661ba",
-      "name": "Check Associate Entity",
-      "friendlyName": "67394435-524b-4377-aff9-9e8a84d05f0a"
+      "id": "fa3016d9-b5a1-4fc7-91b5-f369d88c0e3a",
+      "name": "msdyncrmWorkflowTools.CheckAssociateEntity",
+      "friendlyName": "20da6ba3-2206-416b-9ec6-92d6e6063da9"
     },
     "msdyncrmWorkflowTools.CheckUserInRole": {
-      "id": "5c433fbd-bb05-4f6e-95fd-8f4322058f14",
-      "name": "Check User In Role",
-      "friendlyName": "41817f2d-f463-4ea5-afde-64e007918354"
+      "id": "ae2ed6a1-c2fd-4a1f-84f2-61d17eb36b64",
+      "name": "msdyncrmWorkflowTools.CheckUserInRole",
+      "friendlyName": "aff33fb8-ba64-46ab-9834-9f38ac829d66"
     },
     "msdyncrmWorkflowTools.CheckUserInTeam": {
-      "id": "ffd1890d-9eab-46aa-ab89-549a36c527dc",
-      "name": "Check User In Team",
-      "friendlyName": "cb6944ab-4392-4cb7-96d8-7210ae378ca7"
+      "id": "65e8e6e5-8835-4fd9-ba20-d1a190c9d04e",
+      "name": "msdyncrmWorkflowTools.CheckUserInTeam",
+      "friendlyName": "52dfb3aa-8b3f-4a2a-a5a3-d21d4762447b"
     },
     "msdyncrmWorkflowTools.Class.AddMarketingListToCampaign": {
-      "id": "9d88c795-9f8f-4931-9d5f-a68b86d2d96e",
-      "name": "Add Marketing List To Campaign",
-      "friendlyName": "41e43979-c260-444c-b818-17b45eba545c"
+      "id": "638f0866-8f10-4709-bb43-d012b4d2a74b",
+      "name": "msdyncrmWorkflowTools.Class.AddMarketingListToCampaign",
+      "friendlyName": "e5220356-4251-4d3e-9340-82710d0692c7"
     },
     "msdyncrmWorkflowTools.Class.AddToMarketingList": {
-      "id": "22c8bccd-7da8-4008-a0af-e7e8a83d7107",
-      "name": "Add To Marketing List",
-      "friendlyName": "bf99ca01-fd9a-4ed4-88b8-0a0068b1652c"
+      "id": "0205decd-2359-488b-8830-bacad7d69775",
+      "name": "msdyncrmWorkflowTools.Class.AddToMarketingList",
+      "friendlyName": "13b223a9-aece-4914-b7b6-592b9ac1e2a4"
     },
     "msdyncrmWorkflowTools.Class.CopyMarketingListMembers": {
-      "id": "e3c5f7e0-510a-4bd0-9abd-5dc68c360662",
-      "name": "Copy Marketing List Members",
-      "friendlyName": "f74e98b1-18e0-4718-9fa1-7bf34bcce0be"
+      "id": "78a6e568-3516-45f2-a397-930ee43d9634",
+      "name": "msdyncrmWorkflowTools.Class.CopyMarketingListMembers",
+      "friendlyName": "a8e54dae-c59c-4146-9c0a-2484e73cc8ce"
     },
     "msdyncrmWorkflowTools.Class.CopyToStaticList": {
-      "id": "85e436e7-1638-4a90-b8a6-757d86ff3618",
-      "name": "Copy To Static List",
-      "friendlyName": "1fad4589-e0bf-41e8-8761-26fc9fbe6064"
+      "id": "5137ea54-d843-427b-bf3d-1fdefa81fa25",
+      "name": "msdyncrmWorkflowTools.Class.CopyToStaticList",
+      "friendlyName": "e358f0e6-397c-46bf-a433-34de7ba862e5"
     },
     "msdyncrmWorkflowTools.Class.DeleteRecord": {
-      "id": "0fc2fd97-da2f-44cd-bfc5-d69e9375a669",
-      "name": "Delete Record",
-      "friendlyName": "58740199-70d3-44f9-abca-a40961c5a5b8"
+      "id": "50ad72be-97e4-4c77-b502-cc2a7f96ab7e",
+      "name": "msdyncrmWorkflowTools.Class.DeleteRecord",
+      "friendlyName": "5e85e891-d98a-45da-9fe1-d7b3f74000fe"
     },
     "msdyncrmWorkflowTools.Class.DeleteRecordAuditHistory": {
-      "id": "00b594ea-2f47-46e1-b774-19c0d3060a0c",
-      "name": "Delete Record Audit History",
-      "friendlyName": "4076a99b-44b5-4b6d-a763-94a155b1a754"
+      "id": "62266ed4-4d05-4c99-a05e-00b7a495e887",
+      "name": "msdyncrmWorkflowTools.Class.DeleteRecordAuditHistory",
+      "friendlyName": "cfd7b4ea-dabc-4efe-8b2d-3139dd6d2d61"
     },
     "msdyncrmWorkflowTools.Class.EmailToTeam": {
-      "id": "b004cfaf-b43f-4d4c-b31b-0bc9c37eec92",
-      "name": "Email To Team",
-      "friendlyName": "f2c9ab4f-3c4b-442f-b4c5-e040c60d6b25"
+      "id": "121c5536-de1f-4d45-875e-c4e2e14d042a",
+      "name": "msdyncrmWorkflowTools.Class.EmailToTeam",
+      "friendlyName": "aea50769-38f6-4a11-ba9b-aa467a2949c9"
     },
     "msdyncrmWorkflowTools.Class.EntityAttachmentToEmail": {
-      "id": "6a749b17-0cf5-4d1b-b9ce-98e6b494e811",
-      "name": "Entity Attachment To Email",
-      "friendlyName": "70f2c6dc-73d7-4bc1-82c3-bbce73c68e0a"
+      "id": "674d2ab9-d0a0-4657-acc8-6112457bd6ed",
+      "name": "msdyncrmWorkflowTools.Class.EntityAttachmentToEmail",
+      "friendlyName": "e9994108-e46a-4ca8-be5a-de0e79c19ffa"
     },
     "msdyncrmWorkflowTools.Class.ExecuteWorkflowByID": {
-      "id": "79709b61-15a2-40fa-95da-44dc3e1b0d0f",
-      "name": "Execute Workflow By ID",
-      "friendlyName": "1ad42142-7bc1-4a3b-b592-43dadd3f9f80"
+      "id": "51d56e73-2cb3-4d1e-8148-646dbd5f6661",
+      "name": "msdyncrmWorkflowTools.Class.ExecuteWorkflowByID",
+      "friendlyName": "c941c8b4-389e-400d-a1a2-ac0302c98e07"
     },
     "msdyncrmWorkflowTools.Class.GetInitiatingUser": {
-      "id": "d4568cd0-bcff-4f5a-868a-f3d97d92d3d3",
-      "name": "Get Initiating User",
-      "friendlyName": "4112c379-26de-4e4a-b83f-5d03209501ba"
+      "id": "a67d7487-5195-419c-a196-c58a00662906",
+      "name": "msdyncrmWorkflowTools.Class.GetInitiatingUser",
+      "friendlyName": "83f96a62-495d-4889-adbf-beeddaadf073"
     },
     "msdyncrmWorkflowTools.Class.IsMemberOfMarketingList": {
-      "id": "f74479d3-ed03-4bb2-9731-3558eafd6e67",
-      "name": "Is Member Of Marketing List",
-      "friendlyName": "ab016843-dab8-4f7d-8c4d-6e0b8c51ec92"
+      "id": "694cc889-4b07-42f2-a2a4-135e917c9500",
+      "name": "msdyncrmWorkflowTools.Class.IsMemberOfMarketingList",
+      "friendlyName": "a4d6a81d-c047-4b70-a7b5-75ffa793d4eb"
     },
     "msdyncrmWorkflowTools.Class.IsMemberOfTeam": {
-      "id": "972324cd-6e86-40a8-a8e8-c2631a827d96",
-      "name": "Is Member Of Team",
-      "friendlyName": "ed758773-6095-403e-b793-ab5b397be0fb"
+      "id": "9b4eb7e1-30e6-4f38-922f-af6afd7cf97d",
+      "name": "msdyncrmWorkflowTools.Class.IsMemberOfTeam",
+      "friendlyName": "506c1539-9b41-4bbe-af9a-0de6ae682f11"
     },
     "msdyncrmWorkflowTools.Class.NumericFunctions": {
-      "id": "9ac9565b-ca8d-4637-a26c-14cf1d1e18ae",
-      "name": "Numeric Functions",
-      "friendlyName": "a7c72569-df4b-4134-8aa3-4b6bd2e91df7"
+      "id": "8a50c33b-93f3-4eec-8874-487499ec3947",
+      "name": "msdyncrmWorkflowTools.Class.NumericFunctions",
+      "friendlyName": "7f288f43-e101-48f8-b0cd-4792fd612f84"
     },
     "msdyncrmWorkflowTools.Class.PickFromQueue": {
-      "id": "d127620d-89ec-469f-9782-53942c828f83",
-      "name": "Pick From Queue",
-      "friendlyName": "aa23e488-c4a5-4fb9-940f-b53a16dab8cc"
+      "id": "17af5eb8-b33d-4b9b-9089-13a4e2c65a07",
+      "name": "msdyncrmWorkflowTools.Class.PickFromQueue",
+      "friendlyName": "a036af72-d2af-46c4-b3c5-d06a32462867"
     },
     "msdyncrmWorkflowTools.Class.QueueItemCount": {
-      "id": "84f5c5b2-6668-4406-98e6-2aabaa49a68b",
-      "name": "Queue Item Count",
-      "friendlyName": "ccbb948a-09af-4f00-bf9c-ac3868b407b0"
+      "id": "7e0e51d9-a756-4282-b2f2-1dc5ab65327a",
+      "name": "msdyncrmWorkflowTools.Class.QueueItemCount",
+      "friendlyName": "4b580f6f-018d-4a73-9f4e-61603e1ac3ac"
     },
     "msdyncrmWorkflowTools.Class.RemoveFromAllMarketingLists": {
-      "id": "a6315b8a-cda2-4e31-a35f-e4c4d66bdd20",
-      "name": "Remove From All Marketing Lists",
-      "friendlyName": "800e3e65-2e4f-4fa4-9d97-8fb4bc037639"
+      "id": "01ba453c-abfa-4561-b213-d8a565411b26",
+      "name": "msdyncrmWorkflowTools.Class.RemoveFromAllMarketingLists",
+      "friendlyName": "cb3f34f8-2f70-411b-bedb-d722bb7b82f2"
     },
     "msdyncrmWorkflowTools.Class.RemoveFromMarketingList": {
-      "id": "22428302-94d4-40f5-9c77-e166438f4964",
-      "name": "Remove From Marketing List",
-      "friendlyName": "4d668bae-c08f-4e64-aa8d-165742ba2b7b"
+      "id": "7ed388b6-7f8c-46e4-8184-9ed8fd2a306c",
+      "name": "msdyncrmWorkflowTools.Class.RemoveFromMarketingList",
+      "friendlyName": "39a509b3-a32b-4f3c-996a-ac5089aa04a2"
+    },
+    "msdyncrmWorkflowTools.Class.ResolveCase": {
+      "id": "dc0f3d54-7430-4eef-98aa-f13ee5739279",
+      "name": "msdyncrmWorkflowTools.Class.ResolveCase",
+      "friendlyName": "3d35aa31-00ea-4c4b-a298-55fa31491309"
     },
     "msdyncrmWorkflowTools.Class.SalesLiteratureToEmail": {
-      "id": "c3669a94-8981-45f9-b0af-121217f915cc",
-      "name": "Sales Literature To Email",
-      "friendlyName": "4a6d7f53-dae8-4a6c-9418-5d04730d6330"
+      "id": "b7dc8694-143d-4af3-a10e-0497f1bdc24c",
+      "name": "msdyncrmWorkflowTools.Class.SalesLiteratureToEmail",
+      "friendlyName": "a96cad7d-64d8-4389-bf0f-41ddd83efa99"
     },
     "msdyncrmWorkflowTools.Class.SendEmail": {
-      "id": "47ce81fb-0289-422f-8b0f-1d2f0b3a2cfc",
-      "name": "Send Email",
-      "friendlyName": "02394431-a0c6-4cbc-91c8-5e8dc9a65620"
+      "id": "dce1ad15-4826-4774-aaa5-5864c054ae42",
+      "name": "msdyncrmWorkflowTools.Class.SendEmail",
+      "friendlyName": "7b043fdc-a0d8-455c-bd34-69843fda0f51"
     },
     "msdyncrmWorkflowTools.Class.SendEmailFromTemplateToUsersInRole": {
-      "id": "0ca5e66f-f4ea-473c-88d9-e47af915bad0",
-      "name": "Send Email From Template To Users In Role",
-      "friendlyName": "01be90fe-a8bc-4299-89e8-6130aca2d918"
+      "id": "db56d97e-72c6-4b1f-80f6-958fd740ecc5",
+      "name": "msdyncrmWorkflowTools.Class.SendEmailFromTemplateToUsersInRole",
+      "friendlyName": "971dada1-a9c4-4393-97ff-4623013fb72c"
     },
     "msdyncrmWorkflowTools.Class.SendEmailToUsersInRole": {
-      "id": "5e866293-7ddd-4f08-802a-1aa9a4cdbb26",
-      "name": "Send Email To Users In Role",
-      "friendlyName": "2bfd0175-9bf5-4899-ac44-0f0b44d58828"
+      "id": "4c3389a1-7ead-4ba3-a020-6c2558cdcf72",
+      "name": "msdyncrmWorkflowTools.Class.SendEmailToUsersInRole",
+      "friendlyName": "e27c4234-d55a-436c-a277-72e1789c2d49"
     },
     "msdyncrmWorkflowTools.Class.SetProcess": {
-      "id": "ca8a8ec4-067f-4158-be14-bff6bc461779",
-      "name": "Set Process",
-      "friendlyName": "6d971035-3414-406c-9bce-93ff1107356f"
+      "id": "c4c64961-3ae4-4e08-a2d8-cbd46fdd3dd2",
+      "name": "msdyncrmWorkflowTools.Class.SetProcess",
+      "friendlyName": "8dc03881-9125-406e-a9e0-40a3a968c8ee"
     },
     "msdyncrmWorkflowTools.Class.SetProcessStage": {
-      "id": "cceed0a8-a2e5-485b-a063-a36179c08ab1",
-      "name": "Set Process Stage",
-      "friendlyName": "1b2c5ff5-095c-4069-807f-e5c3980f7a87"
+      "id": "63d6c9d8-17ee-4f4a-a852-350a9facc840",
+      "name": "msdyncrmWorkflowTools.Class.SetProcessStage",
+      "friendlyName": "2bc0f266-f39c-4970-87d5-86f0b8598d2c"
     },
     "msdyncrmWorkflowTools.CloneChildren": {
-      "id": "8a3fa2be-2e5c-49f4-abfe-da766d639bb7",
-      "name": "Clone Children",
-      "friendlyName": "cb0af82c-cd62-4de0-8311-2be8ae62e0bc"
+      "id": "7edf281e-41e9-4039-b15e-20059f5b38ef",
+      "name": "msdyncrmWorkflowTools.CloneChildren",
+      "friendlyName": "5a075610-b6b5-4842-bdf6-17b564b006f8"
     },
     "msdyncrmWorkflowTools.CloneRecord": {
-      "id": "e99f984c-407d-46a8-b14c-38e911df78af",
-      "name": "Clone Record",
-      "friendlyName": "0825a067-b19d-4133-a36f-3453375a6224"
+      "id": "6f8c111a-c8f3-416e-b86a-d9e98e8d41c8",
+      "name": "msdyncrmWorkflowTools.CloneRecord",
+      "friendlyName": "032270d1-4c02-4563-b215-1308c0c9531d"
     },
     "msdyncrmWorkflowTools.ConcatenateFromQuery": {
-      "id": "a9eacb23-a0bc-463f-9769-64d05c05b2b9",
-      "name": "Concatenate From Query",
-      "friendlyName": "04a7c2fe-5c33-4caf-b087-db9f9d6134d2"
+      "id": "62994d1d-0924-4ff1-b56c-994b05289612",
+      "name": "msdyncrmWorkflowTools.ConcatenateFromQuery",
+      "friendlyName": "60524ba1-cc1d-49ca-8629-60c57530a036"
     },
     "msdyncrmWorkflowTools.CountChildEntityRecords": {
-      "id": "39bf0fb1-a937-44b2-819c-144bae3b929c",
-      "name": "Count Child Entity Records",
-      "friendlyName": "b93ab8ad-0d6a-4b5f-ad36-de7d7d412ee9"
+      "id": "5056a50d-052d-4bd3-913b-00c7c91c82cb",
+      "name": "msdyncrmWorkflowTools.CountChildEntityRecords",
+      "friendlyName": "d4211df0-b55b-4054-b06e-1e340e86c811"
+    },
+    "msdyncrmWorkflowTools.CreateOpportunityProduct": {
+      "id": "bf9ea4cf-2ec2-4334-a9af-e6218d5254ff",
+      "name": "msdyncrmWorkflowTools.CreateOpportunityProduct",
+      "friendlyName": "6d3cef90-c3f9-4b4a-9fa9-a3f60ac50364"
+    },
+    "msdyncrmWorkflowTools.CreateQuoteFromOpportunity": {
+      "id": "11a3232b-0fd1-42e4-8e05-006a1393577e",
+      "name": "msdyncrmWorkflowTools.CreateQuoteFromOpportunity",
+      "friendlyName": "ddbe8c7a-c403-4aa8-adfe-c6c9afeff552"
     },
     "msdyncrmWorkflowTools.CreateTeam": {
-      "id": "e553d4c5-edb5-4189-8e74-a9f68306d35f",
-      "name": "Create Team",
-      "friendlyName": "df45b11b-e450-4c92-9f52-340f65d29533"
+      "id": "c07a1c4c-6d88-4192-a208-d237e3b0012a",
+      "name": "msdyncrmWorkflowTools.CreateTeam",
+      "friendlyName": "1d29b7bc-8ac5-4776-a81e-38931f5ea565"
     },
     "msdyncrmWorkflowTools.CurrencyConvert": {
-      "id": "5c891a21-a247-4996-ba5a-c045b9ac1258",
-      "name": "Currency Convert",
-      "friendlyName": "fabce281-3f82-4a72-b017-7f08922f8c12"
+      "id": "c152ddb1-e019-4e1f-aede-cb780beddc6a",
+      "name": "msdyncrmWorkflowTools.CurrencyConvert",
+      "friendlyName": "1b28a0a6-ff40-410f-835f-75aed3ab78cf"
     },
     "msdyncrmWorkflowTools.DateFunctions": {
-      "id": "8bbd4105-c525-4b1e-9b2e-b06ffb812875",
-      "name": "Date Functions",
-      "friendlyName": "7989e233-eb4c-4965-bfe7-66e68d8a05e7"
+      "id": "8c53f246-9e8b-4332-81a9-7ad7eafa3ea4",
+      "name": "msdyncrmWorkflowTools.DateFunctions",
+      "friendlyName": "fbb70385-dfbd-402f-bb99-5f2eb14c082a"
     },
     "msdyncrmWorkflowTools.DeleteOptionValue": {
-      "id": "c5aaa426-810f-4f71-a699-0ef37beeb461",
-      "name": "Delete Option Value",
-      "friendlyName": "5a5fedff-38b6-4c57-98b5-47040f341dac"
+      "id": "0ab37b4b-5aaa-4cfe-8c43-b6388d481cd1",
+      "name": "msdyncrmWorkflowTools.DeleteOptionValue",
+      "friendlyName": "de13eecf-c734-43c2-b441-3811a1295ef7"
     },
     "msdyncrmWorkflowTools.DisassociateEntity": {
-      "id": "896d1b60-28b9-4a2f-8936-34342c9967dd",
-      "name": "Disassociate Entity",
-      "friendlyName": "0aaa404b-4089-48e1-8e26-0ada5bd0ea3a"
+      "id": "53c518dd-c95c-48ce-bcfc-e4c14d5c03e0",
+      "name": "msdyncrmWorkflowTools.DisassociateEntity",
+      "friendlyName": "d45638e0-08ba-4e9e-bcf8-6ae3946c602b"
+    },
+    "msdyncrmWorkflowTools.DistributeWFActivityManyToMany": {
+      "id": "2ddb7c3a-5a70-4a5c-9e4f-4825aecd1401",
+      "name": "msdyncrmWorkflowTools.DistributeWFActivityManyToMany",
+      "friendlyName": "e162fe5f-47bd-499d-b19a-f07b8ddebab6"
+    },
+    "msdyncrmWorkflowTools.DistributeWFActivityOneToMany": {
+      "id": "cae49d97-125e-4c39-98be-724607d0af89",
+      "name": "msdyncrmWorkflowTools.DistributeWFActivityOneToMany",
+      "friendlyName": "f71b9e76-b0a3-49b0-b3d1-47451ad1cba2"
     },
     "msdyncrmWorkflowTools.EncryptText": {
-      "id": "e47d4352-a86e-400d-b680-b97b1e54b08c",
-      "name": "Encrypt Text",
-      "friendlyName": "c790dc84-dfcb-481d-8a34-9b03569e6a9e"
+      "id": "23cfb3ab-84ea-4136-ad75-af849f8ed27d",
+      "name": "msdyncrmWorkflowTools.EncryptText",
+      "friendlyName": "ec605c02-0082-41ae-b3e8-aab27e05d367"
     },
     "msdyncrmWorkflowTools.EntityJsonSerializer": {
-      "id": "defc44d5-65c1-4837-ba25-2067f1b9a5ed",
-      "name": "Entity Json Serializer",
-      "friendlyName": "6daf1329-9067-417f-a6a1-8fd020a406d8"
+      "id": "f1dae9d5-8c44-431d-9c20-5acdea166ba3",
+      "name": "msdyncrmWorkflowTools.EntityJsonSerializer",
+      "friendlyName": "3a336b88-79a5-4760-abfd-4ff6e74aa247"
     },
     "msdyncrmWorkflowTools.EntityMobileDeepLink": {
-      "id": "ea256264-a19b-487f-a1ce-85e15efa1af8",
-      "name": "Entity Mobile Deep Link",
-      "friendlyName": "62031980-9466-48bd-8005-f4a09864e7e1"
+      "id": "44a908ee-f849-43d4-b736-b7bf6fab9108",
+      "name": "msdyncrmWorkflowTools.EntityMobileDeepLink",
+      "friendlyName": "94feeff1-04f2-4179-b2c6-4d7ba9c77483"
+    },
+    "msdyncrmWorkflowTools.ExecuteWorkflowForRecordsinQuery": {
+      "id": "4ce2c47a-ef51-4104-899a-3ebc1d862749",
+      "name": "msdyncrmWorkflowTools.ExecuteWorkflowForRecordsinQuery",
+      "friendlyName": "451b3483-af92-4953-9c2c-88a65d4e08f4"
     },
     "msdyncrmWorkflowTools.GeoCodeAddress": {
-      "id": "71086fd8-418f-44e2-8872-ba8b865aa628",
-      "name": "GeoCode Address",
-      "friendlyName": "a9a64121-077b-40ab-a1e7-20b83e6eb68a"
+      "id": "4a588ec1-f8d0-4379-b1ec-f5725db2241a",
+      "name": "msdyncrmWorkflowTools.GeoCodeAddress",
+      "friendlyName": "916d2d92-8e18-4a4a-8c83-5606f45c4800"
     },
     "msdyncrmWorkflowTools.GetAppModuleID": {
-      "id": "c3dd8120-1552-4184-ab1c-03f1a698fa7f",
-      "name": "Get App Module ID",
-      "friendlyName": "c59483d5-50a6-471d-98d4-beccb9e2e350"
+      "id": "193ce359-c834-4b97-975b-74dc7e16d000",
+      "name": "msdyncrmWorkflowTools.GetAppModuleID",
+      "friendlyName": "6043ab8f-b5a5-4b52-8173-c47f9746ba48"
     },
     "msdyncrmWorkflowTools.GetAppRecordUrl": {
-      "id": "3fb57f36-0eb5-4b1b-b46c-0b2d72244d02",
-      "name": "Get App Record Url",
-      "friendlyName": "5f524038-0d49-4320-9051-a6607224684e"
+      "id": "9691e995-b225-4433-8af9-f157ba141722",
+      "name": "msdyncrmWorkflowTools.GetAppRecordUrl",
+      "friendlyName": "1bbc2610-a48a-405e-aba0-65cfef8b64d9"
     },
-    "msdyncrmWorkflowTools.GetLookupEntityType": {
-      "id": "6b3090bc-85e6-4b4d-aca8-64ea5954e35f",
-      "name": "msdyncrmWorkflowTools.GetLookupEntityType",
-      "friendlyName": "34912e09-c029-434d-a32d-e8cb90cb3c8d"
+    "msdyncrmWorkflowTools.GetEnvironmentVariable": {
+      "id": "3eb30ff0-6571-48a5-bd4b-012db8a7bbfe",
+      "name": "msdyncrmWorkflowTools.GetEnvironmentVariable",
+      "friendlyName": "b27f0864-9382-44d4-a564-95920c05896f"
     },
     "msdyncrmWorkflowTools.GetMultiSelectOptionSet": {
-      "id": "40c134b1-adc2-4aeb-9d28-b3d289b625cd",
-      "name": "Get Multi Select OptionSet",
-      "friendlyName": "8182e154-3508-4b31-bd24-24a0ba501888"
+      "id": "e88b67ee-e938-4a81-88a3-0cdfdb6662eb",
+      "name": "msdyncrmWorkflowTools.GetMultiSelectOptionSet",
+      "friendlyName": "80a956eb-0942-4b1f-bb5f-a8b97a16db00"
     },
     "msdyncrmWorkflowTools.GetOptionSetValue": {
-      "id": "df08e061-5316-4b43-9e1a-2cbffab68bb0",
-      "name": "Get Option Set Value",
-      "friendlyName": "80a66e8f-4acd-42ff-996a-7473e4dc9ad7"
+      "id": "68e39d85-82e4-43de-bfdc-595190b5ed7c",
+      "name": "msdyncrmWorkflowTools.GetOptionSetValue",
+      "friendlyName": "ead2093e-c2c3-42b2-915b-741312ec6b8e"
     },
     "msdyncrmWorkflowTools.GetRecordID": {
-      "id": "52949e16-8c82-49f0-81d6-2167da5a3194",
-      "name": "Get Record ID",
-      "friendlyName": "ed1f218b-ce0b-485b-94f5-2244662efdf8"
+      "id": "605363a7-9e02-4879-870b-b485ef49d998",
+      "name": "msdyncrmWorkflowTools.GetRecordID",
+      "friendlyName": "04d6f4fb-7a73-499d-948f-ca5eb888b154"
+    },
+    "msdyncrmWorkflowTools.GetRecordUrl": {
+      "id": "ea09e636-12e1-4a90-91e3-8eba4e474bd0",
+      "name": "msdyncrmWorkflowTools.GetRecordUrl",
+      "friendlyName": "13ea38c8-2b82-47c7-b332-71365eeabb82"
     },
     "msdyncrmWorkflowTools.GetSharepointLocationURL": {
-      "id": "2c267f1d-c687-4a67-b378-d507f4f77712",
-      "name": "Get Sharepoint Location URL",
-      "friendlyName": "600f611a-607e-46b5-a09d-e81d7ed71c03"
+      "id": "f01c0b9c-d74b-48c8-b51b-aa92be5c1c17",
+      "name": "msdyncrmWorkflowTools.GetSharepointLocationURL",
+      "friendlyName": "e53954b2-ee62-4f21-8ae8-f5e88b5cf248"
     },
     "msdyncrmWorkflowTools.GoalRecalculate": {
-      "id": "d48c3ecb-84f8-4e6e-936b-d7ed754c2a43",
-      "name": "Goal Recalculate",
-      "friendlyName": "78dca3d4-081f-4475-a756-af85d2b69895"
+      "id": "30faff99-e966-431d-a58f-ddf1a1e3558b",
+      "name": "msdyncrmWorkflowTools.GoalRecalculate",
+      "friendlyName": "9b478f95-ff11-4fa6-b53c-d31f46049c62"
     },
     "msdyncrmWorkflowTools.InsertOptionValue": {
-      "id": "a5d88057-c612-458b-9d01-320e3dba5f68",
-      "name": "Insert Option Value",
-      "friendlyName": "fa225a7e-b61e-48e9-aa2d-4ee5f7a41f46"
+      "id": "db0ecdc2-cb8c-4f5d-9b44-82446c81b2b7",
+      "name": "msdyncrmWorkflowTools.InsertOptionValue",
+      "friendlyName": "4ac08f2d-bf52-4293-a9fb-60a2b86eab3d"
     },
     "msdyncrmWorkflowTools.JsonParser": {
-      "id": "04eb0b98-2535-461b-a419-66c547b4cab0",
-      "name": "Json Parser",
-      "friendlyName": "5ee1c985-bfe0-4464-9462-203e4c2b3771"
+      "id": "58f4ff1f-44a4-46db-8ce9-5ad701943343",
+      "name": "msdyncrmWorkflowTools.JsonParser",
+      "friendlyName": "2b31276b-f9b4-4558-861b-ee7b9780550c"
     },
     "msdyncrmWorkflowTools.MapMultiSelectOptionSet": {
-      "id": "20e8ff6d-4875-4f62-9a41-12b8d6214c73",
-      "name": "Map Multi Select OptionSet",
-      "friendlyName": "a662f237-7f0e-4126-9910-51bb530f2d0a"
+      "id": "b34f2919-b0a1-46ea-9287-b7b8a5c94da2",
+      "name": "msdyncrmWorkflowTools.MapMultiSelectOptionSet",
+      "friendlyName": "aef0f71d-3b73-445f-871b-541c49f3cddb"
     },
     "msdyncrmWorkflowTools.OrgDBSettingsRetrieve": {
-      "id": "8de6bcd7-c51d-4fce-a3f6-1bd07fe36c93",
-      "name": "OrgDB Settings Retrieve",
-      "friendlyName": "504423ab-4330-42d5-a64e-3b0fd2a4a217"
+      "id": "71e2bfa8-58b3-4eae-8af8-05a51a529210",
+      "name": "msdyncrmWorkflowTools.OrgDBSettingsRetrieve",
+      "friendlyName": "13422965-fe39-448f-b27c-7c16dc8eafd3"
     },
     "msdyncrmWorkflowTools.OrgDBSettingsUpdate": {
-      "id": "6a1c4117-623a-4b4f-af39-1ef17ba7f7f5",
-      "name": "OrgDB Settings Update",
-      "friendlyName": "f8789614-1f33-49ce-96dc-df2d95618fb6"
+      "id": "b2b56ae8-1aeb-4070-8b63-7799b0295432",
+      "name": "msdyncrmWorkflowTools.OrgDBSettingsUpdate",
+      "friendlyName": "473aa99f-425a-48bb-8843-ed3b182514a1"
     },
     "msdyncrmWorkflowTools.QualifyLead": {
-      "id": "f8cf9f42-29fa-4547-9b3c-91658a0e4fa8",
-      "name": "Qualify Lead",
-      "friendlyName": "ce0460ba-7c4b-4860-b6f3-fb73129ff1a8"
+      "id": "2d725993-106f-484e-9547-cb6d4f27de66",
+      "name": "msdyncrmWorkflowTools.QualifyLead",
+      "friendlyName": "02a9f5fb-24df-414a-8296-a31c07fb0b4a"
     },
     "msdyncrmWorkflowTools.QueryValues": {
-      "id": "e660bbe8-2377-4e13-b73d-05fa683e1d50",
-      "name": "Query Values",
-      "friendlyName": "b1471c19-9000-49ea-a636-84afe639a012"
+      "id": "b88b2784-79d1-4925-b30d-c13c514c29e7",
+      "name": "msdyncrmWorkflowTools.QueryValues",
+      "friendlyName": "fb9f8834-8a67-4f7d-8d80-7368cc06a566"
     },
     "msdyncrmWorkflowTools.RemoveRoleFromTeam": {
-      "id": "1c2d985d-db1b-4b5f-958b-37aa63f494e5",
-      "name": "Remove Role From Team",
-      "friendlyName": "53cf954e-b788-465e-b8b9-49f28197fc5b"
+      "id": "8f1a703b-4698-4316-98cb-5a390e2bddc6",
+      "name": "msdyncrmWorkflowTools.RemoveRoleFromTeam",
+      "friendlyName": "5cf4846b-c06f-4d18-b8b0-1b7e14022e6f"
     },
     "msdyncrmWorkflowTools.RemoveRoleFromUser": {
-      "id": "001d1918-4da0-47ba-b78a-94e5ed0e8664",
-      "name": "Remove Role From User",
-      "friendlyName": "c60a7bf4-6a63-4e73-8654-03f092aaa972"
+      "id": "ef7e151e-eedc-47cf-8c6e-08e74df74ffd",
+      "name": "msdyncrmWorkflowTools.RemoveRoleFromUser",
+      "friendlyName": "8f2ed8cf-0611-415b-bb06-ec480422a5d1"
     },
     "msdyncrmWorkflowTools.RemoveUserFromTeam": {
-      "id": "5758161c-6f15-4fa9-ab9c-05d6d2bc05d5",
-      "name": "Remove User From Team",
-      "friendlyName": "d5a0b65c-9c7d-4837-9d8e-0d86cec86330"
+      "id": "0446e0f4-f188-4442-a84b-b32aa85a418d",
+      "name": "msdyncrmWorkflowTools.RemoveUserFromTeam",
+      "friendlyName": "39c618fb-1f2b-4a04-8c2a-9985df0f7029"
     },
     "msdyncrmWorkflowTools.RetrieveUserBUDefaultTeam": {
-      "id": "1a39c85b-1eeb-48c1-bd79-d7f904a5c6ac",
-      "name": "Retrieve User BU Default Team",
-      "friendlyName": "2726fee3-14aa-4b74-b09c-a37b7a71aadc"
+      "id": "fd911338-349d-430f-b50e-6ff7566015bc",
+      "name": "msdyncrmWorkflowTools.RetrieveUserBUDefaultTeam",
+      "friendlyName": "cf7eee51-8fb3-4e77-870b-4dd23bea7a3f"
     },
     "msdyncrmWorkflowTools.RollupFunctions": {
-      "id": "3a194554-ee85-49f0-b97c-3192b55cb174",
-      "name": "Rollup Functions",
-      "friendlyName": "64b70c8a-ef2c-4e80-9402-a1d797de9eb1"
+      "id": "65c15aaa-54a7-4f47-abe6-55ef6e7cf891",
+      "name": "msdyncrmWorkflowTools.RollupFunctions",
+      "friendlyName": "c169d9d3-cac4-4933-bddc-e9dd4c28bc35"
+    },
+    "msdyncrmWorkflowTools.SetLookupFieldFromRecordUrl": {
+      "id": "30b0dd9a-ba73-4922-a444-122641342918",
+      "name": "msdyncrmWorkflowTools.SetLookupFieldFromRecordUrl",
+      "friendlyName": "9a272caa-4c5a-439f-a812-ba5d9225280d"
     },
     "msdyncrmWorkflowTools.SetMultiSelectOptionSet": {
-      "id": "ee736d5f-70f2-4af2-92c6-9ff6e330f9ce",
-      "name": "Set Multi Select OptionSet",
-      "friendlyName": "8a906e98-d124-4a3d-b05c-e742f575f079"
+      "id": "54e26c16-6ad5-44b7-86d4-0b4eb1f3035d",
+      "name": "msdyncrmWorkflowTools.SetMultiSelectOptionSet",
+      "friendlyName": "694b8efb-ccfd-474f-977f-fb5a56a98559"
     },
     "msdyncrmWorkflowTools.SetState": {
-      "id": "37a65ce2-630a-4f1f-957a-d47cb63a586a",
-      "name": "Set State",
-      "friendlyName": "2f006d2a-150b-4ae3-8c06-53e17f0f27ea"
+      "id": "3ab3c3f0-b9a9-48da-b03a-6951f1cf4ecd",
+      "name": "msdyncrmWorkflowTools.SetState",
+      "friendlyName": "5dd02ba7-68e6-4873-9c8a-e13d1d097467"
     },
     "msdyncrmWorkflowTools.SetUserSettings": {
-      "id": "596ba352-1e46-49c2-af6a-73509f2b9794",
-      "name": "Set User Settings",
-      "friendlyName": "061532da-9ed9-4a85-a64c-9e815a44c146"
+      "id": "db7d943d-49d7-4742-bd8d-6d6e85559b02",
+      "name": "msdyncrmWorkflowTools.SetUserSettings",
+      "friendlyName": "7003994d-c83a-4b94-9983-eb981cf833bd"
     },
     "msdyncrmWorkflowTools.ShareRecordWithTeam": {
-      "id": "10187244-a8f0-4e72-bbf6-8a0062ef7df5",
-      "name": "Share Record With Team",
-      "friendlyName": "ed18b648-43ba-4fb2-bcbd-58fd22254adb"
+      "id": "20669d7e-ff17-4012-85b5-d4104c602f11",
+      "name": "msdyncrmWorkflowTools.ShareRecordWithTeam",
+      "friendlyName": "e8a11ea1-9d21-425b-8f67-4f1364ca675a"
     },
     "msdyncrmWorkflowTools.ShareRecordWithUser": {
-      "id": "0706baa7-a3ec-4f60-80d7-3cd6774ce7a5",
-      "name": "Share Record With User",
-      "friendlyName": "aec6bee9-12a5-4c92-be7e-b77bf5dfb329"
+      "id": "699c259e-4952-4377-837a-cb9e5831525e",
+      "name": "msdyncrmWorkflowTools.ShareRecordWithUser",
+      "friendlyName": "7d6dcc85-efb0-49db-acfb-3641da15cacf"
     },
     "msdyncrmWorkflowTools.ShareSecuredField": {
-      "id": "9854cfba-cd9e-45c4-99de-382b97936dc4",
-      "name": "Share Secured Field",
-      "friendlyName": "b10eaa8d-0258-48e5-9121-d92ffb93a204"
+      "id": "3a7b4e0d-17f3-46d3-9d58-f38f15a66009",
+      "name": "msdyncrmWorkflowTools.ShareSecuredField",
+      "friendlyName": "8bfc5f56-b4ca-45a1-8a2e-ff4317740b2d"
     },
     "msdyncrmWorkflowTools.StringFunctions": {
-      "id": "93698d76-7e74-40bd-bf14-05c11071fbc7",
-      "name": "String Functions",
-      "friendlyName": "fb753248-e23d-4927-810e-002315408add"
+      "id": "f70e92a9-eef0-441f-bd8f-966fba351dff",
+      "name": "msdyncrmWorkflowTools.StringFunctions",
+      "friendlyName": "22ca480e-27c4-489f-9e6b-eced808b3e99"
     },
     "msdyncrmWorkflowTools.TranslateText": {
-      "id": "d4a90457-9ce1-4be7-8fd2-5a02b617c678",
-      "name": "Translate Text",
-      "friendlyName": "65c6423d-32f0-4224-bfbf-a3b419146d36"
+      "id": "d8f4ae85-f08d-4518-a7dc-e91bdef20601",
+      "name": "msdyncrmWorkflowTools.TranslateText",
+      "friendlyName": "3117d690-8cf6-432f-a13f-fd54ca4c2cc0"
     },
     "msdyncrmWorkflowTools.UnshareRecordWithTeam": {
-      "id": "81754411-c7f3-4e8b-b99f-104b00e767ad",
-      "name": "Unshare Record With Team",
-      "friendlyName": "f562df7a-298c-4b3a-ae08-f90d2d855e18"
+      "id": "d36987e5-5cd9-4ba6-b2d6-c31c883576d4",
+      "name": "msdyncrmWorkflowTools.UnshareRecordWithTeam",
+      "friendlyName": "527f1ec0-22bf-47de-b4cd-9affb5f00577"
     },
     "msdyncrmWorkflowTools.UnshareRecordWithUser": {
-      "id": "80b0095e-99df-4410-8150-0a9df4db9ca8",
-      "name": "Unshare Record With User",
-      "friendlyName": "ce7361cb-dcfe-4b5b-bf43-0c680ac155cb"
+      "id": "cfc78aba-f8de-4e0a-8384-31382fda424a",
+      "name": "msdyncrmWorkflowTools.UnshareRecordWithUser",
+      "friendlyName": "b87b338b-d773-4d21-b87f-3dace21c3933"
     },
     "msdyncrmWorkflowTools.UpdateChildRecords": {
-      "id": "6d4478f9-4e82-43d6-b93d-1d877598e38d",
-      "name": "Update Child Records",
-      "friendlyName": "1b9f0572-5048-4294-860c-032fc522d0d5"
+      "id": "37e30e5c-0393-4328-b895-cffb74d8de77",
+      "name": "msdyncrmWorkflowTools.UpdateChildRecords",
+      "friendlyName": "0895844a-f0f2-4925-b582-e94e533dcac3"
+    },
+    "msdyncrmWorkflowTools.UpdateProductQuoteValue": {
+      "id": "68fd836c-1b58-43cc-b932-8e42b5ad5485",
+      "name": "msdyncrmWorkflowTools.UpdateProductQuoteValue",
+      "friendlyName": "f5c1de21-0ab1-4d31-bc47-2ca9006acbbe"
+    },
+    "msdyncrmWorkflowTools.UpdateQuoteValue": {
+      "id": "84892554-3010-4070-b83e-7efb69af745e",
+      "name": "msdyncrmWorkflowTools.UpdateQuoteValue",
+      "friendlyName": "e7577999-f80d-4018-a038-fbe8b33e1c1b"
+    },
+    "msdyncrmWorkflowTools.WinQuote": {
+      "id": "49ca94ac-d4e2-45a7-9a24-c4d0163c25b7",
+      "name": "msdyncrmWorkflowTools.WinQuote",
+      "friendlyName": "1c1760e4-d17e-4b6b-8dfe-7b0e93a7b55a"
     }
   }
 }
