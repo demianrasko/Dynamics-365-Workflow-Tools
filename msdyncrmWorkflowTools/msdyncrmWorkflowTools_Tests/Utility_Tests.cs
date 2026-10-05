@@ -522,11 +522,10 @@ namespace msdyncrmWorkflowTools_Tests
         {
             var userId = Guid.NewGuid();
 
-            var settings = Utility.BuildUserSettings(userId, 0, 0, 0, 0, 0, -1, false);
+            var settings = Utility.BuildUserSettings(userId, 0, 0, 0, 0, 0, -1, null);
 
-            CollectionAssert.AreEquivalent(new[] { "systemuserid", "issendasallowed" }, settings.Attributes.Keys.ToArray());
+            CollectionAssert.AreEquivalent(new[] { "systemuserid" }, settings.Attributes.Keys.ToArray());
             Assert.AreEqual(userId, settings["systemuserid"]);
-            Assert.AreEqual(false, settings["issendasallowed"]);
         }
 
         [TestMethod]
@@ -550,6 +549,7 @@ namespace msdyncrmWorkflowTools_Tests
 
             Assert.IsFalse(settings.Contains("advancedfindstartupmode"));
             Assert.IsFalse(settings.Contains("defaultcalendarview"));
+            Assert.AreEqual(false, settings["issendasallowed"]);
         }
 
         [TestMethod]

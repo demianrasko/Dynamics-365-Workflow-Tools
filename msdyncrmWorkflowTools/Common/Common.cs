@@ -1745,7 +1745,7 @@ namespace msdyncrmWorkflowTools
         /// Updates a user's personal settings (see <see cref="Utility.BuildUserSettings"/> for which are written).
         /// </summary>
         public void SetUserSettings(Guid userId, int pagingLimit, int advancedFindStartupMode, int timeZoneCode,
-            int helpLanguageId, int uiLanguageId, int defaultCalendarView, bool isSendAsAllowed)
+            int helpLanguageId, int uiLanguageId, int defaultCalendarView, bool? isSendAsAllowed)
         {
             Trace($"Updating the settings of user {userId}");
 

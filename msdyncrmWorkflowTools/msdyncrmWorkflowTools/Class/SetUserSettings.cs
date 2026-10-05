@@ -52,6 +52,11 @@ namespace msdyncrmWorkflowTools
         [Default("false")]
         public InArgument<bool> IsSendAsAllowed { get; set; }
 
+        //Yes to ignore IsSendAsAllowed. Steps saved before this input existed read No, so they still write it.
+        [Input("Leave IsSendAsAllowed Unchanged")]
+        [Default("True")]
+        public InArgument<bool> LeaveIsSendAsAllowedUnchanged { get; set; }
+
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             common.SetUserSettings(
@@ -62,7 +67,7 @@ namespace msdyncrmWorkflowTools
                 HelpLanguageId.Get(executionContext),
                 UILanguageId.Get(executionContext),
                 DefaultCalendarView.Get(executionContext),
-                IsSendAsAllowed.Get(executionContext));
+                LeaveIsSendAsAllowedUnchanged.Get(executionContext) ? (bool?)null : IsSendAsAllowed.Get(executionContext));
         }
     }
 }

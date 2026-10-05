@@ -514,11 +514,11 @@ namespace msdyncrmWorkflowTools
         /// <summary>
         /// The usersettings update for SetUserSettings, holding only the settings that were supplied:
         /// 0 leaves a number unchanged, as does an AdvancedFind mode other than 1 or 2 and a calendar view
-        /// other than 0, 1 or 2. Send As is always written.
+        /// other than 0, 1 or 2. A null Send As leaves it unchanged.
         /// </summary>
         /// <exception cref="InvalidPluginExecutionException">The paging limit is not 0, 25, 50, 75, 100 or 250.</exception>
         public static Entity BuildUserSettings(Guid userId, int pagingLimit, int advancedFindStartupMode, int timeZoneCode,
-            int helpLanguageId, int uiLanguageId, int defaultCalendarView, bool isSendAsAllowed)
+            int helpLanguageId, int uiLanguageId, int defaultCalendarView, bool? isSendAsAllowed)
         {
             var settings = new Entity(EntityNames.UserSettings)
             {
@@ -561,7 +561,10 @@ namespace msdyncrmWorkflowTools
                 settings[AttributeNames.DefaultCalendarView] = defaultCalendarView;
             }
 
-            settings[AttributeNames.IsSendAsAllowed] = isSendAsAllowed;
+            if (isSendAsAllowed.HasValue)
+            {
+                settings[AttributeNames.IsSendAsAllowed] = isSendAsAllowed.Value;
+            }
 
             return settings;
         }
