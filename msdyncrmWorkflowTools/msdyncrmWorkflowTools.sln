@@ -25,6 +25,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "templates", "templates", "{
 		..\templates\WorkflowActivity\WorkflowActivity.vstemplate = ..\templates\WorkflowActivity\WorkflowActivity.vstemplate
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{BE5A6C88-9F7B-4DAE-90C2-5B6F7E8A9CA5}"
+	ProjectSection(SolutionItems) = preProject
+		..\tools\Set-DataverseTestConnections.ps1 = ..\tools\Set-DataverseTestConnections.ps1
+		..\tools\Test-DataverseAppUser.ps1 = ..\tools\Test-DataverseAppUser.ps1
+	EndProjectSection
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{8B2D3F55-6C4E-4A7B-AD9F-2E3C4B5D6F72}"
 	ProjectSection(SolutionItems) = preProject
 		..\docs\Add Marketing List To Campaign.md = ..\docs\Add Marketing List To Campaign.md
@@ -395,6 +401,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{BE5A6C88-9F7B-4DAE-90C2-5B6F7E8A9CA5} = {7A1C2E44-5B3D-4F6A-9C8E-1D2B3A4C5E61}
 		{8B2D3F55-6C4E-4A7B-AD9F-2E3C4B5D6F72} = {7A1C2E44-5B3D-4F6A-9C8E-1D2B3A4C5E61}
 		{9C3E4A66-7D5F-4B8C-BEA0-3F4D5C6E7A83} = {8B2D3F55-6C4E-4A7B-AD9F-2E3C4B5D6F72}
 		{AD4F5B77-8E6A-4C9D-8FB1-4A5E6D7F8B94} = {7A1C2E44-5B3D-4F6A-9C8E-1D2B3A4C5E61}
