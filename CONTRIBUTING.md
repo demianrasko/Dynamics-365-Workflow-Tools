@@ -18,6 +18,7 @@ Every activity follows the same pattern: the activity class only reads and check
 | Code that calls Dataverse | `Common\Common.cs`, in the matching `#region` |
 | Code that doesn't call Dataverse (parsing, formatting, calculations) | `Common\Utility.cs` |
 | `QueryExpression` builders | `Common\Queries.cs` |
+| Small classes the shared code returns (e.g. `RecordUrl`), one per file | `Common\SupportingClasses\` (link new files into `msdyncrmWorkflowTools.csproj` too) |
 | Table and column names | `Common\EntityNames.cs` and `Common\AttributeNames.cs` |
 | Tests | `msdyncrmWorkflowTools_Tests\` (`Common_Tests.cs`, `Utility_Tests.cs`, `Queries_Tests.cs`) |
 

@@ -80,6 +80,9 @@
     <Compile Include="AttributeNames.cs" />
     <Compile Include="EntityNames.cs" />
     <Compile Include="Queries.cs" />
+    <Compile Include="SupportingClasses\GeoLocation.cs" />
+    <Compile Include="SupportingClasses\RecordUrl.cs" />
+    <Compile Include="SupportingClasses\RollupResult.cs" />
     <Compile Include="Utility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
