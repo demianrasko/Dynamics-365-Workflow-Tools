@@ -70,6 +70,17 @@ msbuild msdyncrmWorkflowTools\msdyncrmWorkflowTools\msdyncrmWorkflowTools.csproj
 
 Then run the tests from Test Explorer. Build the Power Platform version before running `PowerPlatformBuild_Tests`, because those tests compare the two DLLs.
 
+### Building the solution files
+
+`tools\Build-Solutions.ps1` builds both assemblies and packs the solutions people import, managed and unmanaged, into `dist\` (it needs the [Power Platform CLI](https://learn.microsoft.com/power-platform/developer/cli/introduction)):
+
+- `Dynamics365WorkflowTools_<version>.zip` / `_managed.zip` with `msdyncrmWorkflowTools.dll`
+- `PowerPlatformWorkflowTools_<version>.zip` / `_managed.zip` with `powerplatformWorkflowTools.dll`
+
+The version is the assembly version in `Properties\AssemblyInfo.cs`; keep it 1.0.x so imports upgrade the installed solution. The `solution` folder keeps each solution's identity: its name, the publisher, and the ids of the assembly and of every activity. Those ids must never change, or an import would add a second assembly instead of upgrading the first. A new activity gets an id the first time the script runs, written to the identity file, so commit that change. The script stops if an activity in the identity file is missing from the assembly, because removing it from the solution would break the workflows that use it.
+
+The **Packaging** integration test imports the built unmanaged Power Platform solution into the Power Platform test environment, to prove Dataverse accepts it.
+
 ### Integration tests (real Dataverse environments)
 
 Unit tests (`msdyncrmWorkflowTools_Tests`) use a fake organization service and run everywhere. The integration tests are a separate project, `msdyncrmWorkflowTools_IntegrationTests`, that runs `Common` against real environments: every test in `IntegrationTestBase` runs once against a Dynamics 365 environment and once against a plain Dataverse (Power Platform) environment. Without the environments set up they are inconclusive.
@@ -87,7 +98,7 @@ Writing tests:
 - Add them to `IntegrationTestBase` (in a partial file per area, like `IntegrationTestBase.Records.cs`) so they run against both environments. Tests that need Dynamics 365 tables (quotes, leads, marketing lists, cases) go in `Dynamics365_IntegrationTests`.
 - Create test data with `Create(...)`, or call `DeleteAfterTest(...)` for records the code creates, so it is deleted when the test ends, even if it fails.
 
-The same project has two more groups (Test Explorer > group by Traits):
+The same project has more groups (Test Explorer > group by Traits); **Packaging** is described above:
 
 - **Deployment**: registers the built Power Platform assembly (`/p:PowerPlatform=true`) in the Power Platform environment, the way the Plugin Registration Tool does, and checks that it loads in the sandbox, that every activity registers and that the designer sees every input and output. The assembly stays registered, so real test workflows can use it. The Dynamics 365 build isn't deployed this way while the Dynamics 365 test environment has the managed workflow tools solution installed (the manual upgrade test uses it).
 - **LiveServices**: the outside services, for real. Currency conversion (Frankfurter) needs no key; geocoding needs `AZURE_MAPS_KEY` and translation `TRANSLATOR_KEY` (plus `TRANSLATOR_REGION` for a regional resource). Save them with `tools\Set-ServiceKeys.ps1`; without a key the test is inconclusive.

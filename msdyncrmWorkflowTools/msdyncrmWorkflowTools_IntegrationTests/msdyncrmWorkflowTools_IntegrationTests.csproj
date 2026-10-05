@@ -90,6 +90,7 @@
     <Compile Include="Dynamics365_IntegrationTests.Sales.cs" />
     <Compile Include="ExternalServices_LiveTests.cs" />
     <Compile Include="IntegrationTestBase.cs" />
+    <Compile Include="Packaging_IntegrationTests.cs" />
     <Compile Include="IntegrationTestBase.AI.cs" />
     <Compile Include="IntegrationTestBase.Email.cs" />
     <Compile Include="IntegrationTestBase.Helpers.cs" />
