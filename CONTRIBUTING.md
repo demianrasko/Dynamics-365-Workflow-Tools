@@ -72,16 +72,22 @@ Then run the tests from Test Explorer. Build the Power Platform version before r
 
 ### Integration tests (real Dataverse environments)
 
-The tests in `msdyncrmWorkflowTools_Tests\Integration` run `Common` against real environments: every test in `IntegrationTestBase` runs once against a Dynamics 365 environment and once against a plain Dataverse (Power Platform) environment. They are tagged `[TestCategory("Integration")]`, and they are inconclusive when the environments aren't set up, so the unit tests never need them.
+Unit tests (`msdyncrmWorkflowTools_Tests`) use a fake organization service and run everywhere. The integration tests are a separate project, `msdyncrmWorkflowTools_IntegrationTests`, that runs `Common` against real environments: every test in `IntegrationTestBase` runs once against a Dynamics 365 environment and once against a plain Dataverse (Power Platform) environment. Without the environments set up they are inconclusive.
+
+The goal is an integration test for every `Common` method that talks to Dataverse, so problems show up before an activity is tried in a workflow.
 
 To set them up, use **test environments only** (the tests create and delete records named `WFT-Test ...`):
 
 1. Create an app registration (client ID and secret) and add it to each environment as an application user with a security role (System Administrator is simplest in a test environment).
 2. Run `tools\Set-DataverseTestConnections.ps1`. It checks each connection with `tools\Test-DataverseAppUser.ps1` and saves `DATAVERSE_CONNECTION` (Dynamics 365) and `DATAVERSE_CONNECTION_PP` (Power Platform) as user environment variables.
-3. Restart Visual Studio, then run the `Integration` category in Test Explorer (or `vstest.console ... /TestCaseFilter:TestCategory=Integration`). Use `TestCategory!=Integration` to run only the unit tests.
+3. Restart Visual Studio, then run the `msdyncrmWorkflowTools_IntegrationTests` project in Test Explorer.
 
-Create test data with `Create(...)` (or `DeleteAfterTest(...)` for records the code creates), so it is deleted when the test ends, even if it fails. Put tests that need Dynamics 365 tables (quotes, leads, marketing lists, cases) in `Dynamics365_IntegrationTests`.
+Writing tests:
 
+- Add them to `IntegrationTestBase` (in a partial file per area, like `IntegrationTestBase.Records.cs`) so they run against both environments. Tests that need Dynamics 365 tables (quotes, leads, marketing lists, cases) go in `Dynamics365_IntegrationTests`.
+- Create test data with `Create(...)`, or call `DeleteAfterTest(...)` for records the code creates, so it is deleted when the test ends, even if it fails.
+
+In GitHub, the **Integration tests** workflow (`.github\workflows\integration-tests.yml`) runs the same tests. It only runs when started by hand from the Actions tab, so pull requests from forks can't reach the environments. It needs a GitHub environment named `dataverse-test` (repository Settings > Environments) with the secrets `DATAVERSE_CONNECTION` and `DATAVERSE_CONNECTION_PP`. Adding yourself as a required reviewer there makes every run wait for your approval. The **Build and test** workflow runs only the unit tests.
 ### Code style
 
 - Braces on every `if` and `else`, even for one line.

@@ -9,7 +9,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 
-namespace msdyncrmWorkflowTools_Tests.Integration
+namespace msdyncrmWorkflowTools_IntegrationTests
 {
     /// <summary>
     /// Connects the integration tests to a real Dataverse environment from a connection string in an environment

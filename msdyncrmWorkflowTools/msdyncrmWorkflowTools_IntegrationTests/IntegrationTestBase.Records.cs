@@ -6,7 +6,7 @@ using msdyncrmWorkflowTools;
 using System;
 using System.Linq;
 
-namespace msdyncrmWorkflowTools_Tests.Integration
+namespace msdyncrmWorkflowTools_IntegrationTests
 {
     public abstract partial class IntegrationTestBase
     {

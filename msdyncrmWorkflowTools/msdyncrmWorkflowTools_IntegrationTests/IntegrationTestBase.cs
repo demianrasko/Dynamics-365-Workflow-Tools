@@ -5,7 +5,7 @@ using msdyncrmWorkflowTools;
 using System;
 using System.Collections.Generic;
 
-namespace msdyncrmWorkflowTools_Tests.Integration
+namespace msdyncrmWorkflowTools_IntegrationTests
 {
     /// <summary>
     /// Base for the integration tests: connects <see cref="Common"/> to a real environment and deletes every record a
