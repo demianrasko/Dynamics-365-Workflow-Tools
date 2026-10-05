@@ -5,407 +5,246 @@
   "assemblyName": "powerplatformWorkflowTools",
   "assemblyId": "2825fa3f-0bc1-f111-a05a-6045bd061c5d",
   "buildFolder": "Release-PowerPlatform",
-  "activityNames": "words",
   "activities": {
     "msdyncrmWorkflowTools.AIClassifyText": {
-      "id": "0d4af17f-0bc1-f111-a05a-70a8a5b106ad",
-      "name": "AI Classify Text",
-      "friendlyName": "msdyncrmWorkflowTools.AIClassifyText"
+      "id": "0d4af17f-0bc1-f111-a05a-70a8a5b106ad"
     },
     "msdyncrmWorkflowTools.AIDraftReply": {
-      "id": "b135b486-0bc1-f111-a05a-70a8a5b106ad",
-      "name": "AI Draft Reply",
-      "friendlyName": "msdyncrmWorkflowTools.AIDraftReply"
+      "id": "b135b486-0bc1-f111-a05a-70a8a5b106ad"
     },
     "msdyncrmWorkflowTools.AISentimentDetect": {
-      "id": "13227184-0bc1-f111-a05a-6045bd061c5d",
-      "name": "AI Sentiment Detect",
-      "friendlyName": "msdyncrmWorkflowTools.AISentimentDetect"
+      "id": "13227184-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.AISummarizeRecord": {
-      "id": "14227184-0bc1-f111-a05a-6045bd061c5d",
-      "name": "AI Summarize Record",
-      "friendlyName": "msdyncrmWorkflowTools.AISummarizeRecord"
+      "id": "14227184-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.AISummarizeText": {
-      "id": "1d6c698a-0bc1-f111-a05a-6045bd061c5d",
-      "name": "AI Summarize Text",
-      "friendlyName": "msdyncrmWorkflowTools.AISummarizeText"
+      "id": "1d6c698a-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.AITranslateText": {
-      "id": "cce83d8d-0bc1-f111-a05a-70a8a5b106ad",
-      "name": "AI Translate Text",
-      "friendlyName": "msdyncrmWorkflowTools.AITranslateText"
+      "id": "cce83d8d-0bc1-f111-a05a-70a8a5b106ad"
     },
     "msdyncrmWorkflowTools.AddRoleToTeam": {
-      "id": "fc647290-0bc1-f111-a05a-6045bd061c5d",
-      "name": "Add Role To Team",
-      "friendlyName": "msdyncrmWorkflowTools.AddRoleToTeam"
+      "id": "fc647290-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.AddRoleToUser": {
-      "id": "31657290-0bc1-f111-a05a-6045bd061c5d",
-      "name": "Add Role To User",
-      "friendlyName": "msdyncrmWorkflowTools.AddRoleToUser"
+      "id": "31657290-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.AddUserToTeam": {
-      "id": "0c63d178-0bc1-f111-a05a-70a8a5b106ad",
-      "name": "Add User To Team",
-      "friendlyName": "msdyncrmWorkflowTools.AddUserToTeam"
+      "id": "0c63d178-0bc1-f111-a05a-70a8a5b106ad"
     },
     "msdyncrmWorkflowTools.ApplyRoutingRule": {
-      "id": "1e657290-0bc1-f111-a05a-6045bd061c5d",
-      "name": "Apply Routing Rule",
-      "friendlyName": "msdyncrmWorkflowTools.ApplyRoutingRule"
+      "id": "1e657290-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.AssociateEntity": {
-      "id": "054af17f-0bc1-f111-a05a-70a8a5b106ad",
-      "name": "Associate Entity",
-      "friendlyName": "msdyncrmWorkflowTools.AssociateEntity"
+      "id": "054af17f-0bc1-f111-a05a-70a8a5b106ad"
     },
     "msdyncrmWorkflowTools.CalculateAgregateDate": {
-      "id": "2c25fa3f-0bc1-f111-a05a-6045bd061c5d",
-      "name": "Calculate Agregate Date",
-      "friendlyName": "msdyncrmWorkflowTools.CalculateAgregateDate"
+      "id": "2c25fa3f-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.CalculatePrice": {
-      "id": "e9ae7b45-0bc1-f111-a05a-70a8a5b106ad",
-      "name": "Calculate Price",
-      "friendlyName": "msdyncrmWorkflowTools.CalculatePrice"
+      "id": "e9ae7b45-0bc1-f111-a05a-70a8a5b106ad"
     },
     "msdyncrmWorkflowTools.CalculateRollupField": {
-      "id": "b1972494-0bc1-f111-a05a-70a8a5b106ad",
-      "name": "Calculate Rollup Field",
-      "friendlyName": "msdyncrmWorkflowTools.CalculateRollupField"
+      "id": "b1972494-0bc1-f111-a05a-70a8a5b106ad"
     },
     "msdyncrmWorkflowTools.CheckAssociateEntity": {
-      "id": "044af17f-0bc1-f111-a05a-70a8a5b106ad",
-      "name": "Check Associate Entity",
-      "friendlyName": "msdyncrmWorkflowTools.CheckAssociateEntity"
+      "id": "044af17f-0bc1-f111-a05a-70a8a5b106ad"
     },
     "msdyncrmWorkflowTools.CheckUserInRole": {
-      "id": "af5f1fa3-0bc1-f111-a05a-70a8a5b2f876",
-      "name": "Check User In Role",
-      "friendlyName": "msdyncrmWorkflowTools.CheckUserInRole"
+      "id": "af5f1fa3-0bc1-f111-a05a-70a8a5b2f876"
     },
     "msdyncrmWorkflowTools.CheckUserInTeam": {
-      "id": "32657290-0bc1-f111-a05a-6045bd061c5d",
-      "name": "Check User In Team",
-      "friendlyName": "msdyncrmWorkflowTools.CheckUserInTeam"
+      "id": "32657290-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.Class.DeleteRecord": {
-      "id": "c11dddab-0bc1-f111-a05a-70a8a5b106ad",
-      "name": "Delete Record",
-      "friendlyName": "msdyncrmWorkflowTools.Class.DeleteRecord"
+      "id": "c11dddab-0bc1-f111-a05a-70a8a5b106ad"
     },
     "msdyncrmWorkflowTools.Class.DeleteRecordAuditHistory": {
-      "id": "27e48aa3-0bc1-f111-a05a-6045bd061c5d",
-      "name": "Delete Record Audit History",
-      "friendlyName": "msdyncrmWorkflowTools.Class.DeleteRecordAuditHistory"
+      "id": "27e48aa3-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.Class.EmailToTeam": {
-      "id": "1af45ca5-0bc1-f111-a05a-70a8a5b106ad",
-      "name": "Email To Team",
-      "friendlyName": "msdyncrmWorkflowTools.Class.EmailToTeam"
+      "id": "1af45ca5-0bc1-f111-a05a-70a8a5b106ad"
     },
     "msdyncrmWorkflowTools.Class.EntityAttachmentToEmail": {
-      "id": "c86c73b0-0bc1-f111-a05a-6045bd061c5d",
-      "name": "Entity Attachment To Email",
-      "friendlyName": "msdyncrmWorkflowTools.Class.EntityAttachmentToEmail"
+      "id": "c86c73b0-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.Class.ExecuteWorkflowByID": {
-      "id": "2be48aa3-0bc1-f111-a05a-6045bd061c5d",
-      "name": "Execute Workflow By ID",
-      "friendlyName": "msdyncrmWorkflowTools.Class.ExecuteWorkflowByID"
+      "id": "2be48aa3-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.Class.GetInitiatingUser": {
-      "id": "19f45ca5-0bc1-f111-a05a-70a8a5b106ad",
-      "name": "Get Initiating User",
-      "friendlyName": "msdyncrmWorkflowTools.Class.GetInitiatingUser"
+      "id": "19f45ca5-0bc1-f111-a05a-70a8a5b106ad"
     },
     "msdyncrmWorkflowTools.Class.IsMemberOfTeam": {
-      "id": "b15f1fa3-0bc1-f111-a05a-70a8a5b2f876",
-      "name": "Is Member Of Team",
-      "friendlyName": "msdyncrmWorkflowTools.Class.IsMemberOfTeam"
+      "id": "b15f1fa3-0bc1-f111-a05a-70a8a5b2f876"
     },
     "msdyncrmWorkflowTools.Class.NumericFunctions": {
-      "id": "1f6052aa-0bc1-f111-a05a-70a8a5b2f876",
-      "name": "Numeric Functions",
-      "friendlyName": "msdyncrmWorkflowTools.Class.NumericFunctions"
+      "id": "1f6052aa-0bc1-f111-a05a-70a8a5b2f876"
     },
     "msdyncrmWorkflowTools.Class.PickFromQueue": {
-      "id": "296052aa-0bc1-f111-a05a-70a8a5b2f876",
-      "name": "Pick From Queue",
-      "friendlyName": "msdyncrmWorkflowTools.Class.PickFromQueue"
+      "id": "296052aa-0bc1-f111-a05a-70a8a5b2f876"
     },
     "msdyncrmWorkflowTools.Class.QueueItemCount": {
-      "id": "cd1dddab-0bc1-f111-a05a-70a8a5b106ad",
-      "name": "Queue Item Count",
-      "friendlyName": "msdyncrmWorkflowTools.Class.QueueItemCount"
+      "id": "cd1dddab-0bc1-f111-a05a-70a8a5b106ad"
     },
     "msdyncrmWorkflowTools.Class.SendEmail": {
-      "id": "c81dddab-0bc1-f111-a05a-70a8a5b106ad",
-      "name": "Send Email",
-      "friendlyName": "msdyncrmWorkflowTools.Class.SendEmail"
+      "id": "c81dddab-0bc1-f111-a05a-70a8a5b106ad"
     },
     "msdyncrmWorkflowTools.Class.SendEmailFromTemplateToUsersInRole": {
-      "id": "15f45ca5-0bc1-f111-a05a-70a8a5b106ad",
-      "name": "Send Email From Template To Users In Role",
-      "friendlyName": "msdyncrmWorkflowTools.Class.SendEmailFromTemplateToUsersInRole"
+      "id": "15f45ca5-0bc1-f111-a05a-70a8a5b106ad"
     },
     "msdyncrmWorkflowTools.Class.SendEmailToUsersInRole": {
-      "id": "28e48aa3-0bc1-f111-a05a-6045bd061c5d",
-      "name": "Send Email To Users In Role",
-      "friendlyName": "msdyncrmWorkflowTools.Class.SendEmailToUsersInRole"
+      "id": "28e48aa3-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.Class.SetProcess": {
-      "id": "89b921b2-0bc1-f111-a05a-70a8a5b106ad",
-      "name": "Set Process",
-      "friendlyName": "msdyncrmWorkflowTools.Class.SetProcess"
+      "id": "89b921b2-0bc1-f111-a05a-70a8a5b106ad"
     },
     "msdyncrmWorkflowTools.Class.SetProcessStage": {
-      "id": "23c51baa-0bc1-f111-a05a-6045bd061c5d",
-      "name": "Set Process Stage",
-      "friendlyName": "msdyncrmWorkflowTools.Class.SetProcessStage"
+      "id": "23c51baa-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.CloneChildren": {
-      "id": "01af7b45-0bc1-f111-a05a-70a8a5b106ad",
-      "name": "Clone Children",
-      "friendlyName": "msdyncrmWorkflowTools.CloneChildren"
+      "id": "01af7b45-0bc1-f111-a05a-70a8a5b106ad"
     },
     "msdyncrmWorkflowTools.CloneRecord": {
-      "id": "a0d57196-0bc1-f111-a05a-6045bd061c5d",
-      "name": "Clone Record",
-      "friendlyName": "msdyncrmWorkflowTools.CloneRecord"
+      "id": "a0d57196-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.ConcatenateFromQuery": {
-      "id": "c757c649-0bc1-f111-a05a-6045bd061c5d",
-      "name": "Concatenate From Query",
-      "friendlyName": "msdyncrmWorkflowTools.ConcatenateFromQuery"
+      "id": "c757c649-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.CountChildEntityRecords": {
-      "id": "fa10874b-0bc1-f111-a05a-70a8a5b106ad",
-      "name": "Count Child Entity Records",
-      "friendlyName": "msdyncrmWorkflowTools.CountChildEntityRecords"
+      "id": "fa10874b-0bc1-f111-a05a-70a8a5b106ad"
     },
     "msdyncrmWorkflowTools.CreateTeam": {
-      "id": "af408b51-0bc1-f111-a05a-70a8a5b106ad",
-      "name": "Create Team",
-      "friendlyName": "msdyncrmWorkflowTools.CreateTeam"
+      "id": "af408b51-0bc1-f111-a05a-70a8a5b106ad"
     },
     "msdyncrmWorkflowTools.CurrencyConvert": {
-      "id": "b0408b51-0bc1-f111-a05a-70a8a5b106ad",
-      "name": "Currency Convert",
-      "friendlyName": "msdyncrmWorkflowTools.CurrencyConvert"
+      "id": "b0408b51-0bc1-f111-a05a-70a8a5b106ad"
     },
     "msdyncrmWorkflowTools.DateFunctions": {
-      "id": "73421671-0bc1-f111-a05a-6045bd061c5d",
-      "name": "Date Functions",
-      "friendlyName": "msdyncrmWorkflowTools.DateFunctions"
+      "id": "73421671-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.DeleteOptionValue": {
-      "id": "94e2bc51-0bc1-f111-a05a-6045bd061c5d",
-      "name": "Delete Option Value",
-      "friendlyName": "msdyncrmWorkflowTools.DeleteOptionValue"
+      "id": "94e2bc51-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.DisassociateEntity": {
-      "id": "d3f91d6b-0bc1-f111-a05a-6045bd061c5d",
-      "name": "Disassociate Entity",
-      "friendlyName": "msdyncrmWorkflowTools.DisassociateEntity"
+      "id": "d3f91d6b-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.DistributeWFActivityManyToMany": {
-      "id": "7f421671-0bc1-f111-a05a-6045bd061c5d",
-      "name": "Distribute WF Activity Many To Many",
-      "friendlyName": "msdyncrmWorkflowTools.DistributeWFActivityManyToMany"
+      "id": "7f421671-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.DistributeWFActivityOneToMany": {
-      "id": "f4b13e77-0bc1-f111-a05a-6045bd061c5d",
-      "name": "Distribute WF Activity One To Many",
-      "friendlyName": "msdyncrmWorkflowTools.DistributeWFActivityOneToMany"
+      "id": "f4b13e77-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.EncryptText": {
-      "id": "8f40ff7d-0bc1-f111-a05a-6045bd061c5d",
-      "name": "Encrypt Text",
-      "friendlyName": "msdyncrmWorkflowTools.EncryptText"
+      "id": "8f40ff7d-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.EntityJsonSerializer": {
-      "id": "cde83d8d-0bc1-f111-a05a-70a8a5b106ad",
-      "name": "Entity Json Serializer",
-      "friendlyName": "msdyncrmWorkflowTools.EntityJsonSerializer"
+      "id": "cde83d8d-0bc1-f111-a05a-70a8a5b106ad"
     },
     "msdyncrmWorkflowTools.EntityMobileDeepLink": {
-      "id": "04227184-0bc1-f111-a05a-6045bd061c5d",
-      "name": "Entity Mobile Deep Link",
-      "friendlyName": "msdyncrmWorkflowTools.EntityMobileDeepLink"
+      "id": "04227184-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.ExecuteWorkflowForRecordsinQuery": {
-      "id": "f5b13e77-0bc1-f111-a05a-6045bd061c5d",
-      "name": "Execute Workflow For Recordsin Query",
-      "friendlyName": "msdyncrmWorkflowTools.ExecuteWorkflowForRecordsinQuery"
+      "id": "f5b13e77-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.GeoCodeAddress": {
-      "id": "206c698a-0bc1-f111-a05a-6045bd061c5d",
-      "name": "GeoCode Address",
-      "friendlyName": "msdyncrmWorkflowTools.GeoCodeAddress"
+      "id": "206c698a-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.GetAppModuleID": {
-      "id": "6e911258-0bc1-f111-a05a-70a8a5b106ad",
-      "name": "Get App Module ID",
-      "friendlyName": "msdyncrmWorkflowTools.GetAppModuleID"
+      "id": "6e911258-0bc1-f111-a05a-70a8a5b106ad"
     },
     "msdyncrmWorkflowTools.GetAppRecordUrl": {
-      "id": "5714ff57-0bc1-f111-a05a-6045bd061c5d",
-      "name": "Get App Record Url",
-      "friendlyName": "msdyncrmWorkflowTools.GetAppRecordUrl"
+      "id": "5714ff57-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.GetEnvironmentVariable": {
-      "id": "5814ff57-0bc1-f111-a05a-6045bd061c5d",
-      "name": "Get Environment Variable",
-      "friendlyName": "msdyncrmWorkflowTools.GetEnvironmentVariable"
+      "id": "5814ff57-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.GetMultiSelectOptionSet": {
-      "id": "4514ff57-0bc1-f111-a05a-6045bd061c5d",
-      "name": "Get Multi Select OptionSet",
-      "friendlyName": "msdyncrmWorkflowTools.GetMultiSelectOptionSet"
+      "id": "4514ff57-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.GetOptionSetValue": {
-      "id": "d6e2bc51-0bc1-f111-a05a-6045bd061c5d",
-      "name": "Get Option Set Value",
-      "friendlyName": "msdyncrmWorkflowTools.GetOptionSetValue"
+      "id": "d6e2bc51-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.GetRecordID": {
-      "id": "9527625f-0bc1-f111-a05a-70a8a5b106ad",
-      "name": "Get Record ID",
-      "friendlyName": "msdyncrmWorkflowTools.GetRecordID"
+      "id": "9527625f-0bc1-f111-a05a-70a8a5b106ad"
     },
     "msdyncrmWorkflowTools.GetRecordUrl": {
-      "id": "ed10335e-0bc1-f111-a05a-6045bd061c5d",
-      "name": "Get Record Url",
-      "friendlyName": "msdyncrmWorkflowTools.GetRecordUrl"
+      "id": "ed10335e-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.GetSharepointLocationURL": {
-      "id": "5614ff57-0bc1-f111-a05a-6045bd061c5d",
-      "name": "Get Sharepoint Location URL",
-      "friendlyName": "msdyncrmWorkflowTools.GetSharepointLocationURL"
+      "id": "5614ff57-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.GoalRecalculate": {
-      "id": "8e40ff7d-0bc1-f111-a05a-6045bd061c5d",
-      "name": "Goal Recalculate",
-      "friendlyName": "msdyncrmWorkflowTools.GoalRecalculate"
+      "id": "8e40ff7d-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.InsertOptionValue": {
-      "id": "c4f91d6b-0bc1-f111-a05a-6045bd061c5d",
-      "name": "Insert Option Value",
-      "friendlyName": "msdyncrmWorkflowTools.InsertOptionValue"
+      "id": "c4f91d6b-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.JsonParser": {
-      "id": "d4f91d6b-0bc1-f111-a05a-6045bd061c5d",
-      "name": "Json Parser",
-      "friendlyName": "msdyncrmWorkflowTools.JsonParser"
+      "id": "d4f91d6b-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.MapMultiSelectOptionSet": {
-      "id": "f310335e-0bc1-f111-a05a-6045bd061c5d",
-      "name": "Map Multi Select OptionSet",
-      "friendlyName": "msdyncrmWorkflowTools.MapMultiSelectOptionSet"
+      "id": "f310335e-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.OrgDBSettingsRetrieve": {
-      "id": "93f0c364-0bc1-f111-a05a-6045bd061c5d",
-      "name": "OrgDB Settings Retrieve",
-      "friendlyName": "msdyncrmWorkflowTools.OrgDBSettingsRetrieve"
+      "id": "93f0c364-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.OrgDBSettingsUpdate": {
-      "id": "74421671-0bc1-f111-a05a-6045bd061c5d",
-      "name": "OrgDB Settings Update",
-      "friendlyName": "msdyncrmWorkflowTools.OrgDBSettingsUpdate"
+      "id": "74421671-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.QueryValues": {
-      "id": "b3972494-0bc1-f111-a05a-70a8a5b106ad",
-      "name": "Query Values",
-      "friendlyName": "msdyncrmWorkflowTools.QueryValues"
+      "id": "b3972494-0bc1-f111-a05a-70a8a5b106ad"
     },
     "msdyncrmWorkflowTools.RemoveRoleFromTeam": {
-      "id": "fb647290-0bc1-f111-a05a-6045bd061c5d",
-      "name": "Remove Role From Team",
-      "friendlyName": "msdyncrmWorkflowTools.RemoveRoleFromTeam"
+      "id": "fb647290-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.RemoveRoleFromUser": {
-      "id": "fd647290-0bc1-f111-a05a-6045bd061c5d",
-      "name": "Remove Role From User",
-      "friendlyName": "msdyncrmWorkflowTools.RemoveRoleFromUser"
+      "id": "fd647290-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.RemoveUserFromTeam": {
-      "id": "064af17f-0bc1-f111-a05a-70a8a5b106ad",
-      "name": "Remove User From Team",
-      "friendlyName": "msdyncrmWorkflowTools.RemoveUserFromTeam"
+      "id": "064af17f-0bc1-f111-a05a-70a8a5b106ad"
     },
     "msdyncrmWorkflowTools.RetrieveUserBUDefaultTeam": {
-      "id": "ff10335e-0bc1-f111-a05a-6045bd061c5d",
-      "name": "Retrieve User BU Default Team",
-      "friendlyName": "msdyncrmWorkflowTools.RetrieveUserBUDefaultTeam"
+      "id": "ff10335e-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.RollupFunctions": {
-      "id": "b4972494-0bc1-f111-a05a-70a8a5b106ad",
-      "name": "Rollup Functions",
-      "friendlyName": "msdyncrmWorkflowTools.RollupFunctions"
+      "id": "b4972494-0bc1-f111-a05a-70a8a5b106ad"
     },
     "msdyncrmWorkflowTools.SetLookupFieldFromRecordUrl": {
-      "id": "01b23e77-0bc1-f111-a05a-6045bd061c5d",
-      "name": "Set Lookup Field From Record Url",
-      "friendlyName": "msdyncrmWorkflowTools.SetLookupFieldFromRecordUrl"
+      "id": "01b23e77-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.SetMultiSelectOptionSet": {
-      "id": "9f28625f-0bc1-f111-a05a-70a8a5b106ad",
-      "name": "Set Multi Select OptionSet",
-      "friendlyName": "msdyncrmWorkflowTools.SetMultiSelectOptionSet"
+      "id": "9f28625f-0bc1-f111-a05a-70a8a5b106ad"
     },
     "msdyncrmWorkflowTools.SetState": {
-      "id": "0f63d178-0bc1-f111-a05a-70a8a5b106ad",
-      "name": "Set State",
-      "friendlyName": "msdyncrmWorkflowTools.SetState"
+      "id": "0f63d178-0bc1-f111-a05a-70a8a5b106ad"
     },
     "msdyncrmWorkflowTools.SetUserSettings": {
-      "id": "cee83d8d-0bc1-f111-a05a-70a8a5b106ad",
-      "name": "Set User Settings",
-      "friendlyName": "msdyncrmWorkflowTools.SetUserSettings"
+      "id": "cee83d8d-0bc1-f111-a05a-70a8a5b106ad"
     },
     "msdyncrmWorkflowTools.ShareRecordWithTeam": {
-      "id": "0ae8ab9a-0bc1-f111-a05a-70a8a5b106ad",
-      "name": "Share Record With Team",
-      "friendlyName": "msdyncrmWorkflowTools.ShareRecordWithTeam"
+      "id": "0ae8ab9a-0bc1-f111-a05a-70a8a5b106ad"
     },
     "msdyncrmWorkflowTools.ShareRecordWithUser": {
-      "id": "34586d9c-0bc1-f111-a05a-6045bd061c5d",
-      "name": "Share Record With User",
-      "friendlyName": "msdyncrmWorkflowTools.ShareRecordWithUser"
+      "id": "34586d9c-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.ShareSecuredField": {
-      "id": "f410874b-0bc1-f111-a05a-70a8a5b106ad",
-      "name": "Share Secured Field",
-      "friendlyName": "msdyncrmWorkflowTools.ShareSecuredField"
+      "id": "f410874b-0bc1-f111-a05a-70a8a5b106ad"
     },
     "msdyncrmWorkflowTools.StringFunctions": {
-      "id": "216c698a-0bc1-f111-a05a-6045bd061c5d",
-      "name": "String Functions",
-      "friendlyName": "msdyncrmWorkflowTools.StringFunctions"
+      "id": "216c698a-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.TranslateText": {
-      "id": "85f0c364-0bc1-f111-a05a-6045bd061c5d",
-      "name": "Translate Text",
-      "friendlyName": "msdyncrmWorkflowTools.TranslateText"
+      "id": "85f0c364-0bc1-f111-a05a-6045bd061c5d"
     },
     "msdyncrmWorkflowTools.UnshareRecordWithTeam": {
-      "id": "0de8ab9a-0bc1-f111-a05a-70a8a5b106ad",
-      "name": "Unshare Record With Team",
-      "friendlyName": "msdyncrmWorkflowTools.UnshareRecordWithTeam"
+      "id": "0de8ab9a-0bc1-f111-a05a-70a8a5b106ad"
     },
     "msdyncrmWorkflowTools.UnshareRecordWithUser": {
-      "id": "3f8d1d9d-0bc1-f111-a05a-70a8a5b2f876",
-      "name": "Unshare Record With User",
-      "friendlyName": "msdyncrmWorkflowTools.UnshareRecordWithUser"
+      "id": "3f8d1d9d-0bc1-f111-a05a-70a8a5b2f876"
     },
     "msdyncrmWorkflowTools.UpdateChildRecords": {
-      "id": "0b63d178-0bc1-f111-a05a-70a8a5b106ad",
-      "name": "Update Child Records",
-      "friendlyName": "msdyncrmWorkflowTools.UpdateChildRecords"
+      "id": "0b63d178-0bc1-f111-a05a-70a8a5b106ad"
     }
   }
 }

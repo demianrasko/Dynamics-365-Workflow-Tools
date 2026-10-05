@@ -4,6 +4,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools.Class
 {
+    [ActivityName("Is Member Of Team")]
     public class IsMemberOfTeam : WorkflowActivityBase
     {
         [RequiredArgument]

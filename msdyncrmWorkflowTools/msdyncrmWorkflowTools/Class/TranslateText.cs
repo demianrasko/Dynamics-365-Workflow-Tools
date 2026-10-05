@@ -3,6 +3,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Translate Text")]
     public class TranslateText : WorkflowActivityBase
     {
         [RequiredArgument]

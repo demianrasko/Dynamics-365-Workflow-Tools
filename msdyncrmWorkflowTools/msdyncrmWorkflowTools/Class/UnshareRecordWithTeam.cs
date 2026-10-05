@@ -4,6 +4,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Unshare Record With Team")]
     public class UnshareRecordWithTeam : WorkflowActivityBase
     {
         [RequiredArgument]

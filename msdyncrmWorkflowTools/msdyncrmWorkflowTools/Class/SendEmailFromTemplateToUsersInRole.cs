@@ -4,6 +4,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools.Class
 {
+    [ActivityName("Send Email From Template To Users In Role")]
     public class SendEmailFromTemplateToUsersInRole : WorkflowActivityBase
     {
         [Input("Security Role")]

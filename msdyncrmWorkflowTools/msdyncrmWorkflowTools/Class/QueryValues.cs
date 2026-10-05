@@ -4,7 +4,8 @@ using System.Collections.Generic;
 
 namespace msdyncrmWorkflowTools
 {
-    public class QueryValues: WorkflowActivityBase
+    [ActivityName("Query Values")]
+    public class QueryValues : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("EntityName")]

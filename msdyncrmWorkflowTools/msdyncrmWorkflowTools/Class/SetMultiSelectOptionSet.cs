@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Set Multi-Select Option Set")]
     public class SetMultiSelectOptionSet : WorkflowActivityBase
     {
         [RequiredArgument]

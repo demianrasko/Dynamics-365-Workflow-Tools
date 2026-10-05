@@ -4,6 +4,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Clone Record")]
     public class CloneRecord : WorkflowActivityBase
     {
         [RequiredArgument]

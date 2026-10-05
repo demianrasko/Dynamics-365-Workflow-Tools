@@ -4,6 +4,7 @@ using System.Globalization;
 
 namespace msdyncrmWorkflowTools.Class
 {
+    [ActivityName("Numeric Functions")]
     public class NumericFunctions : WorkflowActivityBase
     {
         [RequiredArgument]

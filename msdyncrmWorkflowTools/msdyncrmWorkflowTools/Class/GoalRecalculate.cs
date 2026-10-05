@@ -5,6 +5,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Goal Recalculate")]
     public class GoalRecalculate : WorkflowActivityBase
     {
         [Input("Goal")]

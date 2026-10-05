@@ -9,6 +9,7 @@ namespace msdyncrmWorkflowTools
     /// Builds the record URL of any record from its entity name and id, e.g. to pass the record CloneRecord
     /// created to CloneChildren. Ported from demianrasko/Dynamics-365-Workflow-Tools#274 by vinaymenda.
     /// </summary>
+    [ActivityName("Get Record URL")]
     public class GetRecordUrl : WorkflowActivityBase
     {
         /// <summary>

@@ -7,6 +7,8 @@ namespace msdyncrmWorkflowTools
     /// <summary>
     /// TODO: One sentence on what the activity does.
     /// </summary>
+    // the name in the workflow designer; every activity needs one, and it must be unique
+    [ActivityName("TODO: Designer Name")]
     public class $safeitemname$ : WorkflowActivityBase
     {
         // Inputs and outputs are what workflows store. Once an activity is released, never rename the

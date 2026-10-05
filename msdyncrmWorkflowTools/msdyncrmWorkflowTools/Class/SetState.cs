@@ -4,6 +4,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Set State")]
     public class SetState : WorkflowActivityBase
     {
         [RequiredArgument]

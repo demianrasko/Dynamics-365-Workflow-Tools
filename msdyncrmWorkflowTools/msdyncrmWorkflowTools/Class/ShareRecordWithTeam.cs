@@ -4,6 +4,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Share Record With Team")]
     public class ShareRecordWithTeam : WorkflowActivityBase
     {
         [RequiredArgument]

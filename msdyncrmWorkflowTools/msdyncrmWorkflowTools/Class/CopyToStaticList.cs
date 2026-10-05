@@ -6,6 +6,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools.Class
 {
+    [ActivityName("Copy To Static List")]
     public class CopyToStaticList : WorkflowActivityBase
     {
         [RequiredArgument]

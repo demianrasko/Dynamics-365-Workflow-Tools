@@ -4,6 +4,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Get Multi-Select Option Set")]
     public class GetMultiSelectOptionSet : WorkflowActivityBase
     {
         [RequiredArgument]

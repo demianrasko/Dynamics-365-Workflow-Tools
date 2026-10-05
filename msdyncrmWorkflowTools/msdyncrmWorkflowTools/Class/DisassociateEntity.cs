@@ -4,6 +4,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Disassociate Entity")]
     public class DisassociateEntity : WorkflowActivityBase
     {
         [RequiredArgument]

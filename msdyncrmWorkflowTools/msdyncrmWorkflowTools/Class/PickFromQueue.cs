@@ -4,6 +4,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools.Class
 {
+    [ActivityName("Pick From Queue")]
     public class PickFromQueue : WorkflowActivityBase
     {
         [RequiredArgument]

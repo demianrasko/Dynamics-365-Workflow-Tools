@@ -6,6 +6,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Create Quote From Opportunity")]
     public class CreateQuoteFromOpportunity : WorkflowActivityBase
     {
         [RequiredArgument]

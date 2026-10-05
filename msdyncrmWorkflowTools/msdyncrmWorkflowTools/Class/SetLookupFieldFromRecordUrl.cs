@@ -4,6 +4,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Set Lookup Field From Record URL")]
     public class SetLookupFieldFromRecordUrl : WorkflowActivityBase
     {
         [RequiredArgument]

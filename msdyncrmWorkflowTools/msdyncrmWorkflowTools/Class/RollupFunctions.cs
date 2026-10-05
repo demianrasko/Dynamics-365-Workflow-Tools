@@ -5,6 +5,7 @@ using System.Linq;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Rollup Functions")]
     public class RollupFunctions : WorkflowActivityBase
     {
         [RequiredArgument]

@@ -4,6 +4,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools.Class
 {
+    [ActivityName("Set Process Stage")]
     public class SetProcessStage : WorkflowActivityBase
     {
         [RequiredArgument]

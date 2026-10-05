@@ -4,6 +4,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Count Child Entity Records")]
     public class CountChildEntityRecords : WorkflowActivityBase
     {
         [RequiredArgument]

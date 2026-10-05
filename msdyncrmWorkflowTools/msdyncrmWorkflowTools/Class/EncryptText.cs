@@ -3,6 +3,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Encrypt Text")]
     public class EncryptText : WorkflowActivityBase
     {
         [RequiredArgument]

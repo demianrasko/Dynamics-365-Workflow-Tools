@@ -4,6 +4,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Update Child Records")]
     public class UpdateChildRecords : WorkflowActivityBase
     {
         [RequiredArgument]

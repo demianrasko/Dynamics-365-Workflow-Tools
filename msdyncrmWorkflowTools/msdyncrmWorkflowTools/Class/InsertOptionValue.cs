@@ -3,6 +3,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Insert Option Value")]
     public class InsertOptionValue : WorkflowActivityBase
     {
         [RequiredArgument]

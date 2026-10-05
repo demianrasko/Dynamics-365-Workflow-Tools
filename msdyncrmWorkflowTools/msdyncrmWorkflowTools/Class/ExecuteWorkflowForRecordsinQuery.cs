@@ -4,6 +4,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Execute Workflow For Records In Query")]
     public class ExecuteWorkflowForRecordsinQuery : WorkflowActivityBase
     {
         [Input("Process")]

@@ -4,6 +4,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools.Class
 {
+    [ActivityName("Queue Item Count")]
     public class QueueItemCount : WorkflowActivityBase
     {
         [RequiredArgument]

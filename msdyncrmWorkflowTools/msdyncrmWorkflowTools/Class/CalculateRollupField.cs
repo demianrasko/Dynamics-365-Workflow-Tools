@@ -4,6 +4,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Force Calculate Rollup Field")]
     public class CalculateRollupField : WorkflowActivityBase
     {
         [RequiredArgument]

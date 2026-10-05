@@ -6,6 +6,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Qualify Lead")]
     public class QualifyLead : WorkflowActivityBase
     {
         [RequiredArgument]

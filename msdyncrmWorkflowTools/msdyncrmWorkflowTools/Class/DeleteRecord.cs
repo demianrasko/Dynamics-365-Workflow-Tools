@@ -5,6 +5,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools.Class
 {
+    [ActivityName("Delete Record")]
     public class DeleteRecord : WorkflowActivityBase
     {
         [RequiredArgument]

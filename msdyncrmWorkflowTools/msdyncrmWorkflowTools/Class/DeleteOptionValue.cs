@@ -3,6 +3,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Delete Option Value")]
     public class DeleteOptionValue : WorkflowActivityBase
     {
         [RequiredArgument]

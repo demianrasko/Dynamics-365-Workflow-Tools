@@ -5,6 +5,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools.Class
 {
+    [ActivityName("Remove From All Marketing Lists")]
     public class RemoveFromAllMarketingLists : WorkflowActivityBase
     {
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)

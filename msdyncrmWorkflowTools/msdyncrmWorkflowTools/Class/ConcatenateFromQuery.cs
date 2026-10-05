@@ -4,6 +4,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Concatenate From Query")]
     public class ConcatenateFromQuery : WorkflowActivityBase
     {
         [RequiredArgument]

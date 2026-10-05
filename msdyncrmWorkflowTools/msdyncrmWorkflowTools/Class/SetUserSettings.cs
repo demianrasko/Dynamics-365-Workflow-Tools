@@ -4,6 +4,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Set User Settings")]
     public class SetUserSettings : WorkflowActivityBase
     {
         [RequiredArgument]

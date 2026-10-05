@@ -3,6 +3,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Get Record ID")]
     public class GetRecordID : WorkflowActivityBase
     {
         [RequiredArgument]

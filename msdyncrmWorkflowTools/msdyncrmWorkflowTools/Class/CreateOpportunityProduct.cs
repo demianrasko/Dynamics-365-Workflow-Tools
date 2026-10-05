@@ -6,6 +6,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Create Opportunity Product")]
     public class CreateOpportunityProduct : WorkflowActivityBase
     {
         [RequiredArgument]

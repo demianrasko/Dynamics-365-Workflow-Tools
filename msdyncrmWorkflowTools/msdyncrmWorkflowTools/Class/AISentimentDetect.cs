@@ -7,6 +7,7 @@ namespace msdyncrmWorkflowTools
     /// <summary>
     /// Detects the sentiment of a text with Dataverse AI (AISentiment). Errors are reported through the Failed and Failure Message outputs. Ported from demianrasko/Dynamics-365-Workflow-Tools#297 by rwilson504.
     /// </summary>
+    [ActivityName("AI Sentiment Detect")]
     public class AISentimentDetect : WorkflowActivityBase
     {
         [RequiredArgument]

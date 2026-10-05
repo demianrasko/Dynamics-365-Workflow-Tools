@@ -6,6 +6,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools.Class
 {
+    [ActivityName("Is Member Of Marketing List")]
     public class IsMemberOfMarketingList : WorkflowActivityBase
     {
         [RequiredArgument]

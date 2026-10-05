@@ -8,6 +8,7 @@ namespace msdyncrmWorkflowTools
     /// Summarizes a record with Dataverse AI (AISummarizeRecord). Errors are reported through the Failed and Failure
     /// Message outputs. Ported from demianrasko/Dynamics-365-Workflow-Tools#297 by rwilson504.
     /// </summary>
+    [ActivityName("AI Summarize Record")]
     public class AISummarizeRecord : WorkflowActivityBase
     {
         [RequiredArgument]

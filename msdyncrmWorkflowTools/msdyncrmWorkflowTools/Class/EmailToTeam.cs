@@ -4,6 +4,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools.Class
 {
+    [ActivityName("Email To Team")]
     public class EmailToTeam : WorkflowActivityBase
     {
         [RequiredArgument]

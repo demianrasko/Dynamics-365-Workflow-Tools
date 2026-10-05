@@ -6,6 +6,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools.Class
 {
+    [ActivityName("Sales Literature To Email")]
     public class SalesLiteratureToEmail : WorkflowActivityBase
     {
         [RequiredArgument]

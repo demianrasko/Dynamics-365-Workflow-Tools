@@ -5,6 +5,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools.Class
 {
+    [ActivityName("Execute Workflow By ID")]
     public class ExecuteWorkflowByID : WorkflowActivityBase
     {
         [RequiredArgument]

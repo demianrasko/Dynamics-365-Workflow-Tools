@@ -4,6 +4,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Add Role To User")]
     public class AddRoleToUser : WorkflowActivityBase
     {
         [RequiredArgument]

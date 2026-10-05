@@ -4,6 +4,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Map Multi-Select Option Set")]
     public class MapMultiSelectOptionSet : WorkflowActivityBase
     {
         [Input("Source Record URL")]

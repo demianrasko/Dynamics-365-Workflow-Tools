@@ -5,6 +5,7 @@ using Microsoft.Xrm.Sdk.Query;
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace msdyncrmWorkflowTools_IntegrationTests
 {
@@ -42,15 +43,31 @@ namespace msdyncrmWorkflowTools_IntegrationTests
             }
 
             TestContext.WriteLine($"Importing {Path.GetFileName(zip)}");
-            var jobId = Guid.NewGuid();
 
-            service.Execute(new ImportSolutionRequest
+            // imported in the background and waited for: a synchronous import can outlast the connection
+            var import = (ImportSolutionAsyncResponse)service.Execute(new ImportSolutionAsyncRequest
             {
                 CustomizationFile = File.ReadAllBytes(zip),
-                ImportJobId = jobId,
                 OverwriteUnmanagedCustomizations = true,
                 PublishWorkflows = false
             });
+
+            var finished = false;
+
+            for (var attempt = 0; attempt < 80 && !finished; attempt++)
+            {
+                Thread.Sleep(15000);
+                var operation = service.Retrieve("asyncoperation", import.AsyncOperationId, new ColumnSet("statecode", "statuscode", "message"));
+
+                if (operation.GetAttributeValue<OptionSetValue>("statecode").Value == 3)
+                {
+                    finished = true;
+                    Assert.AreEqual(30, operation.GetAttributeValue<OptionSetValue>("statuscode").Value,
+                        $"The import failed: {operation.GetAttributeValue<string>("message")}");
+                }
+            }
+
+            Assert.IsTrue(finished, "The import didn't finish within 20 minutes.");
 
             var version = Path.GetFileNameWithoutExtension(zip).Substring("PowerPlatformWorkflowTools_".Length).Replace('_', '.');
             var solution = service.RetrieveMultiple(new QueryExpression("solution")

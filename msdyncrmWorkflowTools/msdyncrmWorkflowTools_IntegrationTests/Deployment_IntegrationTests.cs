@@ -47,11 +47,11 @@ namespace msdyncrmWorkflowTools_IntegrationTests
             }
 
             var name = AssemblyName.GetAssemblyName(dll);
-            var activities = ActivitiesIn(dll);
+            var activities = ActivitiesIn(dll, out var designerNames);
             TestContext.WriteLine($"{name.Name} {name.Version}: {activities.Count} activities");
 
             var assemblyId = RegisterAssembly(service, name, File.ReadAllBytes(dll), activities.Keys);
-            RegisterActivities(service, assemblyId, name, activities.Keys);
+            RegisterActivities(service, assemblyId, name, designerNames);
 
             var registered = service.RetrieveMultiple(new QueryExpression("plugintype")
             {
@@ -69,8 +69,11 @@ namespace msdyncrmWorkflowTools_IntegrationTests
             Assert.AreEqual(0, missing.Count, $"Inputs or outputs Dataverse doesn't show: {string.Join("; ", missing)}");
         }
 
-        /// <summary>The workflow activities in an assembly, with the labels of their inputs and outputs.</summary>
-        private static Dictionary<string, List<string>> ActivitiesIn(string dll)
+        /// <summary>
+        /// The workflow activities in an assembly, with the labels of their inputs and outputs, and their designer names
+        /// ([ActivityName]).
+        /// </summary>
+        private static Dictionary<string, List<string>> ActivitiesIn(string dll, out Dictionary<string, string> designerNames)
         {
             Type[] types;
 
@@ -83,8 +86,13 @@ namespace msdyncrmWorkflowTools_IntegrationTests
                 types = ex.Types.Where(t => t != null).ToArray();
             }
 
-            return types
-                .Where(t => t.IsPublic && !t.IsAbstract && IsCodeActivity(t))
+            var activityTypes = types.Where(t => t.IsPublic && !t.IsAbstract && IsCodeActivity(t)).ToList();
+
+            designerNames = activityTypes.ToDictionary(
+                t => t.FullName,
+                t => t.GetCustomAttributesData().FirstOrDefault(a => a.AttributeType.Name == "ActivityNameAttribute")?.ConstructorArguments[0].Value as string ?? t.FullName);
+
+            return activityTypes
                 .ToDictionary(
                     t => t.FullName,
                     t => t.GetProperties()
@@ -153,26 +161,48 @@ namespace msdyncrmWorkflowTools_IntegrationTests
             return existing.Id;
         }
 
-        /// <summary>Registers every activity that isn't registered yet.</summary>
-        private void RegisterActivities(IOrganizationService service, Guid assemblyId, AssemblyName name, IEnumerable<string> activityTypes)
+        /// <summary>
+        /// Registers every activity that isn't registered yet under its designer name, and corrects the name (and
+        /// group) of those that are.
+        /// </summary>
+        private void RegisterActivities(IOrganizationService service, Guid assemblyId, AssemblyName name, Dictionary<string, string> designerNames)
         {
-            var registered = new HashSet<string>(service.RetrieveMultiple(new QueryExpression("plugintype")
+            var group = $"{name.Name} ({name.Version})";
+            var registered = service.RetrieveMultiple(new QueryExpression("plugintype")
             {
-                ColumnSet = new ColumnSet("typename"),
+                ColumnSet = new ColumnSet("typename", "name", "friendlyname", "workflowactivitygroupname"),
                 Criteria = { Conditions = { new ConditionExpression("pluginassemblyid", ConditionOperator.Equal, assemblyId) } }
-            }).Entities.Select(t => t.GetAttributeValue<string>("typename")));
+            }).Entities.ToDictionary(t => t.GetAttributeValue<string>("typename"));
 
-            foreach (var typeName in activityTypes.Where(t => !registered.Contains(t)))
+            foreach (var activity in designerNames)
             {
+                if (registered.TryGetValue(activity.Key, out var existing))
+                {
+                    if (existing.GetAttributeValue<string>("name") != activity.Value || existing.GetAttributeValue<string>("friendlyname") != activity.Value
+                        || existing.GetAttributeValue<string>("workflowactivitygroupname") != group)
+                    {
+                        service.Update(new Entity("plugintype", existing.Id)
+                        {
+                            ["name"] = activity.Value,
+                            ["friendlyname"] = activity.Value,
+                            ["workflowactivitygroupname"] = group
+                        });
+                    }
+
+                    continue;
+                }
+
+                var typeName = activity.Key;
+
                 try
                 {
                     service.Create(new Entity("plugintype")
                     {
                         ["pluginassemblyid"] = new EntityReference("pluginassembly", assemblyId),
                         ["typename"] = typeName,
-                        ["name"] = typeName.Substring(typeName.LastIndexOf('.') + 1),
-                        ["friendlyname"] = typeName,
-                        ["workflowactivitygroupname"] = $"{name.Name} ({name.Version})"
+                        ["name"] = activity.Value,
+                        ["friendlyname"] = activity.Value,
+                        ["workflowactivitygroupname"] = group
                     });
                 }
                 catch (FaultException<OrganizationServiceFault> ex)

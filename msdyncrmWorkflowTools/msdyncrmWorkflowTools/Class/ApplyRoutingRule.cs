@@ -4,6 +4,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Apply Routing Rule")]
     public class ApplyRoutingRule : WorkflowActivityBase
     {
         [RequiredArgument]

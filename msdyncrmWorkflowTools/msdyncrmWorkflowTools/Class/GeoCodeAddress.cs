@@ -3,6 +3,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Geocode Address")]
     public class GeoCodeAddress : WorkflowActivityBase
     {
         [RequiredArgument]

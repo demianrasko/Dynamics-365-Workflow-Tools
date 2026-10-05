@@ -3,6 +3,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Get App Record URL")]
     public class GetAppRecordUrl : WorkflowActivityBase
     {
         [RequiredArgument]

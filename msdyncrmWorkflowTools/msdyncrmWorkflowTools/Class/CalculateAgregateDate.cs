@@ -5,6 +5,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Calculate Aggregate Date")]
     public class CalculateAgregateDate : WorkflowActivityBase
     {
         [RequiredArgument]

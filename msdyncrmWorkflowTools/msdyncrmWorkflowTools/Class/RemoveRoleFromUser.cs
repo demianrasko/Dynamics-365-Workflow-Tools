@@ -4,6 +4,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Remove Role From User")]
     public class RemoveRoleFromUser : WorkflowActivityBase
     {
         [RequiredArgument]

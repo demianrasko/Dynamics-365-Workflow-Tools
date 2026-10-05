@@ -8,6 +8,7 @@ namespace msdyncrmWorkflowTools
     /// Translates a text with Dataverse AI (AITranslate). Errors are reported through the Failed and Failure Message
     /// outputs. Ported from demianrasko/Dynamics-365-Workflow-Tools#297 by rwilson504.
     /// </summary>
+    [ActivityName("AI Translate Text")]
     public class AITranslateText : WorkflowActivityBase
     {
         [RequiredArgument]

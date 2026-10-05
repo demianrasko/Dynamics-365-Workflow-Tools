@@ -7,6 +7,7 @@ namespace msdyncrmWorkflowTools
     /// <summary>
     /// Drafts a reply to a customer message with Dataverse AI (AIReply). Errors are reported through the Failed and Failure Message outputs. Ported from demianrasko/Dynamics-365-Workflow-Tools#297 by rwilson504.
     /// </summary>
+    [ActivityName("AI Draft Reply")]
     public class AIDraftReply : WorkflowActivityBase
     {
         [RequiredArgument]

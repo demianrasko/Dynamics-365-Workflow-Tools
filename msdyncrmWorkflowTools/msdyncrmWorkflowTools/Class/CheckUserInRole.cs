@@ -4,6 +4,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Check If User Is In Role")]
     public class CheckUserInRole : WorkflowActivityBase
     {
         [RequiredArgument]

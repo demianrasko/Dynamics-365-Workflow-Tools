@@ -4,6 +4,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools.Class
 {
+    [ActivityName("Get Initiating User")]
     public class GetInitiatingUser : WorkflowActivityBase
     {
         [Output("Initiating User")]

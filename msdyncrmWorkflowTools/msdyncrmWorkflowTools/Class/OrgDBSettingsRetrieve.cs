@@ -3,6 +3,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("OrgDB Settings Retrieve")]
     public class OrgDBSettingsRetrieve : WorkflowActivityBase
     {
         [RequiredArgument]

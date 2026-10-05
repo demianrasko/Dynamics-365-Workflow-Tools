@@ -3,6 +3,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("JSON Parser")]
     public class JsonParser : WorkflowActivityBase
     {
         [RequiredArgument]

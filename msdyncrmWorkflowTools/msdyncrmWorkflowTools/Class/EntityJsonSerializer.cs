@@ -4,6 +4,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Entity JSON Serializer")]
     public class EntityJsonSerializer : WorkflowActivityBase
     {
         [RequiredArgument]

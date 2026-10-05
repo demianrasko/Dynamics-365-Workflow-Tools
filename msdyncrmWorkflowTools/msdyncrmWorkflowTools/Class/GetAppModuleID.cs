@@ -3,6 +3,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Get App Module ID")]
     public class GetAppModuleID : WorkflowActivityBase
     {
         [RequiredArgument]

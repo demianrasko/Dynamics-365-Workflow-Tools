@@ -4,6 +4,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Share Secured Field")]
     public class ShareSecuredField : WorkflowActivityBase
     {
         [RequiredArgument]

@@ -4,6 +4,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools.Class
 {
+    [ActivityName("Delete Record Audit History")]
     public class DeleteRecordAuditHistory : WorkflowActivityBase
     {
         [RequiredArgument]

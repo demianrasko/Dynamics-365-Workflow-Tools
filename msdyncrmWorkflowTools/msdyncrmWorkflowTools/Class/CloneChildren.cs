@@ -15,6 +15,7 @@ namespace msdyncrmWorkflowTools
     /// Note: "Old Parent Field" is optional if the new parent relationship is with the same entity / lookup field
     /// 
     /// </summary>
+    [ActivityName("Clone Children")]
     public class CloneChildren : WorkflowActivityBase
     {
         [RequiredArgument]

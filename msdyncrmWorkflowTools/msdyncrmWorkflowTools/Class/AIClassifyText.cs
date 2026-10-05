@@ -8,6 +8,7 @@ namespace msdyncrmWorkflowTools
     /// Classifies a text into one of the given categories with Dataverse AI (AIClassify). Errors are reported through
     /// the Failed and Failure Message outputs. Ported from demianrasko/Dynamics-365-Workflow-Tools#297 by rwilson504.
     /// </summary>
+    [ActivityName("AI Classify Text")]
     public class AIClassifyText : WorkflowActivityBase
     {
         [RequiredArgument]

@@ -6,6 +6,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Update Product Quote Value")]
     public class UpdateProductQuoteValue : WorkflowActivityBase
     {
         [RequiredArgument]

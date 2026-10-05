@@ -4,6 +4,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Retrieve User's BU Default Team")]
     public class RetrieveUserBUDefaultTeam : WorkflowActivityBase
     {
         [RequiredArgument]

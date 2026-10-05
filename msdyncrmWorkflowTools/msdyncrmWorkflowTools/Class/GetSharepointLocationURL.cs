@@ -3,6 +3,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Get SharePoint Location URL")]
     public class GetSharepointLocationURL : WorkflowActivityBase
     {
         [RequiredArgument]

@@ -61,6 +61,23 @@ namespace msdyncrmWorkflowTools_Tests
             Assert.AreEqual(0, lookups.Count, $"Wrap these activities in #if !POWERPLATFORM: {string.Join(", ", lookups)}");
         }
 
+        [TestMethod]
+        public void EveryActivityHasAUniqueDesignerName()
+        {
+            foreach (var suffix in new[] { string.Empty, "-PowerPlatform" })
+            {
+                var names = GetActivityTypes(LoadWorkflowAssembly(suffix)).ToDictionary(
+                    t => t.FullName,
+                    t => t.GetCustomAttributesData().FirstOrDefault(a => a.AttributeType.Name == "ActivityNameAttribute")?.ConstructorArguments[0].Value as string);
+
+                var unnamed = names.Where(n => string.IsNullOrWhiteSpace(n.Value)).Select(n => n.Key).ToList();
+                Assert.AreEqual(0, unnamed.Count, $"Add [ActivityName(\"...\")] to: {string.Join(", ", unnamed)}");
+
+                var duplicates = names.GroupBy(n => n.Value, StringComparer.OrdinalIgnoreCase).Where(g => g.Count() > 1).Select(g => g.Key).ToList();
+                Assert.AreEqual(0, duplicates.Count, $"Activity names used more than once: {string.Join(", ", duplicates)}");
+            }
+        }
+
         /// <summary>
         /// Loads msdyncrmWorkflowTools.dll (or powerplatformWorkflowTools.dll for the Power Platform build) from the workflow project's bin folder for the test's configuration plus
         /// <paramref name="suffix"/>. It's loaded from bytes so both builds, which share an identity, can be loaded side by side.

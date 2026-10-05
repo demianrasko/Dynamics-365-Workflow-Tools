@@ -4,6 +4,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools.Class
 {
+    [ActivityName("Entity Attachment To Email")]
     public class EntityAttachmentToEmail : WorkflowActivityBase
     {
         [RequiredArgument]

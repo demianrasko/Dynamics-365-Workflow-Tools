@@ -3,6 +3,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("String Functions")]
     public class StringFunctions : WorkflowActivityBase
     {
         [RequiredArgument]

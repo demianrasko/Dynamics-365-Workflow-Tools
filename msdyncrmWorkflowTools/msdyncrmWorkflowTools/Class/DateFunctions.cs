@@ -4,6 +4,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Date Functions")]
     public class DateFunctions : WorkflowActivityBase
     {
         [RequiredArgument]

@@ -4,6 +4,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Distribute Workflow (Many To Many)")]
     public class DistributeWFActivityManyToMany : WorkflowActivityBase
     {
         [Input("Relationship Name"), RequiredArgument]

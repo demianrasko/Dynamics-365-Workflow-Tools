@@ -3,6 +3,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("OrgDB Settings Update")]
     public class OrgDBSettingsUpdate : WorkflowActivityBase
     {
         [RequiredArgument]

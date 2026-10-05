@@ -4,6 +4,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Entity Mobile Deep Link")]
     public class EntityMobileDeepLink : WorkflowActivityBase
     {
         [RequiredArgument]

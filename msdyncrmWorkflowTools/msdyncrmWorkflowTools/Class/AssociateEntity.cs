@@ -5,6 +5,7 @@ using System.ServiceModel;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Associate Entity")]
     public class AssociateEntity : WorkflowActivityBase
     {
         /// <summary>Dataverse "Cannot insert duplicate key" (0x80040237): the association already exists.</summary>

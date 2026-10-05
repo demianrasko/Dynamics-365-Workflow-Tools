@@ -6,6 +6,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools.Class
 {
+    [ActivityName("Resolve Case")]
     public class ResolveCase : WorkflowActivityBase
     {
         [RequiredArgument]

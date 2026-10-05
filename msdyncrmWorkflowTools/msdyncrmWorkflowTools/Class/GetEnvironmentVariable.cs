@@ -7,6 +7,7 @@ namespace msdyncrmWorkflowTools
     /// <summary>
     /// Reads an environment variable: its current value, or its default value when no current value is set.
     /// </summary>
+    [ActivityName("Get Environment Variable")]
     public class GetEnvironmentVariable : WorkflowActivityBase
     {
         [RequiredArgument]

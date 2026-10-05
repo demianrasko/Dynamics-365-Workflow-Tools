@@ -4,6 +4,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Check Associate Entity")]
     public class CheckAssociateEntity : WorkflowActivityBase
     {
         [RequiredArgument]

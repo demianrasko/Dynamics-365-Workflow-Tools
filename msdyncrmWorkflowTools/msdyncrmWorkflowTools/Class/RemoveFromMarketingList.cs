@@ -6,6 +6,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools.Class
 {
+    [ActivityName("Remove From Marketing List")]
     public class RemoveFromMarketingList : WorkflowActivityBase
     {
         [RequiredArgument]

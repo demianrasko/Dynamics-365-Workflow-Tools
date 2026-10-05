@@ -4,6 +4,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Calculate Price")]
     public class CalculatePrice : WorkflowActivityBase
     {
         [RequiredArgument]

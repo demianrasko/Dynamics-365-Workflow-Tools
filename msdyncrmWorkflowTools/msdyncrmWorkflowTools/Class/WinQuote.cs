@@ -6,6 +6,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Win Quote")]
     public class WinQuote : WorkflowActivityBase
     {
         [RequiredArgument]

@@ -6,6 +6,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools.Class
 {
+    [ActivityName("Add To Marketing List")]
     public class AddToMarketingList : WorkflowActivityBase
     {
         [RequiredArgument]

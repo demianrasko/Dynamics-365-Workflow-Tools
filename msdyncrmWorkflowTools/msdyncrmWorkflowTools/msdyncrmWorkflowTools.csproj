@@ -240,6 +240,7 @@
     <Compile Include="Class\UnshareRecordWithTeam.cs" />
     <Compile Include="Class\UnshareRecordWithUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ActivityNameAttribute.cs" />
     <Compile Include="WorkflowActivityBase.cs" />
     <Compile Include="Class\CheckUserInRole.cs" />
     <Compile Include="..\Common\AttributeNames.cs">

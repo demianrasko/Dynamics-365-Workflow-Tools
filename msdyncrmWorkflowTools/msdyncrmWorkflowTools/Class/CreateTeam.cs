@@ -4,6 +4,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Create Team")]
     public class CreateTeam : WorkflowActivityBase
     {
         [RequiredArgument]

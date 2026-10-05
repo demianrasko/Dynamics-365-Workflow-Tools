@@ -63,7 +63,8 @@ namespace msdyncrmWorkflowTools_IntegrationTests
 
                 var token = GetToken(http, tenantId, settings["ClientId"], settings["ClientSecret"], url);
 
-                return new OrganizationWebProxyClient(new Uri($"{url}/XRMServices/2011/Organization.svc/web?SdkClientVersion=9.2"), false)
+                // registering an assembly or importing a solution can take Dataverse several minutes
+                return new OrganizationWebProxyClient(new Uri($"{url}/XRMServices/2011/Organization.svc/web?SdkClientVersion=9.2"), TimeSpan.FromMinutes(15), false)
                 {
                     HeaderToken = token
                 };

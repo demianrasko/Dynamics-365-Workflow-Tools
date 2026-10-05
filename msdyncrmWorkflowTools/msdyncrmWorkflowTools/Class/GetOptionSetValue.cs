@@ -4,6 +4,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Get Option Set Value")]
     public class GetOptionSetValue : WorkflowActivityBase
     {
         [RequiredArgument]

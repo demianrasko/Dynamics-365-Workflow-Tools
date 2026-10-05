@@ -3,6 +3,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    [ActivityName("Currency Convert")]
     public class CurrencyConvert : WorkflowActivityBase
     {
         [RequiredArgument]

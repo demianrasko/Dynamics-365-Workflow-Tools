@@ -6,6 +6,7 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools.Class
 {
+    [ActivityName("Copy Marketing List Members")]
     public class CopyMarketingListMembers : WorkflowActivityBase
     {
         [RequiredArgument]

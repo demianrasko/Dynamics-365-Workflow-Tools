@@ -6,7 +6,8 @@
     For each solution in the solution folder (Dynamics365WorkflowTools.json, PowerPlatformWorkflowTools.json):
       1. Reads the workflow activities in the built assembly.
       2. Checks them against the solution's identity file, which keeps the ids the solution has always used, so an
-         import upgrades the installed solution in place. A new activity gets a new id, written back to the identity
+         import upgrades the installed solution in place. Each activity is registered under the name in its
+         [ActivityName("...")] attribute (designer name and friendly name); an activity without one stops the build. A new activity gets a new id, written back to the identity
          file (commit it). An activity that is in the identity file but no longer in the assembly stops the build,
          because removing it from the solution would break the workflows that use it (-AllowRemovedActivities to
          override).
@@ -69,7 +70,11 @@ try { $types = $assembly.GetTypes() } catch [Reflection.ReflectionTypeLoadExcept
 foreach ($type in $types) {
     if (-not $type.IsPublic -or $type.IsAbstract) { continue }
     for ($base = $type.BaseType; $base; $base = $base.BaseType) {
-        if ($base.FullName -eq 'System.Activities.CodeActivity') { "type`t$($type.FullName)"; break }
+        if ($base.FullName -eq 'System.Activities.CodeActivity') {
+            $name = $type.GetCustomAttributesData() | Where-Object { $_.AttributeType.Name -eq 'ActivityNameAttribute' } | ForEach-Object { $_.ConstructorArguments[0].Value }
+            "type`t$($type.FullName)`t$name"
+            break
+        }
     }
 }
 '@
@@ -81,16 +86,18 @@ foreach ($type in $types) {
         throw "Could not read the activities in $dll"
     }
 
+    $names = @{}
+
+    foreach ($line in $lines | Where-Object { $_ -like "type`t*" }) {
+        $parts = $line.Split("`t")
+        $names[$parts[1]] = if ($parts.Count -gt 2) { $parts[2] } else { '' }
+    }
+
     return @{
         FullName = ($lines | Where-Object { $_ -like "assembly`t*" } | Select-Object -First 1).Split("`t")[1]
-        Types    = @($lines | Where-Object { $_ -like "type`t*" } | ForEach-Object { $_.Split("`t")[1] } | Sort-Object)
+        Types    = @($names.Keys | Sort-Object)
+        Names    = $names
     }
-}
-
-function ConvertTo-DisplayName([string]$typeName) {
-    $name = $typeName.Substring($typeName.LastIndexOf('.') + 1)
-
-    return ($name -creplace '(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])', ' ')
 }
 
 function Escape([string]$text) {
@@ -114,6 +121,12 @@ foreach ($identityFile in Get-ChildItem $identityFolder -Filter *.json | Where-O
     Write-Host ''
     Write-Host "$($identity.uniqueName) $version ($($assembly.Types.Count) activities)" -ForegroundColor Cyan
 
+    $unnamed = @($assembly.Types | Where-Object { -not $assembly.Names[$_] })
+
+    if ($unnamed.Count -gt 0) {
+        throw "Add [ActivityName(`"...`")] (the name in the workflow designer) to: $($unnamed -join ', ')"
+    }
+
     # ---- keep the ids stable
     $removed = @($identity.activities.Keys | Where-Object { $assembly.Types -notcontains $_ })
 
@@ -124,16 +137,8 @@ foreach ($identityFile in Get-ChildItem $identityFolder -Filter *.json | Where-O
     $added = @($assembly.Types | Where-Object { -not $identity.activities.ContainsKey($_) })
 
     foreach ($type in $added) {
-        # "typeName": named like Demian's published solution (the class name, a GUID as friendly name);
-        # "words": "Get Environment Variable", with the class name as friendly name
-        $identity.activities[$type] = if ($identity.activityNames -eq 'typeName') {
-            [ordered]@{ id = [guid]::NewGuid().ToString(); name = $type; friendlyName = [guid]::NewGuid().ToString() }
-        }
-        else {
-            [ordered]@{ id = [guid]::NewGuid().ToString(); name = ConvertTo-DisplayName $type; friendlyName = $type }
-        }
-
-        Write-Host "  new activity: $type ($($identity.activities[$type].name))" -ForegroundColor Yellow
+        $identity.activities[$type] = [ordered]@{ id = [guid]::NewGuid().ToString() }
+        Write-Host "  new activity: $type ($($assembly.Names[$type]))" -ForegroundColor Yellow
     }
 
     if ($added.Count -gt 0) {
@@ -156,9 +161,10 @@ foreach ($identityFile in Get-ChildItem $identityFolder -Filter *.json | Where-O
     $group = "$($identity.assemblyName) ($version)"
     $types = foreach ($type in $assembly.Types) {
         $activity = $identity.activities[$type]
+        $name = $assembly.Names[$type]
         @"
-    <PluginType AssemblyQualifiedName="$type, $(Escape $assembly.FullName)" PluginTypeId="$($activity.id)" Name="$(Escape $activity.name)">
-      <FriendlyName>$(Escape $activity.friendlyName)</FriendlyName>
+    <PluginType AssemblyQualifiedName="$type, $(Escape $assembly.FullName)" PluginTypeId="$($activity.id)" Name="$(Escape $name)">
+      <FriendlyName>$(Escape $name)</FriendlyName>
       <WorkflowActivityGroupName>$(Escape $group)</WorkflowActivityGroupName>
     </PluginType>
 "@
