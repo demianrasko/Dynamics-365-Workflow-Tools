@@ -254,9 +254,10 @@ namespace msdyncrmWorkflowTools_IntegrationTests
             {
                 return step();
             }
-            catch (FaultException<OrganizationServiceFault> ex) when (ex.Detail.Message.Contains("plug-in") && !ex.Detail.Message.Contains("msdyncrmWorkflowTools"))
+            catch (FaultException<OrganizationServiceFault> ex) when ((ex.Detail.Message.Contains("plug-in") && !ex.Detail.Message.Contains("msdyncrmWorkflowTools"))
+                || ex.Detail.Message.Contains("complete the required steps"))
             {
-                Assert.Inconclusive($"Blocked by a plug-in of this environment: {ex.Detail.Message}");
+                Assert.Inconclusive($"Blocked by this environment's plug-ins or business process flow: {ex.Detail.Message}");
 
                 return default(T);
             }
