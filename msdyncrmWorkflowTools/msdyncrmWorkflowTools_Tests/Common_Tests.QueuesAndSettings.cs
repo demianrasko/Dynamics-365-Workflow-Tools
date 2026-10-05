@@ -2,9 +2,9 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
+using msdyncrmWorkflowTools;
 using System;
 using System.Linq;
-using msdyncrmWorkflowTools;
 
 namespace msdyncrmWorkflowTools_Tests
 {

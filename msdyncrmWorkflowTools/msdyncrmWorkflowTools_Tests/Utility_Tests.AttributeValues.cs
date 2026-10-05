@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Metadata;
 using msdyncrmWorkflowTools;
 using System;
 using System.Linq;
@@ -179,6 +180,76 @@ namespace msdyncrmWorkflowTools_Tests
         public void BuildUserSettings_RejectsAnInvalidPagingLimit()
         {
             Utility.BuildUserSettings(Guid.NewGuid(), 30, 0, 0, 0, 0, -1, false);
+        }
+
+        [TestMethod]
+        public void ConvertToAttributeType_ConvertsTextToTheFieldType()
+        {
+            Assert.AreEqual(42, Utility.ConvertToAttributeType("42", new IntegerAttributeMetadata()));
+            Assert.AreEqual(42L, Utility.ConvertToAttributeType("42", new BigIntAttributeMetadata()));
+            Assert.AreEqual(12.5m, Utility.ConvertToAttributeType("12.5", new DecimalAttributeMetadata()));
+            Assert.AreEqual(12.5, Utility.ConvertToAttributeType("12.5", new DoubleAttributeMetadata()));
+            Assert.AreEqual(12.5m, ((Money)Utility.ConvertToAttributeType("12.5", new MoneyAttributeMetadata())).Value);
+            Assert.AreEqual(new DateTime(2026, 10, 5), Utility.ConvertToAttributeType("2026-10-05", new DateTimeAttributeMetadata()));
+            Assert.AreEqual(2, ((OptionSetValue)Utility.ConvertToAttributeType("2", new PicklistAttributeMetadata())).Value);
+            Assert.AreEqual(2, ((OptionSetValue)Utility.ConvertToAttributeType("2", new StateAttributeMetadata())).Value);
+            Assert.AreEqual(3, ((OptionSetValue)Utility.ConvertToAttributeType("3", new StatusAttributeMetadata())).Value);
+            Assert.AreEqual("abc", Utility.ConvertToAttributeType("abc", new StringAttributeMetadata()));
+        }
+
+        [TestMethod]
+        public void ConvertToAttributeType_YesNoAcceptsTrueAndOneAndTreatsTheRestAsNo()
+        {
+            var yesNo = new BooleanAttributeMetadata();
+
+            Assert.AreEqual(true, Utility.ConvertToAttributeType("1", yesNo));
+            Assert.AreEqual(true, Utility.ConvertToAttributeType("True", yesNo));
+            Assert.AreEqual(true, Utility.ConvertToAttributeType(true, yesNo));
+            Assert.AreEqual(false, Utility.ConvertToAttributeType("0", yesNo));
+            Assert.AreEqual(false, Utility.ConvertToAttributeType(null, yesNo));
+        }
+
+        [TestMethod]
+        public void ConvertToAttributeType_KeepsTypedValuesAndClearsOnEmpty()
+        {
+            var money = new Money(5m);
+            var reference = new EntityReference(EntityNames.Account, Guid.NewGuid());
+
+            Assert.AreSame(money, Utility.ConvertToAttributeType(money, new MoneyAttributeMetadata()));
+            Assert.AreSame(reference, Utility.ConvertToAttributeType(reference, new LookupAttributeMetadata()));
+            Assert.AreEqual(7, ((OptionSetValue)Utility.ConvertToAttributeType(new OptionSetValue(7), new PicklistAttributeMetadata())).Value);
+            Assert.AreEqual(5, Utility.ConvertToAttributeType(new Money(5m), new IntegerAttributeMetadata()));
+            Assert.IsNull(Utility.ConvertToAttributeType(string.Empty, new IntegerAttributeMetadata()));
+            Assert.IsNull(Utility.ConvertToAttributeType(null, new PicklistAttributeMetadata()));
+            Assert.AreEqual("Contoso", Utility.ConvertToAttributeType(new EntityReference(EntityNames.Account, Guid.NewGuid()) { Name = "Contoso" }, new StringAttributeMetadata()));
+        }
+
+        [TestMethod]
+        public void ConvertToAttributeType_GuidBecomesALookupToItsOnlyTable()
+        {
+            var id = Guid.NewGuid();
+            var lookup = new LookupAttributeMetadata { Targets = new[] { EntityNames.Account } };
+
+            var reference = (EntityReference)Utility.ConvertToAttributeType($"{{{id}}}", lookup);
+
+            Assert.AreEqual(EntityNames.Account, reference.LogicalName);
+            Assert.AreEqual(id, reference.Id);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidPluginExecutionException))]
+        public void ConvertToAttributeType_GuidForAMultiTableLookupThrows()
+        {
+            var customer = new LookupAttributeMetadata { Targets = new[] { EntityNames.Account, EntityNames.Contact } };
+
+            Utility.ConvertToAttributeType(Guid.NewGuid().ToString(), customer);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidPluginExecutionException))]
+        public void ConvertToAttributeType_TextThatIsNotANumberThrows()
+        {
+            Utility.ConvertToAttributeType("abc", new IntegerAttributeMetadata { LogicalName = "numberofemployees" });
         }
     }
 }

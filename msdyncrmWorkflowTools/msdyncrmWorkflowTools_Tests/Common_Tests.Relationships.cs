@@ -1,9 +1,11 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Messages;
+using Microsoft.Xrm.Sdk.Metadata;
 using Microsoft.Xrm.Sdk.Query;
+using msdyncrmWorkflowTools;
 using System;
 using System.Linq;
-using msdyncrmWorkflowTools;
 
 namespace msdyncrmWorkflowTools_Tests
 {
@@ -83,6 +85,77 @@ namespace msdyncrmWorkflowTools_Tests
             Assert.AreEqual(1, common.CountChildRecords(EntityNames.Contact, "parentcustomerid", RecordId, string.Empty));
             Assert.AreEqual(EntityNames.Contact, ((QueryExpression)service.Queries.Single()).EntityName);
             Assert.AreEqual(0, service.Executed.Count);
+        }
+
+        [TestMethod]
+        public void UpdateChildRecords_SetsTheConvertedValueOnEveryActiveChildAcrossPages()
+        {
+            var children = new[] { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() };
+            SetUpChildRelationship(new IntegerAttributeMetadata { LogicalName = "new_count" });
+            service.OnRetrieveMultiple = query => ((QueryExpression)query).PageInfo.PageNumber == 1
+                ? Page(true, "cookie1", new Entity(EntityNames.Contact, children[0]), new Entity(EntityNames.Contact, children[1]))
+                : Page(false, null, new Entity(EntityNames.Contact, children[2]));
+
+            var updated = common.UpdateChildRecords("account_contacts", EntityNames.Account, RecordId, string.Empty, "42", "new_count", true);
+
+            Assert.AreEqual(3, updated);
+            CollectionAssert.AreEqual(children, service.Updated.Select(e => e.Id).ToArray());
+            Assert.IsTrue(service.Updated.All(e => e.LogicalName == EntityNames.Contact && (int)e["new_count"] == 42));
+            var conditions = ((QueryExpression)service.Queries.First()).Criteria.Conditions;
+            AssertCondition(conditions[0], "parentcustomerid", ConditionOperator.Equal, RecordId);
+            AssertCondition(conditions[1], AttributeNames.StateCode, ConditionOperator.Equal, 0);
+            Assert.AreEqual(1, service.Executed.OfType<RetrieveAttributeRequest>().Count());
+        }
+
+        [TestMethod]
+        public void UpdateChildRecords_CopiesTheParentField()
+        {
+            var owner = new EntityReference(EntityNames.SystemUser, UserId);
+            SetUpChildRelationship(new LookupAttributeMetadata { LogicalName = "new_reviewerid" });
+            service.OnRetrieve = (name, id, columns) => new Entity(name, id) { ["ownerid"] = owner };
+            service.OnRetrieveMultiple = query => Collection(new Entity(EntityNames.Contact, Guid.NewGuid()));
+
+            common.UpdateChildRecords("account_contacts", EntityNames.Account, RecordId, "ownerid", null, "new_reviewerid", false);
+
+            Assert.AreSame(owner, service.Updated.Single()["new_reviewerid"]);
+            Assert.AreEqual(1, ((QueryExpression)service.Queries.Single()).Criteria.Conditions.Count);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidPluginExecutionException))]
+        public void UpdateChildRecords_ProductPropertiesThrow()
+        {
+            service.OnExecute = r => RelationshipResponse(EntityNames.DynamicPropertyInstance, "regardingobjectid");
+
+            common.UpdateChildRecords("SalesOrderDetail_Dynamicpropertyinstance", "salesorderdetail", RecordId, string.Empty, "333", "valuestring", false);
+        }
+
+        [TestMethod]
+        public void GetChildRecords_UsesTheRelationshipLookup()
+        {
+            service.OnExecute = r => RelationshipResponse(EntityNames.Contact, "parentcustomerid");
+
+            common.GetChildRecords("account_contacts", RecordId);
+
+            var query = (QueryByAttribute)service.Queries.Single();
+            Assert.AreEqual(EntityNames.Contact, query.EntityName);
+            Assert.AreEqual("parentcustomerid", query.Attributes.Single());
+            Assert.AreEqual(RecordId, query.Values.Single());
+        }
+
+        private void SetUpChildRelationship(AttributeMetadata childField)
+        {
+            service.OnExecute = r => r is RetrieveRelationshipRequest
+                ? (OrganizationResponse)RelationshipResponse(EntityNames.Contact, "parentcustomerid")
+                : new RetrieveAttributeResponse { Results = { ["AttributeMetadata"] = childField } };
+        }
+
+        private static RetrieveRelationshipResponse RelationshipResponse(string childEntity, string lookup)
+        {
+            return new RetrieveRelationshipResponse
+            {
+                Results = { ["RelationshipMetadata"] = new OneToManyRelationshipMetadata { ReferencingEntity = childEntity, ReferencingAttribute = lookup } }
+            };
         }
     }
 }

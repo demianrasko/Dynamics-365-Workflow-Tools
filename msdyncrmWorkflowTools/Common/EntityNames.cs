@@ -21,6 +21,8 @@
 
         public const string Contact = "contact";
 
+        public const string DynamicPropertyInstance = "dynamicpropertyinstance";
+
         public const string Email = "email";
 
         public const string Goal = "goal";

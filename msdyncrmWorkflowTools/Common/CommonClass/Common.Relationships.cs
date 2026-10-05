@@ -1,11 +1,9 @@
-﻿using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk;
+﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata;
 using Microsoft.Xrm.Sdk.Query;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 
 namespace msdyncrmWorkflowTools
@@ -112,147 +110,99 @@ namespace msdyncrmWorkflowTools
         }
 
         /// <summary>
-        /// Retrieves related records using a relationship metadata
+        /// The child records of a parent through a 1:N relationship, with only their lookup to the parent.
         /// </summary>
-        /// <param name="relationshipName">relationship to navigate</param>
-        /// <param name="parentEntityId">Parent Id</param>
-        /// <returns></returns>
+        /// <param name="relationshipName">Schema name of the 1:N relationship.</param>
+        /// <param name="parentEntityId">Id of the parent record.</param>
         public EntityCollection GetChildRecords(string relationshipName, Guid parentEntityId)
         {
-            var request = new RetrieveRelationshipRequest()
-            {
-                Name = relationshipName
-            };
+            var relationship = GetOneToManyRelationship(relationshipName);
 
-            var response = (RetrieveRelationshipResponse)Service.Execute(request);
-            var rel = (OneToManyRelationshipMetadata)response.RelationshipMetadata;
-            var childEntityType = rel.ReferencingEntity;
-            var childEntityFieldName = rel.ReferencingAttribute;
-
-            var query = new QueryByAttribute(childEntityType)
+            var query = new QueryByAttribute(relationship.ReferencingEntity)
             {
-                ColumnSet = new ColumnSet(childEntityFieldName),
-                Attributes = { childEntityFieldName },
+                ColumnSet = new ColumnSet(relationship.ReferencingAttribute),
+                Attributes = { relationship.ReferencingAttribute },
                 Values = { parentEntityId }
             };
 
             return Service.RetrieveMultiple(query);
         }
 
-        public void UpdateChildRecords(string relationshipName, string parentEntityType, Guid parentEntityId, string parentFieldNameToUpdate, string setValueToUpdate, string childFieldNameToUpdate, bool updateonlyActive)
+        /// <summary>
+        /// Sets a field on every child record of a parent, through a 1:N relationship. The value is either copied from
+        /// a field of the parent or given as text, and is converted to the child field's type
+        /// (see <see cref="Utility.ConvertToAttributeType"/>). Every child is updated, however many there are.
+        /// </summary>
+        /// <param name="relationshipName">Schema name of the 1:N relationship from the parent to the children.</param>
+        /// <param name="parentEntityType">Logical name of the parent record.</param>
+        /// <param name="parentEntityId">Id of the parent record.</param>
+        /// <param name="parentFieldNameToUpdate">Parent field to copy, or empty to use <paramref name="setValueToUpdate"/>.</param>
+        /// <param name="setValueToUpdate">The value as text, used when no parent field is given.</param>
+        /// <param name="childFieldNameToUpdate">The child field to set.</param>
+        /// <param name="updateonlyActive">Only update active children (statecode 0).</param>
+        /// <returns>The number of child records updated.</returns>
+        /// <exception cref="InvalidPluginExecutionException">The children are product properties (dynamicpropertyinstance),
+        /// which can't be updated this way, or the value can't be stored in the child field.</exception>
+        public int UpdateChildRecords(string relationshipName, string parentEntityType, Guid parentEntityId, string parentFieldNameToUpdate, string setValueToUpdate, string childFieldNameToUpdate, bool updateonlyActive)
         {
-            //1) Get child lookup field name
-            var req = new RetrieveRelationshipRequest()
+            var relationship = GetOneToManyRelationship(relationshipName);
+            var childEntityType = relationship.ReferencingEntity;
+
+            if (string.Equals(childEntityType, EntityNames.DynamicPropertyInstance, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidPluginExecutionException(
+                    $"Update Child Records can't update product properties ({relationshipName}). Use the product's property editor instead.");
+            }
+
+            var query = ChildRecordsQuery(childEntityType, relationship.ReferencingAttribute, parentEntityId);
+
+            if (updateonlyActive)
+            {
+                query.Criteria.AddCondition(AttributeNames.StateCode, ConditionOperator.Equal, 0);
+            }
+
+            var childIds = RetrieveAllIds(query);
+
+            var value = string.IsNullOrEmpty(parentFieldNameToUpdate)
+                ? setValueToUpdate
+                : Service.Retrieve(parentEntityType, parentEntityId, new ColumnSet(parentFieldNameToUpdate)).GetAttributeValue<object>(parentFieldNameToUpdate);
+
+            var request = new RetrieveAttributeRequest
+            {
+                EntityLogicalName = childEntityType,
+                LogicalName = childFieldNameToUpdate
+            };
+
+            var response = (RetrieveAttributeResponse)Service.Execute(request);
+            var convertedValue = Utility.ConvertToAttributeType(value, response.AttributeMetadata);
+
+            foreach (var childId in childIds)
+            {
+                Service.Update(new Entity(childEntityType, childId)
+                {
+                    [childFieldNameToUpdate] = convertedValue
+                });
+            }
+
+            Trace($"Set {childFieldNameToUpdate} on {childIds.Count} {childEntityType} record(s).");
+
+            return childIds.Count;
+        }
+
+        /// <summary>
+        /// The metadata of a 1:N relationship: its child table (ReferencingEntity) and lookup (ReferencingAttribute).
+        /// </summary>
+        private OneToManyRelationshipMetadata GetOneToManyRelationship(string relationshipName)
+        {
+            var request = new RetrieveRelationshipRequest
             {
                 Name = relationshipName
             };
 
-            var res = (RetrieveRelationshipResponse)Service.Execute(req);
-            var rel = (OneToManyRelationshipMetadata)res.RelationshipMetadata;
-            var childEntityType = rel.ReferencingEntity;
-            var childEntityFieldName = rel.ReferencingAttribute;
+            var response = (RetrieveRelationshipResponse)Service.Execute(request);
 
-            //2) retrieve all child records
-            var query = new QueryByAttribute(childEntityType)
-            {
-                ColumnSet = new ColumnSet(childEntityFieldName),
-                Attributes = { childEntityFieldName },
-                Values = { parentEntityId }
-            };
-
-            if (updateonlyActive)
-            {
-                query.AddAttributeValue(AttributeNames.StateCode, 0);
-            }
-
-            var retrieved = Service.RetrieveMultiple(query);
-
-            //2') retrieve parent field value
-            object valueToUpdate;
-
-            if (!string.IsNullOrEmpty(parentFieldNameToUpdate))
-            {
-                var retrievedEntity = Service.Retrieve(parentEntityType, parentEntityId, new ColumnSet(parentFieldNameToUpdate));
-
-                valueToUpdate = retrievedEntity.Attributes.Contains(parentFieldNameToUpdate) ? retrievedEntity.Attributes[parentFieldNameToUpdate] : null;
-            }
-            else
-            {
-                valueToUpdate = setValueToUpdate;
-            }
-
-            //3) update each child record
-
-            foreach (var child in retrieved.Entities)
-            {
-                if (childEntityType.ToLower() == "dynamicpropertyinstance")
-                {
-                    //pending...
-                    var request = new UpdateProductPropertiesRequest();
-                    // req2.
-                    break;
-                }
-
-                var attributeRequest = new RetrieveAttributeRequest
-                {
-                    EntityLogicalName = childEntityType,
-                    LogicalName = childFieldNameToUpdate
-                };
-
-                var attributeResponse = (RetrieveAttributeResponse)Service.Execute(attributeRequest);
-
-                var metadata = attributeResponse.AttributeMetadata;
-
-                var entity = new Entity(childEntityType)
-                {
-                    Id = child.Id
-                };
-
-                if (metadata.AttributeType != null)
-                {
-                    switch (metadata.AttributeType.Value.ToString())
-                    {
-                        case "Boolean":
-                        {
-                            // valueToUpdate is an object, so compare its text (== "1" compared references and missed "1" read from a field)
-                            var text = Convert.ToString(valueToUpdate, CultureInfo.InvariantCulture);
-                            var isTrue = valueToUpdate is bool flag
-                                ? flag
-                                : text == "1" || string.Equals(text, "true", StringComparison.OrdinalIgnoreCase);
-
-                            entity.Attributes.Add(childFieldNameToUpdate, isTrue);
-                            break;
-                        }
-                        case "Picklist":
-                        case "Status":
-                        {
-                            if (valueToUpdate == null)
-                            {
-                                entity.Attributes.Add(childFieldNameToUpdate, null);
-                            }
-                            else
-                            {
-                                if (valueToUpdate is OptionSetValue value)
-                                {
-                                    valueToUpdate = value.Value;
-                                }
-
-                                var opt = new OptionSetValue(Convert.ToInt32(valueToUpdate));
-                                entity.Attributes.Add(childFieldNameToUpdate, opt);
-                            }
-
-                            break;
-                        }
-                        default:
-                        {
-                            entity.Attributes.Add(childFieldNameToUpdate, valueToUpdate);
-                            break;
-                        }
-                    }
-                }
-
-                Service.Update(entity);
-            }
+            return response.RelationshipMetadata as OneToManyRelationshipMetadata
+                ?? throw new InvalidPluginExecutionException($"'{relationshipName}' is not a one-to-many relationship.");
         }
 
         /// <summary>

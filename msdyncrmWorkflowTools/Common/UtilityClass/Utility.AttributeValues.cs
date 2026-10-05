@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Metadata;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -269,6 +270,125 @@ namespace msdyncrmWorkflowTools
         {
             return account ?? contact ?? lead
                 ?? throw new InvalidPluginExecutionException("Account, Contact or Lead is required.");
+        }
+
+        /// <summary>
+        /// Converts a value to what a field of the given type stores: text such as "42", "12.5", "2026-10-05",
+        /// "true" or a GUID becomes a whole number, decimal, money, date, Yes/No, choice or lookup. Values that already
+        /// have the right type are kept. Empty text clears the field (a Yes/No field becomes No). Numbers and dates are read in the
+        /// invariant culture ("12.5", not "12,5").
+        /// </summary>
+        /// <param name="value">The value: text from a workflow input, or a value copied from another field.</param>
+        /// <param name="attribute">Metadata of the field the value is written to.</param>
+        /// <exception cref="InvalidPluginExecutionException">The value can't be stored in the field, or a GUID is given for
+        /// a lookup that can point to more than one table.</exception>
+        public static object ConvertToAttributeType(object value, AttributeMetadata attribute)
+        {
+            if (value is AliasedValue aliasedValue)
+            {
+                value = aliasedValue.Value;
+            }
+
+            var type = attribute.AttributeType ?? AttributeTypeCode.String;
+
+            if (type == AttributeTypeCode.String || type == AttributeTypeCode.Memo)
+            {
+                return ToText(value);
+            }
+
+            if (type == AttributeTypeCode.Boolean)
+            {
+                // as before: anything but true, "true" or "1" (including no value) is No
+                return value is bool flag ? flag : IsTrue(ToText(value));
+            }
+
+            if (value == null || value is string text && string.IsNullOrWhiteSpace(text))
+            {
+                return null;
+            }
+
+            try
+            {
+                switch (type)
+                {
+                    case AttributeTypeCode.Picklist:
+                    case AttributeTypeCode.Status:
+                    case AttributeTypeCode.State:
+                        return value is OptionSetValue option ? option : new OptionSetValue(Convert.ToInt32(value, CultureInfo.InvariantCulture));
+                    case AttributeTypeCode.Integer:
+                        return Convert.ToInt32(Unwrap(value), CultureInfo.InvariantCulture);
+                    case AttributeTypeCode.BigInt:
+                        return Convert.ToInt64(Unwrap(value), CultureInfo.InvariantCulture);
+                    case AttributeTypeCode.Decimal:
+                        return Convert.ToDecimal(Unwrap(value), CultureInfo.InvariantCulture);
+                    case AttributeTypeCode.Double:
+                        return Convert.ToDouble(Unwrap(value), CultureInfo.InvariantCulture);
+                    case AttributeTypeCode.Money:
+                        return value is Money money ? money : new Money(Convert.ToDecimal(Unwrap(value), CultureInfo.InvariantCulture));
+                    case AttributeTypeCode.DateTime:
+                        return value is DateTime date ? date : DateTime.Parse(ToText(value), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                    case AttributeTypeCode.Lookup:
+                    case AttributeTypeCode.Customer:
+                    case AttributeTypeCode.Owner:
+                        return value is EntityReference reference ? reference : ToEntityReference(ToText(value), attribute);
+                    default:
+                        return value;
+                }
+            }
+            catch (Exception ex) when (ex is FormatException || ex is InvalidCastException || ex is OverflowException)
+            {
+                throw new InvalidPluginExecutionException($"'{ToText(value)}' can't be stored in {attribute.LogicalName} ({type}).", ex);
+            }
+        }
+
+        private static object Unwrap(object value)
+        {
+            switch (value)
+            {
+                case Money money:
+                    return money.Value;
+                case OptionSetValue option:
+                    return option.Value;
+                default:
+                    return value;
+            }
+        }
+
+        private static string ToText(object value)
+        {
+            switch (value)
+            {
+                case null:
+                    return null;
+                case string text:
+                    return text;
+                case EntityReference reference:
+                    return reference.Name ?? reference.Id.ToString();
+                case OptionSetValue option:
+                    return option.Value.ToString(CultureInfo.InvariantCulture);
+                case Money money:
+                    return money.Value.ToString(CultureInfo.InvariantCulture);
+                default:
+                    return Convert.ToString(value, CultureInfo.InvariantCulture);
+            }
+        }
+
+        private static bool IsTrue(string text)
+        {
+            return text == "1" || string.Equals(text?.Trim(), "true", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static EntityReference ToEntityReference(string text, AttributeMetadata attribute)
+        {
+            var targets = (attribute as LookupAttributeMetadata)?.Targets ?? new string[0];
+
+            if (targets.Length != 1)
+            {
+                throw new InvalidPluginExecutionException(
+                    $"{attribute.LogicalName} can point to {(targets.Length == 0 ? "an unknown table" : string.Join(" or ", targets))}, so a GUID alone can't be stored in it. Copy the value from a lookup field instead.");
+            }
+
+            return new EntityReference(targets[0], Guid.Parse(text.Trim().Trim('{', '}')));
         }
     }
 }
