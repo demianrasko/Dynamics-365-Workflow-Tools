@@ -87,9 +87,16 @@
   <ItemGroup>
     <Compile Include="DataverseConnection.cs" />
     <Compile Include="IntegrationTestBase.cs" />
+    <Compile Include="IntegrationTestBase.Helpers.cs" />
+    <Compile Include="IntegrationTestBase.Metadata.cs" />
+    <Compile Include="IntegrationTestBase.Queries.cs" />
+    <Compile Include="IntegrationTestBase.QueuesAndSettings.cs" />
     <Compile Include="IntegrationTestBase.Records.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="IntegrationTestBase.Relationships.cs" />
+    <Compile Include="IntegrationTestBase.Schema.cs" />
+    <Compile Include="IntegrationTestBase.Security.cs" />
     <Compile Include="TraceRecorder.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

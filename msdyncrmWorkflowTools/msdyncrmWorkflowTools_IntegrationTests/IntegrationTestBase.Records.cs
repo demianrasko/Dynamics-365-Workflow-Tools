@@ -1,10 +1,9 @@
-﻿using Microsoft.Crm.Sdk.Messages;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Query;
 using msdyncrmWorkflowTools;
+using Newtonsoft.Json.Linq;
 using System;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace msdyncrmWorkflowTools_IntegrationTests
 {
@@ -29,126 +28,100 @@ namespace msdyncrmWorkflowTools_IntegrationTests
         }
 
         [TestMethod]
-        public void Metadata_TypeCodesAndRecordUrls()
+        public void SetLookupAndSetMoney_UpdateTheFields()
         {
-            Assert.AreEqual(1, Common.GetEntityTypeCode(EntityNames.Account));
+            var account = Create(new Entity(EntityNames.Account) { [AttributeNames.Name] = UniqueName("account") });
+            var contact = CreateContact(null);
 
-            var parsed = Common.ParseRecordUrl($"https://test.crm.dynamics.com/main.aspx?etc=2&id={Guid.NewGuid()}");
+            Common.SetLookup(account, "primarycontactid", contact);
+            Common.SetMoney(account, "creditlimit", 1234.56m);
 
-            Assert.AreEqual(EntityNames.Contact, parsed.EntityName);
+            var values = Read(account, "primarycontactid", "creditlimit");
+            Assert.AreEqual(contact.Id, values.GetAttributeValue<EntityReference>("primarycontactid").Id);
+            Assert.AreEqual(1234.56m, values.GetAttributeValue<Money>("creditlimit").Value);
         }
 
         [TestMethod]
-        public void GetEnvironmentVariable_UsesTheCurrentValueOverTheDefault()
+        public void SerializeRecord_WritesTheRecordAsJson()
         {
-            var schemaName = $"new_WftTest{Guid.NewGuid().ToString("N").Substring(0, 8)}";
-            var definition = Create(new Entity(EntityNames.EnvironmentVariableDefinition)
+            var name = UniqueName("json");
+            var account = Create(new Entity(EntityNames.Account) { [AttributeNames.Name] = name, ["numberofemployees"] = 12 });
+
+            var record = (JObject)JObject.Parse(Common.SerializeRecord(account))[EntityNames.Account];
+
+            Assert.AreEqual(name, (string)record[AttributeNames.Name]);
+            Assert.AreEqual(12, (int)record["numberofemployees"]);
+        }
+
+        [TestMethod]
+        public void DeleteRecord_DeletesIt()
+        {
+            var account = new EntityReference(EntityNames.Account,
+                Service.Create(new Entity(EntityNames.Account) { [AttributeNames.Name] = UniqueName("delete") }));
+
+            Common.DeleteRecord(account);
+
+            Assert.IsNull(Common.RetrieveFirstMatch(EntityNames.Account, new[] { AttributeNames.Name },
+                new KeyValuePair<string, object>("accountid", account.Id)));
+        }
+
+        [TestMethod]
+        public void CloneRecord_CopiesValuesAndSkipsIgnoredFields()
+        {
+            var name = UniqueName("clone");
+            var source = Create(new Entity(EntityNames.Account)
             {
-                [AttributeNames.SchemaName] = schemaName,
-                ["displayname"] = UniqueName("variable"),
-                ["type"] = new OptionSetValue(100000000), // String
-                [AttributeNames.DefaultValue] = "default value"
+                [AttributeNames.Name] = name,
+                ["accountnumber"] = "WFT-1",
+                ["telephone1"] = "555-0101",
+                ["numberofemployees"] = 7
             });
+            Common.SetState(source, 1, 2);
 
-            Assert.AreEqual("default value", Common.GetEnvironmentVariable(schemaName));
+            var clone = new EntityReference(EntityNames.Account, Common.CloneRecord(EntityNames.Account, source.Id, "accountnumber", "Copy of ",
+                new Dictionary<string, object> { ["telephone1"] = "555-0199" }));
+            DeleteAfterTest(clone);
 
-            Create(new Entity(EntityNames.EnvironmentVariableValue)
-            {
-                [AttributeNames.SchemaName] = schemaName,
-                [AttributeNames.EnvironmentVariableDefinitionId] = definition,
-                [AttributeNames.Value] = "current value"
-            });
+            var values = Read(clone, AttributeNames.Name, "accountnumber", "telephone1", "numberofemployees", AttributeNames.StateCode);
+            Assert.AreEqual($"Copy of {name}", values.GetAttributeValue<string>(AttributeNames.Name));
+            Assert.IsNull(values.GetAttributeValue<string>("accountnumber"));
+            Assert.AreEqual("555-0199", values.GetAttributeValue<string>("telephone1"));
+            Assert.AreEqual(7, values.GetAttributeValue<int>("numberofemployees"));
 
-            Assert.AreEqual("current value", Common.GetEnvironmentVariable(schemaName));
-            Assert.IsNull(Common.GetEnvironmentVariable($"new_WftMissing{Guid.NewGuid():N}"));
+            // today a copy of an inactive record is always active (the status-copying code in CloneRecord never runs)
+            Assert.AreEqual(0, values.GetAttributeValue<OptionSetValue>(AttributeNames.StateCode).Value);
         }
 
         [TestMethod]
-        public void UpdateChildRecords_ConvertsTextToEachFieldTypeAndSkipsInactiveChildren()
+        public void DeleteRecordAuditHistory_RunsForARecord()
         {
-            var account = Create(new Entity(EntityNames.Account) { [AttributeNames.Name] = UniqueName("parent") });
-            var active = Enumerable.Range(0, 2).Select(_ => CreateContact(account)).ToList();
-            var inactive = CreateContact(account);
-            Common.SetState(inactive, 1, 2);
+            var account = Create(new Entity(EntityNames.Account) { [AttributeNames.Name] = UniqueName("audit") });
+            Service.Update(new Entity(account.LogicalName, account.Id) { ["telephone1"] = "555-0102" });
 
-            var updated = Common.UpdateChildRecords("contact_customer_accounts", EntityNames.Account, account.Id, null, "3", "numberofchildren", true);
-            Common.UpdateChildRecords("contact_customer_accounts", EntityNames.Account, account.Id, null, "12.5", "creditlimit", true);
-            Common.UpdateChildRecords("contact_customer_accounts", EntityNames.Account, account.Id, null, "1", "donotemail", true);
-            Common.UpdateChildRecords("contact_customer_accounts", EntityNames.Account, account.Id, null, "2", "preferredcontactmethodcode", true);
-            Common.UpdateChildRecords("contact_customer_accounts", EntityNames.Account, account.Id, null, "2001-02-03", "birthdate", true);
-
-            Assert.AreEqual(2, updated);
-
-            foreach (var contact in active)
-            {
-                var values = Service.Retrieve(contact.LogicalName, contact.Id,
-                    new ColumnSet("numberofchildren", "creditlimit", "donotemail", "preferredcontactmethodcode", "birthdate"));
-
-                Assert.AreEqual(3, values.GetAttributeValue<int>("numberofchildren"));
-                Assert.AreEqual(12.5m, values.GetAttributeValue<Money>("creditlimit").Value);
-                Assert.IsTrue(values.GetAttributeValue<bool>("donotemail"));
-                Assert.AreEqual(2, values.GetAttributeValue<OptionSetValue>("preferredcontactmethodcode").Value);
-                Assert.AreEqual(new DateTime(2001, 2, 3), values.GetAttributeValue<DateTime>("birthdate").Date);
-            }
-
-            Assert.IsFalse(Service.Retrieve(inactive.LogicalName, inactive.Id, new ColumnSet("numberofchildren")).Contains("numberofchildren"));
+            Common.DeleteRecordAuditHistory(account.LogicalName, account.Id);
         }
 
         [TestMethod]
-        public void UpdateChildRecords_CopiesAParentField()
+        public void MultiSelectOptionSets_SetGetKeepMapAndName()
         {
-            var account = Create(new Entity(EntityNames.Account) { [AttributeNames.Name] = UniqueName("parent"), ["telephone1"] = "555-0100" });
-            var contact = CreateContact(account);
+            var options = TestOptions(TestChoices);
+            var first = Create(new Entity(EntityNames.Account) { [AttributeNames.Name] = UniqueName("multi") });
+            var second = Create(new Entity(EntityNames.Account) { [AttributeNames.Name] = UniqueName("multi") });
 
-            Common.UpdateChildRecords("contact_customer_accounts", EntityNames.Account, account.Id, "telephone1", null, "telephone2", false);
+            Assert.AreEqual(0, Common.GetMultiSelectOptionSet(first, TestChoices).Count);
 
-            Assert.AreEqual("555-0100", Service.Retrieve(contact.LogicalName, contact.Id, new ColumnSet("telephone2")).GetAttributeValue<string>("telephone2"));
-        }
+            Common.SetMultiSelectOptionSet(first, TestChoices, Options(options[0]), false);
+            Common.SetMultiSelectOptionSet(first, TestChoices, Options(options[1]), true);
+            CollectionAssert.AreEquivalent(new[] { options[0], options[1] }, Values(Common.GetMultiSelectOptionSet(first, TestChoices)));
 
-        [TestMethod]
-        public void Teams_CreateAddCheckAndRemoveAMember()
-        {
-            var teamId = Common.CreateTeam(UniqueName("team"), 0, new EntityReference(EntityNames.SystemUser, UserId),
-                new EntityReference(EntityNames.BusinessUnit, BusinessUnitId));
-            DeleteAfterTest(new EntityReference(EntityNames.Team, teamId));
+            Common.SetMultiSelectOptionSets(first, new Dictionary<string, OptionSetValueCollection> { [TestChoices] = Options(options[2]) }, false);
+            CollectionAssert.AreEquivalent(new[] { options[2] }, Values(Common.GetMultiSelectOptionSet(first, TestChoices)));
 
-            Assert.IsFalse(Common.IsMemberOfTeam(teamId, UserId));
+            Common.SetMultiSelectOptionSet(second, TestChoices, Options(options[0]), false);
+            Common.MapMultiSelectOptionSets(first, new[] { TestChoices }, second, new[] { TestChoices }, true);
+            CollectionAssert.AreEquivalent(new[] { options[0], options[2] }, Values(Common.GetMultiSelectOptionSet(second, TestChoices)));
 
-
-            Common.AddTeamMember(teamId, UserId);
-            Assert.IsTrue(Common.IsMemberOfTeam(teamId, UserId));
-
-            Common.RemoveTeamMember(teamId, UserId);
-            Assert.IsFalse(Common.IsMemberOfTeam(teamId, UserId));
-        }
-
-        [TestMethod]
-        public void CountRecords_CountsTheChildren()
-        {
-            var account = Create(new Entity(EntityNames.Account) { [AttributeNames.Name] = UniqueName("parent") });
-            CreateContact(account);
-            CreateContact(account);
-
-            Assert.AreEqual(2, Common.CountChildRecords(EntityNames.Contact, "parentcustomerid", account.Id, string.Empty));
-            Assert.AreEqual(1, Common.CountChildRecords(EntityNames.Contact, "parentcustomerid", account.Id,
-                "<condition attribute='lastname' operator='like' value='%0' />"));
-        }
-
-        private int contactCount;
-
-        private EntityReference CreateContact(EntityReference account)
-        {
-            return Create(new Entity(EntityNames.Contact)
-            {
-                ["lastname"] = $"{UniqueName("contact")} {contactCount++}",
-                ["parentcustomerid"] = account
-            });
-        }
-
-        private int StateOf(EntityReference record)
-        {
-            return Service.Retrieve(record.LogicalName, record.Id, new ColumnSet(AttributeNames.StateCode))
-                .GetAttributeValue<OptionSetValue>(AttributeNames.StateCode).Value;
+            Assert.AreEqual("One,Three", Common.GetOptionSetNames(EntityNames.Account, TestChoices, Options(options[0], options[2])));
         }
     }
 }
