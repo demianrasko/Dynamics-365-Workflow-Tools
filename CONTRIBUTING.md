@@ -87,7 +87,12 @@ Writing tests:
 - Add them to `IntegrationTestBase` (in a partial file per area, like `IntegrationTestBase.Records.cs`) so they run against both environments. Tests that need Dynamics 365 tables (quotes, leads, marketing lists, cases) go in `Dynamics365_IntegrationTests`.
 - Create test data with `Create(...)`, or call `DeleteAfterTest(...)` for records the code creates, so it is deleted when the test ends, even if it fails.
 
-In GitHub, the **Integration tests** workflow (`.github\workflows\integration-tests.yml`) runs the same tests. It only runs when started by hand from the Actions tab, so pull requests from forks can't reach the environments. It needs a GitHub environment named `dataverse-test` (repository Settings > Environments) with the secrets `DATAVERSE_CONNECTION` and `DATAVERSE_CONNECTION_PP`. Adding yourself as a required reviewer there makes every run wait for your approval. The **Build and test** workflow runs only the unit tests.
+The same project has two more groups (Test Explorer > group by Traits):
+
+- **Deployment**: registers the built Power Platform assembly (`/p:PowerPlatform=true`) in the Power Platform environment, the way the Plugin Registration Tool does, and checks that it loads in the sandbox, that every activity registers and that the designer sees every input and output. The assembly stays registered, so real test workflows can use it. The Dynamics 365 build isn't deployed this way while the Dynamics 365 test environment has the managed workflow tools solution installed (the manual upgrade test uses it).
+- **LiveServices**: the outside services, for real. Currency conversion (Frankfurter) needs no key; geocoding needs `AZURE_MAPS_KEY` and translation `TRANSLATOR_KEY` (plus `TRANSLATOR_REGION` for a regional resource). Save them with `tools\Set-ServiceKeys.ps1`; without a key the test is inconclusive.
+
+In GitHub, the **Integration tests** workflow (`.github\workflows\integration-tests.yml`) runs the same tests. It only runs when started by hand from the Actions tab, so pull requests from forks can't reach the environments. It needs a GitHub environment named `dataverse-test` (repository Settings > Environments) with the secrets `DATAVERSE_CONNECTION` and `DATAVERSE_CONNECTION_PP` (and optionally `AZURE_MAPS_KEY`, `TRANSLATOR_KEY` and `TRANSLATOR_REGION`). Adding yourself as a required reviewer there makes every run wait for your approval. The **Build and test** workflow runs only the unit tests.
 ### Code style
 
 - Braces on every `if` and `else`, even for one line.

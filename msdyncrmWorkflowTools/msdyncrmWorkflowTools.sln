@@ -31,6 +31,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{BE5A6C88-9F7B-4DAE-90C2-5B6F7E8A9CA5}"
 	ProjectSection(SolutionItems) = preProject
 		..\tools\Set-DataverseTestConnections.ps1 = ..\tools\Set-DataverseTestConnections.ps1
+		..\tools\Set-ServiceKeys.ps1 = ..\tools\Set-ServiceKeys.ps1
 		..\tools\Test-DataverseAppUser.ps1 = ..\tools\Test-DataverseAppUser.ps1
 	EndProjectSection
 EndProject

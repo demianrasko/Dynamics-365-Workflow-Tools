@@ -86,7 +86,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataverseConnection.cs" />
+    <Compile Include="Deployment_IntegrationTests.cs" />
     <Compile Include="Dynamics365_IntegrationTests.Sales.cs" />
+    <Compile Include="ExternalServices_LiveTests.cs" />
     <Compile Include="IntegrationTestBase.cs" />
     <Compile Include="IntegrationTestBase.AI.cs" />
     <Compile Include="IntegrationTestBase.Email.cs" />

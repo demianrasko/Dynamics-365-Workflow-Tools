@@ -1,0 +1,185 @@
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Query;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.ServiceModel;
+
+namespace msdyncrmWorkflowTools_IntegrationTests
+{
+    /// <summary>
+    /// Registers the built Power Platform assembly in the Power Platform test environment, the way the Plugin
+    /// Registration Tool would, and checks what Dataverse makes of it: that it loads in the sandbox, that every
+    /// activity registers, and that the designer sees each activity's inputs and outputs. The assembly stays
+    /// registered afterwards, so real test workflows can use it.
+    /// </summary>
+    /// <remarks>
+    /// Only the Power Platform build is deployed: the Dynamics 365 test environment has the managed workflow tools
+    /// solution installed, which the manual upgrade test uses.
+    /// </remarks>
+    [TestClass]
+    [TestCategory("Deployment")]
+    public class Deployment_IntegrationTests
+    {
+        private const string ConnectionVariable = "DATAVERSE_CONNECTION_PP";
+
+        public TestContext TestContext { get; set; }
+
+        [TestMethod]
+        public void PowerPlatformBuild_RegistersInTheSandboxWithEveryActivity()
+        {
+            var service = DataverseConnection.Connect(ConnectionVariable);
+
+            if (service == null)
+            {
+                Assert.Inconclusive($"Set {ConnectionVariable} (tools\\Set-DataverseTestConnections.ps1) to run the deployment test.");
+            }
+
+            var dll = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                @"..\..\..\msdyncrmWorkflowTools\bin\Release-PowerPlatform\powerplatformWorkflowTools.dll"));
+
+            if (!File.Exists(dll))
+            {
+                Assert.Inconclusive($"Build the Power Platform version first (/p:PowerPlatform=true); {dll} doesn't exist.");
+            }
+
+            var name = AssemblyName.GetAssemblyName(dll);
+            var activities = ActivitiesIn(dll);
+            TestContext.WriteLine($"{name.Name} {name.Version}: {activities.Count} activities");
+
+            var assemblyId = RegisterAssembly(service, name, File.ReadAllBytes(dll), activities.Keys);
+            RegisterActivities(service, assemblyId, name, activities.Keys);
+
+            var registered = service.RetrieveMultiple(new QueryExpression("plugintype")
+            {
+                ColumnSet = new ColumnSet("typename", "customworkflowactivityinfo"),
+                Criteria = { Conditions = { new ConditionExpression("pluginassemblyid", ConditionOperator.Equal, assemblyId) } }
+            }).Entities.ToDictionary(t => t.GetAttributeValue<string>("typename"), t => t.GetAttributeValue<string>("customworkflowactivityinfo") ?? string.Empty);
+
+            CollectionAssert.AreEquivalent(activities.Keys.ToList(), registered.Keys.ToList());
+
+            var missing = (from activity in activities
+                           from label in activity.Value
+                           where registered[activity.Key].IndexOf(label, StringComparison.Ordinal) < 0
+                           select $"{activity.Key}: {label}").ToList();
+
+            Assert.AreEqual(0, missing.Count, $"Inputs or outputs Dataverse doesn't show: {string.Join("; ", missing)}");
+        }
+
+        /// <summary>The workflow activities in an assembly, with the labels of their inputs and outputs.</summary>
+        private static Dictionary<string, List<string>> ActivitiesIn(string dll)
+        {
+            Type[] types;
+
+            try
+            {
+                types = Assembly.LoadFrom(dll).GetTypes();
+            }
+            catch (ReflectionTypeLoadException ex)
+            {
+                types = ex.Types.Where(t => t != null).ToArray();
+            }
+
+            return types
+                .Where(t => t.IsPublic && !t.IsAbstract && IsCodeActivity(t))
+                .ToDictionary(
+                    t => t.FullName,
+                    t => t.GetProperties()
+                        .SelectMany(p => p.GetCustomAttributesData())
+                        .Where(a => a.AttributeType.Name == "InputAttribute" || a.AttributeType.Name == "OutputAttribute")
+                        .Select(a => (string)a.ConstructorArguments[0].Value)
+                        .ToList());
+        }
+
+        private static bool IsCodeActivity(Type type)
+        {
+            for (var t = type.BaseType; t != null; t = t.BaseType)
+            {
+                if (t.FullName == "System.Activities.CodeActivity")
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>Creates the assembly record, or updates its content (removing activities the build no longer has).</summary>
+        private Guid RegisterAssembly(IOrganizationService service, AssemblyName name, byte[] content, IEnumerable<string> activityTypes)
+        {
+            var existing = service.RetrieveMultiple(new QueryExpression("pluginassembly")
+            {
+                ColumnSet = new ColumnSet("ismanaged", "version"),
+                Criteria = { Conditions = { new ConditionExpression("name", ConditionOperator.Equal, name.Name) } }
+            }).Entities.FirstOrDefault();
+
+            if (existing == null)
+            {
+                TestContext.WriteLine($"Registering {name.Name} {name.Version}");
+
+                return service.Create(new Entity("pluginassembly")
+                {
+                    ["name"] = name.Name,
+                    ["content"] = Convert.ToBase64String(content),
+                    ["isolationmode"] = new OptionSetValue(2), // sandbox
+                    ["sourcetype"] = new OptionSetValue(0) // database
+                });
+            }
+
+            if (existing.GetAttributeValue<bool>("ismanaged"))
+            {
+                Assert.Inconclusive($"{name.Name} belongs to a managed solution in this environment; it isn't replaced by a test build.");
+            }
+
+            // a type that is no longer in the assembly has to be removed before the new content is accepted
+            var wanted = new HashSet<string>(activityTypes);
+
+            foreach (var type in service.RetrieveMultiple(new QueryExpression("plugintype")
+            {
+                ColumnSet = new ColumnSet("typename"),
+                Criteria = { Conditions = { new ConditionExpression("pluginassemblyid", ConditionOperator.Equal, existing.Id) } }
+            }).Entities.Where(t => !wanted.Contains(t.GetAttributeValue<string>("typename"))))
+            {
+                TestContext.WriteLine($"Removing {type.GetAttributeValue<string>("typename")}");
+                service.Delete("plugintype", type.Id);
+            }
+
+            TestContext.WriteLine($"Updating {name.Name} {existing.GetAttributeValue<string>("version")} to {name.Version}");
+            service.Update(new Entity("pluginassembly", existing.Id) { ["content"] = Convert.ToBase64String(content) });
+
+            return existing.Id;
+        }
+
+        /// <summary>Registers every activity that isn't registered yet.</summary>
+        private void RegisterActivities(IOrganizationService service, Guid assemblyId, AssemblyName name, IEnumerable<string> activityTypes)
+        {
+            var registered = new HashSet<string>(service.RetrieveMultiple(new QueryExpression("plugintype")
+            {
+                ColumnSet = new ColumnSet("typename"),
+                Criteria = { Conditions = { new ConditionExpression("pluginassemblyid", ConditionOperator.Equal, assemblyId) } }
+            }).Entities.Select(t => t.GetAttributeValue<string>("typename")));
+
+            foreach (var typeName in activityTypes.Where(t => !registered.Contains(t)))
+            {
+                try
+                {
+                    service.Create(new Entity("plugintype")
+                    {
+                        ["pluginassemblyid"] = new EntityReference("pluginassembly", assemblyId),
+                        ["typename"] = typeName,
+                        ["name"] = typeName.Substring(typeName.LastIndexOf('.') + 1),
+                        ["friendlyname"] = typeName,
+                        ["workflowactivitygroupname"] = $"{name.Name} ({name.Version})"
+                    });
+                }
+                catch (FaultException<OrganizationServiceFault> ex)
+                {
+                    Assert.Fail($"Dataverse wouldn't register {typeName}: {ex.Detail.Message}");
+                }
+            }
+        }
+    }
+}
