@@ -76,7 +76,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common.cs" />
+    <Compile Include="CommonClass\Common.cs" />
     <Compile Include="CommonClass\Common.AI.cs" />
     <Compile Include="CommonClass\Common.Email.cs" />
     <Compile Include="CommonClass\Common.Metadata.cs" />
@@ -95,7 +95,7 @@
     <Compile Include="UtilityClass\GeoLocation.cs" />
     <Compile Include="UtilityClass\RecordUrl.cs" />
     <Compile Include="UtilityClass\RollupResult.cs" />
-    <Compile Include="Utility.cs" />
+    <Compile Include="UtilityClass\Utility.cs" />
     <Compile Include="UtilityClass\Utility.AttributeValues.cs" />
     <Compile Include="UtilityClass\Utility.Currency.cs" />
     <Compile Include="UtilityClass\Utility.ErrorHandling.cs" />

@@ -106,8 +106,8 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Common\Common.cs">
-      <Link>Common.cs</Link>
+    <Compile Include="..\Common\CommonClass\Common.cs">
+      <Link>CommonClass\Common.cs</Link>
     </Compile>
     <Compile Include="..\Common\CommonClass\Common.AI.cs">
       <Link>CommonClass\Common.AI.cs</Link>
@@ -259,8 +259,8 @@
     <Compile Include="..\Common\UtilityClass\RollupResult.cs">
       <Link>UtilityClass\RollupResult.cs</Link>
     </Compile>
-    <Compile Include="..\Common\Utility.cs">
-      <Link>Utility.cs</Link>
+    <Compile Include="..\Common\UtilityClass\Utility.cs">
+      <Link>UtilityClass\Utility.cs</Link>
     </Compile>
     <Compile Include="..\Common\UtilityClass\Utility.AttributeValues.cs">
       <Link>UtilityClass\Utility.AttributeValues.cs</Link>
