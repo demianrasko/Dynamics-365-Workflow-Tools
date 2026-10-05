@@ -53,6 +53,9 @@ namespace msdyncrmWorkflowTools
         public InArgument<bool> IsSendAsAllowed { get; set; }
 
         //Yes to ignore IsSendAsAllowed. Steps saved before this input existed read No, so they still write it.
+        // TODO: Test before release that existing installations don't break. Register this build over 1.0.62
+        // in an environment with a SetUserSettings step saved before this input existed (and one with
+        // DefaultCalendarView 0), then confirm the step still writes IsSendAsAllowed and the calendar view.
         [Input("Leave IsSendAsAllowed Unchanged")]
         [Default("True")]
         public InArgument<bool> LeaveIsSendAsAllowedUnchanged { get; set; }
