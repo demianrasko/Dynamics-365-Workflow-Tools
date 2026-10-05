@@ -1,4 +1,4 @@
-// Paste into the matching #region of msdyncrmWorkflowTools\Common\Common.cs and rename.
+// Paste into the msdyncrmWorkflowTools\Common\CommonClass\Common.<Area>.cs file that fits and rename.
 // Dataverse calls go in Common, logic without Dataverse calls in Utility, and QueryExpression builders in Queries.
 
         /// <summary>

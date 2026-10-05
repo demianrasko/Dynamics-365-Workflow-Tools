@@ -1,4 +1,4 @@
-// Paste into the matching #region of msdyncrmWorkflowTools\msdyncrmWorkflowTools_Tests\Common_Tests.cs and rename.
+// Paste into the msdyncrmWorkflowTools\msdyncrmWorkflowTools_Tests\Common_Tests.<Area>.cs file that fits and rename.
 // FakeOrganizationService records every call (Executed, Queries, Retrieved, Created, Updated, Deleted,
 // Associated, Disassociated) and answers through OnExecute, OnRetrieve and OnRetrieveMultiple.
 

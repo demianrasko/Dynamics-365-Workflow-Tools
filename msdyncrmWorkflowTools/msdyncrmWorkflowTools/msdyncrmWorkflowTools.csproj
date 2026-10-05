@@ -109,6 +109,42 @@
     <Compile Include="..\Common\Common.cs">
       <Link>Common.cs</Link>
     </Compile>
+    <Compile Include="..\Common\CommonClass\Common.AI.cs">
+      <Link>CommonClass\Common.AI.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\CommonClass\Common.Email.cs">
+      <Link>CommonClass\Common.Email.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\CommonClass\Common.Metadata.cs">
+      <Link>CommonClass\Common.Metadata.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\CommonClass\Common.Processes.cs">
+      <Link>CommonClass\Common.Processes.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\CommonClass\Common.Queries.cs">
+      <Link>CommonClass\Common.Queries.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\CommonClass\Common.QueuesAndSettings.cs">
+      <Link>CommonClass\Common.QueuesAndSettings.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\CommonClass\Common.RecordUrls.cs">
+      <Link>CommonClass\Common.RecordUrls.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\CommonClass\Common.Records.cs">
+      <Link>CommonClass\Common.Records.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\CommonClass\Common.Relationships.cs">
+      <Link>CommonClass\Common.Relationships.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\CommonClass\Common.SalesAndMarketing.cs">
+      <Link>CommonClass\Common.SalesAndMarketing.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\CommonClass\Common.Security.cs">
+      <Link>CommonClass\Common.Security.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\CommonClass\Common.SharePoint.cs">
+      <Link>CommonClass\Common.SharePoint.cs</Link>
+    </Compile>
     <Compile Include="Class\CalculateAgregateDate.cs" />
     <Compile Include="Class\CalculatePrice.cs" />
     <Compile Include="Class\CloneChildren.cs" />
@@ -225,6 +261,33 @@
     </Compile>
     <Compile Include="..\Common\Utility.cs">
       <Link>Utility.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\UtilityClass\Utility.AttributeValues.cs">
+      <Link>UtilityClass\Utility.AttributeValues.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\UtilityClass\Utility.Currency.cs">
+      <Link>UtilityClass\Utility.Currency.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\UtilityClass\Utility.ErrorHandling.cs">
+      <Link>UtilityClass\Utility.ErrorHandling.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\UtilityClass\Utility.ExternalServices.cs">
+      <Link>UtilityClass\Utility.ExternalServices.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\UtilityClass\Utility.Hashing.cs">
+      <Link>UtilityClass\Utility.Hashing.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\UtilityClass\Utility.Json.cs">
+      <Link>UtilityClass\Utility.Json.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\UtilityClass\Utility.Rollups.cs">
+      <Link>UtilityClass\Utility.Rollups.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\UtilityClass\Utility.TextAndDates.cs">
+      <Link>UtilityClass\Utility.TextAndDates.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\UtilityClass\Utility.Translator.cs">
+      <Link>UtilityClass\Utility.Translator.cs</Link>
     </Compile>
   </ItemGroup>
   <ItemGroup>

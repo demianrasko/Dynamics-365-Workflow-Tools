@@ -15,12 +15,13 @@ Every activity follows the same pattern: the activity class only reads and check
 | What | Where |
 | --- | --- |
 | The activity: inputs, outputs and input checks | `msdyncrmWorkflowTools\msdyncrmWorkflowTools\Class\` |
-| Code that calls Dataverse | `Common\Common.cs`, in the matching `#region` |
-| Code that doesn't call Dataverse (parsing, formatting, calculations) | `Common\Utility.cs` |
+| Code that calls Dataverse | `Common\CommonClass\Common.<Area>.cs` (pick the file that fits, e.g. `Common.Records.cs`, `Common.Email.cs`) |
+| Code that doesn't call Dataverse (parsing, formatting, calculations) | `Common\UtilityClass\Utility.<Area>.cs` |
 | `QueryExpression` builders | `Common\Queries.cs` |
+| A new area for Common, Utility or the tests | A new `partial class` file in the same folder, linked into `msdyncrmWorkflowTools.csproj` like the others (Common and Utility only) |
 | Small classes the shared code returns (e.g. `RecordUrl`), one per file | `Common\SupportingClasses\` (link new files into `msdyncrmWorkflowTools.csproj` too) |
 | Table and column names | `Common\EntityNames.cs` and `Common\AttributeNames.cs` |
-| Tests | `msdyncrmWorkflowTools_Tests\` (`Common_Tests.cs`, `Utility_Tests.cs`, `Queries_Tests.cs`) |
+| Tests | `msdyncrmWorkflowTools_Tests\` (`Common_Tests.<Area>.cs`, `Utility_Tests.cs`, `Queries_Tests.cs`) |
 
 ### Steps
 
@@ -28,8 +29,8 @@ Every activity follows the same pattern: the activity class only reads and check
    - Inherit from `WorkflowActivityBase` and override `ExecuteActivity`. The base class creates `Common`, traces the start and end, and turns exceptions into readable errors, so don't add your own try/catch.
    - Throw `InvalidPluginExecutionException` for messages the user should see as written, such as a missing input.
    - Use `EntityNames` constants in `[ReferenceTarget]` and anywhere else a table name is needed.
-2. **Add the Common method.** Paste [CommonMethod.cs.txt](templates/WorkflowActivity/CommonMethod.cs.txt) into the right region of `Common.cs` and rename it. Use `Service` for Dataverse calls, `Trace` for the trace log, and `AttributeNames` constants for column names. Logic that doesn't need Dataverse goes in `Utility` as a static method.
-3. **Add tests.** Paste [CommonTest.cs.txt](templates/WorkflowActivity/CommonTest.cs.txt) into `Common_Tests.cs`. `FakeOrganizationService` records every request, so you can check what was sent without a Dataverse environment.
+2. **Add the Common method.** Paste [CommonMethod.cs.txt](templates/WorkflowActivity/CommonMethod.cs.txt) into the `Common.<Area>.cs` file that fits and rename it. Use `Service` for Dataverse calls, `Trace` for the trace log, and `AttributeNames` constants for column names. Logic that doesn't need Dataverse goes in `Utility` as a static method.
+3. **Add tests.** Paste [CommonTest.cs.txt](templates/WorkflowActivity/CommonTest.cs.txt) into the `Common_Tests.<Area>.cs` file that fits. `FakeOrganizationService` records every request, so you can check what was sent without a Dataverse environment.
 4. **Document it.** Copy [Docs.md](templates/WorkflowActivity/Docs.md) into the `docs` folder with the activity's display name (for example `docs\My Activity.md`), add a numbered link to it at the end of the list in `README.md`, and add the page and any screenshots to the solution's Solution Items > docs (> images) folders.
 5. **Build and test** both versions (see below).
 

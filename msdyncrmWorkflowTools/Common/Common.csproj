@@ -77,6 +77,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common.cs" />
+    <Compile Include="CommonClass\Common.AI.cs" />
+    <Compile Include="CommonClass\Common.Email.cs" />
+    <Compile Include="CommonClass\Common.Metadata.cs" />
+    <Compile Include="CommonClass\Common.Processes.cs" />
+    <Compile Include="CommonClass\Common.Queries.cs" />
+    <Compile Include="CommonClass\Common.QueuesAndSettings.cs" />
+    <Compile Include="CommonClass\Common.RecordUrls.cs" />
+    <Compile Include="CommonClass\Common.Records.cs" />
+    <Compile Include="CommonClass\Common.Relationships.cs" />
+    <Compile Include="CommonClass\Common.SalesAndMarketing.cs" />
+    <Compile Include="CommonClass\Common.Security.cs" />
+    <Compile Include="CommonClass\Common.SharePoint.cs" />
     <Compile Include="AttributeNames.cs" />
     <Compile Include="EntityNames.cs" />
     <Compile Include="Queries.cs" />
@@ -84,6 +96,15 @@
     <Compile Include="SupportingClasses\RecordUrl.cs" />
     <Compile Include="SupportingClasses\RollupResult.cs" />
     <Compile Include="Utility.cs" />
+    <Compile Include="UtilityClass\Utility.AttributeValues.cs" />
+    <Compile Include="UtilityClass\Utility.Currency.cs" />
+    <Compile Include="UtilityClass\Utility.ErrorHandling.cs" />
+    <Compile Include="UtilityClass\Utility.ExternalServices.cs" />
+    <Compile Include="UtilityClass\Utility.Hashing.cs" />
+    <Compile Include="UtilityClass\Utility.Json.cs" />
+    <Compile Include="UtilityClass\Utility.Rollups.cs" />
+    <Compile Include="UtilityClass\Utility.TextAndDates.cs" />
+    <Compile Include="UtilityClass\Utility.Translator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

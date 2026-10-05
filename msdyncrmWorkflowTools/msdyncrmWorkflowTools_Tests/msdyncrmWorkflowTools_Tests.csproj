@@ -85,6 +85,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common_Tests.cs" />
+    <Compile Include="Common_Tests.AI.cs" />
+    <Compile Include="Common_Tests.BusinessProcessFlows.cs" />
+    <Compile Include="Common_Tests.MultiSelectOptionSets.cs" />
+    <Compile Include="Common_Tests.OtherRequests.cs" />
+    <Compile Include="Common_Tests.Paging.cs" />
+    <Compile Include="Common_Tests.RecordUrls.cs" />
+    <Compile Include="Common_Tests.Sharing.cs" />
+    <Compile Include="Common_Tests.SingleRequests.cs" />
+    <Compile Include="Common_Tests.TeamsAndRoles.cs" />
+    <Compile Include="Common_Tests.UsersEmailQueuesAndSettings.cs" />
     <Compile Include="FakeOrganizationService.cs" />
     <Compile Include="JsonParser_Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
