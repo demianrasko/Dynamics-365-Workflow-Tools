@@ -4,6 +4,7 @@ using Microsoft.Xrm.Sdk;
 using msdyncrmWorkflowTools;
 using System;
 using System.Collections.Generic;
+using System.ServiceModel;
 
 namespace msdyncrmWorkflowTools_IntegrationTests
 {
@@ -62,6 +63,10 @@ namespace msdyncrmWorkflowTools_IntegrationTests
                 try
                 {
                     Service.Delete(created[i].LogicalName, created[i].Id);
+                }
+                catch (FaultException<OrganizationServiceFault> ex) when (ex.Detail.Message.Contains("Does Not Exist"))
+                {
+                    // already deleted with its parent (e.g. a qualified lead's contact with its account)
                 }
                 catch (Exception ex)
                 {
