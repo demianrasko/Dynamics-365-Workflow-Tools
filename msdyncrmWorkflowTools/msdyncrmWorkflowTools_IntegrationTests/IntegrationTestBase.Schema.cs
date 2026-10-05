@@ -178,5 +178,20 @@ namespace msdyncrmWorkflowTools_IntegrationTests
                 return false;
             }
         }
+
+        /// <summary>Whether a table has a column.</summary>
+        protected bool HasColumn(string entityName, string column)
+        {
+            try
+            {
+                Service.Execute(new RetrieveAttributeRequest { EntityLogicalName = entityName, LogicalName = column });
+
+                return true;
+            }
+            catch (FaultException<OrganizationServiceFault>)
+            {
+                return false;
+            }
+        }
     }
 }

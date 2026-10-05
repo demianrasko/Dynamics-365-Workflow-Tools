@@ -107,7 +107,7 @@ namespace msdyncrmWorkflowTools_IntegrationTests
 
     [TestClass]
     [TestCategory("Integration")]
-    public class Dynamics365_IntegrationTests : IntegrationTestBase
+    public partial class Dynamics365_IntegrationTests : IntegrationTestBase
     {
         protected override string ConnectionVariable => "DATAVERSE_CONNECTION";
     }
