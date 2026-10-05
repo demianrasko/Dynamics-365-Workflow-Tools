@@ -6,15 +6,12 @@ namespace msdyncrmWorkflowTools
 {
     public class EntityJsonSerializer : WorkflowActivityBase
     {
-        #region "Parameter Definition"
-
         [RequiredArgument]
         [Input("Serializing Record URL")]
         [ReferenceTarget("")]
         public InArgument<string> SerializingRecordURL { get; set; }
 
         [Output("Output Json")] public OutArgument<string> OutputJson { get; set; }
-        #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {

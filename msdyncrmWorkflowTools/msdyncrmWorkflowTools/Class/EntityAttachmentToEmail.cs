@@ -32,8 +32,6 @@ namespace msdyncrmWorkflowTools.Class
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
-
             // Get parameters
             var mainRecordUrl = MainRecordURL.Get(executionContext);
             var fileName = FileName.Get(executionContext);
@@ -56,7 +54,6 @@ namespace msdyncrmWorkflowTools.Class
             }
 
             fileName = fileName.Replace("*", "%");
-            #endregion
 
             common.EntityAttachmentToEmail(fileName, parsedUrl.Id, email, retrieveActivityMimeAttachment, mostRecent, topRecords);
         }

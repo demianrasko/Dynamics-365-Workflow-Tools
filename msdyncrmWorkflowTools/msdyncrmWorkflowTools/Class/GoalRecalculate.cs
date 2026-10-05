@@ -7,7 +7,6 @@ namespace msdyncrmWorkflowTools
 {
     public class GoalRecalculate : WorkflowActivityBase
     {
-        #region "Parameter Definition"
         [Input("Goal")]
         [ReferenceTarget(EntityNames.Goal)]
         public InArgument<EntityReference> Goal { get; set; }
@@ -15,8 +14,6 @@ namespace msdyncrmWorkflowTools
         [Input("Goal Guid")]
         [Default("")]
         public InArgument<string> GoalGuid { get; set; }
-
-        #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {

@@ -8,8 +8,6 @@ namespace msdyncrmWorkflowTools.Class
 {
     public class ResolveCase : WorkflowActivityBase
     {
-        #region "Parameter Definition"
-
         [RequiredArgument]
         [Input("Case")]
         [ReferenceTarget(EntityNames.Incident)]
@@ -20,8 +18,6 @@ namespace msdyncrmWorkflowTools.Class
 
         [Input("Resolution Description")]
         public InArgument<string> ResolutionDescription { get; set; }
-
-        #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {

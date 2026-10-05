@@ -6,8 +6,6 @@ namespace msdyncrmWorkflowTools
 {
     public class ConcatenateFromQuery : WorkflowActivityBase
     {
-        #region "Parameter Definition"
-
         [RequiredArgument]
         [Input("FetchXML")]
         [Default("")]
@@ -30,7 +28,6 @@ namespace msdyncrmWorkflowTools
 
         [Output("ConcatenatedString")]
         public OutArgument<string> ConcatenatedString { get; set; }
-        #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {

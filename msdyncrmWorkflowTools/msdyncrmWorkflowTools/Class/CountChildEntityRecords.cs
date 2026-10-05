@@ -6,7 +6,6 @@ namespace msdyncrmWorkflowTools
 {
     public class CountChildEntityRecords : WorkflowActivityBase
     {
-        #region "Parameter Definition"
         [RequiredArgument]
         [Input("Child Entity Schema Name")]
         [Default("")]
@@ -28,11 +27,9 @@ namespace msdyncrmWorkflowTools
 
         [Output("Result")]
         public OutArgument<int> Result { get; set; }
-        #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
             var childEntityName = ChildEntityName.Get(executionContext);
             var parentLookupName = ParentLookupName.Get(executionContext);
             var recordUrl = RecordUrl.Get(executionContext);
@@ -45,9 +42,6 @@ namespace msdyncrmWorkflowTools
             var parsedUrl = common.ParseRecordUrl(recordUrl);
 
             common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
-            #endregion
-
-            #region "Process"
 
             var filterExpressionXml = FilterExpressionXml.Get(executionContext);
             var query = string.IsNullOrWhiteSpace(filterExpressionXml)
@@ -58,7 +52,6 @@ namespace msdyncrmWorkflowTools
             common.Trace($"{childEntityName} records with {parentLookupName} = {parsedUrl.Id}: {count}");
 
             Result.Set(executionContext, count);
-            #endregion
         }
     }
 }

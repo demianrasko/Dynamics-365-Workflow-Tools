@@ -5,8 +5,6 @@ namespace msdyncrmWorkflowTools
 {
     public class DeleteOptionValue : WorkflowActivityBase
     {
-        #region "Parameter Definition"
-
         [RequiredArgument]
         [Input("Global Option Set")]
         [Default("false")]
@@ -26,11 +24,8 @@ namespace msdyncrmWorkflowTools
         [ReferenceTarget("")]
         public InArgument<int> OptionValue { get; set; }
 
-        #endregion
-
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
             var globalOptionSet = GlobalOptionSet.Get(executionContext);
             var attributeName = AttributeName.Get(executionContext);
             var entityName = EntityName.Get(executionContext);
@@ -38,13 +33,8 @@ namespace msdyncrmWorkflowTools
             var optionValue = OptionValue.Get(executionContext);
 
             common.Trace($"attributeName={attributeName}--entityName={entityName}" );
-            #endregion
-
-            #region "Insert Option Value"
 
             common.DeleteOptionValue(globalOptionSet,attributeName, entityName,  optionValue);
-
-            #endregion
         }
     }
 }

@@ -5,7 +5,6 @@ namespace msdyncrmWorkflowTools
 {
     public class OrgDBSettingsUpdate : WorkflowActivityBase
     {
-        #region "Parameter Definition"
         [RequiredArgument]
         [Input("orgDBSetting to Update")]
         [Default("")]
@@ -15,8 +14,6 @@ namespace msdyncrmWorkflowTools
         [Input("Value")]
         [Default("")]
         public InArgument<string> Value { get; set; }
-
-        #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {

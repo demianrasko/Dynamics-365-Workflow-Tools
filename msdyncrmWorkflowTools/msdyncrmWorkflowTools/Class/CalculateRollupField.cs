@@ -6,7 +6,6 @@ namespace msdyncrmWorkflowTools
 {
     public class CalculateRollupField : WorkflowActivityBase
     {
-        #region "Parameter Definition"
         [RequiredArgument]
         [Input("FieldName")]
         [Default("")]
@@ -16,7 +15,6 @@ namespace msdyncrmWorkflowTools
         [Input("Parent Record URL")]
         [ReferenceTarget("")]
         public InArgument<string> ParentRecordUrl { get; set; }
-        #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {

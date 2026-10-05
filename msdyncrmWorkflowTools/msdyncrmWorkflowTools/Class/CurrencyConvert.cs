@@ -5,7 +5,6 @@ namespace msdyncrmWorkflowTools
 {
     public class CurrencyConvert : WorkflowActivityBase
     {
-        #region "Parameter Definition"
         [RequiredArgument]
         [Input("Amount")]
         [Default("0")]
@@ -24,15 +23,11 @@ namespace msdyncrmWorkflowTools
         [Output("Result")]
         public OutArgument<decimal> Result { get; set; }
 
-        #endregion
-
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
             var amount = Amount.Get(executionContext);
             var fromCurrency = FromCurrency.Get(executionContext);
             var toCurrency = ToCurrency.Get(executionContext);
-            #endregion
 
             var result = Utility.CurrencyConvert(amount, fromCurrency, toCurrency, common.TracingService);
 

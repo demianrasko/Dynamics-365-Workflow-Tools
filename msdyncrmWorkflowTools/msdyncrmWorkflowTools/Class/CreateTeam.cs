@@ -31,22 +31,16 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
             var teamName = TeamName.Get(executionContext);
             var teamType = TeamType.Get(executionContext);
             var administrator = Administrator.Get(executionContext);
             var businessUnit = BusinessUnit.Get(executionContext);
 
             common.Trace($"teamName={teamName}");
-            #endregion
-
-            #region "Create the Team"
 
             var createdTeamId = common.CreateTeam(teamName, teamType, administrator, businessUnit);
 
             createdTeam.Set(executionContext, new EntityReference(EntityNames.Team, createdTeamId));
-
-            #endregion
         }
     }
 }

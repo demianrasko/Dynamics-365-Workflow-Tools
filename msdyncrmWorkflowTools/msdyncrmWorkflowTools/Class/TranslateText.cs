@@ -5,7 +5,6 @@ namespace msdyncrmWorkflowTools
 {
     public class TranslateText : WorkflowActivityBase
     {
-        #region "Parameter Definition"
         [RequiredArgument]
         [Input("Text To Translate")]
         [Default("")]
@@ -28,16 +27,12 @@ namespace msdyncrmWorkflowTools
         [Output("Translated Text")]
         public OutArgument<string> TranslatedText { get; set; }
 
-        #endregion
-
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
             var textToTranslate = TextToTranslate.Get(executionContext);
             var language = Language.Get(executionContext);
             var authenticationKey = Authenticationkey.Get(executionContext);
             var region = Region.Get(executionContext);
-            #endregion
 
             var res=Utility.TranslateText(textToTranslate, language, authenticationKey, region, common.TracingService) ?? string.Empty;
 

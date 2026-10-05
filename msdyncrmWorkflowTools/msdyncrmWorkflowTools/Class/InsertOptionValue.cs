@@ -5,8 +5,6 @@ namespace msdyncrmWorkflowTools
 {
     public class InsertOptionValue : WorkflowActivityBase
     {
-        #region "Parameter Definition"
-
         [RequiredArgument]
         [Input("Global Option Set")]
         [Default("false")]
@@ -35,11 +33,9 @@ namespace msdyncrmWorkflowTools
         [Input("Language Code")]
         [ReferenceTarget("")]
         public InArgument<int> LanguageCode { get; set; }
-        #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
             var globalOptionSet = GlobalOptionSet.Get(executionContext);
             var attributeName = AttributeName.Get(executionContext);
             var entityName = EntityName.Get(executionContext);
@@ -48,13 +44,8 @@ namespace msdyncrmWorkflowTools
             var languageCode = LanguageCode.Get(executionContext);
 
             common.Trace($"attributeName={attributeName}--entityName={entityName}--optionText={optionText}--languageCode={languageCode.ToString()}");
-            #endregion
-
-            #region "Insert Option Value"
 
             common.InsertOptionValue(globalOptionSet,attributeName, entityName, optionText, optionValue, languageCode);
-
-            #endregion
         }
     }
 }

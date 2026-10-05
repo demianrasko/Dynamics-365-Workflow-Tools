@@ -6,7 +6,6 @@ namespace msdyncrmWorkflowTools.Class
 {
     public class PickFromQueue : WorkflowActivityBase
     {
-        #region "Parameter Definition"
         [RequiredArgument]
         [Input("Source Queue")]
         [ReferenceTarget(EntityNames.Queue)]
@@ -19,8 +18,6 @@ namespace msdyncrmWorkflowTools.Class
         [RequiredArgument]
         [Input("Quantity Items")]
         public InArgument<int> Quantity { get; set; }
-
-        #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {

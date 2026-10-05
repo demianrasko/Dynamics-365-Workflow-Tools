@@ -7,7 +7,6 @@ namespace msdyncrmWorkflowTools
 {
     public class CalculateAgregateDate : WorkflowActivityBase
     {
-        #region "Parameter Definition"
         [RequiredArgument]
         [Input("FetchXML")]
         [Default("")]
@@ -18,7 +17,6 @@ namespace msdyncrmWorkflowTools
 
         [Output("Ok")]
         public OutArgument<bool> Ok { get; set; }
-        #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {

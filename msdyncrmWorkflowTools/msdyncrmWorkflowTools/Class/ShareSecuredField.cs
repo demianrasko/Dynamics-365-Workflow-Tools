@@ -6,8 +6,6 @@ namespace msdyncrmWorkflowTools
 {
     public class ShareSecuredField : WorkflowActivityBase
     {
-        #region "Parameter Definition"
-
         [RequiredArgument]
         [Input("Record URL")]
         [ReferenceTarget("")]
@@ -34,8 +32,6 @@ namespace msdyncrmWorkflowTools
         [Input("Allow Update")]
         [Default("true")]
         public InArgument<bool> AllowUpdate { get; set; }
-
-        #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {

@@ -8,7 +8,6 @@ namespace msdyncrmWorkflowTools
 {
     public class QualifyLead : WorkflowActivityBase
     {
-        #region "Parameter Definition"
         [RequiredArgument]
         [Input("Lead")]
         [ReferenceTarget(EntityNames.Lead)]
@@ -38,7 +37,6 @@ namespace msdyncrmWorkflowTools
         [Input("LeadStatus")]
         public InArgument<int> LeadStatus { get; set; }
 
-        #endregion
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             // [RequiredArgument] is only enforced in the designer; a dynamic value can still be empty at runtime.

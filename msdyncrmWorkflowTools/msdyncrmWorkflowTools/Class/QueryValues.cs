@@ -6,7 +6,6 @@ namespace msdyncrmWorkflowTools
 {
     public class QueryValues: WorkflowActivityBase
     {
-        #region "Parameter Definition"
         [RequiredArgument]
         [Input("EntityName")]
         [Default("")]
@@ -46,11 +45,8 @@ namespace msdyncrmWorkflowTools
         [Output("ResultValue2")]
         public OutArgument<string> ResultValue2 { get; set; }
 
-        #endregion
-
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
             var entityName = EntityName.Get(executionContext);
             var attribute1 = Attribute1.Get(executionContext);
             var attribute2 = Attribute2.Get(executionContext);
@@ -61,7 +57,6 @@ namespace msdyncrmWorkflowTools
 
             common.Trace(
                 $"EntityName: {entityName} - Attribute1:{attribute1} - Attribute2:{attribute2} - FilterAttribute1:{filterAttribute1} - FilterAttribute2:{filterAttribute2} - ValueAttribute1:{valueAttribute1} ValueAttribute2:{valueAttribute2}");
-            #endregion
 
             var query = Queries.FirstMatch(entityName,
                 new[] { attribute1, attribute2 },

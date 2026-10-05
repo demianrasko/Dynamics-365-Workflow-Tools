@@ -17,8 +17,6 @@ namespace msdyncrmWorkflowTools
     /// </summary>
     public class CloneChildren : WorkflowActivityBase
     {
-        #region "Parameter Definition"
-
         [RequiredArgument]
         [Input("Source Record URL")]
         [ReferenceTarget("")]
@@ -50,12 +48,9 @@ namespace msdyncrmWorkflowTools
         [Input("Fields to Ignore")]
         [Default("")]
         public InArgument<string> FieldstoIgnore { get; set; }
-        #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
-
             var relationshipName = RelationshipName.Get(executionContext);
             if (string.IsNullOrEmpty(relationshipName))
             {
@@ -89,7 +84,6 @@ namespace msdyncrmWorkflowTools
             var oldParentFieldName = OldParentFieldNameToUpdate.Get(executionContext);
             var prefix = Prefix.Get(executionContext);
             var fieldsToIgnore = FieldstoIgnore.Get(executionContext);
-            #endregion
 
             // the new parent is set when each copy is created, so a locked parent (e.g. an invoiced order) is never touched
             var fieldsToReplace = new Dictionary<string, object>

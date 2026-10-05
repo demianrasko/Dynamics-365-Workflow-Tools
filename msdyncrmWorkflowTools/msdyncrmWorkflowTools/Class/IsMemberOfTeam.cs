@@ -18,20 +18,15 @@ namespace msdyncrmWorkflowTools.Class
 
         [Output("Result")]
         public OutArgument<bool> Result { get; set; }
+
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
             var user = User.Get(executionContext);
             var team = Team.Get(executionContext);
-            #endregion
-
-            #region "Is user member of team"
 
             var isMember = common.IsMemberOfTeam(team.Id, user.Id);
 
             Result.Set(executionContext, isMember);
-
-            #endregion
         }
     }
 }

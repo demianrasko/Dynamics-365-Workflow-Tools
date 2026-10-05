@@ -10,7 +10,6 @@ namespace msdyncrmWorkflowTools
         /// <summary>Dataverse "Cannot insert duplicate key" (0x80040237): the association already exists.</summary>
         private const int DuplicateRecordErrorCode = -2147220937;
 
-        #region "Parameter Definition"
         [RequiredArgument]
         [Input("Relationship Name")]
         [Default("")]        
@@ -25,11 +24,9 @@ namespace msdyncrmWorkflowTools
         [Input("Record URL")]
         [ReferenceTarget("")]
         public InArgument<string> RecordURL { get; set; }
-        #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
             var relationshipName = RelationshipName.Get(executionContext);
             var relationshipEntityName = RelationshipEntityName.Get(executionContext);
             var recordUrl = RecordURL.Get(executionContext);
@@ -42,9 +39,6 @@ namespace msdyncrmWorkflowTools
             var parsedUrl = common.ParseRecordUrl(recordUrl);
 
             common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
-            #endregion
-
-            #region "Associate Execution"
 
             try
             {
@@ -55,7 +49,6 @@ namespace msdyncrmWorkflowTools
                 // The records are already associated: nothing to do. Every other error goes to WorkflowActivityBase.
                 common.Trace("The records are already associated: {0}", ex.Message);
             }
-            #endregion
         }
     }
 }

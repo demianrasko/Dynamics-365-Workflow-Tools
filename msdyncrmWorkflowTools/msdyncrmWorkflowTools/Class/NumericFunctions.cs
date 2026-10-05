@@ -28,13 +28,10 @@ namespace msdyncrmWorkflowTools.Class
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
             var number1= Number1.Get(executionContext);
             var number2 = Number2.Get(executionContext);
 
             common.Trace($"number 1 / number 2: {number1.ToString(CultureInfo.InvariantCulture)} / {number2.ToString(CultureInfo.InvariantCulture)}");
-
-            #endregion
 
             Add.Set(executionContext, number1+number2);
             Subtract.Set(executionContext, number1 - number2);

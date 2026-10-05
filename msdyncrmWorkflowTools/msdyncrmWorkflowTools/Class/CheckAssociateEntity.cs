@@ -6,7 +6,6 @@ namespace msdyncrmWorkflowTools
 {
     public class CheckAssociateEntity : WorkflowActivityBase
     {
-        #region "Parameter Definition"
         [RequiredArgument]
         [Input("Relationship Name")]
         [Default("")]        
@@ -19,11 +18,9 @@ namespace msdyncrmWorkflowTools
 
         [Output("Result")]
         public OutArgument<bool> Result { get; set; }
-        #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
             var relationshipName = RelationshipName.Get(executionContext);
             var recordUrl = RecordURL.Get(executionContext);
 
@@ -35,15 +32,11 @@ namespace msdyncrmWorkflowTools
             var parsedUrl = common.ParseRecordUrl(recordUrl);
 
             common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
-            #endregion
-
-            #region "Associate Execution"
 
             var intersectEntityName = common.GetIntersectEntityName(relationshipName);
             var relations = common.GetAssociations(common.Context.PrimaryEntityName, common.Context.PrimaryEntityId, intersectEntityName, parsedUrl.EntityName, parsedUrl.Id);
 
             Result.Set(executionContext, relations.Entities.Count > 0);
-            #endregion
         }
     }
 }

@@ -13,8 +13,6 @@ namespace msdyncrmWorkflowTools.Class
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
-
             var recordUrl = RecordURL.Get(executionContext);
 
             if (string.IsNullOrEmpty(recordUrl))
@@ -23,12 +21,8 @@ namespace msdyncrmWorkflowTools.Class
             }
             var parsedUrl = common.ParseRecordUrl(recordUrl);
             common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
-            #endregion
-
-            #region "DeleteRecordAuditHistory"
 
             common.DeleteRecordAuditHistory(parsedUrl.EntityName, parsedUrl.Id);
-            #endregion
         }
     }
 }

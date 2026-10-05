@@ -5,7 +5,6 @@ namespace msdyncrmWorkflowTools
 {
     public class GeoCodeAddress : WorkflowActivityBase
     {
-        #region "Parameter Definition"
         [RequiredArgument]
         [Input("Address")]
         [Default("")]
@@ -28,8 +27,6 @@ namespace msdyncrmWorkflowTools
 
         [Output("Longitude")]
         public OutArgument<decimal> Longitude { get; set; }
-
-        #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {

@@ -25,8 +25,6 @@ namespace msdyncrmWorkflowTools.Class
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
-
             var salesLiterature = SalesLiterature.Get(executionContext);
 
             var fileName = FileName.Get(executionContext);
@@ -36,8 +34,6 @@ namespace msdyncrmWorkflowTools.Class
             }
 
             var email = Email.Get(executionContext);
-
-            #endregion
 
             common.SalesLiteratureToEmail(fileName, salesLiterature.Id, email.Id);
         }

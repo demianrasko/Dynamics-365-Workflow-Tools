@@ -6,8 +6,6 @@ namespace msdyncrmWorkflowTools
 {
     public class DateFunctions : WorkflowActivityBase
     {
-        #region "Parameter Definition"
-
         [RequiredArgument]
         [Input("Date 1")]
         public InArgument<DateTime> Date1 { get; set; }
@@ -48,15 +46,10 @@ namespace msdyncrmWorkflowTools
         [Output("Week Of Year")]
         public OutArgument<int> WeekOfYear { get; set; }
 
-        #endregion
-
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
             var date1 = Date1.Get(executionContext);
             var date2 = Date2.Get(executionContext);
-
-            #endregion
 
             var difference = TimeSpan.Zero;
 

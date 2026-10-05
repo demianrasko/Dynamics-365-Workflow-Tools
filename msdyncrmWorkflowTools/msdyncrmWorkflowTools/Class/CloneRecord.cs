@@ -6,8 +6,6 @@ namespace msdyncrmWorkflowTools
 {
     public class CloneRecord : WorkflowActivityBase
     {
-        #region "Parameter Definition"
-
         [RequiredArgument]
         [Input("Clonning Record URL")]
         [ReferenceTarget("")]
@@ -23,11 +21,9 @@ namespace msdyncrmWorkflowTools
 
         [Output("Cloned Guid")]
         public OutArgument<string> ClonedGuid { get; set; }
-        #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
             var recordUrl = ClonningRecordURL.Get(executionContext);
 
             if (string.IsNullOrEmpty(recordUrl))
@@ -40,16 +36,12 @@ namespace msdyncrmWorkflowTools
 
             var prefix = Prefix.Get(executionContext);
             var fieldsToIgnore = FieldstoIgnore.Get(executionContext);
-            #endregion
-
-            #region "Clone Execution"
 
             var createdGuid = common.CloneRecord(parsedUrl.EntityName, parsedUrl.Id, fieldsToIgnore, prefix);
 
             ClonedGuid.Set(executionContext, createdGuid.ToString());
 
             common.Trace("cloned object OK");
-            #endregion
         }
     }
 }

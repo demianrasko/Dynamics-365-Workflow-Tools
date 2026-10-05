@@ -5,7 +5,6 @@ namespace msdyncrmWorkflowTools
 {
     public class JsonParser : WorkflowActivityBase
     {
-        #region "Parameter Definition"
         [RequiredArgument]
         [Input("JSON")]
         [Default("")]
@@ -19,14 +18,10 @@ namespace msdyncrmWorkflowTools
         [Output("JSON Result")]
         public OutArgument<string> JSONResult { get; set; }
 
-        #endregion
-
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
             var json = JSON.Get(executionContext);
             var jsonPath = JSONPath.Get(executionContext);
-            #endregion
 
             var res = Utility.JsonParser(json, jsonPath) ?? string.Empty;
 

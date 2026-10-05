@@ -15,10 +15,8 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
             var query = Query.Get(executionContext);
             var process = Process.Get(executionContext);
-            #endregion
 
             if (string.IsNullOrEmpty(query))
             {

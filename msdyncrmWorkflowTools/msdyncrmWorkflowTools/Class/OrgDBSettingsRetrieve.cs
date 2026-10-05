@@ -5,7 +5,6 @@ namespace msdyncrmWorkflowTools
 {
     public class OrgDBSettingsRetrieve : WorkflowActivityBase
     {
-        #region "Parameter Definition"
         [RequiredArgument]
         [Input("orgDBSetting to Update")]
         [Default("")]
@@ -19,8 +18,6 @@ namespace msdyncrmWorkflowTools
 
         [Output("Bool Value")]
         public OutArgument<bool> BoolValue { get; set; }
-
-        #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {

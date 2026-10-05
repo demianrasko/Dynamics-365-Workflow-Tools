@@ -6,7 +6,6 @@ namespace msdyncrmWorkflowTools
 {
     public class DisassociateEntity : WorkflowActivityBase
     {
-        #region "Parameter Definition"
         [RequiredArgument]
         [Input("Relationship Name")]
         [Default("")]        
@@ -16,7 +15,6 @@ namespace msdyncrmWorkflowTools
         [Input("Record URL")]
         [ReferenceTarget("")]
         public InArgument<string> RecordURL { get; set; }
-        #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {

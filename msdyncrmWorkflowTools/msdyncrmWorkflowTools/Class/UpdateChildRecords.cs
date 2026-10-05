@@ -35,7 +35,6 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
             var parentRecordUrl = ParentRecordURL.Get(executionContext);
 
             if (string.IsNullOrEmpty(parentRecordUrl))
@@ -55,7 +54,6 @@ namespace msdyncrmWorkflowTools
 
             common.Trace($"{nameof(RelationshipName)}={relationshipName}--_ParentFieldNameToUpdate={parentFieldNameToUpdate}");
             common.Trace($"_ValueToSet={valueToSet}--_ChildFieldNameToUpdate={childFieldNameToUpdate}");
-            #endregion
 
             common.UpdateChildRecords(relationshipName, parsedUrl.EntityName, parsedUrl.Id, parentFieldNameToUpdate, valueToSet, childFieldNameToUpdate, updateOnlyActive);
         }

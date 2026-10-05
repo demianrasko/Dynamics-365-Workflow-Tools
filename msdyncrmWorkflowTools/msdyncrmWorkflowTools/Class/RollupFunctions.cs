@@ -7,8 +7,6 @@ namespace msdyncrmWorkflowTools
 {
     public class RollupFunctions : WorkflowActivityBase
     {
-        #region "Parameter Definition"
-
         [RequiredArgument]
         [Input("FetchXML")]
         [Default("")]
@@ -28,7 +26,6 @@ namespace msdyncrmWorkflowTools
 
         [Output("Min")]
         public OutArgument<decimal> Min { get; set; }
-        #endregion
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {

@@ -6,8 +6,6 @@ namespace msdyncrmWorkflowTools
 {
     public class UnshareRecordWithTeam : WorkflowActivityBase
     {
-        #region "Parameter Definition"
-
         [RequiredArgument]
         [Input("Sharing Record URL")]
         [ReferenceTarget("")]
@@ -18,11 +16,8 @@ namespace msdyncrmWorkflowTools
         [ReferenceTarget(EntityNames.Team)]
         public InArgument<EntityReference> Team { get; set; }
 
-        #endregion
-
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
             var sharingRecordUrl = SharingRecordURL.Get(executionContext);
 
             if (string.IsNullOrEmpty(sharingRecordUrl))
@@ -31,7 +26,6 @@ namespace msdyncrmWorkflowTools
             }
 
             var principal = Team.Get(executionContext);
-            #endregion
 
             common.UnshareRecord(sharingRecordUrl, principal);
         }

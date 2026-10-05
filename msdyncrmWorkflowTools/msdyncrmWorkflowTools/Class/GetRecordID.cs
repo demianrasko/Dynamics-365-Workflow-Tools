@@ -5,7 +5,6 @@ namespace msdyncrmWorkflowTools
 {
     public class GetRecordID : WorkflowActivityBase
     {
-        #region "Parameter Definition"
         [RequiredArgument]
         [Input("Record URL")]
         [Default("")]
@@ -14,14 +13,9 @@ namespace msdyncrmWorkflowTools
         [Output("Record ID")]
         public OutArgument<string> RecordID { get; set; }
 
-        #endregion
-
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
             var recordUrl = RecordURL.Get(executionContext);
-
-            #endregion
 
             var recordId = Utility.GetRecordId(recordUrl);
 

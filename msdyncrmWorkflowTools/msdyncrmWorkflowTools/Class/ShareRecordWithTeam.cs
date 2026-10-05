@@ -6,8 +6,6 @@ namespace msdyncrmWorkflowTools
 {
     public class ShareRecordWithTeam : WorkflowActivityBase
     {
-        #region "Parameter Definition"
-
         [RequiredArgument]
         [Input("Sharing Record URL")]
         [ReferenceTarget("")]
@@ -67,11 +65,8 @@ namespace msdyncrmWorkflowTools
         [Default("False")]
         public InArgument<bool> ShareShare { get; set; }
 
-        #endregion
-
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
             var sharingRecordUrl = SharingRecordURL.Get(executionContext);
 
             if (string.IsNullOrEmpty(sharingRecordUrl))
@@ -89,7 +84,6 @@ namespace msdyncrmWorkflowTools
                 delete: ShareDelete.Get(executionContext),
                 share: ShareShare.Get(executionContext),
                 assign: ShareAssign.Get(executionContext));
-            #endregion
 
             common.ShareRecord(sharingRecordUrl, principal, accessMask);
         }

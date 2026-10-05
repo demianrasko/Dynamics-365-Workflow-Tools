@@ -5,7 +5,6 @@ namespace msdyncrmWorkflowTools
 {
     public class StringFunctions : WorkflowActivityBase
     {
-        #region "Parameter Definition"
         [RequiredArgument]
         [Input("Input Text")]
         [Default("")]
@@ -98,11 +97,8 @@ namespace msdyncrmWorkflowTools
         [Output("Without Spaces")]
         public OutArgument<string> WithoutSpaces { get; set; }
 
-        #endregion
-
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Read Parameters"
             var inputText = InputText.Get(executionContext) ?? string.Empty;
             var capitalizeAllWords = CapitalizeAllWords.Get(executionContext);
 
@@ -118,8 +114,6 @@ namespace msdyncrmWorkflowTools
             var startIndex = StartIndex.Get(executionContext);
             var subStringLength = SubStringLength.Get(executionContext);
             var regularExpression = RegularExpression.Get(executionContext);
-
-            #endregion
 
             var capitalizedText = string.Empty;
             var paddedText = string.Empty;
