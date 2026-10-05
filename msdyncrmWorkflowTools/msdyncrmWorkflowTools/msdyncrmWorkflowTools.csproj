@@ -250,14 +250,14 @@
     <Compile Include="..\Common\Queries.cs">
       <Link>Queries.cs</Link>
     </Compile>
-    <Compile Include="..\Common\SupportingClasses\GeoLocation.cs">
-      <Link>SupportingClasses\GeoLocation.cs</Link>
+    <Compile Include="..\Common\UtilityClass\GeoLocation.cs">
+      <Link>UtilityClass\GeoLocation.cs</Link>
     </Compile>
-    <Compile Include="..\Common\SupportingClasses\RecordUrl.cs">
-      <Link>SupportingClasses\RecordUrl.cs</Link>
+    <Compile Include="..\Common\UtilityClass\RecordUrl.cs">
+      <Link>UtilityClass\RecordUrl.cs</Link>
     </Compile>
-    <Compile Include="..\Common\SupportingClasses\RollupResult.cs">
-      <Link>SupportingClasses\RollupResult.cs</Link>
+    <Compile Include="..\Common\UtilityClass\RollupResult.cs">
+      <Link>UtilityClass\RollupResult.cs</Link>
     </Compile>
     <Compile Include="..\Common\Utility.cs">
       <Link>Utility.cs</Link>

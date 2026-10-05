@@ -92,9 +92,9 @@
     <Compile Include="AttributeNames.cs" />
     <Compile Include="EntityNames.cs" />
     <Compile Include="Queries.cs" />
-    <Compile Include="SupportingClasses\GeoLocation.cs" />
-    <Compile Include="SupportingClasses\RecordUrl.cs" />
-    <Compile Include="SupportingClasses\RollupResult.cs" />
+    <Compile Include="UtilityClass\GeoLocation.cs" />
+    <Compile Include="UtilityClass\RecordUrl.cs" />
+    <Compile Include="UtilityClass\RollupResult.cs" />
     <Compile Include="Utility.cs" />
     <Compile Include="UtilityClass\Utility.AttributeValues.cs" />
     <Compile Include="UtilityClass\Utility.Currency.cs" />
