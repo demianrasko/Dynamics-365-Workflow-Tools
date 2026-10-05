@@ -2,6 +2,7 @@
 using Microsoft.Xrm.Sdk;
 using System.Collections.Generic;
 using System.Linq;
+using System.ServiceModel;
 
 namespace msdyncrmWorkflowTools_Tests
 {
@@ -18,6 +19,21 @@ namespace msdyncrmWorkflowTools_Tests
             Assert.AreEqual("AIClassify", request.RequestName);
             Assert.AreEqual("Invoice is wrong", request["Text"]);
             CollectionAssert.AreEqual(new[] { "Billing", "Support" }, (string[])request["Categories"]);
+            Assert.AreEqual(false, request["AllowMultipleCategories"]);
+        }
+
+        [TestMethod]
+        public void AIClassify_RetriesWithoutAllowMultipleCategoriesWhereItIsUnknown()
+        {
+            service.OnExecute = r => r.Parameters.Contains("AllowMultipleCategories")
+                ? throw new FaultException<OrganizationServiceFault>(
+                    new OrganizationServiceFault { Message = "Unrecognized request parameter: AllowMultipleCategories" },
+                    "Unrecognized request parameter: AllowMultipleCategories")
+                : new OrganizationResponse { Results = { ["Classification"] = "Billing" } };
+
+            Assert.AreEqual("Billing", common.AIClassify("Invoice is wrong", new[] { "Billing", "Support" }));
+            Assert.AreEqual(2, service.Executed.Count);
+            Assert.IsFalse(service.Executed.Last().Parameters.Contains("AllowMultipleCategories"));
         }
 
         [TestMethod]

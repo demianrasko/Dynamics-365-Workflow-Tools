@@ -87,6 +87,7 @@
   <ItemGroup>
     <Compile Include="DataverseConnection.cs" />
     <Compile Include="IntegrationTestBase.cs" />
+    <Compile Include="IntegrationTestBase.AI.cs" />
     <Compile Include="IntegrationTestBase.Email.cs" />
     <Compile Include="IntegrationTestBase.Helpers.cs" />
     <Compile Include="IntegrationTestBase.Metadata.cs" />
@@ -98,6 +99,7 @@
     <Compile Include="IntegrationTestBase.Relationships.cs" />
     <Compile Include="IntegrationTestBase.Schema.cs" />
     <Compile Include="IntegrationTestBase.Security.cs" />
+    <Compile Include="IntegrationTestBase.SharePoint.cs" />
     <Compile Include="TraceRecorder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

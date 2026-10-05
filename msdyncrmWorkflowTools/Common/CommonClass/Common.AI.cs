@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xrm.Sdk;
 using System.Collections.Generic;
 using System.Linq;
+using System.ServiceModel;
 
 namespace msdyncrmWorkflowTools
 {
@@ -9,13 +10,29 @@ namespace msdyncrmWorkflowTools
         /// <summary>
         /// Classifies text into one of the given categories (Dataverse AIClassify, AI Builder).
         /// </summary>
+        /// <remarks>
+        /// Newer environments require AllowMultipleCategories and older ones reject it, so it is sent, and the request
+        /// is sent again without it when the environment doesn't know the parameter.
+        /// </remarks>
         public string AIClassify(string text, IEnumerable<string> categories)
         {
-            return ExecuteAiFunction("AIClassify", "Classification", new Dictionary<string, object>
+            var parameters = new Dictionary<string, object>
             {
                 ["Text"] = text,
-                ["Categories"] = categories.ToArray()
-            });
+                ["Categories"] = categories.ToArray(),
+                ["AllowMultipleCategories"] = false
+            };
+
+            try
+            {
+                return ExecuteAiFunction("AIClassify", "Classification", parameters);
+            }
+            catch (FaultException<OrganizationServiceFault> ex) when (ex.Detail?.Message?.Contains("Unrecognized request parameter: AllowMultipleCategories") == true)
+            {
+                parameters.Remove("AllowMultipleCategories");
+
+                return ExecuteAiFunction("AIClassify", "Classification", parameters);
+            }
         }
 
         /// <summary>
