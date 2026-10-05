@@ -157,5 +157,32 @@ namespace msdyncrmWorkflowTools_Tests
                 Results = { ["RelationshipMetadata"] = new OneToManyRelationshipMetadata { ReferencingEntity = childEntity, ReferencingAttribute = lookup } }
             };
         }
+
+        [TestMethod]
+        public void AssociateEntity_AssociatesUnlessAlreadyAssociated()
+        {
+            var roleId = Guid.NewGuid();
+
+            common.AssociateEntity(EntityNames.Team, TeamId, "teamroles_association", EntityNames.TeamRoles, EntityNames.Role, roleId);
+
+            var call = service.Associated.Single();
+            Assert.AreEqual(new EntityReference(EntityNames.Team, TeamId), call.Record);
+            Assert.AreEqual("teamroles_association", call.Relationship.SchemaName);
+            Assert.AreEqual(roleId, call.Related.Single().Id);
+
+            service.OnRetrieveMultiple = query => Collection(new Entity(EntityNames.Team, TeamId));
+            common.AssociateEntity(EntityNames.Team, TeamId, "teamroles_association", EntityNames.TeamRoles, EntityNames.Role, roleId);
+
+            Assert.AreEqual(1, service.Associated.Count);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void AssociateEntity_LetsErrorsThrough()
+        {
+            service.OnRetrieveMultiple = query => throw new InvalidOperationException("unknown relationship");
+
+            common.AssociateEntity(EntityNames.Team, TeamId, "nope", "nope", EntityNames.Role, Guid.NewGuid());
+        }
     }
 }

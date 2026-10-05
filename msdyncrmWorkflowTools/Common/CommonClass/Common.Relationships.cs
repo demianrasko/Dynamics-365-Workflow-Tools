@@ -34,35 +34,33 @@ namespace msdyncrmWorkflowTools
             Service.Disassociate(record.LogicalName, record.Id, new Relationship(relationshipName), new EntityReferenceCollection { related });
         }
 
+        /// <summary>
+        /// Associates two records through an N:N relationship, unless they are already associated. Errors (an unknown
+        /// relationship, a missing record, no permission) reach the caller instead of being traced and ignored.
+        /// </summary>
+        /// <param name="primaryEntityName">Logical name of the first record.</param>
+        /// <param name="primaryEntityId">Id of the first record.</param>
+        /// <param name="relationshipName">Schema name of the N:N relationship.</param>
+        /// <param name="relationshipEntityName">The relationship's intersect entity.</param>
+        /// <param name="entityName">Logical name of the second record.</param>
+        /// <param name="parentId">Id of the second record.</param>
         public void AssociateEntity(string primaryEntityName, Guid primaryEntityId, string relationshipName, string relationshipEntityName, string entityName, Guid parentId)
         {
-            try
+            if (GetAssociations(primaryEntityName, primaryEntityId, relationshipEntityName, entityName, parentId).Entities.Count != 0)
             {
-                var relations = GetAssociations(primaryEntityName, primaryEntityId, relationshipEntityName, entityName, parentId);
+                Trace($"{primaryEntityName} {primaryEntityId} and {entityName} {parentId} are already associated.");
 
-                if (relations.Entities.Count != 0)
-                {
-                    return;
-                }
-
-                var relatedEntities = new EntityReferenceCollection
-                {
-                    new EntityReference(entityName, parentId)
-                };
-
-                var relationship = new Relationship(relationshipName);
-
-                if (primaryEntityName == entityName)
-                {
-                    relationship.PrimaryEntityRole = EntityRole.Referencing;
-                }
-
-                Service.Associate(primaryEntityName, primaryEntityId, relationship, relatedEntities);
+                return;
             }
-            catch (Exception ex)
+
+            var relationship = new Relationship(relationshipName);
+
+            if (primaryEntityName == entityName)
             {
-                Trace($"Error : {ex.Message} - {ex.StackTrace}");
+                relationship.PrimaryEntityRole = EntityRole.Referencing;
             }
+
+            Service.Associate(primaryEntityName, primaryEntityId, relationship, new EntityReferenceCollection { new EntityReference(entityName, parentId) });
         }
 
         /// <summary>

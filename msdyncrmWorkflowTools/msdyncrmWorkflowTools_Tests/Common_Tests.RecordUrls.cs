@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
 using System.Linq;
 
@@ -36,6 +37,14 @@ namespace msdyncrmWorkflowTools_Tests
 
             Assert.AreEqual("contact", reference.LogicalName);
             Assert.AreEqual(RecordId, reference.Id);
+        }
+
+        [TestMethod]
+        public void GetAppModuleId_UnknownAppThrowsAClearError()
+        {
+            var error = Assert.ThrowsException<InvalidPluginExecutionException>(() => common.GetAppModuleId("nope"));
+
+            StringAssert.Contains(error.Message, "'nope'");
         }
     }
 }

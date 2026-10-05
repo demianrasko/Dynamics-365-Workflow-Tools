@@ -36,6 +36,10 @@ namespace msdyncrmWorkflowTools
             return parsedUrl.ToEntityReference();
         }
 
+        /// <summary>
+        /// The id of a model-driven app, from its unique name.
+        /// </summary>
+        /// <exception cref="InvalidPluginExecutionException">There is no app with that unique name.</exception>
         public string GetAppModuleId(string appModuleUniqueName)
         {
             var query = new QueryExpression
@@ -51,11 +55,15 @@ namespace msdyncrmWorkflowTools
                         }
             };
 
-            var collection = Service.RetrieveMultiple(query).Entities;
+            var app = Service.RetrieveMultiple(query).Entities.FirstOrDefault()
+                ?? throw new InvalidPluginExecutionException($"There is no app with the unique name '{appModuleUniqueName}'.");
 
-            return collection.First()[AttributeNames.AppModuleId].ToString();
+            return app[AttributeNames.AppModuleId].ToString();
         }
 
+        /// <summary>
+        /// A record URL that opens the record in the given model-driven app.
+        /// </summary>
         public string GetAppRecordUrl(string recordUrl, string appModuleUniqueName)
         {
             var appModuleId = GetAppModuleId(appModuleUniqueName);

@@ -187,25 +187,9 @@ namespace msdyncrmWorkflowTools
                 }
             }
 
+            // statecode and statuscode are never copied, so the copy starts in its default (active) state
             Trace("creating cloned object...");
             var id = Service.Create(newEntity);
-            Trace("created cloned object OK");
-
-            if (newEntity.Attributes.Contains(AttributeNames.StatusCode) && newEntity.Attributes.Contains(AttributeNames.StateCode))
-            {
-                var record = Service.Retrieve(entityName, id, new ColumnSet(AttributeNames.StatusCode, AttributeNames.StateCode));
-
-                if (retrievedObject.Attributes[AttributeNames.StatusCode] != record.Attributes[AttributeNames.StatusCode] ||
-                    retrievedObject.Attributes[AttributeNames.StateCode] != record.Attributes[AttributeNames.StateCode])
-                {
-                    var setStatusEnt = new Entity(entityName, id);
-                    setStatusEnt.Attributes.Add(AttributeNames.StatusCode, retrievedObject.Attributes[AttributeNames.StatusCode]);
-                    setStatusEnt.Attributes.Add(AttributeNames.StateCode, retrievedObject.Attributes[AttributeNames.StateCode]);
-
-                    Service.Update(setStatusEnt);
-                }
-            }
-
             Trace("cloned object OK");
 
             return id;

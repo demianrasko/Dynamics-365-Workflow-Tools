@@ -1,4 +1,4 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Xrm.Sdk;
 using msdyncrmWorkflowTools;
 using Newtonsoft.Json.Linq;
@@ -88,7 +88,7 @@ namespace msdyncrmWorkflowTools_IntegrationTests
             Assert.AreEqual("555-0199", values.GetAttributeValue<string>("telephone1"));
             Assert.AreEqual(7, values.GetAttributeValue<int>("numberofemployees"));
 
-            // today a copy of an inactive record is always active (the status-copying code in CloneRecord never runs)
+            // status and status reason aren't copied: a copy of an inactive record starts active
             Assert.AreEqual(0, values.GetAttributeValue<OptionSetValue>(AttributeNames.StateCode).Value);
         }
 
