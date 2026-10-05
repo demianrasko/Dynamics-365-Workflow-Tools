@@ -21,7 +21,7 @@ Every activity follows the same pattern: the activity class only reads and check
 | A new area for Common, Utility or the tests | A new `partial class` file in the same folder, linked into `msdyncrmWorkflowTools.csproj` like the others (Common and Utility only) |
 | Small classes the shared code returns (e.g. `RecordUrl`), one per file | `Common\SupportingClasses\` (link new files into `msdyncrmWorkflowTools.csproj` too) |
 | Table and column names | `Common\EntityNames.cs` and `Common\AttributeNames.cs` |
-| Tests | `msdyncrmWorkflowTools_Tests\` (`Common_Tests.<Area>.cs`, `Utility_Tests.cs`, `Queries_Tests.cs`) |
+| Tests | `msdyncrmWorkflowTools_Tests\` (`Common_Tests.<Area>.cs`, `Utility_Tests.<Area>.cs`, `Queries_Tests.cs`) |
 
 ### Steps
 
