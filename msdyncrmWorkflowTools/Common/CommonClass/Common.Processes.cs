@@ -14,7 +14,7 @@ namespace msdyncrmWorkflowTools
         /// </summary>
         /// <param name="fetchXml">The fetch query; {PARENT_GUID} must already be replaced.</param>
         /// <param name="attributeName">The attribute to join; empty uses each record's first attribute.</param>
-        /// <param name="separator">Text between the values.</param>
+        /// <param name="separator">Text between the values; \n, \r and \t stand for a new line, carriage return and tab.</param>
         /// <param name="format">.NET format string for each value, e.g. "N2" or "yyyy-MM-dd"; empty for none.</param>
         /// <param name="top">Maximum number of values; 0 or less for all.</param>
         /// <returns>The joined values, or null when no record has a value.</returns>
@@ -28,7 +28,7 @@ namespace msdyncrmWorkflowTools
 
             Trace($"{list.Count} value(s) to concatenate.");
 
-            return list.Count == 0 ? null : string.Join(separator, list);
+            return list.Count == 0 ? null : string.Join(Utility.ExpandEscapes(separator), list);
         }
 
         /// <summary>
@@ -86,6 +86,8 @@ namespace msdyncrmWorkflowTools
         /// <exception cref="InvalidPluginExecutionException">The process has no stage with that name.</exception>
         public Guid GetProcessStageId(Guid processId, string stageName)
         {
+            // stage names are easily typed with a stray leading or trailing space
+            stageName = stageName?.Trim();
             var stage = Service.RetrieveMultiple(ProcessStageQuery(processId, stageName)).Entities.FirstOrDefault();
 
             return stage?.Id ?? throw new InvalidPluginExecutionException($"Process stage '{stageName}' was not found in process {processId}.");

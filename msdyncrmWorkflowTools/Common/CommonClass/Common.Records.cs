@@ -57,6 +57,8 @@ namespace msdyncrmWorkflowTools
         /// </summary>
         public void CalculateRollupField(EntityReference record, string fieldName)
         {
+            // a stray space in the field name makes Dataverse report that the column doesn't exist
+            fieldName = fieldName?.Trim();
             Trace($"Calculating rollup {fieldName} on {record.LogicalName} {record.Id}");
             Service.Execute(new CalculateRollupFieldRequest { Target = record, FieldName = fieldName });
         }

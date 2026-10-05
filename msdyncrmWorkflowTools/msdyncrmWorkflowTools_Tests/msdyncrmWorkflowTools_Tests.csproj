@@ -113,6 +113,7 @@
     <Compile Include="Utility_Tests.Hashing.cs" />
     <Compile Include="Utility_Tests.Json.cs" />
     <Compile Include="Utility_Tests.Rollups.cs" />
+    <Compile Include="Utility_Tests.TextAndDates.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

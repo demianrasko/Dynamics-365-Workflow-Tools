@@ -1,6 +1,8 @@
 ﻿using Microsoft.Crm.Sdk.Messages;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Query;
+using msdyncrmWorkflowTools;
 using System;
 using System.Linq;
 
@@ -110,6 +112,24 @@ namespace msdyncrmWorkflowTools_Tests
             Assert.AreEqual(5, close.Status.Value);
             Assert.AreEqual(RecordId, close.IncidentResolution.GetAttributeValue<EntityReference>("incidentid").Id);
             Assert.IsTrue(((SendEmailRequest)e[7]).IssueSend);
+        }
+
+        [TestMethod]
+        public void GetProcessStageId_TrimsTheStageName()
+        {
+            var stageId = Guid.NewGuid();
+            service.OnRetrieveMultiple = query => Collection(new Entity(EntityNames.ProcessStage, stageId));
+
+            Assert.AreEqual(stageId, common.GetProcessStageId(Guid.NewGuid(), " Develop "));
+            Assert.IsTrue(((QueryExpression)service.Queries.Single()).Criteria.Conditions.Any(c => c.Values.Contains("Develop")));
+        }
+
+        [TestMethod]
+        public void ConcatenateFromQuery_ExpandsANewLineSeparator()
+        {
+            service.OnRetrieveMultiple = query => Collection(new Entity("account") { ["name"] = "A" }, new Entity("account") { ["name"] = "B" });
+
+            Assert.AreEqual("A\nB", common.ConcatenateFromQuery("<fetch><entity name='account' /></fetch>", "name", @"\n", string.Empty, 0));
         }
     }
 }

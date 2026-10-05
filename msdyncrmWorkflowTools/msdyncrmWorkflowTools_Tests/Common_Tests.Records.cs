@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.Crm.Sdk.Messages;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata;
@@ -167,6 +168,16 @@ namespace msdyncrmWorkflowTools_Tests
             CollectionAssert.AreEqual(new[] { "partyid" }, query.ColumnSet.Columns.ToArray());
             AssertCondition(query.Criteria.Conditions[0], "activityid", ConditionOperator.Equal, IdA);
             AssertCondition(query.Criteria.Conditions[1], "participationtypemask", ConditionOperator.Equal, 2);
+        }
+
+        [TestMethod]
+        public void CalculateRollupField_TrimsTheFieldName()
+        {
+            service.OnExecute = r => new CalculateRollupFieldResponse();
+
+            common.CalculateRollupField(new EntityReference(EntityNames.Account, RecordId), "new_answeredcount ");
+
+            Assert.AreEqual("new_answeredcount", ((CalculateRollupFieldRequest)service.Executed.Single()).FieldName);
         }
     }
 }

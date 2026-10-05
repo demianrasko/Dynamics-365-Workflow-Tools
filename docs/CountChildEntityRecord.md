@@ -21,4 +21,14 @@ FetchXML query); they are combined with the parent lookup condition. For example
 </filter>
 ```
 
+To count only active children, use:
+
+```xml
+<filter type="and">
+  <condition attribute="statecode" operator="eq" value="0" />
+</filter>
+```
+
+Text such as `statecode eq 0` isn't FetchXML and doesn't filter anything.
+
 Thanks to [Augustandre23](https://github.com/Augustandre23) for this note (demianrasko/Dynamics-365-Workflow-Tools#259).

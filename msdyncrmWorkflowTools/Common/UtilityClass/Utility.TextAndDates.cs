@@ -128,5 +128,32 @@ namespace msdyncrmWorkflowTools
             result.Append(text, pos, text.Length - pos);
             return result.ToString();
         }
+
+        /// <summary>
+        /// Turns the escapes \n, \r and \t typed into a workflow text input into a new line, carriage return and tab,
+        /// since the workflow designer can't take those characters directly. "\\" stays a single backslash.
+        /// </summary>
+        public static string ExpandEscapes(string text)
+        {
+            if (string.IsNullOrEmpty(text) || text.IndexOf('\\') < 0)
+            {
+                return text;
+            }
+
+            return Regex.Replace(text, @"\\([\\nrt])", m =>
+            {
+                switch (m.Groups[1].Value)
+                {
+                    case "n":
+                        return "\n";
+                    case "r":
+                        return "\r";
+                    case "t":
+                        return "\t";
+                    default:
+                        return "\\";
+                }
+            });
+        }
     }
 }

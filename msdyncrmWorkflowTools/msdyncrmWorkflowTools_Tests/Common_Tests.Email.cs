@@ -129,5 +129,17 @@ namespace msdyncrmWorkflowTools_Tests
             Assert.AreEqual("teammembership", query.LinkEntities.Single().LinkToEntityName);
             AssertCondition(query.LinkEntities.Single().LinkCriteria.Conditions.Single(), "teamid", ConditionOperator.Equal, IdA);
         }
+
+        [TestMethod]
+        public void EntityAttachmentsQuery_SeveralPatternsMatchAnyOfThem()
+        {
+            var query = Common.EntityAttachmentsQuery(false, "%.pdf; %.docx;", IdA, 0);
+
+            var anyPattern = query.Criteria.Filters.Single();
+            Assert.AreEqual(LogicalOperator.Or, anyPattern.FilterOperator);
+            AssertCondition(anyPattern.Conditions[0], AttributeNames.FileName, ConditionOperator.Like, "%.pdf");
+            AssertCondition(anyPattern.Conditions[1], AttributeNames.FileName, ConditionOperator.Like, "%.docx");
+            Assert.IsFalse(query.Criteria.Conditions.Any(c => c.AttributeName == AttributeNames.FileName));
+        }
     }
 }

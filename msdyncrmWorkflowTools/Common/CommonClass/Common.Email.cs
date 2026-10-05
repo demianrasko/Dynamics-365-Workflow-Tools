@@ -256,7 +256,8 @@ namespace msdyncrmWorkflowTools
         /// File attachments of a record: notes with a document (newest first), or the attachments of an email/activity.
         /// </summary>
         /// <param name="activityMimeAttachments">True for activitymimeattachment (email attachments), false for annotation (notes).</param>
-        /// <param name="fileNamePattern">Optional LIKE pattern for the file name; null or empty means any file.</param>
+        /// <param name="fileNamePattern">Optional LIKE pattern for the file name, or several separated by ";"
+        /// (e.g. "%.pdf;%.docx"), any of which may match; null or empty means any file.</param>
         /// <param name="parentId">The record the notes belong to, or the activity the attachments belong to.</param>
         /// <param name="top">Maximum number of records; 0 or less means no limit.</param>
         public static QueryExpression EntityAttachmentsQuery(bool activityMimeAttachments, string fileNamePattern, Guid parentId, int top)
@@ -282,9 +283,24 @@ namespace msdyncrmWorkflowTools
                 query.Criteria.AddCondition(AttributeNames.ObjectId, ConditionOperator.Equal, parentId);
             }
 
-            if (!string.IsNullOrEmpty(fileNamePattern))
+            var patterns = (fileNamePattern ?? string.Empty)
+                .Split(';')
+                .Select(p => p.Trim())
+                .Where(p => p.Length > 0)
+                .ToList();
+
+            if (patterns.Count == 1)
             {
-                query.Criteria.AddCondition(AttributeNames.FileName, ConditionOperator.Like, fileNamePattern);
+                query.Criteria.AddCondition(AttributeNames.FileName, ConditionOperator.Like, patterns[0]);
+            }
+            else if (patterns.Count > 1)
+            {
+                var anyPattern = query.Criteria.AddFilter(LogicalOperator.Or);
+
+                foreach (var pattern in patterns)
+                {
+                    anyPattern.AddCondition(AttributeNames.FileName, ConditionOperator.Like, pattern);
+                }
             }
 
             if (top > 0)

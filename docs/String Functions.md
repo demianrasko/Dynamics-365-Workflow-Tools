@@ -20,7 +20,7 @@ The Input Parameters are:
 * Substring: From Left to Right: to set if the substring will start from left
 * Substring: Start Index: start index char
 * Substring: Length: substring legth
-* Regular Expression: String with the regultar expression tu be executed
+* Regular Expression: a .NET regular expression, applied to the Input Text. Type it as is, without quotes (e.g. `^[^,]*` for the text up to the first comma). Regex Success says whether it matched, and Regex Text is the first match.
 
 The Output Parameters are:
 * CapitalizedText
