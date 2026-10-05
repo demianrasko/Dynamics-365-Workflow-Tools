@@ -1,4 +1,4 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using msdyncrmWorkflowTools;
@@ -126,7 +126,7 @@ namespace msdyncrmWorkflowTools_IntegrationTests
             return Create(new Entity(process.GetAttributeValue<string>(AttributeNames.UniqueName))
             {
                 ["bpf_contactid"] = contact,
-                [AttributeNames.Name] = UniqueName("process")
+                ["bpf_name"] = UniqueName("process")
             });
         }
 
