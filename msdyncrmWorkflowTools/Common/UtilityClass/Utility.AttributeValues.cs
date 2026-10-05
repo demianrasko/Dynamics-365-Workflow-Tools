@@ -9,6 +9,34 @@ namespace msdyncrmWorkflowTools
     public static partial class Utility
     {
         /// <summary>
+        /// A numeric attribute value (number, Money or an AliasedValue wrapping one) as a decimal; null for
+        /// anything else, including a missing value.
+        /// </summary>
+        public static decimal? ToDecimal(object value)
+        {
+            while (true)
+            {
+                switch (value)
+                {
+                    case AliasedValue aliasedValue:
+                        value = aliasedValue.Value;
+                        continue;
+                    case Money money:
+                        return money.Value;
+                    case decimal _:
+                    case int _:
+                    case long _:
+                    case short _:
+                    case float _:
+                    case double _:
+                        return Convert.ToDecimal(value);
+                    default:
+                        return null;
+                }
+            }
+        }
+
+        /// <summary>
         /// Converts a Dataverse attribute value to the string a workflow output expects.
         /// </summary>
         /// <remarks>

@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xrm.Sdk;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -20,16 +19,16 @@ namespace msdyncrmWorkflowTools
         /// </summary>
         static Utility()
         {
-            //Setup a commong HttpClient as a best practice to avoid leaving open connections
+            //Set up a common HttpClient as a best practice to avoid leaving open connections
             //more details https://docs.microsoft.com/en-us/azure/architecture/antipatterns/improper-instantiation/
             HttpClient = new HttpClient();
             HttpClient.Timeout = new TimeSpan(0, 0, 30); //30 second timeout as recommend by Microsoft Support to prevent TimeOut on Sandbox
             HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));//ACCEPT header
         }
 
-        private static void Trace(ITracingService tracingService, string format, params object[] args)
+        private static void Trace(ITracingService tracingService, string message)
         {
-            tracingService?.Trace(format, args);
+            tracingService?.Trace("{0}", message);
         }
 
         /// <summary>
@@ -64,7 +63,7 @@ namespace msdyncrmWorkflowTools
             }
 
             var response = ExecuteAsyncRequest(request, tracingService);
-            Trace(tracingService, "Translator response: {0}", response);
+            Trace(tracingService, $"Translator response: {response}");
 
             return ParseTranslatorResponse(response);
         }
@@ -89,13 +88,12 @@ namespace msdyncrmWorkflowTools
                 return amount;
             }
 
-            var url = string.Format(CultureInfo.InvariantCulture,
-                "https://api.frankfurter.dev/v1/latest?amount={0}&base={1}&symbols={2}",
-                amount, Uri.EscapeDataString(from), Uri.EscapeDataString(to));
+            var url = FormattableString.Invariant(
+                $"https://api.frankfurter.dev/v1/latest?amount={amount}&base={Uri.EscapeDataString(from)}&symbols={Uri.EscapeDataString(to)}");
 
-            Trace(tracingService, "Currency conversion request: {0}", url);
+            Trace(tracingService, $"Currency conversion request: {url}");
             var response = ExecuteAsyncRequest(new HttpRequestMessage(HttpMethod.Get, url), tracingService);
-            Trace(tracingService, "Currency conversion response: {0}", response);
+            Trace(tracingService, $"Currency conversion response: {response}");
 
             return ParseCurrencyConversion(response, from, to);
         }
@@ -117,7 +115,7 @@ namespace msdyncrmWorkflowTools
             }
 
             var useAzureMaps = !string.IsNullOrWhiteSpace(azureMapsKey);
-            Trace(tracingService, "Geocoding with {0}", useAzureMaps ? "Azure Maps" : "Bing Maps");
+            Trace(tracingService, $"Geocoding with {(useAzureMaps ? "Azure Maps" : "Bing Maps")}");
 
             var url = useAzureMaps ? BuildAzureMapsGeocodeUrl(address, azureMapsKey) : BuildBingGeocodeUrl(address, bingMapsKey);
             var response = ExecuteAsyncRequest(new HttpRequestMessage(HttpMethod.Get, url), tracingService);
@@ -157,7 +155,7 @@ namespace msdyncrmWorkflowTools
 
             if (statusCode.HasValue && statusCode.Value != 200)
             {
-                var details = root["errorDetails"]?.Values<string>().ToArray() ?? new string[0];
+                var details = root["errorDetails"]?.Values<string>().ToArray() ?? Array.Empty<string>();
                 var message = details.Length > 0 ? string.Join(" ", details) : (string)root["statusDescription"];
 
                 throw new InvalidPluginExecutionException($"Bing Maps error {statusCode}: {message}");
@@ -217,17 +215,19 @@ namespace msdyncrmWorkflowTools
                 throw new TimeoutException($"Timeout waiting for HttpResponse {message.Method}:{message.RequestUri}");
             }
 
-            Trace(tracingService, "HTTP {0} {1} from {2}", (int)response.StatusCode, response.ReasonPhrase, message.RequestUri.Host);
+            Trace(tracingService, $"HTTP {(int)response.StatusCode} {response.ReasonPhrase} from {message.RequestUri.Host}");
 
             var mediaType = response.Content.Headers.ContentType?.MediaType ?? string.Empty;
-            if (!response.IsSuccessStatusCode && mediaType.IndexOf("json", StringComparison.OrdinalIgnoreCase) < 0)
+
+            if (response.IsSuccessStatusCode ||
+                mediaType.IndexOf("json", StringComparison.OrdinalIgnoreCase) >= 0)
             {
-                var detail = body.Length > 500 ? $"{body.Substring(0, 500)}..." : body;
-                throw new InvalidPluginExecutionException(
-                    $"HTTP {(int)response.StatusCode} {response.ReasonPhrase} from {message.RequestUri.Host}: {detail}");
+                return body;
             }
 
-            return body;
+            var detail = body.Length > 500 ? $"{body.Substring(0, 500)}..." : body;
+            throw new InvalidPluginExecutionException(
+                $"HTTP {(int)response.StatusCode} {response.ReasonPhrase} from {message.RequestUri.Host}: {detail}");
         }
     }
 }

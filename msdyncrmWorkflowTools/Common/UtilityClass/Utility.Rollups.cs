@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xrm.Sdk;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Xml;
 
@@ -64,7 +65,9 @@ namespace msdyncrmWorkflowTools
                     break;
             }
 
-            return string.Format($"{{0:{format}}}", value);
+            return value is IFormattable formattable
+                ? formattable.ToString(format, CultureInfo.CurrentCulture)
+                : value.ToString();
         }
 
         /// <summary>
@@ -113,30 +116,6 @@ namespace msdyncrmWorkflowTools
             var value = key != null ? record.GetAttributeValue<object>(key) : record.Attributes.FirstOrDefault().Value;
 
             return value is AliasedValue aliasedValue ? aliasedValue.Value : value;
-        }
-
-        /// <summary>
-        /// A numeric attribute value (number, Money or an AliasedValue wrapping one) as a decimal; null for
-        /// anything else, including a missing value.
-        /// </summary>
-        public static decimal? ToDecimal(object value)
-        {
-            switch (value)
-            {
-                case AliasedValue aliasedValue:
-                    return ToDecimal(aliasedValue.Value);
-                case Money money:
-                    return money.Value;
-                case decimal _:
-                case int _:
-                case long _:
-                case short _:
-                case float _:
-                case double _:
-                    return Convert.ToDecimal(value);
-                default:
-                    return null;
-            }
         }
 
         /// <summary>

@@ -18,6 +18,7 @@ namespace msdyncrmWorkflowTools
             year = date1.Year;
             var dfi = DateTimeFormatInfo.CurrentInfo;
             var cal = dfi.Calendar;
+
             weekOfYear = cal.GetWeekOfYear(date1, dfi.CalendarWeekRule, dfi.FirstDayOfWeek);
 
             return true;
