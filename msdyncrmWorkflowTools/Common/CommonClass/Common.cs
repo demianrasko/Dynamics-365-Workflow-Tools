@@ -42,14 +42,6 @@ namespace msdyncrmWorkflowTools
         }
 
         /// <summary>
-        /// Writes a composite-format message (string.Format style) to the trace log.
-        /// </summary>
-        public void Trace(string format, params object[] args)
-        {
-            TracingService.Trace(format, args);
-        }
-
-        /// <summary>
         /// Tracing service that discards everything, so tracingService is never null.
         /// </summary>
         private sealed class NullTracingService : ITracingService
