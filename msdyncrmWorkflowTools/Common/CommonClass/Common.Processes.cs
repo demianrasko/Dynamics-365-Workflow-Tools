@@ -88,12 +88,7 @@ namespace msdyncrmWorkflowTools
         {
             var stage = Service.RetrieveMultiple(ProcessStageQuery(processId, stageName)).Entities.FirstOrDefault();
 
-            if (stage == null)
-            {
-                throw new InvalidPluginExecutionException($"Process stage '{stageName}' was not found in process {processId}.");
-            }
-
-            return stage.Id;
+            return stage?.Id ?? throw new InvalidPluginExecutionException($"Process stage '{stageName}' was not found in process {processId}.");
         }
 
         /// <summary>

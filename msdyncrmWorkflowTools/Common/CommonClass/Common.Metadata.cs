@@ -30,12 +30,7 @@ namespace msdyncrmWorkflowTools
             var response = (RetrieveMetadataChangesResponse)Service.Execute(request);
             var objectTypeCode = response.EntityMetadata.FirstOrDefault()?.ObjectTypeCode;
 
-            if (objectTypeCode == null)
-            {
-                throw new InvalidPluginExecutionException($"Entity '{entityName}' was not found.");
-            }
-
-            return objectTypeCode.Value;
+            return objectTypeCode ?? throw new InvalidPluginExecutionException($"Entity '{entityName}' was not found.");
         }
 
         /// <summary>
