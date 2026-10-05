@@ -143,7 +143,7 @@ namespace msdyncrmWorkflowTools
                     }
 
                     var returnCollection = Service.RetrieveMultiple(
-                        Queries.ActivityParties(objectId, int.Parse(participationTypeMask)));
+                        ActivityPartiesQuery(objectId, int.Parse(participationTypeMask)));
 
                     Trace("attribute:{0}", attribute2);
 
@@ -316,6 +316,20 @@ namespace msdyncrmWorkflowTools
             }
 
             SetMultiSelectOptionSets(target, values, keepExistingValues);
+        }
+
+        /// <summary>The parties of an activity with one participation type (from, to, cc, ...).</summary>
+        public static QueryExpression ActivityPartiesQuery(Guid activityId, int participationTypeMask)
+        {
+            var query = new QueryExpression(EntityNames.ActivityParty)
+            {
+                ColumnSet = new ColumnSet(AttributeNames.PartyId),
+                Distinct = true
+            };
+            query.Criteria.AddCondition(AttributeNames.ActivityId, ConditionOperator.Equal, activityId);
+            query.Criteria.AddCondition(AttributeNames.ParticipationTypeMask, ConditionOperator.Equal, participationTypeMask);
+
+            return query;
         }
     }
 }

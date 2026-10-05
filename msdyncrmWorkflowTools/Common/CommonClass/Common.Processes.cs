@@ -86,7 +86,7 @@ namespace msdyncrmWorkflowTools
         /// <exception cref="InvalidPluginExecutionException">The process has no stage with that name.</exception>
         public Guid GetProcessStageId(Guid processId, string stageName)
         {
-            var stage = Service.RetrieveMultiple(Queries.ProcessStage(processId, stageName)).Entities.FirstOrDefault();
+            var stage = Service.RetrieveMultiple(ProcessStageQuery(processId, stageName)).Entities.FirstOrDefault();
 
             if (stage == null)
             {
@@ -132,6 +132,20 @@ namespace msdyncrmWorkflowTools
         public string GetProcessEntityName(Guid processId)
         {
             return Service.Retrieve(EntityNames.Workflow, processId, new ColumnSet(AttributeNames.UniqueName)).GetAttributeValue<string>(AttributeNames.UniqueName);
+        }
+
+        /// <summary>The stage of a business process flow with the given name.</summary>
+        public static QueryExpression ProcessStageQuery(Guid processId, string stageName)
+        {
+            var query = new QueryExpression(EntityNames.ProcessStage)
+            {
+                ColumnSet = new ColumnSet(AttributeNames.ProcessStageId),
+                TopCount = 1
+            };
+            query.Criteria.AddCondition(AttributeNames.ProcessId, ConditionOperator.Equal, processId);
+            query.Criteria.AddCondition(AttributeNames.StageName, ConditionOperator.Equal, stageName);
+
+            return query;
         }
     }
 }

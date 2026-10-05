@@ -75,7 +75,7 @@ namespace msdyncrmWorkflowTools
 
             foreach (var principal in principals.Where(p => p != null))
             {
-                var existing = Service.RetrieveMultiple(Queries.FieldSharing(attribute.MetadataId.Value, record.Id, principal.Id)).Entities.FirstOrDefault();
+                var existing = Service.RetrieveMultiple(FieldSharingQuery(attribute.MetadataId.Value, record.Id, principal.Id)).Entities.FirstOrDefault();
 
                 if (existing != null)
                 {
@@ -130,7 +130,7 @@ namespace msdyncrmWorkflowTools
         /// <param name="roleId">The role picked in the workflow (the root role).</param>
         public bool UserHasRole(Guid userId, Guid roleId)
         {
-            var hasRole = Service.RetrieveMultiple(Queries.UserRole(userId, roleId)).Entities.Count > 0;
+            var hasRole = Service.RetrieveMultiple(UserRoleQuery(userId, roleId)).Entities.Count > 0;
             Trace($"User {userId} {(hasRole ? "has" : "does not have")} role {roleId}.");
 
             return hasRole;
@@ -170,7 +170,7 @@ namespace msdyncrmWorkflowTools
                 return;
             }
 
-            if (Service.RetrieveMultiple(Queries.PrincipalRole(principal, businessUnitRoleId.Value)).Entities.Count > 0)
+            if (Service.RetrieveMultiple(PrincipalRoleQuery(principal, businessUnitRoleId.Value)).Entities.Count > 0)
             {
                 Trace($"{principal.LogicalName} {principal.Id} already has role {businessUnitRoleId}.");
                 return;
@@ -217,7 +217,7 @@ namespace msdyncrmWorkflowTools
 
         public bool IsMemberOfTeam(Guid teamId, Guid userId)
         {
-            var isMember = Service.RetrieveMultiple(Queries.TeamMembership(teamId, userId)).Entities.Count > 0;
+            var isMember = Service.RetrieveMultiple(TeamMembershipQuery(teamId, userId)).Entities.Count > 0;
             Trace($"User {userId} {(isMember ? "is" : "is not")} a member of team {teamId}.");
 
             return isMember;
@@ -228,7 +228,7 @@ namespace msdyncrmWorkflowTools
         /// </summary>
         public EntityReference RetrieveUserBuDefaultTeam(Guid systemUserId)
         {
-            var teams = Service.RetrieveMultiple(Queries.DefaultTeamForUser(systemUserId)).Entities;
+            var teams = Service.RetrieveMultiple(DefaultTeamForUserQuery(systemUserId)).Entities;
 
             return teams.Count > 0 ? teams[0].ToEntityReference() : null;
         }
@@ -304,6 +304,97 @@ namespace msdyncrmWorkflowTools
             var businessUnitRoles = Service.RetrieveMultiple(businessUnitRoleQuery);
 
             return (Guid)businessUnitRoles.Entities[0].Attributes[AttributeNames.RoleId];
+        }
+
+        /// <summary>The default team of the business unit a user belongs to.</summary>
+        public static QueryExpression DefaultTeamForUserQuery(Guid systemUserId)
+        {
+            var query = new QueryExpression(EntityNames.Team)
+            {
+                ColumnSet = new ColumnSet(AttributeNames.Name, AttributeNames.BusinessUnitId, AttributeNames.TeamId, AttributeNames.TeamType),
+                Distinct = true
+            };
+            query.AddOrder(AttributeNames.Name, OrderType.Ascending);
+            query.Criteria.AddCondition(AttributeNames.TeamType, ConditionOperator.Equal, 0);
+            query.Criteria.AddCondition(AttributeNames.IsDefault, ConditionOperator.Equal, true);
+
+            var businessUnit = query.AddLink(EntityNames.BusinessUnit, AttributeNames.BusinessUnitId, AttributeNames.BusinessUnitId, JoinOperator.Inner);
+            businessUnit.EntityAlias = "ae";
+
+            var user = businessUnit.AddLink(EntityNames.SystemUser, AttributeNames.BusinessUnitId, AttributeNames.BusinessUnitId, JoinOperator.Inner);
+            user.EntityAlias = "af";
+            user.LinkCriteria.AddCondition(AttributeNames.SystemUserId, ConditionOperator.Equal, systemUserId);
+
+            return query;
+        }
+
+        /// <summary>The field-sharing record (principalobjectattributeaccess) for one secured field, record and principal.</summary>
+        public static QueryExpression FieldSharingQuery(Guid attributeId, Guid objectId, Guid principalId)
+        {
+            var query = new QueryExpression(EntityNames.PrincipalObjectAttributeAccess)
+            {
+                ColumnSet = new ColumnSet(AttributeNames.ReadAccess, AttributeNames.UpdateAccess),
+                TopCount = 1
+            };
+            query.Criteria.AddCondition(AttributeNames.AttributeId, ConditionOperator.Equal, attributeId);
+            query.Criteria.AddCondition(AttributeNames.ObjectId, ConditionOperator.Equal, objectId);
+            query.Criteria.AddCondition(AttributeNames.PrincipalId, ConditionOperator.Equal, principalId);
+
+            return query;
+        }
+
+        /// <summary>The role assignment of a team or user (one row) — otherwise no rows.</summary>
+        /// <param name="principal">A team or systemuser.</param>
+        /// <param name="roleId">The role, in the principal's business unit.</param>
+        public static QueryExpression PrincipalRoleQuery(EntityReference principal, Guid roleId)
+        {
+            var isTeam = principal.LogicalName == EntityNames.Team;
+            var query = new QueryExpression(isTeam ? EntityNames.TeamRoles : EntityNames.SystemUserRoles)
+            {
+                ColumnSet = new ColumnSet(false),
+                TopCount = 1
+            };
+            query.Criteria.AddCondition(isTeam ? AttributeNames.TeamId : AttributeNames.SystemUserId, ConditionOperator.Equal, principal.Id);
+            query.Criteria.AddCondition(AttributeNames.RoleId, ConditionOperator.Equal, roleId);
+
+            return query;
+        }
+
+        /// <summary>The team, if the user is a member of it (one row) — otherwise no rows.</summary>
+        public static QueryExpression TeamMembershipQuery(Guid teamId, Guid systemUserId)
+        {
+            var query = new QueryExpression(EntityNames.Team)
+            {
+                ColumnSet = new ColumnSet(AttributeNames.TeamId),
+                Distinct = true
+            };
+            query.Criteria.AddCondition(AttributeNames.TeamId, ConditionOperator.Equal, teamId);
+
+            var membership = query.AddLink(EntityNames.TeamMembership, AttributeNames.TeamId, AttributeNames.TeamId);
+            var user = membership.AddLink(EntityNames.SystemUser, AttributeNames.SystemUserId, AttributeNames.SystemUserId);
+            user.EntityAlias = "ag";
+            user.LinkCriteria.AddCondition(AttributeNames.SystemUserId, ConditionOperator.Equal, systemUserId);
+
+            return query;
+        }
+
+        /// <summary>
+        /// The user's copies of a role (one row per business-unit copy whose root is <paramref name="rootRoleId"/>) —
+        /// no rows when the user does not have the role.
+        /// </summary>
+        public static QueryExpression UserRoleQuery(Guid systemUserId, Guid rootRoleId)
+        {
+            var query = new QueryExpression(EntityNames.Role)
+            {
+                ColumnSet = new ColumnSet(AttributeNames.RoleId),
+                TopCount = 1
+            };
+            query.Criteria.AddCondition(AttributeNames.ParentRootRoleId, ConditionOperator.Equal, rootRoleId);
+
+            var userRoles = query.AddLink(EntityNames.SystemUserRoles, AttributeNames.RoleId, AttributeNames.RoleId);
+            userRoles.LinkCriteria.AddCondition(AttributeNames.SystemUserId, ConditionOperator.Equal, systemUserId);
+
+            return query;
         }
     }
 }

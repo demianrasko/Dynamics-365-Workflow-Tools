@@ -17,11 +17,11 @@ Every activity follows the same pattern: the activity class only reads and check
 | The activity: inputs, outputs and input checks | `msdyncrmWorkflowTools\msdyncrmWorkflowTools\Class\` |
 | Code that calls Dataverse | `Common\CommonClass\Common.<Area>.cs` (pick the file that fits, e.g. `Common.Records.cs`, `Common.Email.cs`) |
 | Code that doesn't call Dataverse (parsing, formatting, calculations) | `Common\UtilityClass\Utility.<Area>.cs` |
-| `QueryExpression` builders | `Common\Queries.cs` |
+| `QueryExpression` builders | A public static `<Name>Query` method in the `Common.<Area>.cs` file that uses it, so it can be tested without Dataverse |
 | A new area for Common, Utility or the tests | A new `partial class` file in the same folder, linked into `msdyncrmWorkflowTools.csproj` like the others (Common and Utility only) |
 | Small classes the shared code returns (e.g. `RecordUrl`), one per file | `Common\UtilityClass\` (link new files into `msdyncrmWorkflowTools.csproj` too) |
 | Table and column names | `Common\EntityNames.cs` and `Common\AttributeNames.cs` |
-| Tests | `msdyncrmWorkflowTools_Tests\` (`Common_Tests.<Area>.cs`, `Utility_Tests.<Area>.cs`, `Queries_Tests.cs`) |
+| Tests | `msdyncrmWorkflowTools_Tests\` (`Common_Tests.<Area>.cs`, `Utility_Tests.<Area>.cs`) |
 
 ### Steps
 

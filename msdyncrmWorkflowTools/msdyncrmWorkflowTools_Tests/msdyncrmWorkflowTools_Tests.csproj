@@ -86,15 +86,17 @@
   <ItemGroup>
     <Compile Include="Common_Tests.cs" />
     <Compile Include="Common_Tests.AI.cs" />
-    <Compile Include="Common_Tests.BusinessProcessFlows.cs" />
-    <Compile Include="Common_Tests.MultiSelectOptionSets.cs" />
-    <Compile Include="Common_Tests.OtherRequests.cs" />
-    <Compile Include="Common_Tests.Paging.cs" />
+    <Compile Include="Common_Tests.Email.cs" />
+    <Compile Include="Common_Tests.Metadata.cs" />
+    <Compile Include="Common_Tests.Processes.cs" />
+    <Compile Include="Common_Tests.Queries.cs" />
+    <Compile Include="Common_Tests.QueuesAndSettings.cs" />
     <Compile Include="Common_Tests.RecordUrls.cs" />
-    <Compile Include="Common_Tests.Sharing.cs" />
-    <Compile Include="Common_Tests.SingleRequests.cs" />
-    <Compile Include="Common_Tests.TeamsAndRoles.cs" />
-    <Compile Include="Common_Tests.UsersEmailQueuesAndSettings.cs" />
+    <Compile Include="Common_Tests.Records.cs" />
+    <Compile Include="Common_Tests.Relationships.cs" />
+    <Compile Include="Common_Tests.SalesAndMarketing.cs" />
+    <Compile Include="Common_Tests.Security.cs" />
+    <Compile Include="Common_Tests.SharePoint.cs" />
     <Compile Include="FakeOrganizationService.cs" />
     <Compile Include="JsonParser_Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -104,7 +106,6 @@
     <Compile Include="StringFunctions_Tests.cs" />
     <Compile Include="CurrencyConvert_Tests.cs" />
     <Compile Include="PowerPlatformBuild_Tests.cs" />
-    <Compile Include="Queries_Tests.cs" />
     <Compile Include="Utility_Tests.cs" />
     <Compile Include="Utility_Tests.AttributeValues.cs" />
     <Compile Include="Utility_Tests.ErrorHandling.cs" />

@@ -1,5 +1,5 @@
 // Paste into the msdyncrmWorkflowTools\Common\CommonClass\Common.<Area>.cs file that fits and rename.
-// Dataverse calls go in Common, logic without Dataverse calls in Utility, and QueryExpression builders in Queries.
+// Dataverse calls go in Common, logic without Dataverse calls in Utility, and QueryExpression builders in Common as public static <Name>Query methods.
 
         /// <summary>
         /// TODO: What the method does.

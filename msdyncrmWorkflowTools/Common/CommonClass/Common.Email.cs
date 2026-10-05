@@ -1,5 +1,6 @@
 ﻿using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Query;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,7 +49,7 @@ namespace msdyncrmWorkflowTools
 
         public bool SendEmailFromTemplateToUsersInRole(EntityReference securityRoleLookup, EntityReference emailTemplateLookup)
         {
-            var userList = Service.RetrieveMultiple(Queries.UsersInRole(securityRoleLookup.Id));
+            var userList = Service.RetrieveMultiple(UsersInRoleQuery(securityRoleLookup.Id));
             Trace("Retrieved Data");
 
             // keep sending to the remaining users when one fails; failures are traced, not thrown
@@ -116,7 +117,7 @@ namespace msdyncrmWorkflowTools
         /// <returns>The number of members the email was addressed to.</returns>
         public int AddressEmailToTeam(Guid emailId, Guid teamId)
         {
-            var members = Service.RetrieveMultiple(Queries.TeamMembers(teamId)).Entities.Select(e => e.Id).ToList();
+            var members = Service.RetrieveMultiple(TeamMembersQuery(teamId)).Entities.Select(e => e.Id).ToList();
 
             if (members.Count == 0)
             {
@@ -131,7 +132,7 @@ namespace msdyncrmWorkflowTools
 
         public void SendEmailToUsersInRole(EntityReference securityRoleLookup, EntityReference emailReference)
         {
-            var userIds = Service.RetrieveMultiple(Queries.UsersInRole(securityRoleLookup.Id)).Entities.Select(e => e.Id);
+            var userIds = Service.RetrieveMultiple(UsersInRoleQuery(securityRoleLookup.Id)).Entities.Select(e => e.Id);
 
             SetEmailRecipients(emailReference.Id, userIds);
 
@@ -145,7 +146,7 @@ namespace msdyncrmWorkflowTools
         {
             Trace($"Attachments: {(retrieveActivityMimeAttachment ? EntityNames.ActivityMimeAttachment : EntityNames.Annotation)} of {parentId}, file name like '{fileName}', top {topRecords}");
             var attachmentFiles = Service.RetrieveMultiple(
-                Queries.EntityAttachments(retrieveActivityMimeAttachment, fileName, parentId, topRecords ?? 0));
+                EntityAttachmentsQuery(retrieveActivityMimeAttachment, fileName, parentId, topRecords ?? 0));
 
             if (attachmentFiles.Entities.Count == 0)
             {
@@ -221,7 +222,7 @@ namespace msdyncrmWorkflowTools
             var fileNamePattern = $"%{fileName}%";
             Trace($"Sales literature items: file name like '{fileNamePattern}', sales literature {salesLiteratureId}");
 
-            var attachmentFiles = Service.RetrieveMultiple(Queries.SalesLiteratureItems(fileNamePattern, salesLiteratureId));
+            var attachmentFiles = Service.RetrieveMultiple(SalesLiteratureItemsQuery(fileNamePattern, salesLiteratureId));
 
             if (attachmentFiles.Entities.Count == 0)
             {
@@ -249,6 +250,94 @@ namespace msdyncrmWorkflowTools
 
                 Service.Create(attachment);
             }
+        }
+
+        /// <summary>
+        /// File attachments of a record: notes with a document (newest first), or the attachments of an email/activity.
+        /// </summary>
+        /// <param name="activityMimeAttachments">True for activitymimeattachment (email attachments), false for annotation (notes).</param>
+        /// <param name="fileNamePattern">Optional LIKE pattern for the file name; null or empty means any file.</param>
+        /// <param name="parentId">The record the notes belong to, or the activity the attachments belong to.</param>
+        /// <param name="top">Maximum number of records; 0 or less means no limit.</param>
+        public static QueryExpression EntityAttachmentsQuery(bool activityMimeAttachments, string fileNamePattern, Guid parentId, int top)
+        {
+            QueryExpression query;
+
+            if (activityMimeAttachments)
+            {
+                query = new QueryExpression(EntityNames.ActivityMimeAttachment)
+                {
+                    ColumnSet = new ColumnSet(AttributeNames.FileName, AttributeNames.AttachmentId, AttributeNames.Subject, AttributeNames.Body, AttributeNames.MimeType)
+                };
+                query.Criteria.AddCondition(AttributeNames.ActivityId, ConditionOperator.Equal, parentId);
+            }
+            else
+            {
+                query = new QueryExpression(EntityNames.Annotation)
+                {
+                    ColumnSet = new ColumnSet(AttributeNames.FileName, AttributeNames.AnnotationId, AttributeNames.Subject, AttributeNames.DocumentBody, AttributeNames.MimeType)
+                };
+                query.AddOrder(AttributeNames.CreatedOn, OrderType.Descending);
+                query.Criteria.AddCondition(AttributeNames.IsDocument, ConditionOperator.Equal, true);
+                query.Criteria.AddCondition(AttributeNames.ObjectId, ConditionOperator.Equal, parentId);
+            }
+
+            if (!string.IsNullOrEmpty(fileNamePattern))
+            {
+                query.Criteria.AddCondition(AttributeNames.FileName, ConditionOperator.Like, fileNamePattern);
+            }
+
+            if (top > 0)
+            {
+                query.TopCount = top;
+            }
+
+            return query;
+        }
+
+        /// <summary>Sales literature items whose file name matches a LIKE pattern (% and _ wildcards).</summary>
+        public static QueryExpression SalesLiteratureItemsQuery(string fileNamePattern, Guid salesLiteratureId)
+        {
+            var query = new QueryExpression(EntityNames.SalesLiteratureItem)
+            {
+                ColumnSet = new ColumnSet(AttributeNames.FileName, AttributeNames.SalesLiteratureItemId, AttributeNames.Title, AttributeNames.DocumentBody, AttributeNames.MimeType)
+            };
+            query.Criteria.AddCondition(AttributeNames.FileName, ConditionOperator.Like, fileNamePattern);
+            query.Criteria.AddCondition(AttributeNames.SalesLiteratureId, ConditionOperator.Equal, salesLiteratureId);
+
+            return query;
+        }
+
+        /// <summary>The users who are members of a team.</summary>
+        public static QueryExpression TeamMembersQuery(Guid teamId)
+        {
+            var query = new QueryExpression(EntityNames.SystemUser)
+            {
+                ColumnSet = new ColumnSet(AttributeNames.SystemUserId)
+            };
+
+            var membership = query.AddLink(EntityNames.TeamMembership, AttributeNames.SystemUserId, AttributeNames.SystemUserId);
+            membership.LinkCriteria.AddCondition(AttributeNames.TeamId, ConditionOperator.Equal, teamId);
+
+            return query;
+        }
+
+        /// <summary>Enabled, read-write users that hold a security role.</summary>
+        public static QueryExpression UsersInRoleQuery(Guid roleId)
+        {
+            var query = new QueryExpression(EntityNames.SystemUser)
+            {
+                ColumnSet = new ColumnSet(AttributeNames.SystemUserId),
+                Distinct = true
+            };
+            query.Criteria.AddCondition(AttributeNames.AccessMode, ConditionOperator.Equal, 0);
+
+            var userRoles = query.AddLink(EntityNames.SystemUserRoles, AttributeNames.SystemUserId, AttributeNames.SystemUserId);
+            var role = userRoles.AddLink(EntityNames.Role, AttributeNames.RoleId, AttributeNames.RoleId);
+            role.EntityAlias = "aa";
+            role.LinkCriteria.AddCondition(AttributeNames.RoleId, ConditionOperator.Equal, roleId);
+
+            return query;
         }
     }
 }

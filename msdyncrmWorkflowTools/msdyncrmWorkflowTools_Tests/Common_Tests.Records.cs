@@ -2,6 +2,8 @@
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata;
+using Microsoft.Xrm.Sdk.Query;
+using msdyncrmWorkflowTools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -87,6 +89,84 @@ namespace msdyncrmWorkflowTools_Tests
             Assert.AreEqual(target.Id, update.Id);
             CollectionAssert.AreEqual(new[] { "new_tint" }, update.Attributes.Keys.ToArray());
             CollectionAssert.AreEqual(new[] { 5 }, Values(update, "new_tint"));
+        }
+
+        [TestMethod]
+        public void CloneRecord_SetsTheReplacementValuesOnCreate()
+        {
+            var oldParent = new EntityReference("salesorder", Guid.NewGuid());
+            var newParent = new EntityReference("salesorder", Guid.NewGuid());
+            service.OnExecute = r => new RetrieveEntityResponse
+            {
+                Results = { ["EntityMetadata"] = EntityWithAttributes("salesorderdetailid", Attribute<StringAttributeMetadata>("productdescription"), Attribute<LookupAttributeMetadata>("salesorderid")) }
+            };
+            service.OnRetrieve = (name, id, columns) => new Entity(name, id) { ["productdescription"] = "Widget", ["salesorderid"] = oldParent };
+
+            common.CloneRecord("salesorderdetail", RecordId, null, null, new Dictionary<string, object> { ["salesorderid"] = newParent, ["new_oldorderid"] = null });
+
+            var copy = service.Created.Single();
+            Assert.AreEqual("Widget", copy["productdescription"]);
+            Assert.AreEqual(newParent, copy["salesorderid"]);
+            Assert.IsTrue(copy.Contains("new_oldorderid") && copy["new_oldorderid"] == null);
+            Assert.AreEqual(0, service.Updated.Count, "the copy is never created under the old parent and updated afterwards");
+        }
+
+        [TestMethod]
+        public void SetLookupAndSetMoney_UpdateTheField()
+        {
+            var record = new EntityReference("quote", RecordId);
+            var account = new EntityReference("account", Guid.NewGuid());
+
+            common.SetLookup(record, "customerid", account);
+            common.SetMoney(record, "discountamount", 12.5m);
+
+            Assert.AreEqual(account, service.Updated[0]["customerid"]);
+            Assert.AreEqual(12.5m, service.Updated[1].GetAttributeValue<Money>("discountamount").Value);
+        }
+
+        [TestMethod]
+        public void DeleteDisassociateAndRetrieveFirst()
+        {
+            var record = new EntityReference("account", RecordId);
+            var related = new EntityReference("contact", Guid.NewGuid());
+            var first = new Entity("contact", Guid.NewGuid());
+            service.OnRetrieveMultiple = query => Collection(first, new Entity("contact", Guid.NewGuid()));
+
+            common.DeleteRecord(record);
+            common.DisassociateEntity(record, "new_account_contact", related);
+
+            Assert.AreEqual(record, service.Deleted.Single());
+            var call = service.Disassociated.Single();
+            Assert.AreEqual(record, call.Record);
+            Assert.AreEqual("new_account_contact", call.Relationship.SchemaName);
+            Assert.AreEqual(related, call.Related.Single());
+            Assert.AreSame(first, common.RetrieveFirst(new QueryExpression("contact")));
+        }
+
+        [TestMethod]
+        public void SetState_SendsStateAndStatus()
+        {
+            service.OnExecute = r => new OrganizationResponse();
+            var record = new EntityReference("account", RecordId);
+
+            common.SetState(record, 1, 2);
+
+            var request = service.Executed.Single();
+            Assert.AreEqual("SetState", request.RequestName);
+            Assert.AreEqual(record, request["EntityMoniker"]);
+            Assert.AreEqual(1, ((OptionSetValue)request["State"]).Value);
+            Assert.AreEqual(2, ((OptionSetValue)request["Status"]).Value);
+        }
+
+        [TestMethod]
+        public void ActivityParties_FiltersByActivityAndParticipation()
+        {
+            var query = Common.ActivityPartiesQuery(IdA, 2);
+
+            Assert.AreEqual("activityparty", query.EntityName);
+            CollectionAssert.AreEqual(new[] { "partyid" }, query.ColumnSet.Columns.ToArray());
+            AssertCondition(query.Criteria.Conditions[0], "activityid", ConditionOperator.Equal, IdA);
+            AssertCondition(query.Criteria.Conditions[1], "participationtypemask", ConditionOperator.Equal, 2);
         }
     }
 }

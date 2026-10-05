@@ -1,5 +1,6 @@
 ﻿using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Query;
 using System;
 using System.Linq;
 
@@ -17,7 +18,7 @@ namespace msdyncrmWorkflowTools
         /// <returns>The number of items picked.</returns>
         public int PickFromQueue(Guid queueId, Guid workerId, bool removeItems, int quantity)
         {
-            var queueItems = Service.RetrieveMultiple(Queries.QueueItems(queueId, onlyUnassigned: true, top: Math.Max(quantity, 1))).Entities;
+            var queueItems = Service.RetrieveMultiple(QueueItemsQuery(queueId, onlyUnassigned: true, top: Math.Max(quantity, 1))).Entities;
 
             foreach (var queueItem in queueItems)
             {
@@ -39,7 +40,7 @@ namespace msdyncrmWorkflowTools
         /// </summary>
         public object GetOrganizationSetting(string attributeName)
         {
-            var organization = Service.RetrieveMultiple(Queries.OrganizationSetting(attributeName)).Entities.FirstOrDefault();
+            var organization = Service.RetrieveMultiple(OrganizationSettingQuery(attributeName)).Entities.FirstOrDefault();
 
             return organization?.GetAttributeValue<object>(attributeName);
         }
@@ -51,7 +52,7 @@ namespace msdyncrmWorkflowTools
         /// <returns>False when the organization record could not be read.</returns>
         public bool SetOrganizationSetting(string attributeName, string value)
         {
-            var organization = Service.RetrieveMultiple(Queries.OrganizationSetting(attributeName)).Entities.FirstOrDefault();
+            var organization = Service.RetrieveMultiple(OrganizationSettingQuery(attributeName)).Entities.FirstOrDefault();
 
             if (organization == null)
             {
@@ -78,6 +79,53 @@ namespace msdyncrmWorkflowTools
 
             Service.Update(Utility.BuildUserSettings(userId, pagingLimit, advancedFindStartupMode, timeZoneCode,
                 helpLanguageId, uiLanguageId, defaultCalendarView, isSendAsAllowed));
+        }
+
+        /// <summary>One column of the organization record.</summary>
+        public static QueryExpression OrganizationSettingQuery(string attributeName)
+        {
+            var query = new QueryExpression(EntityNames.Organization)
+            {
+                ColumnSet = new ColumnSet(attributeName),
+                TopCount = 1
+            };
+            query.AddOrder(AttributeNames.Name, OrderType.Ascending);
+
+            return query;
+        }
+
+        /// <summary>Active queue items in a queue, newest first; optionally only those not assigned to a worker.</summary>
+        /// <param name="top">Maximum number of records; 0 or less means no limit.</param>
+        public static QueryExpression QueueItemsQuery(Guid queueId, bool onlyUnassigned, int top = 0)
+        {
+            var query = new QueryExpression(EntityNames.QueueItem)
+            {
+                ColumnSet = new ColumnSet(AttributeNames.EnteredOn, AttributeNames.ObjectTypeCode, AttributeNames.ObjectId, AttributeNames.QueueId)
+            };
+            query.AddOrder(AttributeNames.EnteredOn, OrderType.Descending);
+            query.Criteria.AddCondition(AttributeNames.StateCode, ConditionOperator.Equal, 0);
+
+            if (onlyUnassigned)
+            {
+                query.Criteria.AddCondition(AttributeNames.WorkerId, ConditionOperator.Null);
+            }
+
+            query.Criteria.AddCondition(AttributeNames.QueueId, ConditionOperator.Equal, queueId);
+
+            if (top > 0)
+            {
+                query.TopCount = top;
+            }
+
+            return query;
+        }
+
+        /// <summary>
+        /// The number of items in a queue, optionally only those no one is working on.
+        /// </summary>
+        public int CountQueueItems(Guid queueId, bool onlyUnassigned)
+        {
+            return CountRecords(QueueItemsQuery(queueId, onlyUnassigned));
         }
     }
 }

@@ -43,12 +43,7 @@ namespace msdyncrmWorkflowTools
 
             common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
 
-            var filterExpressionXml = FilterExpressionXml.Get(executionContext);
-            var query = string.IsNullOrWhiteSpace(filterExpressionXml)
-                ? Queries.ChildRecords(childEntityName, parentLookupName, parsedUrl.Id)
-                : common.FetchXmlToQueryExpression(Queries.ChildRecordsFetchXml(childEntityName, parentLookupName, parsedUrl.Id, filterExpressionXml));
-
-            var count = common.CountRecords(query);
+            var count = common.CountChildRecords(childEntityName, parentLookupName, parsedUrl.Id, FilterExpressionXml.Get(executionContext));
             common.Trace($"{childEntityName} records with {parentLookupName} = {parsedUrl.Id}: {count}");
 
             Result.Set(executionContext, count);

@@ -150,7 +150,7 @@ namespace msdyncrmWorkflowTools
         /// <param name="memberId">The record to look for.</param>
         public bool IsMemberOfMarketingList(Guid listId, Guid memberId)
         {
-            return Service.RetrieveMultiple(Queries.MarketingListMembership(listId, memberId)).Entities.Count > 0;
+            return Service.RetrieveMultiple(MarketingListMembershipQuery(listId, memberId)).Entities.Count > 0;
         }
 
         /// <summary>
@@ -193,7 +193,7 @@ namespace msdyncrmWorkflowTools
                 throw new InvalidPluginExecutionException("Remove From All Marketing Lists only supports account, contact or lead records.");
             }
 
-            var memberships = Service.RetrieveMultiple(Queries.MarketingListMemberships(member.Id)).Entities;
+            var memberships = Service.RetrieveMultiple(MarketingListMembershipsQuery(member.Id)).Entities;
 
             foreach (var membership in memberships)
             {
@@ -219,6 +219,32 @@ namespace msdyncrmWorkflowTools
             };
 
             Service.Execute(request);
+        }
+
+        /// <summary>The marketing list membership of a record (one row) — otherwise no rows.</summary>
+        public static QueryExpression MarketingListMembershipQuery(Guid listId, Guid memberId)
+        {
+            var query = new QueryExpression(EntityNames.ListMember)
+            {
+                ColumnSet = new ColumnSet(AttributeNames.ListMemberId),
+                TopCount = 1
+            };
+            query.Criteria.AddCondition(AttributeNames.ListId, ConditionOperator.Equal, listId);
+            query.Criteria.AddCondition(AttributeNames.EntityId, ConditionOperator.Equal, memberId);
+
+            return query;
+        }
+
+        /// <summary>Every marketing list membership of a record (account, contact or lead).</summary>
+        public static QueryExpression MarketingListMembershipsQuery(Guid memberId)
+        {
+            var query = new QueryExpression(EntityNames.ListMember)
+            {
+                ColumnSet = new ColumnSet(AttributeNames.ListId)
+            };
+            query.Criteria.AddCondition(AttributeNames.EntityId, ConditionOperator.Equal, memberId);
+
+            return query;
         }
     }
 }

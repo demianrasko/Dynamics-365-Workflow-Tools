@@ -1,7 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
-using Microsoft.Xrm.Sdk.Metadata;
 using System.Linq;
 
 namespace msdyncrmWorkflowTools_Tests
@@ -27,26 +25,6 @@ namespace msdyncrmWorkflowTools_Tests
             Assert.AreEqual("account", parsedUrl.EntityName);
             Assert.AreEqual(RecordId, parsedUrl.Id);
             Assert.IsInstanceOfType(service.Executed.Single(), typeof(RetrieveMetadataChangesRequest));
-        }
-
-        [TestMethod]
-        public void GetEntityTypeCode_ReadsTheObjectTypeCode()
-        {
-            service.OnExecute = r => new RetrieveMetadataChangesResponse
-            {
-                Results = { ["EntityMetadata"] = new EntityMetadataCollection { MetadataWithTypeCode(2) } }
-            };
-
-            Assert.AreEqual(2, common.GetEntityTypeCode("contact"));
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidPluginExecutionException))]
-        public void GetEntityTypeCode_UnknownEntityThrows()
-        {
-            service.OnExecute = r => new RetrieveMetadataChangesResponse { Results = { ["EntityMetadata"] = new EntityMetadataCollection() } };
-
-            common.GetEntityTypeCode("new_missing");
         }
 
         [TestMethod]

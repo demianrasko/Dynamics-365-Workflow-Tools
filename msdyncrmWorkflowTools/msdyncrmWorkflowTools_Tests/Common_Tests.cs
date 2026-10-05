@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata;
+using Microsoft.Xrm.Sdk.Query;
 using msdyncrmWorkflowTools;
 using System;
 using System.Linq;
@@ -116,6 +117,16 @@ namespace msdyncrmWorkflowTools_Tests
         private static int[] Values(Entity entity, string attributeName)
         {
             return entity.GetAttributeValue<OptionSetValueCollection>(attributeName).Select(v => v.Value).ToArray();
+        }
+
+        private static readonly Guid IdA = Guid.NewGuid();
+        private static readonly Guid IdB = Guid.NewGuid();
+
+        private static void AssertCondition(ConditionExpression condition, string attribute, ConditionOperator op, params object[] values)
+        {
+            Assert.AreEqual(attribute, condition.AttributeName);
+            Assert.AreEqual(op, condition.Operator);
+            CollectionAssert.AreEqual(values, condition.Values.ToArray());
         }
     }
 }

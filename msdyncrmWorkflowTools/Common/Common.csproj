@@ -91,7 +91,6 @@
     <Compile Include="CommonClass\Common.SharePoint.cs" />
     <Compile Include="AttributeNames.cs" />
     <Compile Include="EntityNames.cs" />
-    <Compile Include="Queries.cs" />
     <Compile Include="UtilityClass\GeoLocation.cs" />
     <Compile Include="UtilityClass\RecordUrl.cs" />
     <Compile Include="UtilityClass\RollupResult.cs" />

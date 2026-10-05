@@ -116,5 +116,34 @@ namespace msdyncrmWorkflowTools
                 pagingCookie = page.PagingCookie;
             }
         }
+
+        /// <summary>
+        /// The first record of <paramref name="entityName"/> where every filter attribute equals its value.
+        /// Empty column names and filters with an empty attribute name are skipped.
+        /// </summary>
+        public static QueryExpression FirstMatchQuery(string entityName, IEnumerable<string> columns, params KeyValuePair<string, object>[] equalFilters)
+        {
+            var query = new QueryExpression(entityName)
+            {
+                ColumnSet = new ColumnSet(columns.Where(c => !string.IsNullOrEmpty(c)).Distinct().ToArray()),
+                TopCount = 1
+            };
+
+            foreach (var filter in equalFilters.Where(f => !string.IsNullOrEmpty(f.Key)))
+            {
+                query.Criteria.AddCondition(filter.Key, ConditionOperator.Equal, filter.Value);
+            }
+
+            return query;
+        }
+
+        /// <summary>
+        /// The first <paramref name="entityName"/> record whose attributes equal the given values (see
+        /// <see cref="FirstMatchQuery"/>), or null when there is none.
+        /// </summary>
+        public Entity RetrieveFirstMatch(string entityName, IEnumerable<string> columns, params KeyValuePair<string, object>[] equalFilters)
+        {
+            return RetrieveFirst(FirstMatchQuery(entityName, columns, equalFilters));
+        }
     }
 }

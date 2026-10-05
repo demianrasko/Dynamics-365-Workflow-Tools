@@ -247,9 +247,6 @@
     <Compile Include="..\Common\EntityNames.cs">
       <Link>EntityNames.cs</Link>
     </Compile>
-    <Compile Include="..\Common\Queries.cs">
-      <Link>Queries.cs</Link>
-    </Compile>
     <Compile Include="..\Common\UtilityClass\GeoLocation.cs">
       <Link>UtilityClass\GeoLocation.cs</Link>
     </Compile>

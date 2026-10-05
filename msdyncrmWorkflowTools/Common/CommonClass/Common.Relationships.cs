@@ -24,7 +24,7 @@ namespace msdyncrmWorkflowTools
         {
             Trace($"Associations: {primaryEntityName} {primaryEntityId} via {intersectEntityName} to {entityName} {parentId}");
 
-            return Service.RetrieveMultiple(Queries.Associations(primaryEntityName, primaryEntityId, intersectEntityName, entityName, parentId));
+            return Service.RetrieveMultiple(AssociationsQuery(primaryEntityName, primaryEntityId, intersectEntityName, entityName, parentId));
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace msdyncrmWorkflowTools
                 throw new InvalidPluginExecutionException($"Relationship '{relationshipName}' is not One to Many.");
             }
 
-            return RetrieveAllIds(Queries.ChildRecords(relationship.ReferencingEntity, relationship.ReferencingAttribute, parentId));
+            return RetrieveAllIds(ChildRecordsQuery(relationship.ReferencingEntity, relationship.ReferencingAttribute, parentId));
         }
 
         /// <summary>
@@ -99,16 +99,16 @@ namespace msdyncrmWorkflowTools
 
             if (relationship.Entity1LogicalName == primaryEntityName && relationship.Entity2LogicalName == primaryEntityName)
             {
-                var ids = new HashSet<Guid>(RetrieveAllIds(Queries.ManyToManyRelated(primaryEntityName, $"{primaryEntityName}id", relationship.Entity2IntersectAttribute, intersect, relationship.Entity1IntersectAttribute, primaryEntityId)));
-                ids.UnionWith(RetrieveAllIds(Queries.ManyToManyRelated(primaryEntityName, $"{primaryEntityName}id", relationship.Entity1IntersectAttribute, intersect, relationship.Entity2IntersectAttribute, primaryEntityId)));
+                var ids = new HashSet<Guid>(RetrieveAllIds(ManyToManyRelatedQuery(primaryEntityName, $"{primaryEntityName}id", relationship.Entity2IntersectAttribute, intersect, relationship.Entity1IntersectAttribute, primaryEntityId)));
+                ids.UnionWith(RetrieveAllIds(ManyToManyRelatedQuery(primaryEntityName, $"{primaryEntityName}id", relationship.Entity1IntersectAttribute, intersect, relationship.Entity2IntersectAttribute, primaryEntityId)));
                 ids.Remove(primaryEntityId);
 
                 return ids.ToList();
             }
 
             return RetrieveAllIds(relationship.Entity1LogicalName == primaryEntityName 
-                ? Queries.ManyToManyRelated(relationship.Entity2LogicalName, relationship.Entity2IntersectAttribute, relationship.Entity2IntersectAttribute, intersect, relationship.Entity1IntersectAttribute, primaryEntityId) 
-                : Queries.ManyToManyRelated(relationship.Entity1LogicalName, relationship.Entity1IntersectAttribute, relationship.Entity1IntersectAttribute, intersect, relationship.Entity2IntersectAttribute, primaryEntityId));
+                ? ManyToManyRelatedQuery(relationship.Entity2LogicalName, relationship.Entity2IntersectAttribute, relationship.Entity2IntersectAttribute, intersect, relationship.Entity1IntersectAttribute, primaryEntityId) 
+                : ManyToManyRelatedQuery(relationship.Entity1LogicalName, relationship.Entity1IntersectAttribute, relationship.Entity1IntersectAttribute, intersect, relationship.Entity2IntersectAttribute, primaryEntityId));
         }
 
         /// <summary>
@@ -253,6 +253,107 @@ namespace msdyncrmWorkflowTools
 
                 Service.Update(entity);
             }
+        }
+
+        /// <summary>
+        /// Records of <paramref name="primaryEntityName"/> with id <paramref name="primaryEntityId"/> that are associated
+        /// with record <paramref name="relatedId"/> of <paramref name="relatedEntityName"/> through the N:N intersect entity.
+        /// </summary>
+        public static QueryExpression AssociationsQuery(string primaryEntityName, Guid primaryEntityId, string intersectEntityName, string relatedEntityName, Guid relatedId)
+        {
+            var primaryKey = $"{primaryEntityName}id";
+            var relatedKey = $"{relatedEntityName}id";
+
+            var query = new QueryExpression(primaryEntityName)
+            {
+                ColumnSet = new ColumnSet(false),
+                Distinct = true
+            };
+
+            var intersect = query.AddLink(intersectEntityName, primaryKey, primaryKey);
+            intersect.LinkCriteria.AddCondition(primaryKey, ConditionOperator.Equal, primaryEntityId);
+
+            var related = intersect.AddLink(relatedEntityName, relatedKey, relatedKey);
+            related.EntityAlias = "ac";
+            related.LinkCriteria.AddCondition(relatedKey, ConditionOperator.Equal, relatedId);
+
+            return query;
+        }
+
+        /// <summary>Records of a child entity whose lookup points at a parent record.</summary>
+        public static QueryExpression ChildRecordsQuery(string childEntityName, string parentLookupName, Guid parentId)
+        {
+            var query = new QueryExpression(childEntityName)
+            {
+                ColumnSet = new ColumnSet(false)
+            };
+            query.Criteria.AddCondition(parentLookupName, ConditionOperator.Equal, parentId);
+
+            return query;
+        }
+
+        /// <summary>
+        /// FetchXML for the child records of a parent, with an optional extra FetchXML filter fragment supplied by the
+        /// user (conditions and/or filter elements). Values are written by XElement, so they are escaped.
+        /// </summary>
+        public static string ChildRecordsFetchXmlQuery(string childEntityName, string parentLookupName, Guid parentId, string filterFragment)
+        {
+            var filter = new System.Xml.Linq.XElement("filter",
+                new System.Xml.Linq.XAttribute("type", "and"),
+                new System.Xml.Linq.XElement("condition",
+                    new System.Xml.Linq.XAttribute("attribute", parentLookupName),
+                    new System.Xml.Linq.XAttribute("operator", "eq"),
+                    new System.Xml.Linq.XAttribute("value", parentId)));
+
+            if (!string.IsNullOrWhiteSpace(filterFragment))
+            {
+                filter.Add(System.Xml.Linq.XElement.Parse($"<x>{filterFragment}</x>").Elements());
+            }
+
+            var fetch = new System.Xml.Linq.XElement("fetch",
+                new System.Xml.Linq.XAttribute("mapping", "logical"),
+                new System.Xml.Linq.XElement("entity",
+                    new System.Xml.Linq.XAttribute("name", childEntityName),
+                    filter));
+
+            return fetch.ToString(System.Xml.Linq.SaveOptions.DisableFormatting);
+        }
+
+        /// <summary>
+        /// Records of <paramref name="relatedEntityName"/> associated with a record through an N:N intersect entity.
+        /// The record is matched on the intersect entity itself, which also works for self-referencing relationships.
+        /// </summary>
+        /// <param name="relatedEntityName">Entity to return.</param>
+        /// <param name="relatedPrimaryKey">Primary key of <paramref name="relatedEntityName"/>.</param>
+        /// <param name="relatedIntersectAttribute">Intersect attribute that holds the related record's id.</param>
+        /// <param name="intersectEntityName">The N:N intersect entity.</param>
+        /// <param name="primaryIntersectAttribute">Intersect attribute that holds the primary record's id.</param>
+        /// <param name="primaryId">Id of the primary record.</param>
+        public static QueryExpression ManyToManyRelatedQuery(string relatedEntityName, string relatedPrimaryKey, string relatedIntersectAttribute, string intersectEntityName, string primaryIntersectAttribute, Guid primaryId)
+        {
+            var query = new QueryExpression(relatedEntityName)
+            {
+                ColumnSet = new ColumnSet(false)
+            };
+
+            var intersect = query.AddLink(intersectEntityName, relatedPrimaryKey, relatedIntersectAttribute);
+            intersect.LinkCriteria.AddCondition(primaryIntersectAttribute, ConditionOperator.Equal, primaryId);
+
+            return query;
+        }
+
+        /// <summary>
+        /// The number of <paramref name="childEntityName"/> records whose <paramref name="parentLookupName"/> is
+        /// <paramref name="parentId"/>, optionally narrowed by a FetchXML filter on the child.
+        /// </summary>
+        /// <param name="filterXml">A FetchXML &lt;filter&gt; fragment for the child, or empty for none.</param>
+        public int CountChildRecords(string childEntityName, string parentLookupName, Guid parentId, string filterXml)
+        {
+            var query = string.IsNullOrWhiteSpace(filterXml)
+                ? ChildRecordsQuery(childEntityName, parentLookupName, parentId)
+                : FetchXmlToQueryExpression(ChildRecordsFetchXmlQuery(childEntityName, parentLookupName, parentId, filterXml));
+
+            return CountRecords(query);
         }
     }
 }

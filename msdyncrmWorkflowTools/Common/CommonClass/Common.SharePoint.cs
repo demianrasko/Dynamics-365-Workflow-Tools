@@ -1,5 +1,6 @@
 ﻿using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Query;
 using System;
 
 namespace msdyncrmWorkflowTools
@@ -12,7 +13,7 @@ namespace msdyncrmWorkflowTools
         /// <param name="regardingObjectId">The record whose document locations are returned.</param>
         public EntityCollection GetSharepointLocations(Guid regardingObjectId)
         {
-            return Service.RetrieveMultiple(Queries.SharepointDocumentLocations(regardingObjectId));
+            return Service.RetrieveMultiple(SharepointDocumentLocationsQuery(regardingObjectId));
         }
 
         /// <summary>
@@ -37,6 +38,21 @@ namespace msdyncrmWorkflowTools
             Trace($"Absolute URL of document location record is '{response.AbsoluteUrl}'.");
 
             return response.AbsoluteUrl;
+        }
+
+        /// <summary>
+        /// SharePoint document locations whose regarding record is <paramref name="regardingObjectId"/>.
+        /// </summary>
+        public static QueryExpression SharepointDocumentLocationsQuery(Guid regardingObjectId)
+        {
+            var query = new QueryExpression(EntityNames.SharePointDocumentLocation)
+            {
+                ColumnSet = new ColumnSet(AttributeNames.AbsoluteUrl, AttributeNames.SharePointDocumentLocationId, AttributeNames.RelativeUrl)
+            };
+
+            query.Criteria.AddCondition(AttributeNames.RegardingObjectId, ConditionOperator.Equal, regardingObjectId);
+
+            return query;
         }
     }
 }

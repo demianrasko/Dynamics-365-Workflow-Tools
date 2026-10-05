@@ -27,7 +27,7 @@ namespace msdyncrmWorkflowTools.Class
             var countOnlyUnassigned = CountOnlyUnassigned.Get(executionContext);
             common.Trace("countOnlyUnassigned: {0}", countOnlyUnassigned);
 
-            var count = common.CountRecords(Queries.QueueItems(sourceQueue.Id, countOnlyUnassigned));
+            var count = common.CountQueueItems(sourceQueue.Id, countOnlyUnassigned);
             common.Trace($"Count of all queueItemsCount: {count}");
 
             ItemsCount.Set(executionContext, count);
