@@ -15,6 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		..\README.md = ..\README.md
 		..\CONTRIBUTING.md = ..\CONTRIBUTING.md
+		..\testing\Upgrade test workflows.md = ..\testing\Upgrade test workflows.md
 		..\.github\workflows\build.yml = ..\.github\workflows\build.yml
 		..\.github\workflows\integration-tests.yml = ..\.github\workflows\integration-tests.yml
 	EndProjectSection
