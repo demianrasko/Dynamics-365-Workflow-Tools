@@ -5,7 +5,8 @@ Classic workflows to build in **tldsandbox** while it runs Demian's published **
 **The plan:**
 
 1. Create the test data below.
-2. Build the 13 workflows below. All of them are **on-demand**, never automatic, and each one ends with a **log note**.
+2. Build the 14 workflows below. All of them are **on-demand**, never automatic, and each one ends with a **log note**.
+   01 to 03 were built in the designer. `tools\Publish-UpgradeTestWorkflows.ps1` builds 03b to 13, with every input filled in, as drafts (it needs Python 3); open each one in the designer to check it, then activate it.
 3. Run each workflow on its test record and keep the log notes and system jobs: this is the 1.0.61.1 baseline.
 4. Import `Dynamics365WorkflowTools_1_0_100_0_managed.zip` (from `tools\Build-Solutions.ps1`) as an **upgrade**.
 5. Run the checks after the upgrade (see the end of this page).
@@ -62,10 +63,8 @@ The **Inputs** column gives what to enter. *Record URL* means the record's **Rec
 | 3 | Date Functions | Date 1 = Created On, Date 2 = Modified On |
 | 4 | Encrypt Text | Text = Account Number |
 | 5 | Json Parser | JSON `{"a":{"b":"wft"}}`, JSON Path `a.b` |
-| 6 | Get Record ID | Record URL |
-| 7 | Entity Mobile Deep Link | Record URL |
-| 8 | Entity Json Serializer | Record URL |
-| 9 | Log note | Every output, including the Regex outputs, Text Length and all 13 Date Functions outputs |
+| 6 | Entity Mobile Deep Link | Record URL |
+| 7 | Log note | Every output, including the Regex outputs, Text Length and all 13 Date Functions outputs |
 
 ### 02 WFT Queries and rollups — Account
 
@@ -76,10 +75,22 @@ The **Inputs** column gives what to enter. *Record URL* means the record's **Rec
 | 3 | Concatenate From Query | FetchXML: the same contacts, attribute `fullname`; Separator `, `; Top Record Count 0 |
 | 4 | Count Child Entity Records | Child Entity Schema Name `contact`; Parent Lookup Field `parentcustomerid`; Record URL (Parent) = Record URL; FetchXML Filter `<filter><condition attribute="statecode" operator="eq" value="0" /></filter>` |
 | 5 | Calculate Agregate Date | FetchXML: aggregate `max(createdon)` of the contacts, grouped by the account |
-| 6 | Calculate Rollup Field | Parent Record URL = Record URL; FieldName `opendeals` |
-| 7 | Log note | All outputs |
+| 6 | Log note | All outputs |
 
-### 03 WFT Records — Account (run on WFT Upgrade Account)
+### 03 WFT Records — Account
+
+| # | Activity | Inputs |
+| --- | --- | --- |
+| 1 | Get Record ID | Record URL |
+| 2 | Execute Workflow By ID | Record ID = Record ID (step 1); Process = WFT Test |
+| 3 | Get Option Set Value | Source Record URL = Record URL; Attribute `new_wfttestchoice` |
+| 4 | Get Multi Select OptionSet | Source Record URL = Record URL; Attribute `new_wfttestchoices`; Retrieve Options Names = Yes |
+| 5 | Get Initiating User | — |
+| 6 | Get App Module ID | Application Unique Name `msdynce_saleshub` |
+| 7 | Get App Record Url | Record URL; Application Unique Name `msdynce_saleshub` (the name, not the ID from step 6) |
+| 8 | Log note | RecordID, SelectedValue, SelectedValues, SelectedNames, the initiating user's full name, AppModuleId, AppRecordUrl |
+
+### 03b WFT Clone and child records — Account (run on WFT Upgrade Account)
 
 | # | Activity | Inputs |
 | --- | --- | --- |
@@ -87,7 +98,7 @@ The **Inputs** column gives what to enter. *Record URL* means the record's **Rec
 | 2 | Clone Children | Source Record URL = Record URL; Target Record URL = build `https://<org>/main.aspx?etn=account&id={Cloned Guid}`; Relationship `contact_customer_accounts`; New Parent Field `parentcustomerid` |
 | 3 | Update Child Records | Parent Record URL = Record URL; Relationship `contact_customer_accounts`; Value to Set `wft updated`; Child Field `description`; Update only Active = Yes |
 | 4 | Update Child Records | The same, but copy Parent Field `telephone1` to Child Field `telephone2` |
-| 5 | Set Lookup Field from Record URL | Record URL = Primary Contact's Record URL; Lookup Field Name `primarycontactid` |
+| 5 | Set Lookup Field from Record URL | Record URL = WFT Contact 1's URL (pasted); Lookup Field Name `primarycontactid` |
 | 6 | Delete Record Audit History | Record URL = the clone's URL (from step 2) |
 | 7 | Delete Record | Delete Using Record URL = No; Entity Type Name `account`; Entity Guid = Cloned Guid. This also removes the cloned contacts' parent. Delete the cloned contacts afterwards. |
 | 8 | Log note | Cloned Guid; then check the contacts' descriptions (*WFT Contact 3* is inactive and must be unchanged) |
@@ -106,7 +117,7 @@ The **Inputs** column gives what to enter. *Record URL* means the record's **Rec
 | 1 | Get Option Set Value | Source Record URL = Record URL; Attribute `new_wfttestchoice` |
 | 2 | Get Multi Select OptionSet | Source Record URL; Attribute `new_wfttestchoices`; Retrieve Options Names = Yes |
 | 3 | Set Multi Select OptionSet | Target Record URL; Attribute `new_wfttestchoices`; Values = the value of *Two*; Keep Existing Values = Yes |
-| 4 | Map Multi Select OptionSet | Source = Record URL, Source Attributes `new_wfttestchoices`; Target = WFT Scratch Account's URL, Target Attributes `new_wfttestchoices` |
+| 4 | Map Multi Select OptionSet | Source = Record URL, Source Attributes `new_wfttestchoices`; Target = WFT Scratch Account's URL (pasted; a new scratch account needs the step updated, or the workflow built again), Target Attributes `new_wfttestchoices` |
 | 5 | Insert Option Value | Global Option Set = No; Attribute `new_wfttestchoice`; Entity `account`; Text `WFT Extra`; Value 100000900; Language Code 1033 |
 | 6 | Delete Option Value | The same attribute and entity; Value 100000900 |
 | 7 | Log note | Value, Selected Values, Selected Names |
@@ -136,7 +147,7 @@ The **Inputs** column gives what to enter. *Record URL* means the record's **Rec
 | 9 | Remove Role From Team | The same role and team |
 | 10 | Check User In Role | Role = WFT Role; User = Initiating User |
 | 11 | Add Role To User | Role = Basic User; User = Initiating User. You likely have it already: on 1.0.61.1 this step may fail with a duplicate error, while ours skips it. |
-| 12 | Remove Role From User | Role = WFT Role; User = a test user, never yourself if it's your only admin role |
+| 12 | Remove Role From User | Role = WFT Role; User = a test user, never yourself if it's your only admin role (the script uses its application user) |
 | 13 | Set User Settings | User = Initiating User; PagingLimit 50; everything else at its default |
 | 14 | Log note | Initiating User, DefaultTeam, isUserInTeam, Result, Team, isUserInRole. Afterwards delete *WFT Created Team* and set your paging back. |
 
@@ -145,7 +156,7 @@ The **Inputs** column gives what to enter. *Record URL* means the record's **Rec
 | # | Activity | Inputs |
 | --- | --- | --- |
 | 1 | Share Record With Team | Sharing Record URL = Record URL; Team = WFT Team; Read and Write = Yes |
-| 2 | Share Record With User | The same URL; User = a test user; Read = Yes |
+| 2 | Share Record With User | The same URL; User = a test user (the script uses its application user); Read = Yes |
 | 3 | Share Secured Field | Record URL; Attribute `new_wfttestsecret`; Team = WFT Team; Allow Read = Yes; Allow Update = No |
 | 4 | Unshare Record With Team | URL; WFT Team |
 | 5 | Unshare Record With User | URL; the test user |
@@ -218,7 +229,9 @@ The **Inputs** column gives what to enter. *Record URL* means the record's **Rec
 | 3 | Get App Module ID | Application Unique Name `msdynce_saleshub` (or any app's unique name) |
 | 4 | Get App Record Url | Record URL; the same app name |
 | 5 | Get Sharepoint Location URL | Record URL |
-| 6 | Log note | String Value, App Module ID, the app record URL, SharepointLocationURL |
+| 6 | Entity Json Serializer | Record URL |
+| 7 | Calculate Rollup Field | Parent Record URL = Record URL; FieldName `opendeals` |
+| 8 | Log note | String Value, App Module ID, the app record URL, SharepointLocationURL, the JSON |
 
 ### 13 WFT External services — Account (optional)
 
@@ -240,7 +253,7 @@ The **Inputs** column gives what to enter. *Record URL* means the record's **Rec
 - **Currency Convert** works (13).
 - **Add Role To User** no longer fails when the user already has the role (07/11).
 - **Associate Entity** used to hide errors; now a failing association fails the step (06 should pass both times).
-- **Update Child Records** handles more field types and more than 5,000 children. Behaviour for text and Yes/No fields is unchanged (03).
+- **Update Child Records** handles more field types and more than 5,000 children. Behaviour for text and Yes/No fields is unchanged (03b).
 - **Rollup Functions Min** was 0 on 1.0.61.1 when values exist; now it's the real minimum (02).
 - **Calculate Agregate Date** still returns 1753-01-01 with Ok = No when nothing is found (unchanged).
 - **Set User Settings:** on steps saved before the upgrade, DefaultCalendarView and IsSendAsAllowed behave exactly as before. That's the SetUserSettings TODO to confirm here.
