@@ -24,6 +24,8 @@ Those notes are what you compare before and after the upgrade.
 
 ## Test data (create once)
 
+`tools\New-UpgradeTestData.ps1 -User <your email>` creates all of this (in the environment in `DATAVERSE_CONNECTION`) and prints the record URLs the steps below ask you to paste. It's safe to run again: it only creates what's missing, including a new scratch account, case and qualify lead once the workflows have used them up. Run it before each test run.
+
 | What | Details |
 | --- | --- |
 | Account **WFT Upgrade Account** | The main test record. Fill in **Name**, **Account Number** `WFT-001`, **Industry**, **Description** `wft upgrade test`, **Credit Limit**, **Main Phone** `555-0100`, and **Address 1** `1 Microsoft Way, Redmond, WA 98052`. |
@@ -113,7 +115,7 @@ The **Inputs** column gives what to enter. *Record URL* means the record's **Rec
 
 | # | Activity | Inputs |
 | --- | --- | --- |
-| 1 | Associate Entity | Record URL = Originating Lead's Record URL; Relationship Name `accountleads_association`; Relationship Entity Name `accountleads` |
+| 1 | Associate Entity | Record URL = the WFT Lead URL (pasted; the script prints it); Relationship Name `accountleads_association`; Relationship Entity Name `accountleads` |
 | 2 | Check Associate Entity | The same Record URL and Relationship Name |
 | 3 | Disassociate Entity | The same Record URL and Relationship Name |
 | 4 | Check Associate Entity | Again: it should now say No |
