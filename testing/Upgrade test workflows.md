@@ -71,7 +71,7 @@ The **Inputs** column gives what to enter. *Record URL* means the record's **Rec
 
 | # | Activity | Inputs |
 | --- | --- | --- |
-| 1 | Query Values | EntityName `contact`; Attribute1 `fullname`, Attribute2 `telephone1`; FilterAttibute1 `emailaddress1`, ValueAttribute1 `wft-1@example.com` |
+| 1 | Query Values | EntityName `contact`; Attribute1 `firstname`, Attribute2 `emailaddress1`; FilterAttibute1 `lastname`, ValueAttribute1 `Contact 1`; FilterAttribute2 `emailaddress1`, ValueAttribute2 `wft-1@example.com`. Filter on text columns only: the values are sent as text, so a status, choice, number or lookup filter (e.g. `statecode` = `0`) fails in 1.0.61.1. |
 | 2 | Rollup Functions | FetchXML: contacts with `parentcustomerid` = `{PARENT_GUID}`, attribute `numberofchildren` (give the contacts 1, 2 and 3 children) |
 | 3 | Concatenate From Query | FetchXML: the same contacts, attribute `fullname`; Separator `, `; Top Record Count 0 |
 | 4 | Count Child Entity Records | Child Entity Schema Name `contact`; Parent Lookup Field `parentcustomerid`; Record URL (Parent) = Record URL; FetchXML Filter `<filter><condition attribute="statecode" operator="eq" value="0" /></filter>` |
