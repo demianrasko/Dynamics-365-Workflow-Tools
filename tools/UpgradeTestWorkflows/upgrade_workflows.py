@@ -16,7 +16,7 @@ C = 'msdyncrmWorkflowTools.Class.'
 
 def definitions(org, r):
     def url(record):
-        return f'{org}/main.aspx?etn={record["entity"]}&id={record["id"]}&pagetype=entityrecord'
+        return record['url']
 
     team, role = Lookup(r['team']), Lookup(r['role'])
     queue, bpf = Lookup(r['queue']), Lookup(r['bpf'])
@@ -25,7 +25,7 @@ def definitions(org, r):
     user = Output(1, 'InitiatingUser')
 
     def wf03b(b):
-        clone_url = Join(f'{org}/main.aspx?etn=account&id=', Output(1, 'ClonedGuid'), '&pagetype=entityrecord')
+        clone_url = Join(r['accountUrlStart'], Output(1, 'ClonedGuid'), '&pagetype=entityrecord')
         relationship = Text('contact_customer_accounts')
         return [
             b.custom(W + 'CloneRecord', 'Clone Record', {'ClonningRecordURL': RecordUrl, 'Prefix': Text('COPY '), 'FieldstoIgnore': Text('accountnumber')}),
@@ -65,11 +65,13 @@ def definitions(org, r):
 
     def wf06(b):
         lead, relationship = Text(url(r['lead'])), Text('accountleads_association')
+        # Check Associate Entity's "Relationship Name" is the intersect table
+        intersect = Text('accountleads')
         return [
             b.custom(W + 'AssociateEntity', 'Associate Entity', {'RecordURL': lead, 'RelationshipName': relationship, 'RelationshipEntityName': Text('accountleads')}),
-            b.custom(W + 'CheckAssociateEntity', 'Check Associate Entity', {'RecordURL': lead, 'RelationshipName': relationship}),
+            b.custom(W + 'CheckAssociateEntity', 'Check Associate Entity', {'RecordURL': lead, 'RelationshipName': intersect}),
             b.custom(W + 'DisassociateEntity', 'Disassociate Entity', {'RecordURL': lead, 'RelationshipName': relationship}),
-            b.custom(W + 'CheckAssociateEntity', 'Check Associate Entity again', {'RecordURL': lead, 'RelationshipName': relationship}),
+            b.custom(W + 'CheckAssociateEntity', 'Check Associate Entity again', {'RecordURL': lead, 'RelationshipName': intersect}),
             b.note('WFT 06 Relationships', [('Associated', Output(2, 'Result')), ('After Disassociate', Output(4, 'Result'))]),
         ]
 

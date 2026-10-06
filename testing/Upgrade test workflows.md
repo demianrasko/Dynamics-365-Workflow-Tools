@@ -7,9 +7,11 @@ Classic workflows to build in **tldsandbox** while it runs Demian's published **
 1. Create the test data below.
 2. Build the 14 workflows below. All of them are **on-demand**, never automatic, and each one ends with a **log note**.
    01 to 03 were built in the designer. `tools\Publish-UpgradeTestWorkflows.ps1` builds 03b to 13, with every input filled in, as drafts (it needs Python 3); open each one in the designer to check it, then activate it.
-3. Run each workflow on its test record and keep the log notes and system jobs: this is the 1.0.61.1 baseline.
+3. Run each workflow on its test record and keep the log notes and system jobs: this is the 1.0.61.1 baseline. `tools\Invoke-UpgradeTestRun.ps1 -Label before -User <your email>` does it: it refreshes the test data, runs every workflow in turn, collects each one's log notes and checks the records it created or changed, cleans up after, and saves `results.json` and `summary.md` in `testing\results\<date> before\`.
 4. Import `Dynamics365WorkflowTools_1_0_100_0_managed.zip` (from `tools\Build-Solutions.ps1`) as an **upgrade**.
-5. Run the checks after the upgrade (see the end of this page).
+5. Run the checks after the upgrade (see the end of this page). For step 4 there, run `tools\Invoke-UpgradeTestRun.ps1 -Label after -User <your email>`, then `tools\Compare-UpgradeTestRuns.ps1 -Before <the before folder> -After <the after folder>`; it writes `comparison.md` with every difference, ids and dates masked.
+
+The script runs the workflows as its application user, so that user is the initiating user (07) and sends the emails (09). Run before and after the same way so the results compare.
 
 Every name starts with **WFT** so the test data is easy to find and remove later.
 
@@ -126,10 +128,10 @@ The **Inputs** column gives what to enter. *Record URL* means the record's **Rec
 
 | # | Activity | Inputs |
 | --- | --- | --- |
-| 1 | Associate Entity | Record URL = the WFT Lead URL (pasted; the script prints it); Relationship Name `accountleads_association`; Relationship Entity Name `accountleads` |
-| 2 | Check Associate Entity | The same Record URL and Relationship Name |
+| 1 | Associate Entity | Record URL = the WFT Lead URL (pasted; the script prints it in the `etc=` form 1.0.61.1 needs: it reads the table from `etc=`, so an `etn=` URL fails); Relationship Name `accountleads_association`; Relationship Entity Name `accountleads` |
+| 2 | Check Associate Entity | The same Record URL; Relationship Name `accountleads` (despite the label, it's the intersect table) |
 | 3 | Disassociate Entity | The same Record URL and Relationship Name |
-| 4 | Check Associate Entity | Again: it should now say No |
+| 4 | Check Associate Entity | Again (`accountleads`): it should now say No |
 | 5 | Log note | Both Result values (Yes, then No) |
 
 ### 07 WFT Users, teams and roles — Account

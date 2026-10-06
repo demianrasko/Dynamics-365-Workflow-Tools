@@ -10,8 +10,9 @@
       writes them. Each step lists the inputs and outputs of the installed activity, read from its registration.
     - The test records are looked up by name, so run New-UpgradeTestData.ps1 first.
     - A workflow that doesn't exist yet is created in the UpgradeTestWorkflows solution. An existing workflow is only
-      filled when it is an empty draft; one that already has steps is left alone.
-    - Nothing is activated: open each workflow in the designer, check it and activate it.
+      filled when it is an empty draft; one that already has steps is left alone, unless it's named in -Replace.
+    - New workflows aren't activated: open each one in the designer, check it and activate it. A replaced workflow that
+      was activated is deactivated, updated and activated again.
 
     "A test user" in the test plan is the application user the script connects as, so no real person is shared with
     or loses a role.
@@ -25,6 +26,9 @@
 .PARAMETER OutputFolder
     Where the generated XAML is written. Default a folder in %TEMP%.
 
+.PARAMETER Replace
+    Workflows to build again even though they have steps, by number (e.g. 05, 11a) or name.
+
 .PARAMETER GenerateOnly
     Only writes the XAML to OutputFolder; saves nothing in the environment.
 
@@ -35,6 +39,9 @@
     .\tools\Publish-UpgradeTestWorkflows.ps1
 
 .EXAMPLE
+    .\tools\Publish-UpgradeTestWorkflows.ps1 -Replace 05, 06
+
+.EXAMPLE
     .\tools\Publish-UpgradeTestWorkflows.ps1 -GenerateOnly -OutputFolder C:\Temp\wft
 #>
 [CmdletBinding()]
@@ -42,122 +49,18 @@ param(
     [string]$ProcessStage = 'Stage 2',
     [string]$Solution = 'UpgradeTestWorkflows',
     [string]$OutputFolder = (Join-Path ([IO.Path]::GetTempPath()) 'UpgradeTestWorkflows'),
+    [string[]]$Replace,
     [switch]$GenerateOnly,
     [string]$ConnectionVariable = 'DATAVERSE_CONNECTION'
 )
 
 $ErrorActionPreference = 'Stop'
 
-# ---- connection ----------------------------------------------------------------------------------------------------
+# pwsh -File passes "05,06" as one value
+$Replace = @($Replace -split ',' | ForEach-Object { $_.Trim() } | Where-Object { $_ })
 
-function ConvertFrom-ConnectionString([string]$connectionString) {
-    $values = @{}
-
-    foreach ($part in $connectionString -split ';') {
-        $pair = $part -split '=', 2
-
-        if ($pair.Count -eq 2) {
-            $values[$pair[0].Trim().ToLowerInvariant()] = $pair[1].Trim()
-        }
-    }
-
-    return $values
-}
-
-$connectionString = [Environment]::GetEnvironmentVariable($ConnectionVariable)
-
-if (-not $connectionString) {
-    $connectionString = [Environment]::GetEnvironmentVariable($ConnectionVariable, 'User')
-}
-
-if (-not $connectionString) {
-    throw "Set $ConnectionVariable first (tools\Set-DataverseTestConnections.ps1)."
-}
-
-$settings = ConvertFrom-ConnectionString $connectionString
-$url = $settings['url'].TrimEnd('/')
-$api = "$url/api/data/v9.2"
-$tenant = $settings['tenantid']
-
-if (-not $tenant) {
-    try {
-        Invoke-WebRequest -Uri "$api/" -UseBasicParsing | Out-Null
-    }
-    catch {
-        $challenge = $_.Exception.Response.Headers['WWW-Authenticate']
-
-        if (-not $challenge) {
-            $challenge = ($_.Exception.Response.Headers | Where-Object { $_.Key -eq 'WWW-Authenticate' }).Value -join ' '
-        }
-
-        if ($challenge -match 'login\.microsoftonline\.com/([0-9a-fA-F-]{36})') {
-            $tenant = $Matches[1]
-        }
-    }
-}
-
-$token = Invoke-RestMethod -Method Post -Uri "https://login.microsoftonline.com/$tenant/oauth2/v2.0/token" -Body @{
-    grant_type    = 'client_credentials'
-    client_id     = $settings['clientid']
-    client_secret = $settings['clientsecret']
-    scope         = "$url/.default"
-}
-
-$headers = @{
-    Authorization      = "Bearer $($token.access_token)"
-    Accept             = 'application/json'
-    'OData-Version'    = '4.0'
-    'OData-MaxVersion' = '4.0'
-    Prefer             = 'odata.include-annotations="*"'
-}
-
-Write-Host "Environment: $url"
-
-# ---- Web API helpers -----------------------------------------------------------------------------------------------
-
-function Get-Error($errorRecord) {
-    try {
-        return ($errorRecord.ErrorDetails.Message | ConvertFrom-Json).error.message
-    }
-    catch {
-        return $errorRecord.Exception.Message
-    }
-}
-
-function Invoke-Api([string]$method, [string]$path, $body) {
-    $arguments = @{ Method = $method; Uri = "$api/$path"; Headers = $headers; UseBasicParsing = $true }
-
-    if ($null -ne $body) {
-        $arguments.Body = [Text.Encoding]::UTF8.GetBytes(($body | ConvertTo-Json -Depth 10 -Compress))
-        $arguments.ContentType = 'application/json; charset=utf-8'
-    }
-
-    try {
-        $response = Invoke-WebRequest @arguments
-    }
-    catch {
-        throw "$method $path failed: $(Get-Error $_)"
-    }
-
-    $location = @($response.Headers['OData-EntityId'])[0]
-
-    if ($location -match '\(([0-9a-fA-F-]{36})\)$') {
-        return $Matches[1]
-    }
-
-    if ($response.Content) {
-        return $response.Content | ConvertFrom-Json
-    }
-}
-
-function Get-Records([string]$entitySet, [string]$query) {
-    return @((Invoke-Api GET "$entitySet`?$query").value)
-}
-
-function Escape-OData([string]$text) {
-    return $text.Replace("'", "''")
-}
-
+# connection and Web API helpers
+. (Join-Path $PSScriptRoot 'Dataverse.ps1')
 
 # Finds a test record by name; returns what a lookup step needs.
 function Get-TestRecord([string]$entity, [string]$entitySet, [string]$idColumn, [string]$nameColumn, [string]$filter) {
@@ -167,18 +70,9 @@ function Get-TestRecord([string]$entity, [string]$entitySet, [string]$idColumn, 
         throw "No $entity matches $filter. Run tools\New-UpgradeTestData.ps1 first."
     }
 
-    return @{ entity = $entity; id = $record[0].$idColumn; name = $record[0].$nameColumn }
-}
+    $id = $record[0].$idColumn
 
-function Get-OptionValue([string]$entity, [string]$column, [string]$type, [string]$label) {
-    $metadata = Invoke-Api GET "EntityDefinitions(LogicalName='$entity')/Attributes(LogicalName='$column')/Microsoft.Dynamics.CRM.$type`?`$select=LogicalName&`$expand=OptionSet(`$select=Options)"
-    $option = $metadata.OptionSet.Options | Where-Object { $_.Label.UserLocalizedLabel.Label -eq $label } | Select-Object -First 1
-
-    if (-not $option) {
-        throw "$entity.$column has no option '$label'. Run the integration tests once to create the test columns."
-    }
-
-    return $option.Value
+    return @{ entity = $entity; id = $id; name = $record[0].$nameColumn; url = Get-RecordUrl $entity $id }
 }
 
 # ---- the installed workflow tools ----------------------------------------------------------------------------------
@@ -217,11 +111,14 @@ $records = @{
     contact1         = Get-TestRecord 'contact' 'contacts' 'contactid' 'fullname' "fullname eq 'WFT Contact 1'"
     testUser         = Get-TestRecord 'systemuser' 'systemusers' 'systemuserid' 'fullname' "systemuserid eq $($me.UserId)"
     account          = Get-TestRecord 'account' 'accounts' 'accountid' 'name' "name eq 'WFT Upgrade Account'"
-    scratch          = Get-TestRecord 'account' 'accounts' 'accountid' 'name' "name eq 'WFT Scratch Account' and statecode eq 0"
+    # the newest, even when 04 has deactivated it: 05 only maps values onto it
+    scratch          = Get-TestRecord 'account' 'accounts' 'accountid' 'name' "name eq 'WFT Scratch Account'"
     lead             = Get-TestRecord 'lead' 'leads' 'leadid' 'fullname' "emailaddress1 eq 'wft-lead@example.com'"
     opportunity      = Get-TestRecord 'opportunity' 'opportunities' 'opportunityid' 'name' "name eq 'WFT Opportunity'"
     choiceTwo        = Get-OptionValue 'account' 'new_wfttestchoices' 'MultiSelectPicklistAttributeMetadata' 'Two'
     processStage     = $ProcessStage
+    # Join builds the clone's URL from this and the cloned id
+    accountUrlStart  = (Get-RecordUrl 'account' '') -replace '&pagetype=entityrecord$', ''
 }
 
 $workflows = @{}
@@ -287,18 +184,30 @@ foreach ($item in $manifest) {
             $headers.Remove('MSCRM.SolutionUniqueName')
         }
 
-        $action = "created in $Solution"
+        $action = "created in $Solution (draft)"
     }
     else {
         $current = $existing[$item.name]
+        $name = $item.name
+        $replacing = [bool]($Replace | Where-Object { $name -eq $_ -or $name -like "WFT $_ *" })
 
-        if ($current.statecode -ne 0 -or $current.xaml -notmatch '<mxswa:Workflow\s*/>') {
+        if (-not $replacing -and ($current.statecode -ne 0 -or $current.xaml -notmatch '<mxswa:Workflow\s*/>')) {
             Write-Host "$($item.name): has steps or is active, left alone"
             continue
         }
 
+        # an activated workflow can't be changed
+        if ($current.statecode -eq 1) {
+            Invoke-Api PATCH "workflows($($item.id))" @{ statecode = 0; statuscode = 1 } | Out-Null
+        }
+
         Invoke-Api PATCH "workflows($($item.id))" @{ xaml = $xaml } | Out-Null
-        $action = 'filled in'
+        $action = if ($replacing) { 'replaced' } else { 'filled in' }
+
+        if ($current.statecode -eq 1) {
+            Invoke-Api PATCH "workflows($($item.id))" @{ statecode = 1; statuscode = 2 } | Out-Null
+            $action += ' and activated again'
+        }
     }
 
     $saved = Invoke-Api GET "workflows($($item.id))?`$select=xaml"
@@ -307,8 +216,8 @@ foreach ($item in $manifest) {
         throw "$($item.name): what was saved differs from what was sent."
     }
 
-    Write-Host "$($item.name): $action (draft)" -ForegroundColor Green
+    Write-Host "$($item.name): $action" -ForegroundColor Green
 }
 
 Write-Host ''
-Write-Host 'Open each workflow in the designer, check its steps and activate it.' -ForegroundColor Cyan
+Write-Host 'Open each new or filled-in workflow in the designer, check its steps and activate it.' -ForegroundColor Cyan

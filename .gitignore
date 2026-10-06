@@ -261,3 +261,5 @@ __pycache__/
 *.pyc
 # solution files built by tools\Build-Solutions.ps1
 dist/
+# upgrade test runs from tools\Invoke-UpgradeTestRun.ps1
+testing/results/
