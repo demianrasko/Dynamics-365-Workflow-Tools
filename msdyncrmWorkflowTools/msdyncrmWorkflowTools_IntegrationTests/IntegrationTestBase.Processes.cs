@@ -1,7 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.Crm.Sdk.Messages;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using msdyncrmWorkflowTools;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace msdyncrmWorkflowTools_IntegrationTests
@@ -63,6 +65,39 @@ namespace msdyncrmWorkflowTools_IntegrationTests
         }
 
         [TestMethod]
+        public void SetProcess_SwitchesBetweenTwoProcesses()
+        {
+            // upstream issue #223: switching a record from one business process flow to another
+            var processes = ContactProcessFlows().Take(2).ToList();
+
+            if (processes.Count < 2)
+            {
+                Assert.Inconclusive("Switching needs two working business process flows on contact.");
+            }
+
+            var contact = CreateContact(null);
+
+            foreach (var process in new[] { processes[0], processes[1], processes[0] })
+            {
+                Common.SetProcess(contact, process.ToEntityReference());
+
+                // the active instance comes first; an instance's table is its process's unique name
+                var active = ((RetrieveProcessInstancesResponse)Service.Execute(new RetrieveProcessInstancesRequest
+                {
+                    EntityId = contact.Id,
+                    EntityLogicalName = contact.LogicalName
+                })).Processes.Entities.First();
+
+                Assert.AreEqual(process.GetAttributeValue<string>(AttributeNames.UniqueName), active.LogicalName);
+            }
+
+            foreach (var process in processes)
+            {
+                DeleteAfterTest(new EntityReference(Common.GetProcessEntityName(process.Id), Common.GetProcessInstance(contact, process.Id).Id));
+            }
+        }
+
+        [TestMethod]
         public void ExecuteWorkflow_RunsTheTestWorkflow()
         {
             var workflow = Service.RetrieveMultiple(new QueryExpression(EntityNames.Workflow)
@@ -95,6 +130,21 @@ namespace msdyncrmWorkflowTools_IntegrationTests
         /// </summary>
         private Entity ContactProcessFlow()
         {
+            var process = ContactProcessFlows().FirstOrDefault();
+
+            if (process == null)
+            {
+                Assert.Inconclusive("This environment has no working business process flow on contact. Create one named \"WFT Test BPF\" with two stages.");
+            }
+
+            return process;
+        }
+
+        /// <summary>
+        /// The active business process flows on contact whose table exists, "WFT Test BPF" first.
+        /// </summary>
+        private List<Entity> ContactProcessFlows()
+        {
             var processes = Service.RetrieveMultiple(new QueryExpression(EntityNames.Workflow)
             {
                 ColumnSet = new ColumnSet(AttributeNames.UniqueName, AttributeNames.Name),
@@ -111,14 +161,7 @@ namespace msdyncrmWorkflowTools_IntegrationTests
             }).Entities.OrderBy(p => p.GetAttributeValue<string>(AttributeNames.Name) == "WFT Test BPF" ? 0 : 1);
 
             // a process whose instance table is missing is broken (Dataverse itself can't use it)
-            var process = processes.FirstOrDefault(p => TableExists(p.GetAttributeValue<string>(AttributeNames.UniqueName)));
-
-            if (process == null)
-            {
-                Assert.Inconclusive("This environment has no working business process flow on contact. Create one named \"WFT Test BPF\" with two stages.");
-            }
-
-            return process;
+            return processes.Where(p => TableExists(p.GetAttributeValue<string>(AttributeNames.UniqueName))).ToList();
         }
 
         private EntityReference StartProcess(Entity process, EntityReference contact)
