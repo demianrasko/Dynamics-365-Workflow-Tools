@@ -24,15 +24,7 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var record = Quote.Get(executionContext);
-            var fieldName = Fieldname.Get(executionContext);
-
-            if (record == null || string.IsNullOrEmpty(fieldName))
-            {
-                throw new InvalidPluginExecutionException("Quote and Field name are required.");
-            }
-
-            common.SetMoney(record, fieldName, Discountamount.Get(executionContext));
+            common.SetMoney(Utility.Required(Quote.Get(executionContext), "Quote"), Utility.Required(Fieldname.Get(executionContext), "Field name"), Discountamount.Get(executionContext));
         }
     }
 }

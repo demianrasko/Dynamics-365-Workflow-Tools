@@ -95,9 +95,10 @@ namespace msdyncrmWorkflowTools
         /// <param name="fetchXml">The query; {PARENT_GUID} is replaced by <paramref name="parentId"/>.</param>
         /// <param name="parentId">The record the workflow runs on.</param>
         /// <returns>The date, or null when the query returns no record or no date.</returns>
+        /// <exception cref="InvalidPluginExecutionException">The query is empty.</exception>
         public DateTime? CalculateAggregateDate(string fetchXml, Guid parentId)
         {
-            fetchXml = fetchXml.Replace("{PARENT_GUID}", parentId.ToString());
+            fetchXml = Utility.Required(fetchXml, "FetchXML").Replace("{PARENT_GUID}", parentId.ToString());
             Trace($"FetchXML={fetchXml}");
 
             var record = RetrieveFirstWithFetchXml(fetchXml);
@@ -112,6 +113,31 @@ namespace msdyncrmWorkflowTools
             Trace(date.HasValue ? $"Date={date}" : "The record has no date.");
 
             return date;
+        }
+
+        /// <summary>
+        /// Count, sum, average, min and max of the first attribute in a FetchXML query, over every record it returns
+        /// (all pages), for the Rollup Functions activity. Records without a value are left out of the sum, average,
+        /// min and max.
+        /// </summary>
+        /// <param name="fetchXml">The query; {PARENT_GUID} is replaced by <paramref name="parentId"/>.</param>
+        /// <param name="parentId">The record the workflow runs on.</param>
+        /// <exception cref="InvalidPluginExecutionException">The query is empty.</exception>
+        public RollupResult CalculateRollup(string fetchXml, Guid parentId)
+        {
+            fetchXml = Utility.Required(fetchXml, "FetchXML").Replace("{PARENT_GUID}", parentId.ToString());
+            Trace($"FetchXML={fetchXml}");
+
+            // the calculations use the first attribute in the fetch
+            var key = Utility.GetFirstFetchAttributeKey(fetchXml);
+            var values = RetrieveAllWithFetchXml(fetchXml)
+                .Select(record => Utility.ToDecimal(Utility.GetFirstFetchValue(record, key)))
+                .ToList();
+
+            var result = Utility.CalculateRollup(values);
+            Trace($"Records={result.Count}, Sum={result.Sum}, Average={result.Average}, Min={result.Min}, Max={result.Max}");
+
+            return result;
         }
 
         /// <summary>
@@ -204,6 +230,40 @@ namespace msdyncrmWorkflowTools
         public Entity RetrieveFirstMatch(string entityName, IEnumerable<string> columns, params KeyValuePair<string, object>[] equalFilters)
         {
             return RetrieveFirst(FirstMatchQuery(entityName, columns, equalFilters));
+        }
+
+        /// <summary>
+        /// Two column values, as text, of the first record whose filter columns equal the given values, for the Query
+        /// Values activity. The filter values are typed as text and converted to each column's type
+        /// (see <see cref="ToFilterValue"/>); an empty filter column is left out.
+        /// </summary>
+        /// <param name="value2">The second column's value; null when there's no match or no value.</param>
+        /// <returns>The first column's value; null when there's no match or no value.</returns>
+        public string QueryValues(string entityName, string attribute1, string attribute2, string filterAttribute1, string filterValue1,
+            string filterAttribute2, string filterValue2, out string value2)
+        {
+            Trace($"EntityName: {entityName} - Attribute1:{attribute1} - Attribute2:{attribute2} - FilterAttribute1:{filterAttribute1} - FilterAttribute2:{filterAttribute2} - ValueAttribute1:{filterValue1} ValueAttribute2:{filterValue2}");
+
+            var record = RetrieveFirstMatch(entityName,
+                new[] { attribute1, attribute2 },
+                new KeyValuePair<string, object>(filterAttribute1, string.IsNullOrEmpty(filterAttribute1) ? null : ToFilterValue(entityName, filterAttribute1, filterValue1)),
+                new KeyValuePair<string, object>(filterAttribute2, string.IsNullOrEmpty(filterAttribute2) ? null : ToFilterValue(entityName, filterAttribute2, filterValue2)));
+
+            if (record == null)
+            {
+                Trace("No matching record.");
+            }
+
+            value2 = ColumnText(record, attribute2);
+
+            return ColumnText(record, attribute1);
+        }
+
+        private static string ColumnText(Entity record, string attributeName)
+        {
+            return record != null && !string.IsNullOrEmpty(attributeName) && record.Contains(attributeName)
+                ? Utility.AttributeValueToString(record[attributeName])
+                : null;
         }
     }
 }

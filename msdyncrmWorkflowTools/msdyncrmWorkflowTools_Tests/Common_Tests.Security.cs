@@ -266,5 +266,15 @@ namespace msdyncrmWorkflowTools_Tests
             AssertCondition(query.Criteria.Conditions.Single(), "parentrootroleid", ConditionOperator.Equal, IdB);
             AssertCondition(query.LinkEntities.Single().LinkCriteria.Conditions.Single(), "systemuserid", ConditionOperator.Equal, IdA);
         }
+
+        [TestMethod]
+        public void ShareAndUnshare_NeedTheRecordUrl()
+        {
+            var user = new EntityReference("systemuser", UserId);
+
+            AssertRequired("Sharing Record URL", () => common.ShareRecord(null, user, AccessRights.ReadAccess));
+            AssertRequired("Sharing Record URL", () => common.UnshareRecord(string.Empty, user));
+            Assert.AreEqual(0, service.Executed.Count);
+        }
     }
 }

@@ -30,19 +30,7 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var opportunity = Opportunity.Get(executionContext);
-            var existingProduct = ExistingProduct.Get(executionContext);
-            var uom = UoM.Get(executionContext);
-            var quantity = Quantity.Get(executionContext);
-
-            if (opportunity == null || existingProduct == null || uom == null)
-            {
-                throw new InvalidPluginExecutionException("Opportunity, Existing Product and Unit are required.");
-            }
-
-            var id = common.CreateOpportunityProduct(opportunity, existingProduct, uom, quantity);
-
-            common.Trace($"Opportunity product {id} created");
+            common.CreateOpportunityProduct(Opportunity.Get(executionContext), ExistingProduct.Get(executionContext), UoM.Get(executionContext), Quantity.Get(executionContext));
         }
     }
 }

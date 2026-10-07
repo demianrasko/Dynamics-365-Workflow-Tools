@@ -1,5 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Xrm.Sdk;
+using msdyncrmWorkflowTools;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
@@ -88,6 +90,37 @@ namespace msdyncrmWorkflowTools_Tests
             {
                 Assert.AreEqual("AISummarize response missing 'SummarizedText'.", ex.Message);
             }
+        }
+
+        [TestMethod]
+        public void AIFunctions_EmptyTextIsAnErrorBeforeAnyRequest()
+        {
+            foreach (var call in new Action[] { () => common.AIReply(" "), () => common.AISentiment(null), () => common.AISummarize(string.Empty), () => common.AITranslate(" ", "fr") })
+            {
+                Assert.AreEqual("Text is empty.", Assert.ThrowsException<InvalidPluginExecutionException>(call).Message);
+            }
+
+            Assert.AreEqual(0, service.Executed.Count);
+        }
+
+        [TestMethod]
+        public void AIClassify_NeedsTextAndTwoCategories()
+        {
+            Assert.AreEqual("Text or Categories are empty.", Assert.ThrowsException<InvalidPluginExecutionException>(() => common.AIClassify(" ", new[] { "a", "b" })).Message);
+            Assert.AreEqual("Text or Categories are empty.", Assert.ThrowsException<InvalidPluginExecutionException>(() => common.AIClassify("text", new string[0])).Message);
+            Assert.AreEqual("At least two categories are required.", Assert.ThrowsException<InvalidPluginExecutionException>(() => common.AIClassify("text", new[] { "a" })).Message);
+            Assert.AreEqual(0, service.Executed.Count);
+        }
+
+        [TestMethod]
+        public void AISummarizeRecord_FromARecordUrl()
+        {
+            service.OnExecute = r => new OrganizationResponse { Results = { ["SummarizedText"] = "summary" } };
+
+            Assert.AreEqual("summary", common.AISummarizeRecord(UrlFor(EntityNames.Account), false, null));
+            Assert.AreEqual(EntityNames.Account, service.Executed.Single()["EntityLogicalName"]);
+            Assert.AreEqual(RecordId.ToString(), service.Executed.Single()["Id"]);
+            AssertRequired("Record URL", () => common.AISummarizeRecord((string)null, false, null));
         }
     }
 }

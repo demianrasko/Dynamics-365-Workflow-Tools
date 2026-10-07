@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
-using System.Collections.Generic;
 
 namespace msdyncrmWorkflowTools
 {
@@ -48,38 +47,10 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var entityName = EntityName.Get(executionContext);
-            var attribute1 = Attribute1.Get(executionContext);
-            var attribute2 = Attribute2.Get(executionContext);
-            var filterAttribute1 = FilterAttribute1.Get(executionContext);
-            var filterAttribute2 = FilterAttribute2.Get(executionContext);
-            var valueAttribute1 = ValueAttribute1.Get(executionContext);
-            var valueAttribute2 = ValueAttribute2.Get(executionContext);
-
-            common.Trace(
-                $"EntityName: {entityName} - Attribute1:{attribute1} - Attribute2:{attribute2} - FilterAttribute1:{filterAttribute1} - FilterAttribute2:{filterAttribute2} - ValueAttribute1:{valueAttribute1} ValueAttribute2:{valueAttribute2}");
-
-            // the values are typed as text; a choice, status, number, date, Yes/No or lookup column needs its own type
-            var record = common.RetrieveFirstMatch(entityName,
-                new[] { attribute1, attribute2 },
-                new KeyValuePair<string, object>(filterAttribute1, string.IsNullOrEmpty(filterAttribute1) ? null : common.ToFilterValue(entityName, filterAttribute1, valueAttribute1)),
-                new KeyValuePair<string, object>(filterAttribute2, string.IsNullOrEmpty(filterAttribute2) ? null : common.ToFilterValue(entityName, filterAttribute2, valueAttribute2)));
-
-            if (record == null)
-            {
-                common.Trace("No matching record.");
-                return;
-            }
-
-            if (!string.IsNullOrEmpty(attribute1) && record.Contains(attribute1))
-            {
-                ResultValue1.Set(executionContext, Utility.AttributeValueToString(record[attribute1]));
-            }
-
-            if (!string.IsNullOrEmpty(attribute2) && record.Contains(attribute2))
-            {
-                ResultValue2.Set(executionContext, Utility.AttributeValueToString(record[attribute2]));
-            }
+            ResultValue1.Set(executionContext, common.QueryValues(EntityName.Get(executionContext), Attribute1.Get(executionContext), Attribute2.Get(executionContext),
+                FilterAttribute1.Get(executionContext), ValueAttribute1.Get(executionContext), FilterAttribute2.Get(executionContext), ValueAttribute2.Get(executionContext),
+                out var value2));
+            ResultValue2.Set(executionContext, value2);
         }
     }
 }

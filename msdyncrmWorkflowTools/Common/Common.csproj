@@ -93,7 +93,10 @@
     <Compile Include="EntityNames.cs" />
     <Compile Include="UtilityClass\GeoLocation.cs" />
     <Compile Include="UtilityClass\RecordUrl.cs" />
+    <Compile Include="UtilityClass\DateFunctionsResult.cs" />
+    <Compile Include="UtilityClass\MobileDeepLinks.cs" />
     <Compile Include="UtilityClass\RollupResult.cs" />
+    <Compile Include="UtilityClass\StringFunctionsResult.cs" />
     <Compile Include="UtilityClass\Utility.cs" />
     <Compile Include="UtilityClass\Utility.AttributeValues.cs" />
     <Compile Include="UtilityClass\Utility.Currency.cs" />

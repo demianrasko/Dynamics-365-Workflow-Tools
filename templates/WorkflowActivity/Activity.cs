@@ -1,4 +1,3 @@
-using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
 
@@ -24,17 +23,9 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            // Read and check the inputs here; put the Dataverse work in a Common method so it can be tested.
-            var recordUrl = RecordURL.Get(executionContext);
-
-            if (string.IsNullOrEmpty(recordUrl))
-            {
-                throw new InvalidPluginExecutionException("Record URL is required.");
-            }
-
-            var result = common.$safeitemname$(common.GetRecordReference(recordUrl));
-
-            Result.Set(executionContext, result);
+            // Only read the inputs, call one Common method and set the outputs: the checks and the work go in the
+            // Common method, so they can be tested.
+            Result.Set(executionContext, common.$safeitemname$(RecordURL.Get(executionContext)));
         }
     }
 }

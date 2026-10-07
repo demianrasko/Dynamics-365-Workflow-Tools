@@ -9,6 +9,46 @@ namespace msdyncrmWorkflowTools
     public static partial class Utility
     {
         /// <summary>
+        /// The input's value, or an error naming the input when it's empty. [RequiredArgument] is only enforced in the
+        /// designer; a dynamic value can still be empty when the workflow runs.
+        /// </summary>
+        /// <param name="value">The input's value.</param>
+        /// <param name="inputName">The input's name as the designer shows it.</param>
+        /// <exception cref="InvalidPluginExecutionException">The value is null or empty.</exception>
+        public static string Required(string value, string inputName)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                throw new InvalidPluginExecutionException($"{inputName} is required.");
+            }
+
+            return value;
+        }
+
+        /// <summary>
+        /// The input's value (e.g. a lookup), or an error naming the input when it's not set.
+        /// </summary>
+        /// <exception cref="InvalidPluginExecutionException">The value is null.</exception>
+        public static T Required<T>(T value, string inputName) where T : class
+        {
+            return value ?? throw new InvalidPluginExecutionException($"{inputName} is required.");
+        }
+
+        /// <summary>
+        /// An id typed as text (spaces and braces allowed), or an error naming the input when it's empty or not a GUID.
+        /// </summary>
+        /// <exception cref="InvalidPluginExecutionException">The text is empty or not a GUID.</exception>
+        public static Guid RequiredGuid(string value, string inputName)
+        {
+            if (!Guid.TryParse(Required(value, inputName).Trim(), out var id))
+            {
+                throw new InvalidPluginExecutionException($"{inputName} '{value}' is not a valid GUID.");
+            }
+
+            return id;
+        }
+
+        /// <summary>
         /// Formats an exception as text for the tracing service or an error message: type, message,
         /// Dataverse fault details (error code, timestamp, activity id, trace text, nested inner faults),
         /// stack trace, and the same for every inner exception.

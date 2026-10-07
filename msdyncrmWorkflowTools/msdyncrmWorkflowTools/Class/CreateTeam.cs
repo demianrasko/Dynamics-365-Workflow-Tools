@@ -32,14 +32,7 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var teamName = TeamName.Get(executionContext);
-            var teamType = TeamType.Get(executionContext);
-            var administrator = Administrator.Get(executionContext);
-            var businessUnit = BusinessUnit.Get(executionContext);
-
-            common.Trace($"teamName={teamName}");
-
-            var createdTeamId = common.CreateTeam(teamName, teamType, administrator, businessUnit);
+            var createdTeamId = common.CreateTeam(TeamName.Get(executionContext), TeamType.Get(executionContext), Administrator.Get(executionContext), BusinessUnit.Get(executionContext));
 
             createdTeam.Set(executionContext, new EntityReference(EntityNames.Team, createdTeamId));
         }

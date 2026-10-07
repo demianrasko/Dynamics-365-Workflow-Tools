@@ -20,9 +20,7 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var opportunity = Opportunity.Get(executionContext) ?? throw new InvalidPluginExecutionException("Opportunity is required.");
-
-            Quote.Set(executionContext, common.CreateQuoteFromOpportunity(opportunity.Id));
+            Quote.Set(executionContext, common.CreateQuoteFromOpportunity(Utility.Required(Opportunity.Get(executionContext), "Opportunity").Id));
         }
     }
 }

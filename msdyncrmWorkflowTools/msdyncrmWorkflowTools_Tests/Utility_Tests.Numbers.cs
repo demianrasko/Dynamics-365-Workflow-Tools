@@ -33,5 +33,12 @@ namespace msdyncrmWorkflowTools_Tests
             Assert.ThrowsException<InvalidPluginExecutionException>(() => Utility.NumericOperation(5m, "/", 0m));
             Assert.ThrowsException<InvalidPluginExecutionException>(() => Utility.NumericOperation(5m, "%", 0m));
         }
+
+        [TestMethod]
+        public void DivideOrZero_IsZeroForADivisionByZero()
+        {
+            Assert.AreEqual(2.5m, Utility.DivideOrZero(5m, 2m));
+            Assert.AreEqual(0m, Utility.DivideOrZero(5m, 0m));
+        }
     }
 }

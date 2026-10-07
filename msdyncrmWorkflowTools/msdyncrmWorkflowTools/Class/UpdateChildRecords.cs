@@ -1,5 +1,4 @@
-﻿using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Workflow;
+﻿using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools
@@ -47,27 +46,8 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var parentRecordUrl = ParentRecordURL.Get(executionContext);
-
-            if (string.IsNullOrEmpty(parentRecordUrl))
-            {
-                throw new InvalidPluginExecutionException("Parent Record URL is required.");
-            }
-
-            var parsedUrl = common.ParseRecordUrl(parentRecordUrl);
-
-            common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
-
-            var relationshipName = RelationshipName.Get(executionContext);
-            var parentFieldNameToUpdate = ParentFieldNameToUpdate.Get(executionContext);
-            var valueToSet = ValueToSet.Get(executionContext);
-            var childFieldNameToUpdate = ChildFieldNameToUpdate.Get(executionContext);
-            var updateOnlyActive = UpdateonlyActive.Get(executionContext);
-
-            common.Trace($"{nameof(RelationshipName)}={relationshipName}--_ParentFieldNameToUpdate={parentFieldNameToUpdate}");
-            common.Trace($"_ValueToSet={valueToSet}--_ChildFieldNameToUpdate={childFieldNameToUpdate}");
-
-            common.UpdateChildRecords(relationshipName, parsedUrl.EntityName, parsedUrl.Id, parentFieldNameToUpdate, valueToSet, childFieldNameToUpdate, updateOnlyActive,
+            common.UpdateChildRecords(ParentRecordURL.Get(executionContext), RelationshipName.Get(executionContext), ParentFieldNameToUpdate.Get(executionContext),
+                ValueToSet.Get(executionContext), ChildFieldNameToUpdate.Get(executionContext), UpdateonlyActive.Get(executionContext),
                 ContinueIfARecordFails.Get(executionContext), out var failed);
 
             FailedRecords.Set(executionContext, failed);

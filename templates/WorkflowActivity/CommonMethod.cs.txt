@@ -4,10 +4,12 @@
         /// <summary>
         /// TODO: What the method does.
         /// </summary>
-        /// <param name="record">The record to work on.</param>
+        /// <param name="recordUrl">Record URL of the record to work on.</param>
         /// <returns>TODO: What the method returns.</returns>
-        public string MyActivity(EntityReference record)
+        /// <exception cref="InvalidPluginExecutionException">The record URL is empty.</exception>
+        public string MyActivity(string recordUrl)
         {
+            var record = GetRecordReference(recordUrl, "Record URL");
             Trace($"MyActivity on {record.LogicalName} {record.Id}");
 
             var entity = Service.Retrieve(record.LogicalName, record.Id, new ColumnSet(AttributeNames.Name));

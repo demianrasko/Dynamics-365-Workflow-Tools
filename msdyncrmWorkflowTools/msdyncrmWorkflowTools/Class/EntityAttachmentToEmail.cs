@@ -33,30 +33,8 @@ namespace msdyncrmWorkflowTools.Class
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            // Get parameters
-            var mainRecordUrl = MainRecordURL.Get(executionContext);
-            var fileName = FileName.Get(executionContext);
-            var email = Email.Get(executionContext);
-
-            var retrieveActivityMimeAttachment = RetrieveActivityMimeAttachment.Get(executionContext);
-
-            var mostRecent = MostRecent.Get(executionContext);
-            int? topRecords = TopRecords.Get(executionContext);
-
-            // Extract values from URL
-            var parsedUrl = Utility.ParseRecordUrl(mainRecordUrl);
-
-            common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
-
-            // Treat file name
-            if (fileName == "*")
-            {
-                fileName = string.Empty;
-            }
-
-            fileName = fileName.Replace("*", "%");
-
-            common.EntityAttachmentToEmail(fileName, parsedUrl.Id, email, retrieveActivityMimeAttachment, mostRecent, topRecords);
+            common.EntityAttachmentToEmail(MainRecordURL.Get(executionContext), FileName.Get(executionContext), Email.Get(executionContext),
+                RetrieveActivityMimeAttachment.Get(executionContext), MostRecent.Get(executionContext), TopRecords.Get(executionContext));
         }
     }
 }

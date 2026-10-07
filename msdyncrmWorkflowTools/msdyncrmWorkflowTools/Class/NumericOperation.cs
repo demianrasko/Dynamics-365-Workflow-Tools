@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
-using System.Globalization;
 
 namespace msdyncrmWorkflowTools
 {
@@ -27,14 +26,7 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var number1 = Number1.Get(executionContext);
-            var operation = Operation.Get(executionContext);
-            var number2 = Number2.Get(executionContext);
-
-            var result = Utility.NumericOperation(number1, operation, number2);
-            common.Trace($"{number1.ToString(CultureInfo.InvariantCulture)} {operation} {number2.ToString(CultureInfo.InvariantCulture)} = {result.ToString(CultureInfo.InvariantCulture)}");
-
-            Result.Set(executionContext, result);
+            Result.Set(executionContext, Utility.NumericOperation(Number1.Get(executionContext), Operation.Get(executionContext), Number2.Get(executionContext)));
         }
     }
 }

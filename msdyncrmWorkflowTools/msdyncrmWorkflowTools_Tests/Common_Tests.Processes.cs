@@ -1,6 +1,8 @@
 ﻿using Microsoft.Crm.Sdk.Messages;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Messages;
+using Microsoft.Xrm.Sdk.Metadata;
 using Microsoft.Xrm.Sdk.Query;
 using msdyncrmWorkflowTools;
 using System;
@@ -159,6 +161,90 @@ namespace msdyncrmWorkflowTools_Tests
             service.OnRetrieveMultiple = query => Collection(new Entity("account") { ["name"] = "A" }, new Entity("account") { ["name"] = "B" });
 
             Assert.AreEqual("A\nB", common.ConcatenateFromQuery("<fetch><entity name='account' /></fetch>", "name", @"\n", string.Empty, 0));
+        }
+
+        [TestMethod]
+        public void ConcatenateFromQuery_FillsInTheParentAndNeedsAQuery()
+        {
+            var parentId = Guid.NewGuid();
+            service.OnRetrieveMultiple = query => Collection(new Entity("contact") { ["lastname"] = "Smith" });
+
+            Assert.AreEqual("Smith", common.ConcatenateFromQuery("<fetch><entity name='contact'><attribute name='lastname' /><filter><condition attribute='parentcustomerid' operator='eq' value='{PARENT_GUID}' /></filter></entity></fetch>",
+                parentId, "lastname", ",", null, 0));
+            StringAssert.Contains(((FetchExpression)service.Queries[0]).Query, parentId.ToString());
+            AssertRequired("FetchXML", () => common.ConcatenateFromQuery(string.Empty, parentId, "lastname", ",", null, 0));
+        }
+
+        [TestMethod]
+        public void ExecuteWorkflow_ForOneRecordIdTypedAsText()
+        {
+            var id = Guid.NewGuid();
+            var process = new EntityReference("workflow", Guid.NewGuid());
+            service.OnExecute = r => new OrganizationResponse();
+
+            common.ExecuteWorkflow(process, id.ToString());
+
+            var request = (ExecuteWorkflowRequest)service.Executed.Single();
+            Assert.AreEqual(id, request.EntityId);
+            Assert.AreEqual(process.Id, request.WorkflowId);
+            Assert.AreEqual("Record ID 'x' is not a valid GUID.", Assert.ThrowsException<InvalidPluginExecutionException>(() => common.ExecuteWorkflow(process, "x")).Message);
+            AssertRequired("Process", () => common.ExecuteWorkflow(null, id.ToString()));
+        }
+
+        [TestMethod]
+        public void ExecuteWorkflowForRecordsInQuery_RunsForEveryRecord()
+        {
+            var ids = new[] { Guid.NewGuid(), Guid.NewGuid() };
+            var process = new EntityReference("workflow", Guid.NewGuid());
+            service.OnExecute = r => r is FetchXmlToQueryExpressionRequest
+                ? (OrganizationResponse)new FetchXmlToQueryExpressionResponse { Results = { ["Query"] = new QueryExpression("contact") } }
+                : new OrganizationResponse();
+            service.OnRetrieveMultiple = q => Page(false, null, ids.Select(id => new Entity("contact", id)).ToArray());
+
+            common.ExecuteWorkflowForRecordsInQuery("<fetch><entity name='contact' /></fetch>", process);
+
+            CollectionAssert.AreEqual(ids, service.Executed.OfType<ExecuteWorkflowRequest>().Select(r => r.EntityId).ToArray());
+        }
+
+        [TestMethod]
+        public void ExecuteWorkflowForRecordsInQuery_NoQueryDoesNothingAndAQueryNeedsAProcess()
+        {
+            common.ExecuteWorkflowForRecordsInQuery(string.Empty, null);
+            Assert.AreEqual(0, service.Executed.Count);
+
+            Assert.AreEqual("Process is required when a Query is given.",
+                Assert.ThrowsException<InvalidPluginExecutionException>(() => common.ExecuteWorkflowForRecordsInQuery("<fetch />", null)).Message);
+        }
+
+        [TestMethod]
+        public void DistributeWorkflowOneToMany_RunsForEveryChild()
+        {
+            var child = Guid.NewGuid();
+            var workflow = new EntityReference("workflow", Guid.NewGuid());
+            service.OnExecute = r => r is RetrieveRelationshipRequest
+                ? (OrganizationResponse)new RetrieveRelationshipResponse
+                {
+                    Results = { ["RelationshipMetadata"] = new OneToManyRelationshipMetadata { ReferencingEntity = "contact", ReferencingAttribute = "parentcustomerid" } }
+                }
+                : new OrganizationResponse();
+            service.OnRetrieveMultiple = q => Page(false, null, new Entity("contact", child));
+
+            common.DistributeWorkflowOneToMany("contact_customer_accounts", workflow, RecordId);
+
+            var request = service.Executed.OfType<ExecuteWorkflowRequest>().Single();
+            Assert.AreEqual(child, request.EntityId);
+            Assert.AreEqual(workflow.Id, request.WorkflowId);
+        }
+
+        [TestMethod]
+        public void DistributeWorkflow_NeedsTheRelationshipAndTheWorkflow()
+        {
+            var workflow = new EntityReference("workflow", Guid.NewGuid());
+            var record = new EntityReference("account", RecordId);
+
+            Assert.ThrowsException<InvalidPluginExecutionException>(() => common.DistributeWorkflowOneToMany(null, workflow, RecordId));
+            Assert.ThrowsException<InvalidPluginExecutionException>(() => common.DistributeWorkflowManyToMany("accountleads_association", null, record));
+            Assert.AreEqual(0, service.Executed.Count);
         }
     }
 }

@@ -27,15 +27,7 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var globalOptionSet = GlobalOptionSet.Get(executionContext);
-            var attributeName = AttributeName.Get(executionContext);
-            var entityName = EntityName.Get(executionContext);
-
-            var optionValue = OptionValue.Get(executionContext);
-
-            common.Trace($"attributeName={attributeName}--entityName={entityName}" );
-
-            common.DeleteOptionValue(globalOptionSet,attributeName, entityName,  optionValue);
+            common.DeleteOptionValue(GlobalOptionSet.Get(executionContext), AttributeName.Get(executionContext), EntityName.Get(executionContext), OptionValue.Get(executionContext));
         }
     }
 }

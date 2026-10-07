@@ -1,5 +1,4 @@
-﻿using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Workflow;
+﻿using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools
@@ -23,14 +22,7 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var recordUrl = ParentRecordURL.Get(executionContext);
-
-            if (string.IsNullOrEmpty(recordUrl))
-            {
-                throw new InvalidPluginExecutionException("Parent Record URL is required.");
-            }
-
-            common.CalculateRollupField(common.GetRecordReference(recordUrl), FieldName.Get(executionContext), CopyResultToField.Get(executionContext));
+            common.CalculateRollupField(common.GetRecordReference(ParentRecordURL.Get(executionContext), "Parent Record URL"), FieldName.Get(executionContext), CopyResultToField.Get(executionContext));
         }
     }
 }

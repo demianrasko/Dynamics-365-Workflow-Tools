@@ -25,6 +25,50 @@ namespace msdyncrmWorkflowTools
         }
 
         /// <summary>
+        /// The record URL of any record, built from a reference record URL of the same environment, the record's id as
+        /// text and its table, for the Get Record URL activity.
+        /// </summary>
+        /// <exception cref="InvalidPluginExecutionException">The reference URL or the table is empty, or the id isn't a GUID.</exception>
+        public string GetRecordUrl(string referenceRecordUrl, string recordId, string entityName)
+        {
+            if (string.IsNullOrEmpty(referenceRecordUrl) || string.IsNullOrEmpty(entityName))
+            {
+                throw new InvalidPluginExecutionException("Reference Record URL and Entity Logical Name are required.");
+            }
+
+            var id = Utility.RequiredGuid(recordId, "Record ID");
+            var recordUrl = Utility.BuildRecordUrl(referenceRecordUrl, GetEntityTypeCode(entityName), entityName, id);
+            Trace($"Record URL: {recordUrl}");
+
+            return recordUrl;
+        }
+
+        /// <summary>
+        /// The Dynamics 365 mobile app links for the record a record URL points at and its table, for the Entity
+        /// Mobile Deep Link activity.
+        /// </summary>
+        /// <exception cref="InvalidPluginExecutionException">The record URL is empty.</exception>
+        public MobileDeepLinks GetMobileDeepLinks(string recordUrl)
+        {
+            var record = GetRecordReference(recordUrl, "Record URL");
+            var links = new MobileDeepLinks(record.LogicalName, record.Id);
+            Trace($"MobileDeepLinkEdit: {links.Edit}, MobileDeepLinkNew: {links.New}, MobileDeepLinkDefaultView: {links.DefaultView}");
+
+            return links;
+        }
+
+        /// <summary>
+        /// The record a required record URL input points at.
+        /// </summary>
+        /// <param name="recordUrl">The input's value.</param>
+        /// <param name="inputName">The input's name as the designer shows it, for the error when it's empty.</param>
+        /// <exception cref="InvalidPluginExecutionException">The URL is empty, or isn't a record URL.</exception>
+        public EntityReference GetRecordReference(string recordUrl, string inputName)
+        {
+            return GetRecordReference(Utility.Required(recordUrl, inputName));
+        }
+
+        /// <summary>
         /// The record a record URL points at, with the entity name looked up from the URL's type code.
         /// </summary>
         public EntityReference GetRecordReference(string recordUrl)

@@ -1,5 +1,4 @@
-﻿using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Workflow;
+﻿using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
 using System.Globalization;
 
@@ -26,13 +25,8 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var sourceRecordUrl = SourceRecordUrl.Get(executionContext) ?? throw new InvalidPluginExecutionException("Source URL is empty");
-            var attributeName = AttributeName.Get(executionContext) ?? throw new InvalidPluginExecutionException("Attribute Name is empty");
-
-            common.Trace($"Source Record URL:'{sourceRecordUrl}' Attribute name:'{attributeName}'");
-
-            var source = common.GetRecordReference(sourceRecordUrl);
-            var value = common.GetOptionSetValue(source, attributeName);
+            var value = common.GetOptionSetValue(common.GetRecordReference(SourceRecordUrl.Get(executionContext), "Source Record URL"),
+                Utility.Required(AttributeName.Get(executionContext), "Attribute Name"));
 
             SelectedValue.Set(executionContext, value);
             SelectedValueText.Set(executionContext, value.ToString(CultureInfo.InvariantCulture));

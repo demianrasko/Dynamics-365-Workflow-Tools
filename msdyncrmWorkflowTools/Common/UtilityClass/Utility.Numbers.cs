@@ -26,6 +26,14 @@ namespace msdyncrmWorkflowTools
             };
 
         /// <summary>
+        /// Number 1 divided by Number 2, or 0 when Number 2 is 0 (the Divide output of Numeric Functions).
+        /// </summary>
+        public static decimal DivideOrZero(decimal number1, decimal number2)
+        {
+            return number2 == 0 ? 0 : number1 / number2;
+        }
+
+        /// <summary>
         /// Applies one operation to two numbers: + - * / % (remainder), min or max, or their names (add, subtract,
         /// multiply, divide, mod).
         /// </summary>

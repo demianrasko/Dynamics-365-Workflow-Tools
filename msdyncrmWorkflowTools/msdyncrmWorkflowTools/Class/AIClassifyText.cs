@@ -1,5 +1,4 @@
-﻿using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Workflow;
+﻿using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools
@@ -34,22 +33,7 @@ namespace msdyncrmWorkflowTools
             var text = TextToClassify.Get(executionContext);
             var categories = Utility.SplitList(CategoriesCsv.Get(executionContext), removeDuplicates: true);
 
-            SetResultOrFailure(executionContext, common, () =>
-            {
-                if (string.IsNullOrWhiteSpace(text) || categories.Count == 0)
-                {
-                    throw new InvalidPluginExecutionException("Text or Categories are empty.");
-                }
-
-                if (categories.Count < 2)
-                {
-                    throw new InvalidPluginExecutionException("At least two categories are required.");
-                }
-
-                common.Trace($"Text length: {text.Length}, categories: {string.Join("|", categories)}");
-
-                return common.AIClassify(text, categories);
-            }, TopCategory, Failed, FailureMessage);
+            SetResultOrFailure(executionContext, common, () => common.AIClassify(text, categories), TopCategory, Failed, FailureMessage);
         }
     }
 }

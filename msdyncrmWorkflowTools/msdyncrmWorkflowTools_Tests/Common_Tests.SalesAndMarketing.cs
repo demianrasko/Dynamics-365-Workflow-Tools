@@ -160,5 +160,30 @@ namespace msdyncrmWorkflowTools_Tests
             CollectionAssert.AreEqual(new[] { "listid" }, query.ColumnSet.Columns.ToArray());
             AssertCondition(query.Criteria.Conditions.Single(), "entityid", ConditionOperator.Equal, IdA);
         }
+
+        [TestMethod]
+        public void CreateOpportunityProduct_NeedsTheOpportunityProductAndUnit()
+        {
+            var lookup = new EntityReference("product", Guid.NewGuid());
+
+            Assert.AreEqual("Opportunity, Existing Product and Unit are required.",
+                Assert.ThrowsException<InvalidPluginExecutionException>(() => common.CreateOpportunityProduct(lookup, null, lookup, 1)).Message);
+            Assert.AreEqual(0, service.Created.Count);
+        }
+
+        [TestMethod]
+        public void RecalculateGoal_UsesTheLookupOrTheGuid()
+        {
+            var goal = new EntityReference(EntityNames.Goal, Guid.NewGuid());
+            var guid = Guid.NewGuid();
+            service.OnExecute = r => new OrganizationResponse();
+
+            common.RecalculateGoal(goal, guid.ToString());
+            common.RecalculateGoal(null, $" {guid} ");
+
+            CollectionAssert.AreEqual(new[] { goal.Id, guid }, service.Executed.Cast<RecalculateRequest>().Select(r => r.Target.Id).ToArray());
+            Assert.AreEqual("Goal or Goal Guid is required.", Assert.ThrowsException<InvalidPluginExecutionException>(() => common.RecalculateGoal(null, " ")).Message);
+            Assert.AreEqual("Goal Guid 'x' is not a valid GUID.", Assert.ThrowsException<InvalidPluginExecutionException>(() => common.RecalculateGoal(null, "x")).Message);
+        }
     }
 }

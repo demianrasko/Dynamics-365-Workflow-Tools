@@ -27,12 +27,47 @@ namespace msdyncrmWorkflowTools
         }
 
         /// <summary>
+        /// Whether a record is associated with the record a required record URL points at, through an N:N
+        /// relationship, for the Check Associate Entity activity.
+        /// </summary>
+        /// <exception cref="InvalidPluginExecutionException">The record URL is empty.</exception>
+        public bool IsAssociated(EntityReference record, string relationshipName, string relatedRecordUrl)
+        {
+            var related = GetRecordReference(relatedRecordUrl, "Record URL");
+
+            return GetAssociations(record.LogicalName, record.Id, GetIntersectEntityName(relationshipName), related.LogicalName, related.Id).Entities.Count > 0;
+        }
+
+        /// <summary>
         /// Removes the N:N association between two records.
         /// </summary>
         public void DisassociateEntity(EntityReference record, string relationshipName, EntityReference related)
         {
             Trace($"Disassociating {record.LogicalName} {record.Id} and {related.LogicalName} {related.Id} ({relationshipName})");
             Service.Disassociate(record.LogicalName, record.Id, new Relationship(relationshipName), new EntityReferenceCollection { related });
+        }
+
+        // the error Dataverse gives when two records are associated twice
+        private const int DuplicateRecordErrorCode = -2147220937;
+
+        /// <summary>
+        /// Associates a record with the record a required record URL points at, through an N:N relationship, for the
+        /// Associate Entity activity. Records that are already associated are left as they are.
+        /// </summary>
+        /// <exception cref="InvalidPluginExecutionException">The record URL is empty.</exception>
+        public void AssociateEntity(EntityReference record, string relationshipName, string relationshipEntityName, string relatedRecordUrl)
+        {
+            var related = GetRecordReference(relatedRecordUrl, "Record URL");
+
+            try
+            {
+                AssociateEntity(record.LogicalName, record.Id, relationshipName, relationshipEntityName, related.LogicalName, related.Id);
+            }
+            catch (FaultException<OrganizationServiceFault> ex) when (ex.Detail?.ErrorCode == DuplicateRecordErrorCode)
+            {
+                // the check above can miss an association made at the same time; every other error reaches the caller
+                Trace($"The records are already associated: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -165,11 +200,11 @@ namespace msdyncrmWorkflowTools
         public int CloneChildren(string sourceRecordUrl, string targetRecordUrl, string relationshipName, string newParentFieldName,
             string oldParentFieldName, string prefix, string fieldsToIgnore, bool copyStatus, bool onlyActive)
         {
-            Required(relationshipName, "Relationship Name");
-            Required(newParentFieldName, "New Parent Field Name");
+            Utility.Required(relationshipName, "Relationship Name");
+            Utility.Required(newParentFieldName, "New Parent Field Name");
 
-            var source = GetRecordReference(Required(sourceRecordUrl, "Source Record URL"));
-            var target = GetRecordReference(Required(targetRecordUrl, "Target Record URL"));
+            var source = GetRecordReference(sourceRecordUrl, "Source Record URL");
+            var target = GetRecordReference(targetRecordUrl, "Target Record URL");
 
             return CloneChildRecords(relationshipName, source.Id, fieldsToIgnore, prefix,
                 CloneChildrenReplacements(target, newParentFieldName, oldParentFieldName), copyStatus, onlyActive);
@@ -192,16 +227,6 @@ namespace msdyncrmWorkflowTools
             }
 
             return fieldsToReplace;
-        }
-
-        private static string Required(string value, string inputName)
-        {
-            if (string.IsNullOrEmpty(value))
-            {
-                throw new InvalidPluginExecutionException($"{inputName} is required.");
-            }
-
-            return value;
         }
 
         /// <summary>
@@ -247,6 +272,22 @@ namespace msdyncrmWorkflowTools
         public int UpdateChildRecords(string relationshipName, string parentEntityType, Guid parentEntityId, string parentFieldNameToUpdate, string setValueToUpdate, string childFieldNameToUpdate, bool updateonlyActive)
         {
             return UpdateChildRecords(relationshipName, parentEntityType, parentEntityId, parentFieldNameToUpdate, setValueToUpdate, childFieldNameToUpdate, updateonlyActive, false, out _);
+        }
+
+        /// <summary>
+        /// Sets a field on every child record of the record a required record URL points at (see the overload below),
+        /// for the Update Child Records activity.
+        /// </summary>
+        /// <param name="failed">The number of children skipped because their update failed.</param>
+        /// <returns>The number of child records updated.</returns>
+        /// <exception cref="InvalidPluginExecutionException">The record URL is empty, or see the overload below.</exception>
+        public int UpdateChildRecords(string parentRecordUrl, string relationshipName, string parentFieldNameToUpdate, string setValueToUpdate, string childFieldNameToUpdate, bool updateonlyActive,
+            bool continueIfARecordFails, out int failed)
+        {
+            var parent = GetRecordReference(parentRecordUrl, "Parent Record URL");
+            Trace($"Relationship={relationshipName}--ParentFieldNameToUpdate={parentFieldNameToUpdate}--ValueToSet={setValueToUpdate}--ChildFieldNameToUpdate={childFieldNameToUpdate}");
+
+            return UpdateChildRecords(relationshipName, parent.LogicalName, parent.Id, parentFieldNameToUpdate, setValueToUpdate, childFieldNameToUpdate, updateonlyActive, continueIfARecordFails, out failed);
         }
 
         /// <summary>
@@ -415,6 +456,20 @@ namespace msdyncrmWorkflowTools
             intersect.LinkCriteria.AddCondition(primaryIntersectAttribute, ConditionOperator.Equal, primaryId);
 
             return query;
+        }
+
+        /// <summary>
+        /// The number of child records of the record a required record URL points at (see the overload below), for
+        /// the Count Child Entity Records activity.
+        /// </summary>
+        /// <exception cref="InvalidPluginExecutionException">The record URL is empty.</exception>
+        public int CountChildRecords(string childEntityName, string parentLookupName, string parentRecordUrl, string filterXml)
+        {
+            var parent = GetRecordReference(parentRecordUrl, "Record URL (Parent)");
+            var count = CountChildRecords(childEntityName, parentLookupName, parent.Id, filterXml);
+            Trace($"{childEntityName} records with {parentLookupName} = {parent.Id}: {count}");
+
+            return count;
         }
 
         /// <summary>

@@ -1,4 +1,3 @@
-using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
 
@@ -22,14 +21,7 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var schemaName = SchemaName.Get(executionContext);
-
-            if (string.IsNullOrWhiteSpace(schemaName))
-            {
-                throw new InvalidPluginExecutionException("Schema Name is required.");
-            }
-
-            var value = common.GetEnvironmentVariable(schemaName);
+            var value = common.GetEnvironmentVariable(SchemaName.Get(executionContext));
 
             Value.Set(executionContext, value ?? string.Empty);
             Found.Set(executionContext, value != null);

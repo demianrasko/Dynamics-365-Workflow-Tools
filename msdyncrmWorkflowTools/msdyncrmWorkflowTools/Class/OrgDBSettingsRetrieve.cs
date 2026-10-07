@@ -22,14 +22,7 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var setting = orgDBSetting.Get(executionContext).ToLower();
-            var stringValue = common.GetOrganizationSetting(setting)?.ToString();
-            common.Trace($"Organization setting {setting} = {stringValue}");
-
-            int.TryParse(stringValue, out var numericValue);
-            bool.TryParse(stringValue, out var boolValue);
-
-            StringValue.Set(executionContext, stringValue);
+            StringValue.Set(executionContext, common.GetOrganizationSettingText(orgDBSetting.Get(executionContext), out var numericValue, out var boolValue));
             NumericValue.Set(executionContext, numericValue);
             BoolValue.Set(executionContext, boolValue);
         }

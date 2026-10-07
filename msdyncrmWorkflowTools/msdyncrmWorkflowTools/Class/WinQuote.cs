@@ -19,9 +19,7 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var quote = Quote.Get(executionContext) ?? throw new InvalidPluginExecutionException("Quote is required.");
-
-            common.WinQuote(quote, Message.Get(executionContext));
+            common.WinQuote(Utility.Required(Quote.Get(executionContext), "Quote"), Message.Get(executionContext));
         }
     }
 }

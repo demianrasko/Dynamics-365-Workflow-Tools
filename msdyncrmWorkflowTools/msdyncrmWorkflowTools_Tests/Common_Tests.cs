@@ -95,6 +95,13 @@ namespace msdyncrmWorkflowTools_Tests
             };
         }
 
+        private static void AssertRequired(string inputName, Action action)
+        {
+            var ex = Assert.ThrowsException<InvalidPluginExecutionException>(action);
+
+            Assert.AreEqual($"{inputName} is required.", ex.Message);
+        }
+
         private static EntityCollection Collection(params Entity[] entities)
         {
             return new EntityCollection(entities.ToList());

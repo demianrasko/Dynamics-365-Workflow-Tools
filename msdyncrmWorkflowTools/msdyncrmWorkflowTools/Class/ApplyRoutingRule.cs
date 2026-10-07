@@ -1,5 +1,4 @@
-﻿using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Workflow;
+﻿using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools
@@ -14,14 +13,7 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var recordUrl = IncidentRecordURL.Get(executionContext);
-
-            if (string.IsNullOrEmpty(recordUrl))
-            {
-                throw new InvalidPluginExecutionException("Incident Record URL is required.");
-            }
-
-            common.ApplyRoutingRule(common.GetRecordReference(recordUrl));
+            common.ApplyRoutingRule(common.GetRecordReference(IncidentRecordURL.Get(executionContext), "Incident Record URL"));
         }
     }
 }

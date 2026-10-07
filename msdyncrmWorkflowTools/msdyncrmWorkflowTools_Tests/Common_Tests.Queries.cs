@@ -211,5 +211,44 @@ namespace msdyncrmWorkflowTools_Tests
             service.OnRetrieveMultiple = query => Collection();
             Assert.IsNull(common.RetrieveFirstMatch(EntityNames.Account, new[] { AttributeNames.Name }));
         }
+
+        [TestMethod]
+        public void CalculateAggregateDate_NeedsAQuery()
+        {
+            AssertRequired("FetchXML", () => common.CalculateAggregateDate(null, Guid.NewGuid()));
+        }
+
+        [TestMethod]
+        public void CalculateRollup_UsesTheFirstAttributeAndTheParent()
+        {
+            var parentId = Guid.NewGuid();
+            service.OnRetrieveMultiple = query => Page(false, null,
+                new Entity("opportunity") { ["estimatedvalue"] = new Money(10m), ["name"] = "A" },
+                new Entity("opportunity") { ["name"] = "B" },
+                new Entity("opportunity") { ["estimatedvalue"] = new Money(30m) });
+
+            var result = common.CalculateRollup(
+                "<fetch><entity name='opportunity'><attribute name='estimatedvalue' /><attribute name='name' /><filter><condition attribute='parentaccountid' operator='eq' value='{PARENT_GUID}' /></filter></entity></fetch>",
+                parentId);
+
+            Assert.AreEqual(40m, result.Sum);
+            Assert.AreEqual(10m, result.Min);
+            Assert.AreEqual(30m, result.Max);
+            StringAssert.Contains(((FetchExpression)service.Queries[0]).Query, parentId.ToString());
+            AssertRequired("FetchXML", () => common.CalculateRollup(string.Empty, parentId));
+        }
+
+        [TestMethod]
+        public void QueryValues_ReturnsBothColumnsAsTextOrNull()
+        {
+            service.OnRetrieveMultiple = query => Collection(new Entity(EntityNames.Account) { [AttributeNames.Name] = "Contoso", ["numberofemployees"] = 12 });
+
+            Assert.AreEqual("Contoso", common.QueryValues(EntityNames.Account, AttributeNames.Name, "numberofemployees", null, null, null, null, out var value2));
+            Assert.AreEqual("12", value2);
+
+            service.OnRetrieveMultiple = query => Collection();
+            Assert.IsNull(common.QueryValues(EntityNames.Account, AttributeNames.Name, "numberofemployees", null, null, null, null, out var noValue2));
+            Assert.IsNull(noValue2);
+        }
     }
 }

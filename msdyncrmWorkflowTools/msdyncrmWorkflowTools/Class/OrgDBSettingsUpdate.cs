@@ -18,7 +18,7 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            common.SetOrganizationSetting(orgDBSetting.Get(executionContext).ToLower(), Value.Get(executionContext));
+            common.SetOrganizationSetting(orgDBSetting.Get(executionContext), Value.Get(executionContext));
         }
     }
 }

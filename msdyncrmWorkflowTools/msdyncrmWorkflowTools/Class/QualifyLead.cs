@@ -40,11 +40,8 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            // [RequiredArgument] is only enforced in the designer; a dynamic value can still be empty at runtime.
-            var lead = Lead.Get(executionContext) ?? throw new InvalidPluginExecutionException("Lead is required.");
-
             common.QualifyLead(
-                lead,
+                Utility.Required(Lead.Get(executionContext), "Lead"),
                 CreateAccount.Get(executionContext),
                 CreateContact.Get(executionContext),
                 CreateOpportunity.Get(executionContext),
