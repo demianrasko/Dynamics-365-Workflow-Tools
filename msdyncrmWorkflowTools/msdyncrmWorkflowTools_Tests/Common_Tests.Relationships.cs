@@ -5,6 +5,7 @@ using Microsoft.Xrm.Sdk.Metadata;
 using Microsoft.Xrm.Sdk.Query;
 using msdyncrmWorkflowTools;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
 
@@ -206,6 +207,36 @@ namespace msdyncrmWorkflowTools_Tests
             Assert.AreEqual(EntityNames.Contact, query.EntityName);
             Assert.AreEqual("parentcustomerid", query.Attributes.Single());
             Assert.AreEqual(RecordId, query.Values.Single());
+        }
+
+        [TestMethod]
+        public void GetChildRecords_OnlyActive_AddsTheStatusCondition()
+        {
+            service.OnExecute = r => RelationshipResponse(EntityNames.Contact, "parentcustomerid");
+
+            common.GetChildRecords("account_contacts", RecordId, onlyActive: true);
+
+            var query = (QueryByAttribute)service.Queries.Single();
+            CollectionAssert.AreEqual(new[] { "parentcustomerid", "statecode" }, query.Attributes.ToArray());
+            CollectionAssert.AreEqual(new object[] { RecordId, 0 }, query.Values.ToArray());
+        }
+
+        [TestMethod]
+        public void CloneChildRecords_CopiesEachChildWithTheReplacements()
+        {
+            var children = new[] { Guid.NewGuid(), Guid.NewGuid() };
+            var newParent = new EntityReference(EntityNames.Account, Guid.NewGuid());
+            service.OnExecute = r => r is RetrieveRelationshipRequest
+                ? (OrganizationResponse)RelationshipResponse(EntityNames.Contact, "parentcustomerid")
+                : new RetrieveEntityResponse { Results = { ["EntityMetadata"] = EntityWithAttributes("contactid", Attribute<StringAttributeMetadata>("lastname")) } };
+            service.OnRetrieveMultiple = q => new EntityCollection(children.Select(id => new Entity(EntityNames.Contact, id)).ToList());
+            service.OnRetrieve = (name, id, columns) => new Entity(name, id) { ["lastname"] = id.ToString() };
+
+            var count = common.CloneChildRecords("account_contacts", RecordId, null, null, new Dictionary<string, object> { ["parentcustomerid"] = newParent }, false, false);
+
+            Assert.AreEqual(2, count);
+            CollectionAssert.AreEqual(children.Select(id => id.ToString()).ToArray(), service.Created.Select(c => (string)c["lastname"]).ToArray());
+            Assert.IsTrue(service.Created.All(c => newParent.Equals(c["parentcustomerid"])));
         }
 
         private void SetUpChildRelationship(AttributeMetadata childField)

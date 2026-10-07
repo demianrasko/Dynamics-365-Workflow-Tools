@@ -111,9 +111,43 @@ namespace msdyncrmWorkflowTools
             uppercaseText = inputText.ToUpper();
             lowercaseText = inputText.ToLower();
 
-            withoutSpaces = inputText.Replace(" ", string.Empty);
+            withoutSpaces = RemoveSpaces(inputText);
 
             return true;
+        }
+
+        /// <summary>
+        /// The text with every match of a regular expression removed; the text unchanged when there's no expression.
+        /// </summary>
+        public static string RemoveRegexMatches(string text, string regularExpression)
+        {
+            text = text ?? string.Empty;
+
+            return string.IsNullOrEmpty(regularExpression) ? text : new Regex(regularExpression).Replace(text, string.Empty);
+        }
+
+        /// <summary>
+        /// The text without its spaces: the ordinary space and the other space characters, such as the non-breaking
+        /// space a user's number format can put between digit groups. Tabs and line breaks are kept.
+        /// </summary>
+        public static string RemoveSpaces(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                return string.Empty;
+            }
+
+            var result = new StringBuilder(text.Length);
+
+            foreach (var character in text)
+            {
+                if (char.GetUnicodeCategory(character) != UnicodeCategory.SpaceSeparator)
+                {
+                    result.Append(character);
+                }
+            }
+
+            return result.ToString();
         }
 
         private static string CompareAndReplace(string text, string old, string @new, StringComparison comparison)

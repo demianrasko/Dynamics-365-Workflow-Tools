@@ -152,6 +152,23 @@ namespace msdyncrmWorkflowTools_Tests
         }
 
         [TestMethod]
+        public void RemoveRegexMatches_RemovesEveryMatch()
+        {
+            // upstream PR #285
+            Assert.AreEqual("abc", Utility.RemoveRegexMatches("a1b22c333", @"\d+"));
+            Assert.AreEqual("a1b2", Utility.RemoveRegexMatches("a1b2", null), "no expression leaves the text as it is");
+            Assert.AreEqual(string.Empty, Utility.RemoveRegexMatches(null, @"\d"));
+        }
+
+        [TestMethod]
+        public void WithoutSpacesRemovesTheSpacesANumberFormatUses()
+        {
+            // a non-breaking space and a narrow non-breaking space between digit groups (upstream issue #267)
+            Assert.AreEqual("ABCD1000002", Run("ABCD1 000 002").WithoutSpaces);
+            Assert.AreEqual("a\tb\nc", Run("a\t b\n c").WithoutSpaces, "tabs and line breaks are kept");
+        }
+
+        [TestMethod]
         public void NullInputsDoNotThrow()
         {
             var r = Run(null, capitalizeAllWords: false, padCharacter: null, oldValue: null, newValue: null, regularExpression: null);

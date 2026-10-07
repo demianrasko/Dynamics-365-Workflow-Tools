@@ -50,6 +50,14 @@ namespace msdyncrmWorkflowTools
         [Default("")]
         public InArgument<string> FieldstoIgnore { get; set; }
 
+        [Input("Copy Status")]
+        [Default("False")]
+        public InArgument<bool> CopyStatus { get; set; }
+
+        [Input("Only Active Children")]
+        [Default("False")]
+        public InArgument<bool> OnlyActiveChildren { get; set; }
+
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             var relationshipName = RelationshipName.Get(executionContext);
@@ -97,12 +105,7 @@ namespace msdyncrmWorkflowTools
                 fieldsToReplace[oldParentFieldName] = null;
             }
 
-            var children = common.GetChildRecords(relationshipName, parsedUrl.Id);
-
-            foreach (var item in children.Entities)
-            {
-                common.CloneRecord(item.LogicalName, item.Id, fieldsToIgnore, prefix, fieldsToReplace);
-            }
+            common.CloneChildRecords(relationshipName, parsedUrl.Id, fieldsToIgnore, prefix, fieldsToReplace, CopyStatus.Get(executionContext), OnlyActiveChildren.Get(executionContext));
         }
     }
 }

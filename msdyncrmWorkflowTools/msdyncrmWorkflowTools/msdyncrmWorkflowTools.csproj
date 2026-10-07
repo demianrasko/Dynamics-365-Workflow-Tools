@@ -200,6 +200,7 @@
     <Compile Include="Class\EntityMobileDeepLink.cs" />
     <Compile Include="Class\EmailToTeam.cs" />
     <Compile Include="Class\NumericFunctions.cs" />
+    <Compile Include="Class\NumericOperation.cs" />
     <Compile Include="Class\RemoveFromAllMarketingLists.cs" />
     <Compile Include="Class\IsMemberOfMarketingList.cs" />
     <Compile Include="Class\CopyToStaticList.cs" />
@@ -278,6 +279,9 @@
     </Compile>
     <Compile Include="..\Common\UtilityClass\Utility.Json.cs">
       <Link>UtilityClass\Utility.Json.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\UtilityClass\Utility.Numbers.cs">
+      <Link>UtilityClass\Utility.Numbers.cs</Link>
     </Compile>
     <Compile Include="..\Common\UtilityClass\Utility.Rollups.cs">
       <Link>UtilityClass\Utility.Rollups.cs</Link>

@@ -101,6 +101,7 @@
     <Compile Include="UtilityClass\Utility.ExternalServices.cs" />
     <Compile Include="UtilityClass\Utility.Hashing.cs" />
     <Compile Include="UtilityClass\Utility.Json.cs" />
+    <Compile Include="UtilityClass\Utility.Numbers.cs" />
     <Compile Include="UtilityClass\Utility.Rollups.cs" />
     <Compile Include="UtilityClass\Utility.TextAndDates.cs" />
     <Compile Include="UtilityClass\Utility.Translator.cs" />

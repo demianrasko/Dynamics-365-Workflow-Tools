@@ -98,6 +98,9 @@ namespace msdyncrmWorkflowTools
         [Output("Without Spaces")]
         public OutArgument<string> WithoutSpaces { get; set; }
 
+        [Output("Without Regex Matches")]
+        public OutArgument<string> WithoutRegexMatches { get; set; }
+
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             var inputText = InputText.Get(executionContext) ?? string.Empty;
@@ -143,6 +146,7 @@ namespace msdyncrmWorkflowTools
             UppercaseText.Set(executionContext, uppercaseText);
             LowercaseText.Set(executionContext, lowercaseText);
             WithoutSpaces.Set(executionContext, withoutSpaces);
+            WithoutRegexMatches.Set(executionContext, Utility.RemoveRegexMatches(inputText, regularExpression));
         }
     }
 }

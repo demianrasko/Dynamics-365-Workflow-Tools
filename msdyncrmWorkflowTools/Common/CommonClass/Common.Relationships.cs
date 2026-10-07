@@ -125,7 +125,8 @@ namespace msdyncrmWorkflowTools
         /// </summary>
         /// <param name="relationshipName">Schema name of the 1:N relationship.</param>
         /// <param name="parentEntityId">Id of the parent record.</param>
-        public EntityCollection GetChildRecords(string relationshipName, Guid parentEntityId)
+        /// <param name="onlyActive">Only the active children (statecode 0); the child table must have a status.</param>
+        public EntityCollection GetChildRecords(string relationshipName, Guid parentEntityId, bool onlyActive = false)
         {
             var relationship = GetOneToManyRelationship(relationshipName);
 
@@ -136,7 +137,38 @@ namespace msdyncrmWorkflowTools
                 Values = { parentEntityId }
             };
 
+            if (onlyActive)
+            {
+                query.Attributes.Add(AttributeNames.StateCode);
+                query.Values.Add(0);
+            }
+
             return Service.RetrieveMultiple(query);
+        }
+
+        /// <summary>
+        /// Copies the child records of a parent through a 1:N relationship (see <see cref="CloneRecord"/>).
+        /// </summary>
+        /// <param name="relationshipName">Schema name of the 1:N relationship.</param>
+        /// <param name="parentEntityId">Id of the parent whose children are copied.</param>
+        /// <param name="fieldsToIgnore">Attributes not to copy, separated by ";" or ",".</param>
+        /// <param name="prefix">Text put in front of each copy's primary name; null for none.</param>
+        /// <param name="fieldsToReplace">Values set on every copy, e.g. the lookup to the new parent.</param>
+        /// <param name="copyStatus">Give each copy its child's status and status reason.</param>
+        /// <param name="onlyActive">Only copy the active children.</param>
+        /// <returns>The number of copies made.</returns>
+        public int CloneChildRecords(string relationshipName, Guid parentEntityId, string fieldsToIgnore, string prefix, IDictionary<string, object> fieldsToReplace, bool copyStatus, bool onlyActive)
+        {
+            var children = GetChildRecords(relationshipName, parentEntityId, onlyActive);
+
+            foreach (var child in children.Entities)
+            {
+                CloneRecord(child.LogicalName, child.Id, fieldsToIgnore, prefix, fieldsToReplace, copyStatus);
+            }
+
+            Trace($"{children.Entities.Count} children copied");
+
+            return children.Entities.Count;
         }
 
         /// <summary>

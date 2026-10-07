@@ -14,6 +14,10 @@ The full params description is:
 * **Old Parent Field Name (optional)** : the schema name for the Lookup field on the child records for the original parent. This optional parameter is used in case the cloned children should be linked to the new parent using a different lookup field. If not specified it will use the same as the New Parent lookup.
 * **Prefix (optional)** : the prefix will be addedd at the name attribute of the clonned record. 
 * **Fields to Ignore (optional)** : the list of attributes you want to ignore in cloning, separate by ";" (in lowercase)
+* **Copy Status (optional, default No)** : Yes gives each copy the status and status reason of the child it was copied from, so an inactive child gives an inactive copy. No: every copy starts in its default (active) state.
+* **Only Active Children (optional, default No)** : Yes only copies the active children (status Active). The child table must have a status; tables without one, such as quote and order lines, can't use this option.
+
+Copy Status sets an inactive status after the copy is created, the way you would change it by hand. Tables that are closed with their own message instead (for example a won opportunity or a resolved case) can't be given that status this way, and the step fails for them.
 
 
 

@@ -8,6 +8,8 @@ Then in the activity you can fill all the parameters:
 
 ![](String%20Functions_wf2.gif)
 
+The screenshot is from an older version. Where it differs from the list below (for example a regular expression typed in quotes), follow the list.
+
 The Input Parameters are:
 * Input Text: text to be transformed by the String Functions
 * Capitalize All Words: Specify if you want to capitalize only the first letter or of each word
@@ -20,7 +22,7 @@ The Input Parameters are:
 * Substring: From Left to Right: to set if the substring will start from left
 * Substring: Start Index: start index char
 * Substring: Length: substring legth
-* Regular Expression: a .NET regular expression, applied to the Input Text. Type it as is, without quotes (e.g. `^[^,]*` for the text up to the first comma). Regex Success says whether it matched, and Regex Text is the first match.
+* Regular Expression: a .NET regular expression, applied to the Input Text. Type it as is, without quotes (e.g. `^[^,]*` for the text up to the first comma). Regex Success says whether it matched, Regex Text is the first match, and Without Regex Matches is the Input Text with every match removed (e.g. `\d` removes all the digits).
 
 The Output Parameters are:
 * CapitalizedText
@@ -33,7 +35,8 @@ The Output Parameters are:
 * RegexText
 * Uppercase Text
 * Lowercase Text
-* Without Spaces
+* Without Spaces: the text without its spaces, including the non-breaking spaces some number formats put between digit groups (tabs and line breaks are kept)
+* Without Regex Matches
 
 
 ![](string%20functions_33.png)
