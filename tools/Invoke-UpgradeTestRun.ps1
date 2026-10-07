@@ -227,7 +227,8 @@ $checks = @{
         [ordered]@{
             'new_wfttestchoice'       = $record.new_wfttestchoice
             'new_wfttestchoices'      = $record.new_wfttestchoices
-            'Option 100000900 exists' = [bool]($options | Where-Object { $_.Value -eq 100000900 })
+            # a deleted option keeps its value, without labels, until the table is published
+            'Option 100000900 exists' = [bool]($options | Where-Object { $_.Value -eq 100000900 -and $_.Label.LocalizedLabels.Count -gt 0 })
         }
     }
     'WFT 07 Users, teams and roles' = {
