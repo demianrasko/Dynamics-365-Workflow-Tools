@@ -15,7 +15,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		..\README.md = ..\README.md
 		..\CONTRIBUTING.md = ..\CONTRIBUTING.md
-		..\testing\Upgrade test workflows.md = ..\testing\Upgrade test workflows.md
 		..\.github\workflows\build.yml = ..\.github\workflows\build.yml
 		..\.github\workflows\integration-tests.yml = ..\.github\workflows\integration-tests.yml
 	EndProjectSection
@@ -27,6 +26,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "templates", "templates", "{
 		..\templates\WorkflowActivity\CommonTest.cs.txt = ..\templates\WorkflowActivity\CommonTest.cs.txt
 		..\templates\WorkflowActivity\Docs.md = ..\templates\WorkflowActivity\Docs.md
 		..\templates\WorkflowActivity\WorkflowActivity.vstemplate = ..\templates\WorkflowActivity\WorkflowActivity.vstemplate
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "testing", "testing", "{CF6A7D88-9B2E-4D3F-A1C4-5B6E7F8A9D05}"
+	ProjectSection(SolutionItems) = preProject
+		..\testing\Upgrade test workflows.md = ..\testing\Upgrade test workflows.md
+		..\testing\solutions\UpgradeTestWorkflows_1_0_0_0.zip = ..\testing\solutions\UpgradeTestWorkflows_1_0_0_0.zip
+		..\testing\solutions\UpgradeTestWorkflows_1_0_0_0_managed.zip = ..\testing\solutions\UpgradeTestWorkflows_1_0_0_0_managed.zip
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{BE5A6C88-9F7B-4DAE-90C2-5B6F7E8A9CA5}"
@@ -422,6 +428,7 @@ Global
 		{8B2D3F55-6C4E-4A7B-AD9F-2E3C4B5D6F72} = {7A1C2E44-5B3D-4F6A-9C8E-1D2B3A4C5E61}
 		{9C3E4A66-7D5F-4B8C-BEA0-3F4D5C6E7A83} = {8B2D3F55-6C4E-4A7B-AD9F-2E3C4B5D6F72}
 		{AD4F5B77-8E6A-4C9D-8FB1-4A5E6D7F8B94} = {7A1C2E44-5B3D-4F6A-9C8E-1D2B3A4C5E61}
+		{CF6A7D88-9B2E-4D3F-A1C4-5B6E7F8A9D05} = {7A1C2E44-5B3D-4F6A-9C8E-1D2B3A4C5E61}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6303B93E-6674-4BD9-A6F1-FA90A5EA7E5A}

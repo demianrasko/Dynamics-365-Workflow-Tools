@@ -6,6 +6,7 @@ Classic workflows to build in **tldsandbox** while it runs Demian's published **
 
 1. Create the test data below.
 2. Build the 14 workflows below. All of them are **on-demand**, never automatic, and each one ends with a **log note**.
+   `testing\solutions` has all 16 exported from tldsandbox as the UpgradeTestWorkflows solution (unmanaged and managed). Their steps point at tldsandbox's records (WFT Team, WFT Test, WFT Test BPF and the others), and WFT Test and WFT Test BPF aren't in the solution, so in another environment build them with the script instead.
    01 to 03 were built in the designer. `tools\Publish-UpgradeTestWorkflows.ps1` builds 03b to 13, with every input filled in, as drafts (it needs Python 3); open each one in the designer to check it, then activate it.
 3. Run each workflow on its test record and keep the log notes and system jobs: this is the 1.0.61.1 baseline. `tools\Invoke-UpgradeTestRun.ps1 -Label before -User <your email>` does it: it refreshes the test data, runs every workflow in turn, collects each one's log notes and checks the records it created or changed, cleans up after, and saves `results.json` and `summary.md` in `testing\results\<date> before\`.
 4. Import `Dynamics365WorkflowTools_1_0_100_0_managed.zip` (from `tools\Build-Solutions.ps1`) as an **upgrade**.
