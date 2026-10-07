@@ -47,6 +47,27 @@ namespace msdyncrmWorkflowTools_Tests
         }
 
         [TestMethod]
+        public void CalculateAggregateDate_FillsInTheParentAndReturnsTheFirstDate()
+        {
+            var parentId = Guid.NewGuid();
+            var date = new DateTime(2026, 10, 6, 0, 0, 0, DateTimeKind.Utc);
+            service.OnRetrieveMultiple = query => Page(false, null, new Entity("contact") { ["latest"] = new AliasedValue("contact", "createdon", date) });
+
+            var result = common.CalculateAggregateDate(
+                "<fetch aggregate='true'><entity name='contact'><attribute name='createdon' aggregate='max' alias='latest' /><filter><condition attribute='parentcustomerid' operator='eq' value='{PARENT_GUID}' /></filter></entity></fetch>",
+                parentId);
+
+            Assert.AreEqual(date, result);
+            StringAssert.Contains(((FetchExpression)service.Queries[0]).Query, parentId.ToString());
+        }
+
+        [TestMethod]
+        public void CalculateAggregateDate_NoRecordIsNull()
+        {
+            Assert.IsNull(common.CalculateAggregateDate("<fetch><entity name='contact'><attribute name='createdon' /></entity></fetch>", Guid.NewGuid()));
+        }
+
+        [TestMethod]
         public void RetrieveFirstWithFetchXml_ReadsOneRecord()
         {
             var first = new Entity("account", Guid.NewGuid());

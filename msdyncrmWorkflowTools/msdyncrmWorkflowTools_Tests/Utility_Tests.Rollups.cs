@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Xrm.Sdk;
 using msdyncrmWorkflowTools;
+using System;
 
 namespace msdyncrmWorkflowTools_Tests
 {
@@ -14,6 +15,40 @@ namespace msdyncrmWorkflowTools_Tests
             Assert.AreEqual("o.estimatedvalue", Utility.GetFirstFetchAttributeKey("<fetch><entity name='account'><link-entity name='opportunity' from='parentaccountid' to='accountid' alias='o'><attribute name='estimatedvalue' /></link-entity></entity></fetch>"));
             Assert.IsNull(Utility.GetFirstFetchAttributeKey("<fetch><entity name='account' /></fetch>"));
             Assert.IsNull(Utility.GetFirstFetchAttributeKey("not xml"));
+        }
+
+        [TestMethod]
+        public void GetFetchAttributeKeys_ListsEveryAttributeInOrder()
+        {
+            CollectionAssert.AreEqual(
+                new[] { "name", "total", "o.estimatedvalue" },
+                Utility.GetFetchAttributeKeys("<fetch><entity name='account'><attribute name='name' /><attribute name='revenue' alias='total' /><link-entity name='opportunity' from='parentaccountid' to='accountid' alias='o'><attribute name='estimatedvalue' /></link-entity></entity></fetch>"));
+            Assert.AreEqual(0, Utility.GetFetchAttributeKeys("not xml").Count);
+        }
+
+        [TestMethod]
+        public void GetFirstFetchDate_SkipsAGroupByColumnBeforeTheDate()
+        {
+            // upstream issue #252: the group-by id comes first, the aggregate date second
+            const string fetchXml = "<fetch aggregate='true'><entity name='msdyn_workorder'><attribute name='msdyn_workorderid' groupby='true' alias='acc' /><link-entity name='bookableresourcebooking' from='msdyn_workorder' to='msdyn_workorderid'><attribute name='starttime' aggregate='min' alias='mindate' /></link-entity></entity></fetch>";
+            var date = new DateTime(2026, 10, 6, 9, 30, 0, DateTimeKind.Utc);
+            var record = new Entity("msdyn_workorder")
+            {
+                ["acc"] = new AliasedValue("msdyn_workorder", "msdyn_workorderid", Guid.NewGuid()),
+                ["mindate"] = new AliasedValue("bookableresourcebooking", "starttime", date)
+            };
+
+            Assert.AreEqual(date, Utility.GetFirstFetchDate(record, fetchXml));
+        }
+
+        [TestMethod]
+        public void GetFirstFetchDate_UsesAnyDateAndIsNullWithout()
+        {
+            var date = new DateTime(2026, 1, 2, 0, 0, 0, DateTimeKind.Utc);
+            var fetchXml = "<fetch><entity name='contact'><attribute name='fullname' /></entity></fetch>";
+
+            Assert.AreEqual(date, Utility.GetFirstFetchDate(new Entity("contact") { ["fullname"] = "WFT", ["createdon"] = date }, fetchXml));
+            Assert.IsNull(Utility.GetFirstFetchDate(new Entity("contact") { ["fullname"] = "WFT" }, fetchXml));
         }
 
         [TestMethod]

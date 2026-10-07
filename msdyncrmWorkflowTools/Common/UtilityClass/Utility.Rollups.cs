@@ -78,22 +78,32 @@ namespace msdyncrmWorkflowTools
         /// <returns>The key, or null when the fetch has no attribute element or cannot be parsed.</returns>
         public static string GetFirstFetchAttributeKey(string fetchXml)
         {
-            XElement attribute;
+            return GetFetchAttributeKeys(fetchXml).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// The keys every &lt;attribute&gt; of a fetch query has in the returned records, in the order of the fetch
+        /// (see <see cref="GetFirstFetchAttributeKey"/>).
+        /// </summary>
+        /// <returns>The keys; none when the fetch cannot be parsed.</returns>
+        public static List<string> GetFetchAttributeKeys(string fetchXml)
+        {
+            List<XElement> attributes;
 
             try
             {
-                attribute = XElement.Parse(fetchXml).Descendants("attribute").FirstOrDefault();
+                attributes = XElement.Parse(fetchXml).Descendants("attribute").ToList();
             }
             catch (XmlException)
             {
-                return null;
+                return new List<string>();
             }
 
-            if (attribute == null)
-            {
-                return null;
-            }
+            return attributes.Select(GetFetchAttributeKey).ToList();
+        }
 
+        private static string GetFetchAttributeKey(XElement attribute)
+        {
             var alias = (string)attribute.Attribute("alias");
 
             if (!string.IsNullOrEmpty(alias))
@@ -105,6 +115,29 @@ namespace msdyncrmWorkflowTools
             var linkAlias = attribute.Parent?.Name.LocalName == "link-entity" ? (string)attribute.Parent.Attribute("alias") : null;
 
             return string.IsNullOrEmpty(linkAlias) ? name : $"{linkAlias}.{name}";
+        }
+
+        /// <summary>
+        /// The first date in a record a fetch query returned: the first of the fetch's attributes, in the fetch's
+        /// order, whose value is a date, otherwise any date the record has. An aggregate fetch often lists a
+        /// group-by column before the date (e.g. the parent's id, then max(createdon)).
+        /// </summary>
+        /// <returns>The date, or null when the record has none.</returns>
+        public static DateTime? GetFirstFetchDate(Entity record, string fetchXml)
+        {
+            var values = GetFetchAttributeKeys(fetchXml)
+                .Select(key => GetFirstFetchValue(record, key))
+                .Concat(record.Attributes.Values.Select(v => v is AliasedValue aliased ? aliased.Value : v));
+
+            foreach (var value in values)
+            {
+                if (value is DateTime date)
+                {
+                    return date;
+                }
+            }
+
+            return null;
         }
 
         /// <summary>

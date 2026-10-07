@@ -2,6 +2,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using msdyncrmWorkflowTools;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -31,6 +32,26 @@ namespace msdyncrmWorkflowTools_IntegrationTests
             var first = Common.RetrieveAllWithFetchXml(fetchXml).First().Id;
             Assert.AreEqual(first, Common.RetrieveFirstWithFetchXml(fetchXml).Id);
             Assert.AreEqual(first, Common.RetrieveFirst(Common.FetchXmlToQueryExpression(fetchXml)).Id);
+        }
+
+        [TestMethod]
+        public void CalculateAggregateDate_ReadsTheDateAfterAGroupByColumn()
+        {
+            // the shape of upstream issue #252's query: the group-by column comes before the date
+            const string fetchXml = @"<fetch aggregate='true'><entity name='contact'>
+                <attribute name='parentcustomerid' groupby='true' alias='parent' />
+                <attribute name='createdon' aggregate='max' alias='latest' />
+                <filter><condition attribute='parentcustomerid' operator='eq' value='{PARENT_GUID}' /></filter></entity></fetch>";
+            var account = Create(new Entity(EntityNames.Account) { [AttributeNames.Name] = UniqueName("parent") });
+            var contacts = new[] { CreateContact(account), CreateContact(account) };
+            var latest = contacts
+                .Select(c => Service.Retrieve(EntityNames.Contact, c.Id, new ColumnSet("createdon")).GetAttributeValue<DateTime>("createdon"))
+                .Max();
+
+            Assert.AreEqual(latest, Common.CalculateAggregateDate(fetchXml, account.Id));
+
+            var empty = Create(new Entity(EntityNames.Account) { [AttributeNames.Name] = UniqueName("no contacts") });
+            Assert.IsNull(Common.CalculateAggregateDate(fetchXml, empty.Id));
         }
 
         [TestMethod]

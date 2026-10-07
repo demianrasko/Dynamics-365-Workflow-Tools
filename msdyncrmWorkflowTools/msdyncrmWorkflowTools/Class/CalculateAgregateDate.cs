@@ -5,9 +5,16 @@ using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
+    /// <summary>
+    /// The date a FetchXML query returns, usually an aggregate such as max(createdon). When the query finds no date,
+    /// Value is 1-1-1753 (the earliest date Dataverse stores; a workflow date output can't be empty) and Ok is No, so
+    /// check Ok before using Value.
+    /// </summary>
     [ActivityName("Calculate Aggregate Date")]
     public class CalculateAgregateDate : WorkflowActivityBase
     {
+        private static readonly DateTime NoDate = new DateTime(1753, 1, 1);
+
         [RequiredArgument]
         [Input("FetchXML")]
         [Default("")]
@@ -28,24 +35,10 @@ namespace msdyncrmWorkflowTools
                 throw new InvalidPluginExecutionException("FetchXML is required.");
             }
 
-            fetchXml = fetchXml.Replace("{PARENT_GUID}", common.Context.PrimaryEntityId.ToString());
-            common.Trace($"FetchXML={fetchXml}");
+            var date = common.CalculateAggregateDate(fetchXml, common.Context.PrimaryEntityId);
 
-            // the date is the first attribute in the fetch, read from the first record
-            var record = common.RetrieveFirstWithFetchXml(fetchXml);
-            var value = record == null ? null : Utility.GetFirstFetchValue(record, Utility.GetFirstFetchAttributeKey(fetchXml));
-
-            if (value is DateTime date)
-            {
-                common.Trace($"Date={date}");
-                Value.Set(executionContext, date);
-                Ok.Set(executionContext, true);
-                return;
-            }
-
-            common.Trace(record == null ? "No record found." : $"The first attribute is not a date: '{value}'");
-            Value.Set(executionContext, new DateTime(1753, 1, 1));
-            Ok.Set(executionContext, false);
+            Value.Set(executionContext, date ?? NoDate);
+            Ok.Set(executionContext, date.HasValue);
         }
     }
 }

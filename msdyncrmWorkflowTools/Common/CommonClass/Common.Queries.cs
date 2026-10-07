@@ -87,6 +87,32 @@ namespace msdyncrmWorkflowTools
         }
 
         /// <summary>
+        /// The date a FetchXML query (usually an aggregate such as max(createdon)) returns: the first date in its first
+        /// record (see <see cref="Utility.GetFirstFetchDate"/>).
+        /// </summary>
+        /// <param name="fetchXml">The query; {PARENT_GUID} is replaced by <paramref name="parentId"/>.</param>
+        /// <param name="parentId">The record the workflow runs on.</param>
+        /// <returns>The date, or null when the query returns no record or no date.</returns>
+        public DateTime? CalculateAggregateDate(string fetchXml, Guid parentId)
+        {
+            fetchXml = fetchXml.Replace("{PARENT_GUID}", parentId.ToString());
+            Trace($"FetchXML={fetchXml}");
+
+            var record = RetrieveFirstWithFetchXml(fetchXml);
+
+            if (record == null)
+            {
+                Trace("No record found.");
+                return null;
+            }
+
+            var date = Utility.GetFirstFetchDate(record, fetchXml);
+            Trace(date.HasValue ? $"Date={date}" : "The record has no date.");
+
+            return date;
+        }
+
+        /// <summary>
         /// Returns every record a FetchXML query returns, reading the next page only when the caller needs more
         /// records (so stopping early, e.g. with Take, stops the paging). A fetch with a top attribute is run once,
         /// unpaged, because Dataverse does not allow top together with paging.
