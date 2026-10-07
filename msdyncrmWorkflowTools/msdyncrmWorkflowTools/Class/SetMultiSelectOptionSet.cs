@@ -1,7 +1,5 @@
-﻿using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Workflow;
+﻿using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
-using System.Collections.Generic;
 
 namespace msdyncrmWorkflowTools
 {
@@ -30,23 +28,7 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var recordUrl = TargetRecordUrl.Get(executionContext) ?? throw new InvalidPluginExecutionException("Source URL is empty");
-            var attributeName = AttributeName.Get(executionContext) ?? throw new InvalidPluginExecutionException("Attribute Name is empty");
-            var attributeValues = AttributeValues.Get(executionContext) ?? throw new InvalidPluginExecutionException("Attribute Values is empty");
-
-            common.Trace($"Record URL: '{recordUrl}', attribute: '{attributeName}', values: '{attributeValues}'");
-
-            var target = common.GetRecordReference(recordUrl);
-
-            var invalidValues = new List<string>();
-            var values = Utility.ParseOptionSetValues(attributeValues, invalidValues);
-
-            if (invalidValues.Count > 0)
-            {
-                common.Trace($"Skipped values that are not whole numbers: '{string.Join("', '", invalidValues)}'");
-            }
-
-            common.SetMultiSelectOptionSet(target, attributeName, values, KeepExistingValues.Get(executionContext));
+            common.SetMultiSelectOptionSet(TargetRecordUrl.Get(executionContext), AttributeName.Get(executionContext), AttributeValues.Get(executionContext), KeepExistingValues.Get(executionContext));
         }
     }
 }

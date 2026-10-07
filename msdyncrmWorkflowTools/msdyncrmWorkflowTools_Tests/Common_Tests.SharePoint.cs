@@ -1,6 +1,8 @@
 ﻿using Microsoft.Crm.Sdk.Messages;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Query;
+using msdyncrmWorkflowTools;
 using System;
 using System.Linq;
 
@@ -23,6 +25,16 @@ namespace msdyncrmWorkflowTools_Tests
 
             Assert.AreEqual("https://sp/site/doc", common.GetAbsoluteUrlFromLocation(Collection(location)));
             Assert.AreEqual(location.Id, ((RetrieveAbsoluteAndSiteCollectionUrlRequest)service.Executed.Single()).Target.Id);
+        }
+
+        [TestMethod]
+        public void GetSharepointLocationUrl_FromARecordUrl()
+        {
+            service.OnRetrieveMultiple = q => Collection();
+
+            Assert.AreEqual("URL Not found", common.GetSharepointLocationUrl(UrlFor(EntityNames.Account)));
+            StringAssert.Contains(string.Join(" ", ((QueryExpression)service.Queries.Single()).Criteria.Conditions.SelectMany(c => c.Values)), RecordId.ToString());
+            AssertRequired("Record URL", () => common.GetSharepointLocationUrl(null));
         }
     }
 }

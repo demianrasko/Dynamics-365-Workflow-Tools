@@ -32,6 +32,25 @@ namespace msdyncrmWorkflowTools
         }
 
         /// <summary>
+        /// Joins one value from each record a FetchXML query returns (see the overload above), with {PARENT_GUID} in
+        /// the query replaced by the workflow's record, for the Concatenate From Query activity.
+        /// </summary>
+        /// <param name="fetchXml">The fetch query, which may contain {PARENT_GUID}.</param>
+        /// <param name="parentId">The id {PARENT_GUID} stands for.</param>
+        /// <returns>The joined values, or null when no record has a value.</returns>
+        /// <exception cref="InvalidPluginExecutionException">The query is empty.</exception>
+        public string ConcatenateFromQuery(string fetchXml, Guid parentId, string attributeName, string separator, string format, int top)
+        {
+            fetchXml = Utility.Required(fetchXml, "FetchXML").Replace("{PARENT_GUID}", parentId.ToString());
+            Trace($"FetchXML={fetchXml}, AttributeName={attributeName}, Separator={separator}, FormatString={format}, TopRecordCount={top}");
+
+            var concatenated = ConcatenateFromQuery(fetchXml, attributeName, separator, format, top);
+            Trace(concatenated == null ? "No data found to concatenate" : $"Concatenated string: {concatenated}");
+
+            return concatenated;
+        }
+
+        /// <summary>
         /// Applies the active routing rule to a record (usually a case).
         /// </summary>
         public void ApplyRoutingRule(EntityReference record)
@@ -81,6 +100,74 @@ namespace msdyncrmWorkflowTools
             foreach (var recordId in recordIds)
             {
                 Service.Execute(new ExecuteWorkflowRequest { EntityId = recordId, WorkflowId = workflowId });
+            }
+        }
+
+        /// <summary>
+        /// Starts an on-demand workflow for one record given by its id as text, for the Execute Workflow By ID activity.
+        /// </summary>
+        /// <exception cref="InvalidPluginExecutionException">The process is empty, or the id isn't a GUID.</exception>
+        public void ExecuteWorkflow(EntityReference process, string recordId)
+        {
+            ExecuteWorkflow(Utility.Required(process, "Process").Id, new[] { Utility.RequiredGuid(recordId, "Record ID") });
+        }
+
+        /// <summary>
+        /// Starts an on-demand workflow for every record a FetchXML query returns (all pages), for the Execute
+        /// Workflow For Records In Query activity. An empty query does nothing.
+        /// </summary>
+        /// <exception cref="InvalidPluginExecutionException">A query is given without a process.</exception>
+        public void ExecuteWorkflowForRecordsInQuery(string fetchXml, EntityReference process)
+        {
+            if (string.IsNullOrEmpty(fetchXml))
+            {
+                Trace("No query: nothing to run.");
+                return;
+            }
+
+            if (process == null)
+            {
+                throw new InvalidPluginExecutionException("Process is required when a Query is given.");
+            }
+
+            var recordIds = RetrieveAllIds(FetchXmlToQueryExpression(fetchXml));
+            Trace($"Running process {process.Id} for {recordIds.Count} records");
+            ExecuteWorkflow(process.Id, recordIds);
+        }
+
+        /// <summary>
+        /// Starts an on-demand workflow for every child record whose lookup points at a parent, through a 1:N
+        /// relationship, for the Distribute Workflow (One To Many) activity.
+        /// </summary>
+        /// <exception cref="InvalidPluginExecutionException">The relationship or the workflow is empty.</exception>
+        public void DistributeWorkflowOneToMany(string relationshipName, EntityReference workflow, Guid parentId)
+        {
+            RequireDistribution(relationshipName, workflow);
+
+            var recordIds = GetOneToManyRelatedIds(relationshipName, parentId);
+            Trace($"Running workflow {workflow.Id} for {recordIds.Count} records related through {relationshipName}");
+            ExecuteWorkflow(workflow.Id, recordIds);
+        }
+
+        /// <summary>
+        /// Starts an on-demand workflow for every record associated with a record through an N:N relationship, for the
+        /// Distribute Workflow (Many To Many) activity.
+        /// </summary>
+        /// <exception cref="InvalidPluginExecutionException">The relationship or the workflow is empty.</exception>
+        public void DistributeWorkflowManyToMany(string relationshipName, EntityReference workflow, EntityReference record)
+        {
+            RequireDistribution(relationshipName, workflow);
+
+            var recordIds = GetManyToManyRelatedIds(relationshipName, record.LogicalName, record.Id);
+            Trace($"Running workflow {workflow.Id} for {recordIds.Count} records related through {relationshipName}");
+            ExecuteWorkflow(workflow.Id, recordIds);
+        }
+
+        private static void RequireDistribution(string relationshipName, EntityReference workflow)
+        {
+            if (string.IsNullOrEmpty(relationshipName) || workflow == null)
+            {
+                throw new InvalidPluginExecutionException("Relationship Name and Distributed Workflow are required.");
             }
         }
 

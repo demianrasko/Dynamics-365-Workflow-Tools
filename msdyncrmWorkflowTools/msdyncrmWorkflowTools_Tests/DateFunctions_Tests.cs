@@ -113,5 +113,18 @@ namespace msdyncrmWorkflowTools_Tests
             Assert.AreEqual(1, Run(new DateTime(2027, 1, 1), DateTime.MinValue, "en-US", out _)[5]);
             Assert.AreEqual(53, Run(new DateTime(2027, 1, 1), DateTime.MinValue, "de-DE", out _)[5]);
         }
+
+        [TestMethod]
+        public void DateFunctions_ResultHasTheDifferenceAndTheFirstDatesParts()
+        {
+            var result = Utility.DateFunctions(new DateTime(2017, 05, 05), new DateTime(2018, 01, 01));
+
+            Assert.AreEqual(-20822400000, result.Difference.TotalMilliseconds);
+            Assert.AreEqual(5, result.DayOfWeek);
+            Assert.AreEqual(125, result.DayOfYear);
+            Assert.AreEqual(5, result.Day);
+            Assert.AreEqual(5, result.Month);
+            Assert.AreEqual(2017, result.Year);
+        }
     }
 }

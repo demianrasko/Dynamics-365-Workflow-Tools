@@ -246,5 +246,99 @@ namespace msdyncrmWorkflowTools_Tests
             Assert.AreEqual(RecordId, update.Id);
             Assert.AreEqual(total, update["new_totalcopy"]);
         }
+
+        [TestMethod]
+        public void DeleteRecord_ByRecordUrlOrByTableAndId()
+        {
+            var id = Guid.NewGuid();
+
+            common.DeleteRecord(true, UrlFor(EntityNames.Account), null, null);
+            common.DeleteRecord(false, null, EntityNames.Contact, id.ToString());
+
+            Assert.AreEqual(new EntityReference(EntityNames.Account, RecordId), service.Deleted[0]);
+            Assert.AreEqual(new EntityReference(EntityNames.Contact, id), service.Deleted[1]);
+        }
+
+        [TestMethod]
+        public void DeleteRecord_ExplainsMissingOrInvalidInputs()
+        {
+            Assert.AreEqual("ERROR: Delete Record URL to be deleted missing.",
+                Assert.ThrowsException<InvalidPluginExecutionException>(() => common.DeleteRecord(true, string.Empty, EntityNames.Contact, Guid.NewGuid().ToString())).Message);
+            Assert.AreEqual("ERROR: Entity Type name or GUID to be deleted missing.",
+                Assert.ThrowsException<InvalidPluginExecutionException>(() => common.DeleteRecord(false, UrlFor(EntityNames.Account), null, Guid.NewGuid().ToString())).Message);
+            Assert.AreEqual("ERROR: Entity Guid 'abc' is not a valid GUID.",
+                Assert.ThrowsException<InvalidPluginExecutionException>(() => common.DeleteRecord(false, null, EntityNames.Contact, "abc")).Message);
+            Assert.AreEqual(0, service.Deleted.Count);
+        }
+
+        [TestMethod]
+        public void DeleteRecordAuditHistory_TargetsTheRecord()
+        {
+            service.OnExecute = r => new OrganizationResponse();
+            var record = new EntityReference(EntityNames.Account, RecordId);
+
+            common.DeleteRecordAuditHistory(record);
+
+            Assert.AreEqual(record, ((DeleteRecordChangeHistoryRequest)service.Executed.Single()).Target);
+        }
+
+        [TestMethod]
+        public void GetMultiSelectOptionSetText_ValuesAndOptionallyNames()
+        {
+            service.OnRetrieve = (name, id, columns) => new Entity(name, id) { ["new_colors"] = Options(2, 1) };
+            var options = new OptionMetadataCollection { new OptionMetadata(new Label("Red", 1033), 1), new OptionMetadata(new Label("Blue", 1033), 2) };
+            service.OnExecute = r => new RetrieveAttributeResponse
+            {
+                Results = { ["AttributeMetadata"] = new MultiSelectPicklistAttributeMetadata { OptionSet = new OptionSetMetadata(options) } }
+            };
+
+            Assert.AreEqual("2,1", common.GetMultiSelectOptionSetText(UrlFor(EntityNames.Account), "new_colors", false, out var noNames));
+            Assert.IsNull(noNames);
+            Assert.AreEqual("2,1", common.GetMultiSelectOptionSetText(UrlFor(EntityNames.Account), "new_colors", true, out var names));
+            Assert.AreEqual("Blue,Red", names);
+
+            service.OnRetrieve = (name, id, columns) => new Entity(name, id);
+            Assert.AreEqual(string.Empty, common.GetMultiSelectOptionSetText(UrlFor(EntityNames.Account), "new_colors", true, out var none));
+            Assert.IsNull(none);
+
+            AssertRequired("Source Record URL", () => common.GetMultiSelectOptionSetText(null, "new_colors", false, out _));
+            AssertRequired("Attribute Name", () => common.GetMultiSelectOptionSetText(UrlFor(EntityNames.Account), string.Empty, false, out _));
+        }
+
+        [TestMethod]
+        public void SetMultiSelectOptionSet_FromTextSkipsValuesThatAreNotNumbers()
+        {
+            common.SetMultiSelectOptionSet(UrlFor(EntityNames.Account), "new_colors", "1, red,3", false);
+
+            var update = service.Updated.Single();
+            Assert.AreEqual(RecordId, update.Id);
+            CollectionAssert.AreEqual(new[] { 1, 3 }, Values(update, "new_colors"));
+            AssertRequired("Attribute Values", () => common.SetMultiSelectOptionSet(UrlFor(EntityNames.Account), "new_colors", null, false));
+        }
+
+        [TestMethod]
+        public void MapMultiSelectOptionSets_FromRecordUrlsAndFieldLists()
+        {
+            var target = Guid.NewGuid();
+            service.OnRetrieve = (name, id, columns) => new Entity(name, id) { ["new_colors"] = Options(5) };
+
+            common.MapMultiSelectOptionSets(UrlFor("lead"), "new_colors", $"https://org.crm.dynamics.com/main.aspx?etn=account&id={target}", "new_tint", false);
+
+            var update = service.Updated.Single();
+            Assert.AreEqual(target, update.Id);
+            CollectionAssert.AreEqual(new[] { 5 }, Values(update, "new_tint"));
+            AssertRequired("Target Attributes", () => common.MapMultiSelectOptionSets(UrlFor("lead"), "new_colors", UrlFor(EntityNames.Account), string.Empty, false));
+        }
+
+        [TestMethod]
+        public void CloneRecord_FromARecordUrl()
+        {
+            SetUpRecordToClone(state: 0, status: 1);
+
+            common.CloneRecord(UrlFor("new_item"), null, null);
+
+            Assert.AreEqual("Item", service.Created.Single()["new_name"]);
+            AssertRequired("Cloning Record URL", () => common.CloneRecord(string.Empty, null, null));
+        }
     }
 }

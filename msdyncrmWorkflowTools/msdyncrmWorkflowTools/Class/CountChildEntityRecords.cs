@@ -31,23 +31,8 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var childEntityName = ChildEntityName.Get(executionContext);
-            var parentLookupName = ParentLookupName.Get(executionContext);
-            var recordUrl = RecordURL.Get(executionContext);
-            common.Trace($"ChildEntityName={childEntityName}--ParentLookupName={parentLookupName}--RecordURL={recordUrl}");
-
-            if (string.IsNullOrEmpty(recordUrl))
-            {
-                throw new InvalidPluginExecutionException("Record URL (Parent) is required.");
-            }
-            var parsedUrl = common.ParseRecordUrl(recordUrl);
-
-            common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
-
-            var count = common.CountChildRecords(childEntityName, parentLookupName, parsedUrl.Id, FilterExpressionXml.Get(executionContext));
-            common.Trace($"{childEntityName} records with {parentLookupName} = {parsedUrl.Id}: {count}");
-
-            Result.Set(executionContext, count);
+            Result.Set(executionContext, common.CountChildRecords(ChildEntityName.Get(executionContext), ParentLookupName.Get(executionContext),
+                RecordURL.Get(executionContext), FilterExpressionXml.Get(executionContext)));
         }
     }
 }

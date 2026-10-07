@@ -21,13 +21,8 @@ namespace msdyncrmWorkflowTools
         {
             var text = TexttoEncrypt.Get(executionContext);
 
-            common.Trace($"Text: {text} ");
-
-            var md5HashValue = Utility.Md5Hash(text);
-            var sha512HashValue = Utility.Sha512Hash(text);
-
-            MD5HashValue.Set(executionContext, md5HashValue);
-            SHA512HashValue.Set(executionContext, sha512HashValue);
+            MD5HashValue.Set(executionContext, Utility.Md5Hash(text));
+            SHA512HashValue.Set(executionContext, Utility.Sha512Hash(text));
         }
     }
 }

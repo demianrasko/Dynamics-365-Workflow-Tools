@@ -1,5 +1,4 @@
-﻿using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Workflow;
+﻿using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools
@@ -25,24 +24,9 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var recordUrl = ClonningRecordURL.Get(executionContext);
-
-            if (string.IsNullOrEmpty(recordUrl))
-            {
-                throw new InvalidPluginExecutionException("Cloning Record URL is required.");
-            }
-
-            var parsedUrl = common.ParseRecordUrl(recordUrl);
-            common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
-
-            var prefix = Prefix.Get(executionContext);
-            var fieldsToIgnore = FieldstoIgnore.Get(executionContext);
-
-            var createdGuid = common.CloneRecord(parsedUrl.EntityName, parsedUrl.Id, fieldsToIgnore, prefix);
+            var createdGuid = common.CloneRecord(ClonningRecordURL.Get(executionContext), FieldstoIgnore.Get(executionContext), Prefix.Get(executionContext));
 
             ClonedGuid.Set(executionContext, createdGuid.ToString());
-
-            common.Trace("cloned object OK");
         }
     }
 }

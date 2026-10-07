@@ -1,5 +1,4 @@
-﻿using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Workflow;
+﻿using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools
@@ -33,17 +32,7 @@ namespace msdyncrmWorkflowTools
             var text = TextToTranslate.Get(executionContext);
             var targetLanguage = TargetLanguage.Get(executionContext);
 
-            SetResultOrFailure(executionContext, common, () =>
-            {
-                if (string.IsNullOrWhiteSpace(text))
-                {
-                    throw new InvalidPluginExecutionException("Text is empty.");
-                }
-
-                common.Trace($"Text length: {text.Length}, target language: '{targetLanguage}'");
-
-                return common.AITranslate(text, targetLanguage);
-            }, TranslatedText, Failed, FailureMessage);
+            SetResultOrFailure(executionContext, common, () => common.AITranslate(text, targetLanguage), TranslatedText, Failed, FailureMessage);
         }
     }
 }

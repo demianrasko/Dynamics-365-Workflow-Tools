@@ -1,5 +1,4 @@
-﻿using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Workflow;
+﻿using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools
@@ -28,17 +27,7 @@ namespace msdyncrmWorkflowTools
         {
             var text = TextToAnalyzeSentiment.Get(executionContext);
 
-            SetResultOrFailure(executionContext, common, () =>
-            {
-                if (string.IsNullOrWhiteSpace(text))
-                {
-                    throw new InvalidPluginExecutionException("Text is empty.");
-                }
-
-                common.Trace($"Text length: {text.Length}");
-
-                return common.AISentiment(text);
-            }, Sentiment, Failed, FailureMessage);
+            SetResultOrFailure(executionContext, common, () => common.AISentiment(text), Sentiment, Failed, FailureMessage);
         }
     }
 }

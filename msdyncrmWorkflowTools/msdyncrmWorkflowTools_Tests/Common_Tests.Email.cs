@@ -148,5 +148,22 @@ namespace msdyncrmWorkflowTools_Tests
         {
             common.SendEmailToUsersInRole(new EntityReference(EntityNames.Role, Guid.NewGuid()), new EntityReference(EntityNames.Email, RecordId));
         }
+
+        [TestMethod]
+        public void EntityAttachmentToEmail_FromARecordUrlTurnsStarsIntoWildcards()
+        {
+            common.EntityAttachmentToEmail(UrlFor(EntityNames.Account), "*.pdf", new EntityReference(EntityNames.Email, Guid.NewGuid()), false, false, 0);
+
+            var query = (QueryExpression)service.Queries.Single();
+            AssertCondition(query.Criteria.Conditions[1], "objectid", ConditionOperator.Equal, RecordId);
+            StringAssert.Contains(string.Join(" ", query.Criteria.Filters.SelectMany(f => f.Conditions).Concat(query.Criteria.Conditions).SelectMany(c => c.Values)), "%.pdf");
+            AssertRequired("Main Record URL", () => common.EntityAttachmentToEmail(null, "*", new EntityReference(EntityNames.Email, Guid.NewGuid()), false, false, 0));
+        }
+
+        [TestMethod]
+        public void SalesLiteratureToEmail_NeedsAFileName()
+        {
+            AssertRequired("File Name (use * for filter)", () => common.SalesLiteratureToEmail(string.Empty, Guid.NewGuid(), Guid.NewGuid()));
+        }
     }
 }

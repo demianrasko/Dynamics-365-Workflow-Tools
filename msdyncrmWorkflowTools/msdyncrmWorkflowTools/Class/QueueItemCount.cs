@@ -21,17 +21,7 @@ namespace msdyncrmWorkflowTools.Class
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var sourceQueue = SourceQueue.Get(executionContext);
-
-            common.Trace($"sourceQueue: {sourceQueue.Id.ToString()} ");
-
-            var countOnlyUnassigned = CountOnlyUnassigned.Get(executionContext);
-            common.Trace($"countOnlyUnassigned: {countOnlyUnassigned}");
-
-            var count = common.CountQueueItems(sourceQueue.Id, countOnlyUnassigned);
-            common.Trace($"Count of all queueItemsCount: {count}");
-
-            ItemsCount.Set(executionContext, count);
+            ItemsCount.Set(executionContext, common.CountQueueItems(SourceQueue.Get(executionContext).Id, CountOnlyUnassigned.Get(executionContext)));
         }
     }
 }

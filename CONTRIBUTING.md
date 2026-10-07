@@ -8,7 +8,7 @@ Demian.
 
 ## Creating a new activity
 
-Every activity follows the same pattern: the activity class only reads and checks its inputs, and the work is done by a method in the shared Common project, where it can be unit tested. The [templates/WorkflowActivity](templates/WorkflowActivity) folder has a starting point for each piece.
+Every activity follows the same pattern: the activity class only reads its inputs, calls one method in the shared Common project (or a static `Utility` method) and sets its outputs. Everything else, including the input checks, is done in that method, where it can be unit tested: no `if`, `throw`, `try` or loops in the activity. The [templates/WorkflowActivity](templates/WorkflowActivity) folder has a starting point for each piece.
 
 ### Where the code goes
 
@@ -27,7 +27,8 @@ Every activity follows the same pattern: the activity class only reads and check
 
 1. **Create the activity class.** Copy [Activity.cs](templates/WorkflowActivity/Activity.cs) into the `Class` folder, rename the file, and replace `$safeitemname$` with the class name. Add the file to `msdyncrmWorkflowTools.csproj` (Visual Studio does this when you use Add > Existing Item).
    - Inherit from `WorkflowActivityBase` and override `ExecuteActivity`. The base class creates `Common`, traces the start and end, and turns exceptions into readable errors, so don't add your own try/catch.
-   - Throw `InvalidPluginExecutionException` for messages the user should see as written, such as a missing input.
+   - Pass the inputs to the Common method as they are and check them there. `Utility.Required(value, "Input Name")` checks a required text or lookup input, `Utility.RequiredGuid` an id typed as text, and `common.GetRecordReference(recordUrl, "Input Name")` a required record URL; each throws `InvalidPluginExecutionException` with a message naming the input. Throw `InvalidPluginExecutionException` yourself for any other message the user should see as written.
+   - `common.PrimaryRecord` is the record the workflow runs on.
    - Use `EntityNames` constants in `[ReferenceTarget]` and anywhere else a table name is needed.
    - Give the class an `[ActivityName("...")]` attribute with the name people see in the workflow designer, e.g. `[ActivityName("Add Role To Team")]`. Every activity needs one and the names must be unique (a test checks); the solution build registers the activity under it.
 2. **Add the Common method.** Paste [CommonMethod.cs.txt](templates/WorkflowActivity/CommonMethod.cs.txt) into the `Common.<Area>.cs` file that fits and rename it. Use `Service` for Dataverse calls, `Trace` for the trace log, and `AttributeNames` constants for column names. Logic that doesn't need Dataverse goes in `Utility` as a static method.

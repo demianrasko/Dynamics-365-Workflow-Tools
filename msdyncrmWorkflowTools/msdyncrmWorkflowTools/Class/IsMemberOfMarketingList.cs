@@ -23,12 +23,7 @@ namespace msdyncrmWorkflowTools.Class
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var marketingList = MarketingList.Get(executionContext);
-            common.Trace($"marketingList: {marketingList.Id}");
-
-            var isMember = common.IsMemberOfMarketingList(marketingList.Id, common.Context.PrimaryEntityId);
-
-            MemberOfMarketingList.Set(executionContext, isMember);
+            MemberOfMarketingList.Set(executionContext, common.IsMemberOfMarketingList(MarketingList.Get(executionContext).Id, common.Context.PrimaryEntityId));
         }
     }
 }

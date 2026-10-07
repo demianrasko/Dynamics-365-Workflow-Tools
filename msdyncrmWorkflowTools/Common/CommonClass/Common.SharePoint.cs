@@ -17,6 +17,19 @@ namespace msdyncrmWorkflowTools
         }
 
         /// <summary>
+        /// The absolute SharePoint URL of the first document location of the record a record URL points at, for the
+        /// Get SharePoint Location URL activity.
+        /// </summary>
+        /// <returns>The absolute URL, or "URL Not found" when the record has no document location.</returns>
+        /// <exception cref="InvalidPluginExecutionException">The record URL is empty.</exception>
+        public string GetSharepointLocationUrl(string recordUrl)
+        {
+            var recordId = Utility.ParseRecordUrl(Utility.Required(recordUrl, "Record URL")).Id;
+
+            return GetAbsoluteUrlFromLocation(GetSharepointLocations(recordId));
+        }
+
+        /// <summary>
         /// The absolute SharePoint URL of the first document location in <paramref name="locations"/>.
         /// </summary>
         /// <param name="locations">Document locations, e.g. from <see cref="GetSharepointLocations"/>.</param>

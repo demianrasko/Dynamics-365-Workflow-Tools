@@ -105,5 +105,36 @@ namespace msdyncrmWorkflowTools_Tests
             service.OnRetrieveMultiple = query => Collection();
             Assert.IsNull(common.GetEnvironmentVariable("new_Missing"));
         }
+
+        [TestMethod]
+        public void GetOrganizationSettingText_IsAlsoReadAsANumberAndAsYesNo()
+        {
+            service.OnRetrieveMultiple = query => Collection(new Entity("organization", Guid.NewGuid()) { ["maxuploadfilesize"] = 5242880, ["isauditenabled"] = true });
+
+            Assert.AreEqual("5242880", common.GetOrganizationSettingText("MaxUploadFileSize", out var number, out var yesNo));
+            Assert.AreEqual(5242880, number);
+            Assert.IsFalse(yesNo);
+            Assert.AreEqual("True", common.GetOrganizationSettingText("isauditenabled", out _, out var audit));
+            Assert.IsTrue(audit);
+            AssertRequired("orgDBSetting to Update", () => common.GetOrganizationSettingText(null, out _, out _));
+        }
+
+        [TestMethod]
+        public void SetOrganizationSetting_TheNameIsNotCaseSensitive()
+        {
+            service.OnRetrieveMultiple = query => Collection(new Entity("organization", Guid.NewGuid()));
+
+            common.SetOrganizationSetting("MaxUploadFileSize", "10");
+
+            Assert.AreEqual(10, service.Updated.Single()["maxuploadfilesize"]);
+            AssertRequired("orgDBSetting to Update", () => common.SetOrganizationSetting(string.Empty, "10"));
+        }
+
+        [TestMethod]
+        public void GetEnvironmentVariable_NeedsASchemaName()
+        {
+            Assert.AreEqual("Schema Name is required.", Assert.ThrowsException<InvalidPluginExecutionException>(() => common.GetEnvironmentVariable(" ")).Message);
+            Assert.AreEqual(0, service.Queries.Count);
+        }
     }
 }

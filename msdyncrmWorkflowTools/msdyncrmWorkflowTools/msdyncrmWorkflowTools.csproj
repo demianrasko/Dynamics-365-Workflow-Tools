@@ -256,6 +256,15 @@
     <Compile Include="..\Common\UtilityClass\RecordUrl.cs">
       <Link>UtilityClass\RecordUrl.cs</Link>
     </Compile>
+    <Compile Include="..\Common\UtilityClass\DateFunctionsResult.cs">
+      <Link>UtilityClass\DateFunctionsResult.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\UtilityClass\StringFunctionsResult.cs">
+      <Link>UtilityClass\StringFunctionsResult.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\UtilityClass\MobileDeepLinks.cs">
+      <Link>UtilityClass\MobileDeepLinks.cs</Link>
+    </Compile>
     <Compile Include="..\Common\UtilityClass\RollupResult.cs">
       <Link>UtilityClass\RollupResult.cs</Link>
     </Compile>

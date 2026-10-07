@@ -1,5 +1,4 @@
-﻿using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Workflow;
+﻿using Microsoft.Xrm.Sdk.Workflow;
 using System;
 using System.Activities;
 
@@ -28,14 +27,7 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var fetchXml = FetchXML.Get(executionContext);
-
-            if (string.IsNullOrEmpty(fetchXml))
-            {
-                throw new InvalidPluginExecutionException("FetchXML is required.");
-            }
-
-            var date = common.CalculateAggregateDate(fetchXml, common.Context.PrimaryEntityId);
+            var date = common.CalculateAggregateDate(FetchXML.Get(executionContext), common.Context.PrimaryEntityId);
 
             Value.Set(executionContext, date ?? NoDate);
             Ok.Set(executionContext, date.HasValue);

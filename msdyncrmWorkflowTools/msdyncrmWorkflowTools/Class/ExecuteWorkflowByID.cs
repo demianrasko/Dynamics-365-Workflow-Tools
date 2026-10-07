@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
-using System;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools.Class
@@ -19,14 +18,7 @@ namespace msdyncrmWorkflowTools.Class
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var recordId = RecordID.Get(executionContext);
-
-            if (!Guid.TryParse(recordId, out var id))
-            {
-                throw new InvalidPluginExecutionException($"Record ID '{recordId}' is not a valid GUID.");
-            }
-
-            common.ExecuteWorkflow(Process.Get(executionContext).Id, new[] { id });
+            common.ExecuteWorkflow(Process.Get(executionContext), RecordID.Get(executionContext));
         }
     }
 }

@@ -5,10 +5,15 @@
         [TestMethod]
         public void MyActivity_ReturnsTheRecordName()
         {
-            var account = new EntityReference(EntityNames.Account, RecordId);
             service.OnRetrieve = (entityName, id, columns) => new Entity(entityName, id) { [AttributeNames.Name] = "Contoso" };
 
-            var result = common.MyActivity(account);
+            var result = common.MyActivity(UrlFor(EntityNames.Account));
 
             Assert.AreEqual("Contoso", result);
+        }
+
+        [TestMethod]
+        public void MyActivity_NeedsTheRecordUrl()
+        {
+            AssertRequired("Record URL", () => common.MyActivity(string.Empty));
         }

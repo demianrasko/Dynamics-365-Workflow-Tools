@@ -1,5 +1,4 @@
-﻿using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Workflow;
+﻿using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools
@@ -17,25 +16,9 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var recordUrl = RecordUrl.Get(executionContext);
-
-            if (string.IsNullOrEmpty(recordUrl))
-            {
-                throw new InvalidPluginExecutionException("Record URL is required.");
-            }
-
-            var lookupFieldName = LookupFieldName.Get(executionContext);
-
-            if (string.IsNullOrEmpty(lookupFieldName))
-            {
-                throw new InvalidPluginExecutionException("Lookup Field Name is required.");
-            }
-
             // the record the URL points at becomes the lookup value on the workflow's primary record
-            common.SetLookup(
-                new EntityReference(common.Context.PrimaryEntityName, common.Context.PrimaryEntityId),
-                lookupFieldName,
-                common.GetRecordReference(recordUrl));
+            common.SetLookup(common.PrimaryRecord, Utility.Required(LookupFieldName.Get(executionContext), "Lookup Field Name"),
+                common.GetRecordReference(RecordUrl.Get(executionContext), "Record URL"));
         }
     }
 }

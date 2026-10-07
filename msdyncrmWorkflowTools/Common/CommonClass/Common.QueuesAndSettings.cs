@@ -46,12 +46,33 @@ namespace msdyncrmWorkflowTools
         }
 
         /// <summary>
+        /// The value of an organization setting as text, and also as a whole number and as Yes/No (0 and No when the
+        /// text isn't one), for the Org DB Settings Retrieve activity. The setting name isn't case-sensitive.
+        /// </summary>
+        /// <exception cref="InvalidPluginExecutionException">The setting name is empty.</exception>
+        public string GetOrganizationSettingText(string attributeName, out int numericValue, out bool boolValue)
+        {
+            attributeName = Utility.Required(attributeName, "orgDBSetting to Update").ToLower();
+            var stringValue = GetOrganizationSetting(attributeName)?.ToString();
+            Trace($"Organization setting {attributeName} = {stringValue}");
+
+            int.TryParse(stringValue, out numericValue);
+            bool.TryParse(stringValue, out boolValue);
+
+            return stringValue;
+        }
+
+        /// <summary>
         /// Sets an organization setting; the value is stored as a whole number, true/false or text
         /// (see <see cref="Utility.ConvertSettingValue"/>).
         /// </summary>
+        /// <param name="attributeName">The setting (organization column); not case-sensitive.</param>
+        /// <param name="value">The value as text.</param>
         /// <returns>False when the organization record could not be read.</returns>
+        /// <exception cref="InvalidPluginExecutionException">The setting name is empty.</exception>
         public bool SetOrganizationSetting(string attributeName, string value)
         {
+            attributeName = Utility.Required(attributeName, "orgDBSetting to Update").ToLower();
             var organization = Service.RetrieveMultiple(OrganizationSettingQuery(attributeName)).Entities.FirstOrDefault();
 
             if (organization == null)
@@ -135,8 +156,14 @@ namespace msdyncrmWorkflowTools
         /// </summary>
         /// <param name="schemaName">Schema name of the environment variable, e.g. "new_ApiUrl".</param>
         /// <returns>The value, or null when there is no such variable or it has neither a current nor a default value.</returns>
+        /// <exception cref="InvalidPluginExecutionException">The schema name is empty.</exception>
         public string GetEnvironmentVariable(string schemaName)
         {
+            if (string.IsNullOrWhiteSpace(schemaName))
+            {
+                throw new InvalidPluginExecutionException("Schema Name is required.");
+            }
+
             var definition = RetrieveFirst(EnvironmentVariableQuery(schemaName.Trim()));
 
             if (definition == null)

@@ -222,15 +222,64 @@ namespace msdyncrmWorkflowTools_Tests
         }
 
         [TestMethod]
-        public void CloneChildRecords_CopiesEachChildWithTheReplacements()
+        public void CloneChildren_CopiesTheSourceChildrenUnderTheTarget()
         {
-            var children = new[] { Guid.NewGuid(), Guid.NewGuid() };
-            var newParent = new EntityReference(EntityNames.Account, Guid.NewGuid());
+            var child = Guid.NewGuid();
+            var target = Guid.NewGuid();
+            SetUpChildrenToClone(child);
+
+            var count = common.CloneChildren($"https://x.crm.dynamics.com/main.aspx?etn=account&id={RecordId}",
+                $"https://x.crm.dynamics.com/main.aspx?etn=account&id={{{target}}}", "account_contacts", "parentcustomerid", null, null, null, false, true);
+
+            Assert.AreEqual(1, count);
+            var query = (QueryByAttribute)service.Queries.Single();
+            CollectionAssert.AreEqual(new object[] { RecordId, 0 }, query.Values.ToArray(), "the source's active children");
+            var copy = service.Created.Single();
+            Assert.AreEqual(new EntityReference(EntityNames.Account, target), copy["parentcustomerid"]);
+            Assert.AreEqual(child.ToString(), copy["lastname"]);
+        }
+
+        [TestMethod]
+        public void CloneChildren_ExplainsAMissingRequiredInput()
+        {
+            const string url = "https://x.crm.dynamics.com/main.aspx?etn=account&id=6b9c4a3e-1d2f-4e5a-8b7c-9d0e1f2a3b4c";
+
+            AssertRequired("Relationship Name", () => common.CloneChildren(url, url, string.Empty, "parentcustomerid", null, null, null, false, false));
+            AssertRequired("New Parent Field Name", () => common.CloneChildren(url, url, "account_contacts", null, null, null, null, false, false));
+            AssertRequired("Source Record URL", () => common.CloneChildren(string.Empty, url, "account_contacts", "parentcustomerid", null, null, null, false, false));
+            AssertRequired("Target Record URL", () => common.CloneChildren(url, null, "account_contacts", "parentcustomerid", null, null, null, false, false));
+            Assert.AreEqual(0, service.Created.Count);
+        }
+
+        [TestMethod]
+        public void CloneChildrenReplacements_ClearsADifferentOldParentField()
+        {
+            var parent = new EntityReference(EntityNames.Account, RecordId);
+
+            var different = Common.CloneChildrenReplacements(parent, "new_targetid", "new_sourceid");
+            Assert.AreEqual(parent, different["new_targetid"]);
+            Assert.IsTrue(different.ContainsKey("new_sourceid") && different["new_sourceid"] == null);
+
+            CollectionAssert.AreEqual(new[] { "parentcustomerid" }, Common.CloneChildrenReplacements(parent, "parentcustomerid", "parentcustomerid").Keys.ToArray(),
+                "the same field isn't cleared");
+            CollectionAssert.AreEqual(new[] { "parentcustomerid" }, Common.CloneChildrenReplacements(parent, "parentcustomerid", null).Keys.ToArray());
+        }
+
+        private void SetUpChildrenToClone(params Guid[] children)
+        {
             service.OnExecute = r => r is RetrieveRelationshipRequest
                 ? (OrganizationResponse)RelationshipResponse(EntityNames.Contact, "parentcustomerid")
                 : new RetrieveEntityResponse { Results = { ["EntityMetadata"] = EntityWithAttributes("contactid", Attribute<StringAttributeMetadata>("lastname")) } };
             service.OnRetrieveMultiple = q => new EntityCollection(children.Select(id => new Entity(EntityNames.Contact, id)).ToList());
             service.OnRetrieve = (name, id, columns) => new Entity(name, id) { ["lastname"] = id.ToString() };
+        }
+
+        [TestMethod]
+        public void CloneChildRecords_CopiesEachChildWithTheReplacements()
+        {
+            var children = new[] { Guid.NewGuid(), Guid.NewGuid() };
+            var newParent = new EntityReference(EntityNames.Account, Guid.NewGuid());
+            SetUpChildrenToClone(children);
 
             var count = common.CloneChildRecords("account_contacts", RecordId, null, null, new Dictionary<string, object> { ["parentcustomerid"] = newParent }, false, false);
 
@@ -279,6 +328,67 @@ namespace msdyncrmWorkflowTools_Tests
             service.OnRetrieveMultiple = query => throw new InvalidOperationException("unknown relationship");
 
             common.AssociateEntity(EntityNames.Team, TeamId, "nope", "nope", EntityNames.Role, Guid.NewGuid());
+        }
+
+        [TestMethod]
+        public void IsAssociated_LooksForTheRecordsInTheIntersect()
+        {
+            service.OnExecute = r => new RetrieveRelationshipResponse
+            {
+                Results = { ["RelationshipMetadata"] = new ManyToManyRelationshipMetadata { IntersectEntityName = "accountleads" } }
+            };
+            service.OnRetrieveMultiple = q => Collection(new Entity("accountleads", Guid.NewGuid()));
+            var account = new EntityReference(EntityNames.Account, Guid.NewGuid());
+
+            Assert.IsTrue(common.IsAssociated(account, "accountleads_association", UrlFor("lead")));
+            Assert.AreEqual("accountleads", ((QueryExpression)service.Queries.Single()).LinkEntities.Single().LinkToEntityName);
+
+            service.OnRetrieveMultiple = q => Collection();
+            Assert.IsFalse(common.IsAssociated(account, "accountleads_association", UrlFor("lead")));
+            AssertRequired("Record URL", () => common.IsAssociated(account, "accountleads_association", null));
+        }
+
+        [TestMethod]
+        public void AssociateEntity_FromARecordUrlIgnoresADuplicate()
+        {
+            var account = new EntityReference(EntityNames.Account, Guid.NewGuid());
+
+            common.AssociateEntity(account, "accountleads_association", "accountleads", UrlFor("lead"));
+
+            var call = service.Associated.Single();
+            Assert.AreEqual(account, call.Record);
+            Assert.AreEqual(RecordId, call.Related.Single().Id);
+
+            service.OnAssociate = () => throw new FaultException<OrganizationServiceFault>(new OrganizationServiceFault { ErrorCode = -2147220937 }, "duplicate");
+            common.AssociateEntity(account, "accountleads_association", "accountleads", UrlFor("lead"));
+
+            service.OnAssociate = () => throw new FaultException<OrganizationServiceFault>(new OrganizationServiceFault { ErrorCode = -1 }, "other");
+            Assert.ThrowsException<FaultException<OrganizationServiceFault>>(() => common.AssociateEntity(account, "accountleads_association", "accountleads", UrlFor("lead")));
+            AssertRequired("Record URL", () => common.AssociateEntity(account, "accountleads_association", "accountleads", string.Empty));
+        }
+
+        [TestMethod]
+        public void CountChildRecords_FromARecordUrl()
+        {
+            service.OnRetrieveMultiple = q => Page(false, null, new Entity(EntityNames.Contact, Guid.NewGuid()), new Entity(EntityNames.Contact, Guid.NewGuid()));
+
+            Assert.AreEqual(2, common.CountChildRecords(EntityNames.Contact, "parentcustomerid", UrlFor(EntityNames.Account), null));
+            AssertRequired("Record URL (Parent)", () => common.CountChildRecords(EntityNames.Contact, "parentcustomerid", (string)null, null));
+        }
+
+        [TestMethod]
+        public void UpdateChildRecords_FromARecordUrl()
+        {
+            var owner = new EntityReference(EntityNames.SystemUser, UserId);
+            SetUpChildRelationship(new LookupAttributeMetadata { LogicalName = "new_reviewerid" });
+            service.OnRetrieve = (name, id, columns) => new Entity(name, id) { ["ownerid"] = owner };
+            service.OnRetrieveMultiple = query => Collection(new Entity(EntityNames.Contact, Guid.NewGuid()));
+
+            Assert.AreEqual(1, common.UpdateChildRecords(UrlFor(EntityNames.Account), "account_contacts", "ownerid", null, "new_reviewerid", false, false, out var failed));
+
+            Assert.AreEqual(0, failed);
+            Assert.AreSame(owner, service.Updated.Single()["new_reviewerid"]);
+            AssertRequired("Parent Record URL", () => common.UpdateChildRecords(string.Empty, "account_contacts", "ownerid", null, "new_reviewerid", false, false, out _));
         }
     }
 }

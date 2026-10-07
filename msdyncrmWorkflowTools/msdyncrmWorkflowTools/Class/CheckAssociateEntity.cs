@@ -22,22 +22,7 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var relationshipName = RelationshipName.Get(executionContext);
-            var recordUrl = RecordURL.Get(executionContext);
-
-            if (string.IsNullOrEmpty(recordUrl))
-            {
-                throw new InvalidPluginExecutionException("Record URL is required.");
-            }
-
-            var parsedUrl = common.ParseRecordUrl(recordUrl);
-
-            common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
-
-            var intersectEntityName = common.GetIntersectEntityName(relationshipName);
-            var relations = common.GetAssociations(common.Context.PrimaryEntityName, common.Context.PrimaryEntityId, intersectEntityName, parsedUrl.EntityName, parsedUrl.Id);
-
-            Result.Set(executionContext, relations.Entities.Count > 0);
+            Result.Set(executionContext, common.IsAssociated(common.PrimaryRecord, RelationshipName.Get(executionContext), RecordURL.Get(executionContext)));
         }
     }
 }

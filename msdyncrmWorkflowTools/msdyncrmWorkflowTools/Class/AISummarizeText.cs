@@ -1,5 +1,4 @@
-﻿using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Workflow;
+﻿using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools
@@ -28,17 +27,7 @@ namespace msdyncrmWorkflowTools
         {
             var text = TextToSummarize.Get(executionContext);
 
-            SetResultOrFailure(executionContext, common, () =>
-            {
-                if (string.IsNullOrWhiteSpace(text))
-                {
-                    throw new InvalidPluginExecutionException("Text is empty.");
-                }
-
-                common.Trace($"Text length: {text.Length}");
-
-                return common.AISummarize(text);
-            }, SummaryText, Failed, FailureMessage);
+            SetResultOrFailure(executionContext, common, () => common.AISummarize(text), SummaryText, Failed, FailureMessage);
         }
     }
 }

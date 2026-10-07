@@ -21,18 +21,8 @@ namespace msdyncrmWorkflowTools.Class
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var process = Process.Get(executionContext) ?? throw new InvalidPluginExecutionException("Process is required.");
-            var stageName = ProcessStage.Get(executionContext);
-
-            if (string.IsNullOrEmpty(stageName))
-            {
-                throw new InvalidPluginExecutionException("Process Stage Name is required.");
-            }
-
-            var parsedUrl = common.ParseRecordUrl(ClonningRecordURL.Get(executionContext));
-            common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
-
-            common.SetProcessStage(parsedUrl.ToEntityReference(), process, stageName);
+            common.SetProcessStage(common.GetRecordReference(ClonningRecordURL.Get(executionContext), "Record URL"),
+                Utility.Required(Process.Get(executionContext), "Process"), Utility.Required(ProcessStage.Get(executionContext), "Process Stage Name"));
         }
     }
 }

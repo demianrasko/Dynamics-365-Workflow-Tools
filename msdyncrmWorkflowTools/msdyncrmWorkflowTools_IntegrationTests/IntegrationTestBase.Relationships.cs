@@ -74,7 +74,7 @@ namespace msdyncrmWorkflowTools_IntegrationTests
         }
 
         [TestMethod]
-        public void CloneChildRecords_CopiesTheStatusOrOnlyTheActiveChildren()
+        public void CloneChildren_CopiesTheStatusOrOnlyTheActiveChildren()
         {
             var source = Create(new Entity(EntityNames.Account) { [AttributeNames.Name] = UniqueName("clone source") });
             CreateContact(source);
@@ -84,10 +84,8 @@ namespace msdyncrmWorkflowTools_IntegrationTests
             var withStatus = Create(new Entity(EntityNames.Account) { [AttributeNames.Name] = UniqueName("clone with status") });
             var activeOnly = Create(new Entity(EntityNames.Account) { [AttributeNames.Name] = UniqueName("clone active only") });
 
-            Assert.AreEqual(2, Common.CloneChildRecords("contact_customer_accounts", source.Id, null, null,
-                new Dictionary<string, object> { ["parentcustomerid"] = withStatus }, true, false));
-            Assert.AreEqual(1, Common.CloneChildRecords("contact_customer_accounts", source.Id, null, null,
-                new Dictionary<string, object> { ["parentcustomerid"] = activeOnly }, false, true));
+            Assert.AreEqual(2, Common.CloneChildren(UrlFor(source), UrlFor(withStatus), "contact_customer_accounts", "parentcustomerid", null, null, null, true, false));
+            Assert.AreEqual(1, Common.CloneChildren(UrlFor(source), UrlFor(activeOnly), "contact_customer_accounts", "parentcustomerid", null, null, null, false, true));
 
             var withStatusCopies = CopiesUnder(withStatus);
             CollectionAssert.AreEquivalent(new[] { 0, 1 }, withStatusCopies.Select(StateOf).ToList());

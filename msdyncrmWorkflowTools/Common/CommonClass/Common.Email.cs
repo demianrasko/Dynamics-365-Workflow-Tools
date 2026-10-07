@@ -153,6 +153,23 @@ namespace msdyncrmWorkflowTools
             });
         }
 
+        /// <summary>
+        /// Attaches the files (notes or email attachments) of the record a record URL points at to an email, for the
+        /// Entity Attachment To Email activity.
+        /// </summary>
+        /// <param name="mainRecordUrl">Record URL of the record whose files are attached.</param>
+        /// <param name="fileName">File name patterns with * as the wildcard, separated by ";"; * alone for every file.</param>
+        /// <exception cref="InvalidPluginExecutionException">The record URL is empty.</exception>
+        public void EntityAttachmentToEmail(string mainRecordUrl, string fileName, EntityReference email, bool retrieveActivityMimeAttachment, bool mostRecent, int? topRecords)
+        {
+            var parentId = Utility.ParseRecordUrl(Utility.Required(mainRecordUrl, "Main Record URL")).Id;
+            Trace($"Id={parentId}");
+
+            fileName = fileName == "*" ? string.Empty : (fileName ?? string.Empty).Replace("*", "%");
+
+            EntityAttachmentToEmail(fileName, parentId, email, retrieveActivityMimeAttachment, mostRecent, topRecords);
+        }
+
         public void EntityAttachmentToEmail(string fileName, Guid parentId, EntityReference email, bool retrieveActivityMimeAttachment, bool mostRecent, int? topRecords = 0)
         {
             Trace($"Attachments: {(retrieveActivityMimeAttachment ? EntityNames.ActivityMimeAttachment : EntityNames.Annotation)} of {parentId}, file name like '{fileName}', top {topRecords}");
@@ -221,8 +238,11 @@ namespace msdyncrmWorkflowTools
             }
         }
 
+        /// <exception cref="InvalidPluginExecutionException">The file name is empty.</exception>
         public void SalesLiteratureToEmail(string fileName, Guid salesLiteratureId, Guid emailId)
         {
+            Utility.Required(fileName, "File Name (use * for filter)");
+
             if (fileName == "*")
             {
                 fileName = string.Empty;

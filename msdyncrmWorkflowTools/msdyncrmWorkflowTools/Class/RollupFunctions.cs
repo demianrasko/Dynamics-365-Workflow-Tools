@@ -1,7 +1,5 @@
-using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
-using System.Linq;
 
 namespace msdyncrmWorkflowTools
 {
@@ -30,26 +28,7 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var fetchXml = FetchXML.Get(executionContext);
-
-            if (string.IsNullOrEmpty(fetchXml))
-            {
-                throw new InvalidPluginExecutionException("FetchXML is required.");
-            }
-
-            fetchXml = fetchXml.Replace("{PARENT_GUID}", common.Context.PrimaryEntityId.ToString());
-            common.Trace($"FetchXML={fetchXml}");
-
-            var records = common.RetrieveAllWithFetchXml(fetchXml).ToList();
-
-            // the calculations use the first attribute in the fetch
-            var key = Utility.GetFirstFetchAttributeKey(fetchXml);
-            var values = records
-                .Select(r => Utility.ToDecimal(Utility.GetFirstFetchValue(r, key)))
-                .ToList();
-
-            var result = Utility.CalculateRollup(values);
-            common.Trace($"Records={result.Count}, Sum={result.Sum}, Average={result.Average}, Min={result.Min}, Max={result.Max}");
+            var result = common.CalculateRollup(FetchXML.Get(executionContext), common.Context.PrimaryEntityId);
 
             Count.Set(executionContext, result.Count);
             Sum.Set(executionContext, result.Sum);

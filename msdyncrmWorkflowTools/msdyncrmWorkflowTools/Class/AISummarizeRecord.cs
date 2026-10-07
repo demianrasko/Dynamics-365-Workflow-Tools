@@ -1,5 +1,4 @@
-﻿using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Workflow;
+﻿using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools
@@ -38,18 +37,7 @@ namespace msdyncrmWorkflowTools
             var recordContext = RecordContextJson.Get(executionContext);
             var includeCatchup = IncludeCatchup.Get(executionContext);
 
-            SetResultOrFailure(executionContext, common, () =>
-            {
-                if (string.IsNullOrWhiteSpace(recordUrl))
-                {
-                    throw new InvalidPluginExecutionException("Record URL is required.");
-                }
-
-                var record = common.GetRecordReference(recordUrl);
-                common.Trace($"EntityName={record.LogicalName}--Id={record.Id}, include catchup: {includeCatchup}");
-
-                return common.AISummarizeRecord(record, includeCatchup, recordContext);
-            }, SummaryText, Failed, FailureMessage);
+            SetResultOrFailure(executionContext, common, () => common.AISummarizeRecord(recordUrl, includeCatchup, recordContext), SummaryText, Failed, FailureMessage);
         }
     }
 }

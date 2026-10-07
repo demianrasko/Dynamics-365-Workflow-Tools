@@ -31,19 +31,10 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var address = Address.Get(executionContext);
+            var location = Utility.GeocodeAddress(Address.Get(executionContext), BingMapsKey.Get(executionContext), AzureMapsKey.Get(executionContext), common.TracingService);
 
-            var location = Utility.GeocodeAddress(address, BingMapsKey.Get(executionContext), AzureMapsKey.Get(executionContext), common.TracingService);
-
-            if (location == null)
-            {
-                common.Trace($"No location found for '{address}'.");
-                return;
-            }
-
-            common.Trace($"Latitude={location.Latitude}, Longitude={location.Longitude}");
-            Latitude.Set(executionContext, location.Latitude);
-            Longitude.Set(executionContext, location.Longitude);
+            Latitude.Set(executionContext, location?.Latitude ?? 0);
+            Longitude.Set(executionContext, location?.Longitude ?? 0);
         }
     }
 }

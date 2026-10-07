@@ -104,6 +104,53 @@ namespace msdyncrmWorkflowTools
         }
 
         /// <summary>
+        /// Deletes a record given either by its record URL or by its table name and id, for the Delete Record activity.
+        /// </summary>
+        /// <param name="deleteUsingRecordUrl">Use <paramref name="recordUrl"/>; otherwise the table name and id.</param>
+        /// <param name="recordUrl">The record's URL.</param>
+        /// <param name="entityTypeName">The record's table (logical name).</param>
+        /// <param name="entityGuid">The record's id as text.</param>
+        /// <exception cref="InvalidPluginExecutionException">The inputs the chosen way needs are missing, or the id isn't a GUID.</exception>
+        public void DeleteRecord(bool deleteUsingRecordUrl, string recordUrl, string entityTypeName, string entityGuid)
+        {
+            if (deleteUsingRecordUrl)
+            {
+                if (string.IsNullOrEmpty(recordUrl))
+                {
+                    throw new InvalidPluginExecutionException("ERROR: Delete Record URL to be deleted missing.");
+                }
+
+                DeleteRecord(GetRecordReference(recordUrl));
+                return;
+            }
+
+            if (string.IsNullOrEmpty(entityTypeName) || string.IsNullOrEmpty(entityGuid))
+            {
+                throw new InvalidPluginExecutionException("ERROR: Entity Type name or GUID to be deleted missing.");
+            }
+
+            if (!Guid.TryParse(entityGuid, out var id))
+            {
+                throw new InvalidPluginExecutionException($"ERROR: Entity Guid '{entityGuid}' is not a valid GUID.");
+            }
+
+            DeleteRecord(new EntityReference(entityTypeName, id));
+        }
+
+        /// <summary>
+        /// Creates a copy of the record a required record URL points at (see the overload below), for the Clone
+        /// Record activity.
+        /// </summary>
+        /// <returns>The id of the copy.</returns>
+        /// <exception cref="InvalidPluginExecutionException">The record URL is empty.</exception>
+        public Guid CloneRecord(string recordUrl, string fieldstoIgnore, string prefix)
+        {
+            var record = GetRecordReference(recordUrl, "Cloning Record URL");
+
+            return CloneRecord(record.LogicalName, record.Id, fieldstoIgnore, prefix);
+        }
+
+        /// <summary>
         /// Creates a copy of a record, copying every attribute that can be set on create.
         /// </summary>
         /// <param name="entityName">Logical name of the record.</param>
@@ -229,14 +276,18 @@ namespace msdyncrmWorkflowTools
             return id;
         }
 
+        /// <summary>
+        /// Deletes a record's audit history.
+        /// </summary>
+        public void DeleteRecordAuditHistory(EntityReference record)
+        {
+            Trace($"Deleting the audit history of {record.LogicalName} {record.Id}");
+            Service.Execute(new DeleteRecordChangeHistoryRequest { Target = record });
+        }
+
         public void DeleteRecordAuditHistory(string logicalName, Guid id)
         {
-            var request = new DeleteRecordChangeHistoryRequest();
-
-            var entityReference = new EntityReference(logicalName, id);
-
-            request.Target = entityReference;
-            Service.Execute(request);
+            DeleteRecordAuditHistory(new EntityReference(logicalName, id));
         }
 
         /// <summary>
@@ -247,6 +298,42 @@ namespace msdyncrmWorkflowTools
             var entity = Service.Retrieve(record.LogicalName, record.Id, new ColumnSet(attributeName));
 
             return entity.GetAttributeValue<OptionSetValueCollection>(attributeName) ?? new OptionSetValueCollection();
+        }
+
+        /// <summary>
+        /// The selected values of a multi-select option set field as comma-separated numbers, for the Get Multi Select
+        /// Option Set activity; empty when none are selected.
+        /// </summary>
+        /// <param name="recordUrl">Record URL of the record to read.</param>
+        /// <param name="attributeName">Logical name of the multi-select option set field.</param>
+        /// <param name="retrieveNames">Also return the selected options' labels.</param>
+        /// <param name="names">The labels, comma separated; null unless <paramref name="retrieveNames"/> is set and an
+        /// option is selected.</param>
+        /// <exception cref="InvalidPluginExecutionException">The record URL or the field name is empty.</exception>
+        public string GetMultiSelectOptionSetText(string recordUrl, string attributeName, bool retrieveNames, out string names)
+        {
+            var source = GetRecordReference(recordUrl, "Source Record URL");
+            Utility.Required(attributeName, "Attribute Name");
+            names = null;
+
+            var values = GetMultiSelectOptionSet(source, attributeName);
+
+            if (values.Count == 0)
+            {
+                Trace("No selected options");
+                return string.Empty;
+            }
+
+            var selectedValues = Utility.JoinOptionSetValues(values);
+            Trace($"Selected values: {selectedValues}");
+
+            if (retrieveNames)
+            {
+                names = GetOptionSetNames(source.LogicalName, attributeName, values);
+                Trace($"Selected names: {names}");
+            }
+
+            return selectedValues;
         }
 
         /// <summary>
@@ -268,6 +355,28 @@ namespace msdyncrmWorkflowTools
         public void SetMultiSelectOptionSet(EntityReference target, string attributeName, OptionSetValueCollection values, bool keepExistingValues)
         {
             SetMultiSelectOptionSets(target, new Dictionary<string, OptionSetValueCollection> { [attributeName] = values }, keepExistingValues);
+        }
+
+        /// <summary>
+        /// Sets a multi-select option set field from values typed as text (e.g. "1,2,3"), for the Set Multi Select
+        /// Option Set activity. Values that aren't whole numbers are skipped and traced.
+        /// </summary>
+        /// <exception cref="InvalidPluginExecutionException">The record URL, the field name or the values are empty.</exception>
+        public void SetMultiSelectOptionSet(string recordUrl, string attributeName, string values, bool keepExistingValues)
+        {
+            var target = GetRecordReference(recordUrl, "Target Record URL");
+            Utility.Required(attributeName, "Attribute Name");
+            Utility.Required(values, "Attribute Values");
+
+            var invalidValues = new List<string>();
+            var optionValues = Utility.ParseOptionSetValues(values, invalidValues);
+
+            if (invalidValues.Count > 0)
+            {
+                Trace($"Skipped values that are not whole numbers: '{string.Join("', '", invalidValues)}'");
+            }
+
+            SetMultiSelectOptionSet(target, attributeName, optionValues, keepExistingValues);
         }
 
         /// <summary>
@@ -336,6 +445,22 @@ namespace msdyncrmWorkflowTools
             }
 
             SetMultiSelectOptionSets(target, values, keepExistingValues);
+        }
+
+        /// <summary>
+        /// Copies multi-select option set fields between the records two record URLs point at, with the field names
+        /// given as comma- or semicolon-separated lists, for the Map Multi Select Option Set activity.
+        /// </summary>
+        /// <exception cref="InvalidPluginExecutionException">A record URL or a field list is empty, or the lists have
+        /// different lengths.</exception>
+        public void MapMultiSelectOptionSets(string sourceRecordUrl, string sourceAttributes, string targetRecordUrl, string targetAttributes, bool keepExistingValues)
+        {
+            MapMultiSelectOptionSets(
+                GetRecordReference(sourceRecordUrl, "Source Record URL"),
+                Utility.SplitList(Utility.Required(sourceAttributes, "Source Attributes")),
+                GetRecordReference(targetRecordUrl, "Target Record URL"),
+                Utility.SplitList(Utility.Required(targetAttributes, "Target Attributes")),
+                keepExistingValues);
         }
 
         /// <summary>The parties of an activity with one participation type (from, to, cc, ...).</summary>

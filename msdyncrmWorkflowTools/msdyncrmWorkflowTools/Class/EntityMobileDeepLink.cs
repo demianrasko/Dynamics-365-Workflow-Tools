@@ -23,29 +23,11 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var recordUrl = RecordURL.Get(executionContext);
+            var links = common.GetMobileDeepLinks(RecordURL.Get(executionContext));
 
-            if (string.IsNullOrEmpty(recordUrl))
-            {
-                throw new InvalidPluginExecutionException("Record URL is required.");
-            }
-            var parsedUrl = common.ParseRecordUrl(recordUrl);
-
-            common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
-
-            var recordUrlEdit = $"ms-dynamicsxrm://?pagetype=entity&etn={parsedUrl.EntityName}&id={parsedUrl.Id}";
-            var recordUrlNew = $"ms-dynamicsxrm://?pagetype=create&etn={parsedUrl.EntityName}";
-            var recordUrlDefaultView = $"ms-dynamicsxrm://?pagetype=view&etn={parsedUrl.EntityName}";
-
-            common.Trace($"MobileDeepLinkEdit: {recordUrlEdit}");
-            common.Trace($"MobileDeepLinkNew: {recordUrlNew}");
-            common.Trace($"MobileDeepLinkDefaultView: {recordUrlDefaultView}");
-
-            MobileDeepLinkEdit.Set(executionContext, recordUrlEdit);
-            MobileDeepLinkNew.Set(executionContext, recordUrlNew);
-            MobileDeepLinkDefaultView.Set(executionContext, recordUrlDefaultView);
-
-            common.Trace("returned object links OK");
+            MobileDeepLinkEdit.Set(executionContext, links.Edit);
+            MobileDeepLinkNew.Set(executionContext, links.New);
+            MobileDeepLinkDefaultView.Set(executionContext, links.DefaultView);
         }
     }
 }

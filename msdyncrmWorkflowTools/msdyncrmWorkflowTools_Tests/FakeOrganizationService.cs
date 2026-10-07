@@ -72,8 +72,14 @@ namespace msdyncrmWorkflowTools_Tests
 
         public List<AssociateCall> Disassociated { get; } = new List<AssociateCall>();
 
+        /// <summary>
+        /// Runs before an association is recorded; throw from it to make the association fail.
+        /// </summary>
+        public Action OnAssociate { get; set; } = () => { };
+
         public void Associate(string entityName, Guid entityId, Relationship relationship, EntityReferenceCollection relatedEntities)
         {
+            OnAssociate();
             Associated.Add(new AssociateCall(new EntityReference(entityName, entityId), relationship, relatedEntities));
         }
 
