@@ -18,14 +18,7 @@ namespace msdyncrmWorkflowTools.Class
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var recordUrl = ClonningRecordURL.Get(executionContext);
-
-            if (string.IsNullOrEmpty(recordUrl))
-            {
-                throw new InvalidPluginExecutionException("Record URL is required.");
-            }
-
-            common.SetProcess(common.GetRecordReference(recordUrl), Process.Get(executionContext));
+            common.SetProcess(common.GetRecordReference(ClonningRecordURL.Get(executionContext), "Record URL"), Process.Get(executionContext));
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Workflow;
+﻿using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools
@@ -14,14 +13,7 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var targetRecordUrl = TargetRecordURL.Get(executionContext);
-
-            if (string.IsNullOrEmpty(targetRecordUrl))
-            {
-                throw new InvalidPluginExecutionException("Target Record URL is required.");
-            }
-
-            common.CalculatePrice(common.GetRecordReference(targetRecordUrl));
+            common.CalculatePrice(common.GetRecordReference(TargetRecordURL.Get(executionContext), "Target Record URL"));
         }
     }
 }

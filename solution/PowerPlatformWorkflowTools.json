@@ -186,6 +186,9 @@
     "msdyncrmWorkflowTools.MapMultiSelectOptionSet": {
       "id": "f310335e-0bc1-f111-a05a-6045bd061c5d"
     },
+    "msdyncrmWorkflowTools.NumericOperation": {
+      "id": "546164b5-d70b-4793-85e5-b8b59dd3535e"
+    },
     "msdyncrmWorkflowTools.OrgDBSettingsRetrieve": {
       "id": "93f0c364-0bc1-f111-a05a-6045bd061c5d"
     },

@@ -22,9 +22,7 @@ namespace msdyncrmWorkflowTools.Class
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var incident = Incident.Get(executionContext) ?? throw new InvalidPluginExecutionException("Case is required.");
-
-            common.ResolveCase(incident.Id, IncidentResolution.Get(executionContext), ResolutionDescription.Get(executionContext));
+            common.ResolveCase(Utility.Required(Incident.Get(executionContext), "Case").Id, IncidentResolution.Get(executionContext), ResolutionDescription.Get(executionContext));
         }
     }
 }

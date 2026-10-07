@@ -26,17 +26,7 @@ namespace msdyncrmWorkflowTools.Class
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var salesLiterature = SalesLiterature.Get(executionContext);
-
-            var fileName = FileName.Get(executionContext);
-            if (string.IsNullOrEmpty(fileName))
-            {
-                throw new InvalidPluginExecutionException("File Name (use * for filter) is required.");
-            }
-
-            var email = Email.Get(executionContext);
-
-            common.SalesLiteratureToEmail(fileName, salesLiterature.Id, email.Id);
+            common.SalesLiteratureToEmail(FileName.Get(executionContext), SalesLiterature.Get(executionContext).Id, Email.Get(executionContext).Id);
         }
     }
 }

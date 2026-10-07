@@ -1,5 +1,4 @@
-﻿using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Workflow;
+﻿using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools
@@ -17,16 +16,13 @@ namespace msdyncrmWorkflowTools
         [ReferenceTarget("")]
         public InArgument<string> ParentRecordURL { get; set; }
 
+        [Input("Copy Result To Field")]
+        [Default("")]
+        public InArgument<string> CopyResultToField { get; set; }
+
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var recordUrl = ParentRecordURL.Get(executionContext);
-
-            if (string.IsNullOrEmpty(recordUrl))
-            {
-                throw new InvalidPluginExecutionException("Parent Record URL is required.");
-            }
-
-            common.CalculateRollupField(common.GetRecordReference(recordUrl), FieldName.Get(executionContext));
+            common.CalculateRollupField(common.GetRecordReference(ParentRecordURL.Get(executionContext), "Parent Record URL"), FieldName.Get(executionContext), CopyResultToField.Get(executionContext));
         }
     }
 }

@@ -36,11 +36,8 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var parsedUrl = common.ParseRecordUrl(RecordURL.Get(executionContext));
-            common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
-
             common.ShareSecuredField(
-                parsedUrl.ToEntityReference(),
+                common.GetRecordReference(RecordURL.Get(executionContext), "Record URL"),
                 AttributeName.Get(executionContext),
                 AllowRead.Get(executionContext),
                 AllowUpdate.Get(executionContext),

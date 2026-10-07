@@ -1,5 +1,4 @@
-﻿using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Workflow;
+﻿using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools
@@ -32,32 +31,8 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var fetchXml = FetchXml.Get(executionContext);
-
-            if (string.IsNullOrEmpty(fetchXml))
-            {
-                throw new InvalidPluginExecutionException("FetchXML is required.");
-            }
-
-            fetchXml = fetchXml.Replace("{PARENT_GUID}", common.Context.PrimaryEntityId.ToString());
-
-            var attributeName = AttributeName.Get(executionContext);
-            var separator = Separator.Get(executionContext);
-            var format = FormatString.Get(executionContext);
-            var topRecordCount = TopRecordCount.Get(executionContext);
-
-            common.Trace($"FetchXML={fetchXml}, AttributeName={attributeName}, Separator={separator}, FormatString={format}, TopRecordCount={topRecordCount}");
-
-            var concatenatedString = common.ConcatenateFromQuery(fetchXml, attributeName, separator, format, topRecordCount);
-
-            if (concatenatedString == null)
-            {
-                common.Trace("No data found to concatenate");
-                return;
-            }
-
-            common.Trace($"Concatenated string: {concatenatedString}");
-            ConcatenatedString.Set(executionContext, concatenatedString);
+            ConcatenatedString.Set(executionContext, common.ConcatenateFromQuery(FetchXml.Get(executionContext), common.Context.PrimaryEntityId,
+                AttributeName.Get(executionContext), Separator.Get(executionContext), FormatString.Get(executionContext), TopRecordCount.Get(executionContext)));
         }
     }
 }

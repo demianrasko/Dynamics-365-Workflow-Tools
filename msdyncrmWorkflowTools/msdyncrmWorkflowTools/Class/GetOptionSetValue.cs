@@ -1,6 +1,6 @@
-﻿using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Workflow;
+﻿using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
+using System.Globalization;
 
 namespace msdyncrmWorkflowTools
 {
@@ -18,16 +18,18 @@ namespace msdyncrmWorkflowTools
         [Output("Value")]
         public OutArgument<int> SelectedValue { get; set; }
 
+        // the designer formats a whole number with the user's digit grouping (100,000) when it goes into text, such as
+        // a FetchXML condition; this one is plain digits
+        [Output("Value (Text)")]
+        public OutArgument<string> SelectedValueText { get; set; }
+
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var sourceRecordUrl = SourceRecordUrl.Get(executionContext) ?? throw new InvalidPluginExecutionException("Source URL is empty");
-            var attributeName = AttributeName.Get(executionContext) ?? throw new InvalidPluginExecutionException("Attribute Name is empty");
+            var value = common.GetOptionSetValue(common.GetRecordReference(SourceRecordUrl.Get(executionContext), "Source Record URL"),
+                Utility.Required(AttributeName.Get(executionContext), "Attribute Name"));
 
-            common.Trace($"Source Record URL:'{sourceRecordUrl}' Attribute name:'{attributeName}'");
-
-            var source = common.GetRecordReference(sourceRecordUrl);
-
-            SelectedValue.Set(executionContext, common.GetOptionSetValue(source, attributeName));
+            SelectedValue.Set(executionContext, value);
+            SelectedValueText.Set(executionContext, value.ToString(CultureInfo.InvariantCulture));
         }
     }
 }

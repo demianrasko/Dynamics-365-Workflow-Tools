@@ -108,6 +108,7 @@ To see how to use each tool in this solution, follow these links:
 * 93 [Distribute Workflow (Many To Many)](/docs/DistributeWFActivityManyToMany.md)
 * 94 [Execute Workflow For Records In Query](/docs/ExecuteWorkflowForRecordsinQuery.md)
 * 95 [Get Environment Variable](/docs/GetEnvironmentVariable.md)
+* 96 [Numeric Operation](/docs/NumericOperation.md)
 
 ## Activities, as seen in the Workflow Designer
 

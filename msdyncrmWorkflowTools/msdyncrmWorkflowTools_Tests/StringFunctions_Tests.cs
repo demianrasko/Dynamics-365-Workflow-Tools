@@ -152,6 +152,23 @@ namespace msdyncrmWorkflowTools_Tests
         }
 
         [TestMethod]
+        public void RemoveRegexMatches_RemovesEveryMatch()
+        {
+            // upstream PR #285
+            Assert.AreEqual("abc", Utility.RemoveRegexMatches("a1b22c333", @"\d+"));
+            Assert.AreEqual("a1b2", Utility.RemoveRegexMatches("a1b2", null), "no expression leaves the text as it is");
+            Assert.AreEqual(string.Empty, Utility.RemoveRegexMatches(null, @"\d"));
+        }
+
+        [TestMethod]
+        public void WithoutSpacesRemovesTheSpacesANumberFormatUses()
+        {
+            // a non-breaking space and a narrow non-breaking space between digit groups (upstream issue #267)
+            Assert.AreEqual("ABCD1000002", Run("ABCD1 000 002").WithoutSpaces);
+            Assert.AreEqual("a\tb\nc", Run("a\t b\n c").WithoutSpaces, "tabs and line breaks are kept");
+        }
+
+        [TestMethod]
         public void NullInputsDoNotThrow()
         {
             var r = Run(null, capitalizeAllWords: false, padCharacter: null, oldValue: null, newValue: null, regularExpression: null);
@@ -163,6 +180,35 @@ namespace msdyncrmWorkflowTools_Tests
             Assert.IsFalse(r.RegexSuccess);
             Assert.AreEqual(string.Empty, r.Upper);
             Assert.AreEqual(string.Empty, r.WithoutSpaces);
+        }
+
+        [TestMethod]
+        public void StringFunctions_ResultHasEveryOutput()
+        {
+            var result = Utility.StringFunctions(false, "  ab1 c2  ", "*", true, 12, false, "c", null, 2, 2, true, @"\d");
+
+            Assert.AreEqual("  ab1 c2  ", result.CapitalizedText);
+            Assert.AreEqual(10, result.TextLength);
+            Assert.AreEqual("**  ab1 c2  ", result.PaddedText);
+            Assert.AreEqual("  ab1 2  ", result.ReplacedText, "an empty new value removes the old one");
+            Assert.AreEqual("ab", result.SubstringText);
+            Assert.AreEqual("ab1 c2", result.TrimmedText);
+            Assert.IsTrue(result.RegexSuccess);
+            Assert.AreEqual("1", result.RegexText);
+            Assert.AreEqual("  AB1 C2  ", result.UppercaseText);
+            Assert.AreEqual("  ab1 c2  ", result.LowercaseText);
+            Assert.AreEqual("ab1c2", result.WithoutSpaces);
+            Assert.AreEqual("  ab c  ", result.WithoutRegexMatches);
+        }
+
+        [TestMethod]
+        public void StringFunctions_NullInputIsEmpty()
+        {
+            var result = Utility.StringFunctions(true, null, null, false, 0, false, null, null, 0, 0, true, null);
+
+            Assert.AreEqual(string.Empty, result.TrimmedText);
+            Assert.AreEqual(0, result.TextLength);
+            Assert.AreEqual(string.Empty, result.WithoutRegexMatches);
         }
     }
 }

@@ -98,51 +98,28 @@ namespace msdyncrmWorkflowTools
         [Output("Without Spaces")]
         public OutArgument<string> WithoutSpaces { get; set; }
 
+        [Output("Without Regex Matches")]
+        public OutArgument<string> WithoutRegexMatches { get; set; }
+
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var inputText = InputText.Get(executionContext) ?? string.Empty;
-            var capitalizeAllWords = CapitalizeAllWords.Get(executionContext);
+            var result = Utility.StringFunctions(CapitalizeAllWords.Get(executionContext), InputText.Get(executionContext), PadCharacter.Get(executionContext),
+                PadontheLeft.Get(executionContext), FinalLengthwithPadding.Get(executionContext), CaseSensitive.Get(executionContext),
+                ReplaceOldValue.Get(executionContext), ReplaceNewValue.Get(executionContext), SubStringLength.Get(executionContext),
+                StartIndex.Get(executionContext), FromLefttoRight.Get(executionContext), RegularExpression.Get(executionContext));
 
-            var padCharacter = PadCharacter.Get(executionContext);
-            var padOnTheLeft = PadontheLeft.Get(executionContext);
-            var finalLengthWithPadding = FinalLengthwithPadding.Get(executionContext);
-
-            var replaceOldValue = ReplaceOldValue.Get(executionContext);
-            var replaceNewValue = ReplaceNewValue.Get(executionContext) ?? string.Empty;
-            var caseSensitive = CaseSensitive.Get(executionContext);
-
-            var fromLeftToRight = FromLefttoRight.Get(executionContext);
-            var startIndex = StartIndex.Get(executionContext);
-            var subStringLength = SubStringLength.Get(executionContext);
-            var regularExpression = RegularExpression.Get(executionContext);
-
-            var capitalizedText = string.Empty;
-            var paddedText = string.Empty;
-            var replacedText = string.Empty;
-            var subStringText = string.Empty;
-            var regexText = string.Empty;
-            var uppercaseText = string.Empty;
-            var lowercaseText = string.Empty;
-
-            var regexSuccess = false;
-            var withoutSpaces = string.Empty;
-
-            Utility.StringFunctions(capitalizeAllWords, inputText, padCharacter, padOnTheLeft, finalLengthWithPadding, caseSensitive,
-                replaceOldValue, replaceNewValue, subStringLength, startIndex, fromLeftToRight, regularExpression,
-                ref capitalizedText, ref paddedText, ref replacedText, ref subStringText, ref regexText,
-                ref uppercaseText, ref lowercaseText, ref regexSuccess, ref withoutSpaces);
-
-            CapitalizedText.Set(executionContext, capitalizedText);
-            TextLength.Set(executionContext, capitalizedText.Length);
-            PaddedText.Set(executionContext, paddedText);
-            ReplacedText.Set(executionContext, replacedText);
-            SubstringText.Set(executionContext, subStringText);
-            TrimmedText.Set(executionContext, inputText.Trim());
-            RegexSuccess.Set(executionContext, regexSuccess);
-            RegexText.Set(executionContext, regexText);
-            UppercaseText.Set(executionContext, uppercaseText);
-            LowercaseText.Set(executionContext, lowercaseText);
-            WithoutSpaces.Set(executionContext, withoutSpaces);
+            CapitalizedText.Set(executionContext, result.CapitalizedText);
+            TextLength.Set(executionContext, result.TextLength);
+            PaddedText.Set(executionContext, result.PaddedText);
+            ReplacedText.Set(executionContext, result.ReplacedText);
+            SubstringText.Set(executionContext, result.SubstringText);
+            TrimmedText.Set(executionContext, result.TrimmedText);
+            RegexSuccess.Set(executionContext, result.RegexSuccess);
+            RegexText.Set(executionContext, result.RegexText);
+            UppercaseText.Set(executionContext, result.UppercaseText);
+            LowercaseText.Set(executionContext, result.LowercaseText);
+            WithoutSpaces.Set(executionContext, result.WithoutSpaces);
+            WithoutRegexMatches.Set(executionContext, result.WithoutRegexMatches);
         }
     }
 }

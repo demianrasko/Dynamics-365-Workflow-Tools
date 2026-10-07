@@ -19,16 +19,7 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var sharingRecordUrl = SharingRecordURL.Get(executionContext);
-
-            if (string.IsNullOrEmpty(sharingRecordUrl))
-            {
-                throw new InvalidPluginExecutionException("Sharing Record URL is required.");
-            }
-
-            var principal = Team.Get(executionContext);
-
-            common.UnshareRecord(sharingRecordUrl, principal);
+            common.UnshareRecord(SharingRecordURL.Get(executionContext), Team.Get(executionContext));
         }
     }
 }

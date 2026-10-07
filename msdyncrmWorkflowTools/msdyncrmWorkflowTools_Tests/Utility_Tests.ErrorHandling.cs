@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Xrm.Sdk;
 using msdyncrmWorkflowTools;
+using System;
 
 namespace msdyncrmWorkflowTools_Tests
 {
@@ -44,6 +45,28 @@ namespace msdyncrmWorkflowTools_Tests
             StringAssert.Contains(text, "Message:\tmiddle");
             StringAssert.Contains(text, "Message:\tinnermost");
             StringAssert.Contains(text, "Type:\tSystem.ArgumentException");
+        }
+
+        [TestMethod]
+        public void Required_ReturnsTheValueOrNamesTheInput()
+        {
+            Assert.AreEqual("x", Utility.Required("x", "Name"));
+            Assert.AreEqual("Name is required.", Assert.ThrowsException<InvalidPluginExecutionException>(() => Utility.Required(string.Empty, "Name")).Message);
+            Assert.AreEqual("Name is required.", Assert.ThrowsException<InvalidPluginExecutionException>(() => Utility.Required((string)null, "Name")).Message);
+
+            var lookup = new EntityReference("account", Guid.NewGuid());
+            Assert.AreSame(lookup, Utility.Required(lookup, "Account"));
+            Assert.AreEqual("Account is required.", Assert.ThrowsException<InvalidPluginExecutionException>(() => Utility.Required((EntityReference)null, "Account")).Message);
+        }
+
+        [TestMethod]
+        public void RequiredGuid_ParsesTheTextOrNamesTheInput()
+        {
+            var id = Guid.NewGuid();
+
+            Assert.AreEqual(id, Utility.RequiredGuid($" {{{id}}} ", "Record ID"));
+            Assert.AreEqual("Record ID is required.", Assert.ThrowsException<InvalidPluginExecutionException>(() => Utility.RequiredGuid(null, "Record ID")).Message);
+            Assert.AreEqual("Record ID 'abc' is not a valid GUID.", Assert.ThrowsException<InvalidPluginExecutionException>(() => Utility.RequiredGuid("abc", "Record ID")).Message);
         }
     }
 }

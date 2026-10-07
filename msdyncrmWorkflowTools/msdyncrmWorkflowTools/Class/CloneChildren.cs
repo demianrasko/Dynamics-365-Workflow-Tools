@@ -1,7 +1,5 @@
-﻿using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Workflow;
+﻿using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
-using System.Collections.Generic;
 
 namespace msdyncrmWorkflowTools
 {
@@ -50,59 +48,19 @@ namespace msdyncrmWorkflowTools
         [Default("")]
         public InArgument<string> FieldstoIgnore { get; set; }
 
+        [Input("Copy Status")]
+        [Default("False")]
+        public InArgument<bool> CopyStatus { get; set; }
+
+        [Input("Only Active Children")]
+        [Default("False")]
+        public InArgument<bool> OnlyActiveChildren { get; set; }
+
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var relationshipName = RelationshipName.Get(executionContext);
-            if (string.IsNullOrEmpty(relationshipName))
-            {
-                throw new InvalidPluginExecutionException("Relationship Name is required.");
-            }
-
-            var newParentFieldName = NewParentFieldNameToUpdate.Get(executionContext);
-            if (string.IsNullOrEmpty(newParentFieldName))
-            {
-                throw new InvalidPluginExecutionException("New Parent Field Name is required.");
-            }
-
-            var source = SourceRecordUrl.Get(executionContext);
-            if (string.IsNullOrEmpty(source))
-            {
-                throw new InvalidPluginExecutionException("Source Record URL is required.");
-            }
-
-            var parsedUrl = common.ParseRecordUrl(source);
-            common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
-
-            var destination = TargetRecordUrl.Get(executionContext);
-            if (string.IsNullOrEmpty(destination))
-            {
-                throw new InvalidPluginExecutionException("Target Record URL is required.");
-            }
-            var parsedDestinationUrl = common.ParseRecordUrl(destination);
-            common.Trace($"EntityName={parsedDestinationUrl.EntityName}--Id={parsedDestinationUrl.Id}");
-
-            //Optional
-            var oldParentFieldName = OldParentFieldNameToUpdate.Get(executionContext);
-            var prefix = Prefix.Get(executionContext);
-            var fieldsToIgnore = FieldstoIgnore.Get(executionContext);
-
-            // the new parent is set when each copy is created, so a locked parent (e.g. an invoiced order) is never touched
-            var fieldsToReplace = new Dictionary<string, object>
-            {
-                [newParentFieldName] = parsedDestinationUrl.ToEntityReference()
-            };
-
-            if (!string.IsNullOrEmpty(oldParentFieldName) && oldParentFieldName != newParentFieldName)
-            {
-                fieldsToReplace[oldParentFieldName] = null;
-            }
-
-            var children = common.GetChildRecords(relationshipName, parsedUrl.Id);
-
-            foreach (var item in children.Entities)
-            {
-                common.CloneRecord(item.LogicalName, item.Id, fieldsToIgnore, prefix, fieldsToReplace);
-            }
+            common.CloneChildren(SourceRecordUrl.Get(executionContext), TargetRecordUrl.Get(executionContext), RelationshipName.Get(executionContext),
+                NewParentFieldNameToUpdate.Get(executionContext), OldParentFieldNameToUpdate.Get(executionContext), Prefix.Get(executionContext),
+                FieldstoIgnore.Get(executionContext), CopyStatus.Get(executionContext), OnlyActiveChildren.Get(executionContext));
         }
     }
 }

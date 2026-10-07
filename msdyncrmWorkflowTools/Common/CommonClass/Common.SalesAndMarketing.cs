@@ -129,9 +129,19 @@ namespace msdyncrmWorkflowTools
             });
         }
 
+        /// <summary>
+        /// Adds an existing product to an opportunity.
+        /// </summary>
+        /// <returns>The id of the opportunity product.</returns>
+        /// <exception cref="InvalidPluginExecutionException">The opportunity, the product or the unit is empty.</exception>
         public Guid CreateOpportunityProduct(EntityReference opportunity,
             EntityReference existingProduct, EntityReference uom, decimal quantity)
         {
+            if (opportunity == null || existingProduct == null || uom == null)
+            {
+                throw new InvalidPluginExecutionException("Opportunity, Existing Product and Unit are required.");
+            }
+
             var opportunityProduct = new Entity(EntityNames.OpportunityProduct)
             {
                 [AttributeNames.OpportunityId] = new EntityReference(opportunity.LogicalName, opportunity.Id),
@@ -140,7 +150,10 @@ namespace msdyncrmWorkflowTools
                 [AttributeNames.Quantity] = quantity
             };
 
-            return Service.Create(opportunityProduct);
+            var id = Service.Create(opportunityProduct);
+            Trace($"Opportunity product {id} created");
+
+            return id;
         }
 
         /// <summary>
@@ -203,6 +216,27 @@ namespace msdyncrmWorkflowTools
             Trace($"Removed {member.LogicalName} {member.Id} from {memberships.Count} marketing list(s).");
 
             return memberships.Count;
+        }
+
+        /// <summary>
+        /// Recalculates a goal given as a lookup or, when the lookup is empty, as an id typed as text, for the Goal
+        /// Recalculate activity.
+        /// </summary>
+        /// <exception cref="InvalidPluginExecutionException">Neither is given, or the text isn't a GUID.</exception>
+        public void RecalculateGoal(EntityReference goal, string goalGuid)
+        {
+            if (goal != null)
+            {
+                RecalculateGoal(goal.Id);
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(goalGuid))
+            {
+                throw new InvalidPluginExecutionException("Goal or Goal Guid is required.");
+            }
+
+            RecalculateGoal(Utility.RequiredGuid(goalGuid, "Goal Guid"));
         }
 
         /// <summary>

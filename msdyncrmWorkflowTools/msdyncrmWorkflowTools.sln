@@ -115,6 +115,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{8B2D3F55-6
 		..\docs\JSONParser.md = ..\docs\JSONParser.md
 		..\docs\MapMultiSelectOptionSet.md = ..\docs\MapMultiSelectOptionSet.md
 		..\docs\Numeric Functions.md = ..\docs\Numeric Functions.md
+		..\docs\NumericOperation.md = ..\docs\NumericOperation.md
 		..\docs\OrgDBSettingsExample.md = ..\docs\OrgDBSettingsExample.md
 		..\docs\OrgDBSettingsRetrieve.md = ..\docs\OrgDBSettingsRetrieve.md
 		..\docs\OrgDBSettingsUpdate.md = ..\docs\OrgDBSettingsUpdate.md

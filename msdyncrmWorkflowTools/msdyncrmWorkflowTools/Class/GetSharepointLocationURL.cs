@@ -15,11 +15,7 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var recordId = Utility.ParseRecordUrl(RecordURL.Get(executionContext)).Id;
-
-            var locations = common.GetSharepointLocations(recordId);
-
-            SharepointLocationURL.Set(executionContext, common.GetAbsoluteUrlFromLocation(locations));
+            SharepointLocationURL.Set(executionContext, common.GetSharepointLocationUrl(RecordURL.Get(executionContext)));
         }
     }
 }

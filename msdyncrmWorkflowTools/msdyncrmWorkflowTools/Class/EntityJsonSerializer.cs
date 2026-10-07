@@ -16,14 +16,7 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var recordUrl = SerializingRecordURL.Get(executionContext);
-
-            if (string.IsNullOrEmpty(recordUrl))
-            {
-                throw new InvalidPluginExecutionException("Serializing Record URL is required.");
-            }
-
-            OutputJson.Set(executionContext, common.SerializeRecord(common.GetRecordReference(recordUrl)));
+            OutputJson.Set(executionContext, common.SerializeRecord(common.GetRecordReference(SerializingRecordURL.Get(executionContext), "Serializing Record URL")));
         }
     }
 }

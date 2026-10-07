@@ -12,6 +12,7 @@ Then you have to pass two parameters:
 
 * FieldName: The Rollup field Name of the parent entity.
 * Parent RecordURL: You must to select the Parent field called Record URL
+* Copy Result To Field (optional): a field on the same record to set to the new value. A rollup field can't be used by another rollup, so for a rollup across several levels, copy the result into a plain field of the same type (for example a whole number or currency field) and roll that field up on the next level. The value is copied straight from the calculation, so a later step doesn't read an old value.
 
 Note: The Parent Record URL, is a standard feature of Dynamics CRM, taht contains the full URL of a record. In this URL you have the entity type, and the record GUID. Right now this is the only way we have to pass a "Dynamic" EntityReference (with not hard coding an entity type) to Workflows Activities. If you pass this string URL as a parameter, in the Workflow Activity you can retrieve this entity Reference.
 

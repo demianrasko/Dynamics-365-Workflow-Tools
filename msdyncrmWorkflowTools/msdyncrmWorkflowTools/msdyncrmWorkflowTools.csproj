@@ -200,6 +200,7 @@
     <Compile Include="Class\EntityMobileDeepLink.cs" />
     <Compile Include="Class\EmailToTeam.cs" />
     <Compile Include="Class\NumericFunctions.cs" />
+    <Compile Include="Class\NumericOperation.cs" />
     <Compile Include="Class\RemoveFromAllMarketingLists.cs" />
     <Compile Include="Class\IsMemberOfMarketingList.cs" />
     <Compile Include="Class\CopyToStaticList.cs" />
@@ -255,6 +256,15 @@
     <Compile Include="..\Common\UtilityClass\RecordUrl.cs">
       <Link>UtilityClass\RecordUrl.cs</Link>
     </Compile>
+    <Compile Include="..\Common\UtilityClass\DateFunctionsResult.cs">
+      <Link>UtilityClass\DateFunctionsResult.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\UtilityClass\StringFunctionsResult.cs">
+      <Link>UtilityClass\StringFunctionsResult.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\UtilityClass\MobileDeepLinks.cs">
+      <Link>UtilityClass\MobileDeepLinks.cs</Link>
+    </Compile>
     <Compile Include="..\Common\UtilityClass\RollupResult.cs">
       <Link>UtilityClass\RollupResult.cs</Link>
     </Compile>
@@ -278,6 +288,9 @@
     </Compile>
     <Compile Include="..\Common\UtilityClass\Utility.Json.cs">
       <Link>UtilityClass\Utility.Json.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\UtilityClass\Utility.Numbers.cs">
+      <Link>UtilityClass\Utility.Numbers.cs</Link>
     </Compile>
     <Compile Include="..\Common\UtilityClass\Utility.Rollups.cs">
       <Link>UtilityClass\Utility.Rollups.cs</Link>

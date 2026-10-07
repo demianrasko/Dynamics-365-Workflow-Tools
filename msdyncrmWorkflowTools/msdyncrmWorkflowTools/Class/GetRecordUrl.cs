@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
-using System;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools
@@ -32,24 +31,7 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var referenceRecordUrl = ReferenceRecordUrl.Get(executionContext);
-            var recordId = RecordId.Get(executionContext);
-            var entityName = EntityName.Get(executionContext);
-
-            if (string.IsNullOrEmpty(referenceRecordUrl) || string.IsNullOrEmpty(entityName))
-            {
-                throw new InvalidPluginExecutionException("Reference Record URL and Entity Logical Name are required.");
-            }
-
-            if (!Guid.TryParse(recordId, out var id))
-            {
-                throw new InvalidPluginExecutionException($"Record ID '{recordId}' is not a valid GUID.");
-            }
-
-            var recordUrl = Utility.BuildRecordUrl(referenceRecordUrl, common.GetEntityTypeCode(entityName), entityName, id);
-            common.Trace($"Record URL: {recordUrl}");
-
-            RecordUrl.Set(executionContext, recordUrl);
+            RecordUrl.Set(executionContext, common.GetRecordUrl(ReferenceRecordUrl.Get(executionContext), RecordId.Get(executionContext), EntityName.Get(executionContext)));
         }
     }
 }

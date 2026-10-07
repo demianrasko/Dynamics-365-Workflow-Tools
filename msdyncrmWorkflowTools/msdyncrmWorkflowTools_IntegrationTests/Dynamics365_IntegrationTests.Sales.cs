@@ -199,9 +199,12 @@ namespace msdyncrmWorkflowTools_IntegrationTests
             var account = Create(new Entity(EntityNames.Account) { [AttributeNames.Name] = UniqueName("rollup") });
             BlockedByCustomPlugins(() => Create(new Entity(EntityNames.Opportunity) { [AttributeNames.Name] = UniqueName("open deal"), ["parentaccountid"] = account }));
 
-            Common.CalculateRollupField(account, "opendeals ");
+            // numberofemployees is a plain whole number column, like the field a multi-level rollup would read
+            var value = Common.CalculateRollupField(account, "opendeals ", "numberofemployees");
 
+            Assert.AreEqual(1, value);
             Assert.AreEqual(1, Read(account, "opendeals").GetAttributeValue<int>("opendeals"));
+            Assert.AreEqual(1, Read(account, "numberofemployees").GetAttributeValue<int>("numberofemployees"));
         }
 
         [TestMethod]

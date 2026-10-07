@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
-using System.Globalization;
 
 namespace msdyncrmWorkflowTools.Class
 {
@@ -29,23 +28,13 @@ namespace msdyncrmWorkflowTools.Class
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var number1= Number1.Get(executionContext);
+            var number1 = Number1.Get(executionContext);
             var number2 = Number2.Get(executionContext);
 
-            common.Trace($"number 1 / number 2: {number1.ToString(CultureInfo.InvariantCulture)} / {number2.ToString(CultureInfo.InvariantCulture)}");
-
-            Add.Set(executionContext, number1+number2);
+            Add.Set(executionContext, number1 + number2);
             Subtract.Set(executionContext, number1 - number2);
             Multiply.Set(executionContext, number1 * number2);
-
-            if (number2 != 0)
-            {
-                Divide.Set(executionContext, number1 / number2);
-            }
-            else
-            {
-                Divide.Set(executionContext, 0);
-            }
+            Divide.Set(executionContext, Utility.DivideOrZero(number1, number2));
         }
     }
 }

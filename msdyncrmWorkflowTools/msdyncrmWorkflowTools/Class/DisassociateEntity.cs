@@ -19,17 +19,7 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var recordUrl = RecordURL.Get(executionContext);
-
-            if (string.IsNullOrEmpty(recordUrl))
-            {
-                throw new InvalidPluginExecutionException("Record URL is required.");
-            }
-
-            common.DisassociateEntity(
-                new EntityReference(common.Context.PrimaryEntityName, common.Context.PrimaryEntityId),
-                RelationshipName.Get(executionContext),
-                common.GetRecordReference(recordUrl));
+            common.DisassociateEntity(common.PrimaryRecord, RelationshipName.Get(executionContext), common.GetRecordReference(RecordURL.Get(executionContext), "Record URL"));
         }
     }
 }

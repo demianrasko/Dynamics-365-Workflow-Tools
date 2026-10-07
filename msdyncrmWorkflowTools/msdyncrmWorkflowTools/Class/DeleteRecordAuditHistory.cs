@@ -1,5 +1,4 @@
-﻿using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Workflow;
+﻿using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools.Class
@@ -14,16 +13,7 @@ namespace msdyncrmWorkflowTools.Class
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var recordUrl = RecordURL.Get(executionContext);
-
-            if (string.IsNullOrEmpty(recordUrl))
-            {
-                throw new InvalidPluginExecutionException("Record URL is required.");
-            }
-            var parsedUrl = common.ParseRecordUrl(recordUrl);
-            common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
-
-            common.DeleteRecordAuditHistory(parsedUrl.EntityName, parsedUrl.Id);
+            common.DeleteRecordAuditHistory(common.GetRecordReference(RecordURL.Get(executionContext), "Record URL"));
         }
     }
 }

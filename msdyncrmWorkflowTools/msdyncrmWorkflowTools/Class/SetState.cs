@@ -1,5 +1,4 @@
-﻿using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Workflow;
+﻿using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools
@@ -17,10 +16,7 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            common.SetState(
-                new EntityReference(common.Context.PrimaryEntityName, common.Context.PrimaryEntityId),
-                State.Get(executionContext),
-                Status.Get(executionContext));
+            common.SetState(common.PrimaryRecord, State.Get(executionContext), Status.Get(executionContext));
         }
     }
 }

@@ -12,9 +12,10 @@ namespace msdyncrmWorkflowTools
         /// <summary>
         /// Grants a user or team access to the record a record URL points at. A null principal grants nothing.
         /// </summary>
+        /// <exception cref="InvalidPluginExecutionException">The record URL is empty.</exception>
         public void ShareRecord(string recordUrl, EntityReference principal, AccessRights accessMask)
         {
-            var target = GetRecordReference(recordUrl);
+            var target = GetRecordReference(recordUrl, "Sharing Record URL");
 
             Trace("Grant Request--- Start");
 
@@ -33,9 +34,10 @@ namespace msdyncrmWorkflowTools
         /// <summary>
         /// Removes a user's or team's shared access to the record a record URL points at. A null principal revokes nothing.
         /// </summary>
+        /// <exception cref="InvalidPluginExecutionException">The record URL is empty.</exception>
         public void UnshareRecord(string recordUrl, EntityReference principal)
         {
-            var target = GetRecordReference(recordUrl);
+            var target = GetRecordReference(recordUrl, "Sharing Record URL");
 
             if (principal != null)
             {

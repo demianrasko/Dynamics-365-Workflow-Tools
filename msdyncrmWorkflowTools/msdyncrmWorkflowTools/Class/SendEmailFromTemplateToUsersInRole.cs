@@ -27,13 +27,7 @@ namespace msdyncrmWorkflowTools.Class
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var securityRoleLookup = SecurityRoleLookup.Get(executionContext);
-            common.Trace($"marketingList: {securityRoleLookup.Id.ToString()} ");
-
-            var emailTemplateLookup = EmailTemplateLookup.Get(executionContext);
-            common.Trace($"campaign: {emailTemplateLookup.Id.ToString()} ");
-
-            common.SendEmailFromTemplateToUsersInRole(securityRoleLookup, emailTemplateLookup);
+            common.SendEmailFromTemplateToUsersInRole(SecurityRoleLookup.Get(executionContext), EmailTemplateLookup.Get(executionContext));
         }
     }
 }

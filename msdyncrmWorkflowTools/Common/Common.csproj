@@ -93,7 +93,10 @@
     <Compile Include="EntityNames.cs" />
     <Compile Include="UtilityClass\GeoLocation.cs" />
     <Compile Include="UtilityClass\RecordUrl.cs" />
+    <Compile Include="UtilityClass\DateFunctionsResult.cs" />
+    <Compile Include="UtilityClass\MobileDeepLinks.cs" />
     <Compile Include="UtilityClass\RollupResult.cs" />
+    <Compile Include="UtilityClass\StringFunctionsResult.cs" />
     <Compile Include="UtilityClass\Utility.cs" />
     <Compile Include="UtilityClass\Utility.AttributeValues.cs" />
     <Compile Include="UtilityClass\Utility.Currency.cs" />
@@ -101,6 +104,7 @@
     <Compile Include="UtilityClass\Utility.ExternalServices.cs" />
     <Compile Include="UtilityClass\Utility.Hashing.cs" />
     <Compile Include="UtilityClass\Utility.Json.cs" />
+    <Compile Include="UtilityClass\Utility.Numbers.cs" />
     <Compile Include="UtilityClass\Utility.Rollups.cs" />
     <Compile Include="UtilityClass\Utility.TextAndDates.cs" />
     <Compile Include="UtilityClass\Utility.Translator.cs" />

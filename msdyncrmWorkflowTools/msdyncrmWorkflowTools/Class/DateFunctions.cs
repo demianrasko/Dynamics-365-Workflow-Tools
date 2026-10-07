@@ -49,32 +49,19 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var date1 = Date1.Get(executionContext);
-            var date2 = Date2.Get(executionContext);
+            var result = Utility.DateFunctions(Date1.Get(executionContext), Date2.Get(executionContext));
 
-            var difference = TimeSpan.Zero;
-
-            var dayOfWeek = 0;
-            var dayOfYear = 0;
-            var day = 0;
-            var month = 0;
-            var year = 0;
-            var weekOfYear = 0;
-
-            Utility.DateFunctions(date1, date2, ref difference,
-                ref dayOfWeek, ref dayOfYear, ref day, ref month, ref year, ref weekOfYear);
-
-            TotalDays.Set(executionContext, difference.TotalDays);
-            TotalHours.Set(executionContext, difference.TotalHours);
-            TotalMilliseconds.Set(executionContext, difference.TotalMilliseconds);
-            TotalMinutes.Set(executionContext, difference.TotalMinutes);
-            TotalSeconds.Set(executionContext, difference.TotalSeconds);
-            DayOfWeek.Set(executionContext, dayOfWeek);
-            DayOfYear.Set(executionContext, dayOfYear);
-            Day.Set(executionContext, day);
-            Month.Set(executionContext, month);
-            Year.Set(executionContext, year);
-            WeekOfYear.Set(executionContext, weekOfYear);
+            TotalDays.Set(executionContext, result.Difference.TotalDays);
+            TotalHours.Set(executionContext, result.Difference.TotalHours);
+            TotalMilliseconds.Set(executionContext, result.Difference.TotalMilliseconds);
+            TotalMinutes.Set(executionContext, result.Difference.TotalMinutes);
+            TotalSeconds.Set(executionContext, result.Difference.TotalSeconds);
+            DayOfWeek.Set(executionContext, result.DayOfWeek);
+            DayOfYear.Set(executionContext, result.DayOfYear);
+            Day.Set(executionContext, result.Day);
+            Month.Set(executionContext, result.Month);
+            Year.Set(executionContext, result.Year);
+            WeekOfYear.Set(executionContext, result.WeekOfYear);
         }
     }
 }

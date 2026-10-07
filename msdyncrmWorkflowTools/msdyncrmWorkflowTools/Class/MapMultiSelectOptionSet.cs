@@ -1,5 +1,4 @@
-﻿using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Workflow;
+﻿using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools
@@ -29,17 +28,8 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var sourceRecordUrl = SourceRecordUrl.Get(executionContext) ?? throw new InvalidPluginExecutionException("Source URL is empty");
-            var targetRecordUrl = TargetRecordUrl.Get(executionContext) ?? throw new InvalidPluginExecutionException("Target URL is empty");
-            var sourceAttributes = Utility.SplitList(SourceAttributes.Get(executionContext) ?? throw new InvalidPluginExecutionException("Source Attributes is empty"));
-            var targetAttributes = Utility.SplitList(TargetAttributes.Get(executionContext) ?? throw new InvalidPluginExecutionException("Target Attributes is empty"));
-
-            common.MapMultiSelectOptionSets(
-                common.GetRecordReference(sourceRecordUrl),
-                sourceAttributes,
-                common.GetRecordReference(targetRecordUrl),
-                targetAttributes,
-                KeepExistingValues.Get(executionContext));
+            common.MapMultiSelectOptionSets(SourceRecordUrl.Get(executionContext), SourceAttributes.Get(executionContext),
+                TargetRecordUrl.Get(executionContext), TargetAttributes.Get(executionContext), KeepExistingValues.Get(executionContext));
         }
     }
 }

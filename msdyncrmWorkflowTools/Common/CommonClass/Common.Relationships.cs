@@ -27,12 +27,47 @@ namespace msdyncrmWorkflowTools
         }
 
         /// <summary>
+        /// Whether a record is associated with the record a required record URL points at, through an N:N
+        /// relationship, for the Check Associate Entity activity.
+        /// </summary>
+        /// <exception cref="InvalidPluginExecutionException">The record URL is empty.</exception>
+        public bool IsAssociated(EntityReference record, string relationshipName, string relatedRecordUrl)
+        {
+            var related = GetRecordReference(relatedRecordUrl, "Record URL");
+
+            return GetAssociations(record.LogicalName, record.Id, GetIntersectEntityName(relationshipName), related.LogicalName, related.Id).Entities.Count > 0;
+        }
+
+        /// <summary>
         /// Removes the N:N association between two records.
         /// </summary>
         public void DisassociateEntity(EntityReference record, string relationshipName, EntityReference related)
         {
             Trace($"Disassociating {record.LogicalName} {record.Id} and {related.LogicalName} {related.Id} ({relationshipName})");
             Service.Disassociate(record.LogicalName, record.Id, new Relationship(relationshipName), new EntityReferenceCollection { related });
+        }
+
+        // the error Dataverse gives when two records are associated twice
+        private const int DuplicateRecordErrorCode = -2147220937;
+
+        /// <summary>
+        /// Associates a record with the record a required record URL points at, through an N:N relationship, for the
+        /// Associate Entity activity. Records that are already associated are left as they are.
+        /// </summary>
+        /// <exception cref="InvalidPluginExecutionException">The record URL is empty.</exception>
+        public void AssociateEntity(EntityReference record, string relationshipName, string relationshipEntityName, string relatedRecordUrl)
+        {
+            var related = GetRecordReference(relatedRecordUrl, "Record URL");
+
+            try
+            {
+                AssociateEntity(record.LogicalName, record.Id, relationshipName, relationshipEntityName, related.LogicalName, related.Id);
+            }
+            catch (FaultException<OrganizationServiceFault> ex) when (ex.Detail?.ErrorCode == DuplicateRecordErrorCode)
+            {
+                // the check above can miss an association made at the same time; every other error reaches the caller
+                Trace($"The records are already associated: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -125,7 +160,8 @@ namespace msdyncrmWorkflowTools
         /// </summary>
         /// <param name="relationshipName">Schema name of the 1:N relationship.</param>
         /// <param name="parentEntityId">Id of the parent record.</param>
-        public EntityCollection GetChildRecords(string relationshipName, Guid parentEntityId)
+        /// <param name="onlyActive">Only the active children (statecode 0); the child table must have a status.</param>
+        public EntityCollection GetChildRecords(string relationshipName, Guid parentEntityId, bool onlyActive = false)
         {
             var relationship = GetOneToManyRelationship(relationshipName);
 
@@ -136,7 +172,86 @@ namespace msdyncrmWorkflowTools
                 Values = { parentEntityId }
             };
 
+            if (onlyActive)
+            {
+                query.Attributes.Add(AttributeNames.StateCode);
+                query.Values.Add(0);
+            }
+
             return Service.RetrieveMultiple(query);
+        }
+
+        /// <summary>
+        /// Copies the child records of one parent to another parent, for the Clone Children activity: each copy gets
+        /// the new parent as part of its create, so a locked source parent (e.g. an invoiced order) is never touched.
+        /// </summary>
+        /// <param name="sourceRecordUrl">Record URL of the parent whose children are copied.</param>
+        /// <param name="targetRecordUrl">Record URL of the parent the copies belong to.</param>
+        /// <param name="relationshipName">Schema name of the 1:N relationship from the source parent to its children.</param>
+        /// <param name="newParentFieldName">The copies' lookup to set to the target parent.</param>
+        /// <param name="oldParentFieldName">Optional lookup to clear on the copies, when the target parent uses a
+        /// different lookup from the source parent.</param>
+        /// <param name="prefix">Text put in front of each copy's primary name; null for none.</param>
+        /// <param name="fieldsToIgnore">Attributes not to copy, separated by ";" or ",".</param>
+        /// <param name="copyStatus">Give each copy its child's status and status reason.</param>
+        /// <param name="onlyActive">Only copy the active children.</param>
+        /// <returns>The number of copies made.</returns>
+        /// <exception cref="InvalidPluginExecutionException">A required input is empty.</exception>
+        public int CloneChildren(string sourceRecordUrl, string targetRecordUrl, string relationshipName, string newParentFieldName,
+            string oldParentFieldName, string prefix, string fieldsToIgnore, bool copyStatus, bool onlyActive)
+        {
+            Utility.Required(relationshipName, "Relationship Name");
+            Utility.Required(newParentFieldName, "New Parent Field Name");
+
+            var source = GetRecordReference(sourceRecordUrl, "Source Record URL");
+            var target = GetRecordReference(targetRecordUrl, "Target Record URL");
+
+            return CloneChildRecords(relationshipName, source.Id, fieldsToIgnore, prefix,
+                CloneChildrenReplacements(target, newParentFieldName, oldParentFieldName), copyStatus, onlyActive);
+        }
+
+        /// <summary>
+        /// The values Clone Children sets on every copy: the new parent lookup, and the old parent lookup cleared
+        /// when it's a different field.
+        /// </summary>
+        public static Dictionary<string, object> CloneChildrenReplacements(EntityReference newParent, string newParentFieldName, string oldParentFieldName)
+        {
+            var fieldsToReplace = new Dictionary<string, object>
+            {
+                [newParentFieldName] = newParent
+            };
+
+            if (!string.IsNullOrEmpty(oldParentFieldName) && oldParentFieldName != newParentFieldName)
+            {
+                fieldsToReplace[oldParentFieldName] = null;
+            }
+
+            return fieldsToReplace;
+        }
+
+        /// <summary>
+        /// Copies the child records of a parent through a 1:N relationship (see <see cref="CloneRecord"/>).
+        /// </summary>
+        /// <param name="relationshipName">Schema name of the 1:N relationship.</param>
+        /// <param name="parentEntityId">Id of the parent whose children are copied.</param>
+        /// <param name="fieldsToIgnore">Attributes not to copy, separated by ";" or ",".</param>
+        /// <param name="prefix">Text put in front of each copy's primary name; null for none.</param>
+        /// <param name="fieldsToReplace">Values set on every copy, e.g. the lookup to the new parent.</param>
+        /// <param name="copyStatus">Give each copy its child's status and status reason.</param>
+        /// <param name="onlyActive">Only copy the active children.</param>
+        /// <returns>The number of copies made.</returns>
+        public int CloneChildRecords(string relationshipName, Guid parentEntityId, string fieldsToIgnore, string prefix, IDictionary<string, object> fieldsToReplace, bool copyStatus, bool onlyActive)
+        {
+            var children = GetChildRecords(relationshipName, parentEntityId, onlyActive);
+
+            foreach (var child in children.Entities)
+            {
+                CloneRecord(child.LogicalName, child.Id, fieldsToIgnore, prefix, fieldsToReplace, copyStatus);
+            }
+
+            Trace($"{children.Entities.Count} children copied");
+
+            return children.Entities.Count;
         }
 
         /// <summary>
@@ -157,6 +272,22 @@ namespace msdyncrmWorkflowTools
         public int UpdateChildRecords(string relationshipName, string parentEntityType, Guid parentEntityId, string parentFieldNameToUpdate, string setValueToUpdate, string childFieldNameToUpdate, bool updateonlyActive)
         {
             return UpdateChildRecords(relationshipName, parentEntityType, parentEntityId, parentFieldNameToUpdate, setValueToUpdate, childFieldNameToUpdate, updateonlyActive, false, out _);
+        }
+
+        /// <summary>
+        /// Sets a field on every child record of the record a required record URL points at (see the overload below),
+        /// for the Update Child Records activity.
+        /// </summary>
+        /// <param name="failed">The number of children skipped because their update failed.</param>
+        /// <returns>The number of child records updated.</returns>
+        /// <exception cref="InvalidPluginExecutionException">The record URL is empty, or see the overload below.</exception>
+        public int UpdateChildRecords(string parentRecordUrl, string relationshipName, string parentFieldNameToUpdate, string setValueToUpdate, string childFieldNameToUpdate, bool updateonlyActive,
+            bool continueIfARecordFails, out int failed)
+        {
+            var parent = GetRecordReference(parentRecordUrl, "Parent Record URL");
+            Trace($"Relationship={relationshipName}--ParentFieldNameToUpdate={parentFieldNameToUpdate}--ValueToSet={setValueToUpdate}--ChildFieldNameToUpdate={childFieldNameToUpdate}");
+
+            return UpdateChildRecords(relationshipName, parent.LogicalName, parent.Id, parentFieldNameToUpdate, setValueToUpdate, childFieldNameToUpdate, updateonlyActive, continueIfARecordFails, out failed);
         }
 
         /// <summary>
@@ -325,6 +456,20 @@ namespace msdyncrmWorkflowTools
             intersect.LinkCriteria.AddCondition(primaryIntersectAttribute, ConditionOperator.Equal, primaryId);
 
             return query;
+        }
+
+        /// <summary>
+        /// The number of child records of the record a required record URL points at (see the overload below), for
+        /// the Count Child Entity Records activity.
+        /// </summary>
+        /// <exception cref="InvalidPluginExecutionException">The record URL is empty.</exception>
+        public int CountChildRecords(string childEntityName, string parentLookupName, string parentRecordUrl, string filterXml)
+        {
+            var parent = GetRecordReference(parentRecordUrl, "Record URL (Parent)");
+            var count = CountChildRecords(childEntityName, parentLookupName, parent.Id, filterXml);
+            Trace($"{childEntityName} records with {parentLookupName} = {parent.Id}: {count}");
+
+            return count;
         }
 
         /// <summary>

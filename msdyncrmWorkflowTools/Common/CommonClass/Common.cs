@@ -33,6 +33,11 @@ namespace msdyncrmWorkflowTools
         }
 
         /// <summary>
+        /// The record the workflow runs on.
+        /// </summary>
+        public EntityReference PrimaryRecord => new EntityReference(Context.PrimaryEntityName, Context.PrimaryEntityId);
+
+        /// <summary>
         /// Writes a message to the trace log exactly as given, so it may contain { and } (interpolated
         /// values, JSON, FetchXML, stack traces).
         /// </summary>
