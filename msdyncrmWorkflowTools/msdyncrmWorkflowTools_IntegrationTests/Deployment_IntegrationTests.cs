@@ -51,7 +51,7 @@ namespace msdyncrmWorkflowTools_IntegrationTests
             TestContext.WriteLine($"{name.Name} {name.Version}: {activities.Count} activities");
 
             var assemblyId = RegisterAssembly(service, name, File.ReadAllBytes(dll), activities.Keys);
-            RegisterActivities(service, assemblyId, name, designerNames);
+            RegisterActivities(service, assemblyId, name, designerNames, activities);
 
             var registered = service.RetrieveMultiple(new QueryExpression("plugintype")
             {
@@ -163,47 +163,67 @@ namespace msdyncrmWorkflowTools_IntegrationTests
 
         /// <summary>
         /// Registers every activity that isn't registered yet under its designer name, and corrects the name (and
-        /// group) of those that are.
+        /// group) of those that are. Dataverse describes an activity's inputs and outputs (customworkflowactivityinfo)
+        /// only when it's registered, so an activity that has gained one since is registered again, with the same id.
         /// </summary>
-        private void RegisterActivities(IOrganizationService service, Guid assemblyId, AssemblyName name, Dictionary<string, string> designerNames)
+        private void RegisterActivities(IOrganizationService service, Guid assemblyId, AssemblyName name, Dictionary<string, string> designerNames,
+            Dictionary<string, List<string>> labels)
         {
             var group = $"{name.Name} ({name.Version})";
             var registered = service.RetrieveMultiple(new QueryExpression("plugintype")
             {
-                ColumnSet = new ColumnSet("typename", "name", "friendlyname", "workflowactivitygroupname"),
+                ColumnSet = new ColumnSet("typename", "name", "friendlyname", "workflowactivitygroupname", "customworkflowactivityinfo"),
                 Criteria = { Conditions = { new ConditionExpression("pluginassemblyid", ConditionOperator.Equal, assemblyId) } }
             }).Entities.ToDictionary(t => t.GetAttributeValue<string>("typename"));
 
             foreach (var activity in designerNames)
             {
+                Guid? typeId = null;
+
                 if (registered.TryGetValue(activity.Key, out var existing))
                 {
-                    if (existing.GetAttributeValue<string>("name") != activity.Value || existing.GetAttributeValue<string>("friendlyname") != activity.Value
-                        || existing.GetAttributeValue<string>("workflowactivitygroupname") != group)
+                    var info = existing.GetAttributeValue<string>("customworkflowactivityinfo") ?? string.Empty;
+
+                    if (labels[activity.Key].All(label => info.IndexOf(label, StringComparison.Ordinal) >= 0))
                     {
-                        service.Update(new Entity("plugintype", existing.Id)
+                        if (existing.GetAttributeValue<string>("name") != activity.Value || existing.GetAttributeValue<string>("friendlyname") != activity.Value
+                            || existing.GetAttributeValue<string>("workflowactivitygroupname") != group)
                         {
-                            ["name"] = activity.Value,
-                            ["friendlyname"] = activity.Value,
-                            ["workflowactivitygroupname"] = group
-                        });
+                            service.Update(new Entity("plugintype", existing.Id)
+                            {
+                                ["name"] = activity.Value,
+                                ["friendlyname"] = activity.Value,
+                                ["workflowactivitygroupname"] = group
+                            });
+                        }
+
+                        continue;
                     }
 
-                    continue;
+                    TestContext.WriteLine($"Registering {activity.Key} again: its inputs or outputs changed");
+                    service.Delete("plugintype", existing.Id);
+                    typeId = existing.Id;
                 }
 
                 var typeName = activity.Key;
+                var type = new Entity("plugintype")
+                {
+                    ["pluginassemblyid"] = new EntityReference("pluginassembly", assemblyId),
+                    ["typename"] = typeName,
+                    ["name"] = activity.Value,
+                    ["friendlyname"] = activity.Value,
+                    ["workflowactivitygroupname"] = group
+                };
+
+                if (typeId.HasValue)
+                {
+                    // the same id, so the Power Platform solution's identity file still matches
+                    type.Id = typeId.Value;
+                }
 
                 try
                 {
-                    service.Create(new Entity("plugintype")
-                    {
-                        ["pluginassemblyid"] = new EntityReference("pluginassembly", assemblyId),
-                        ["typename"] = typeName,
-                        ["name"] = activity.Value,
-                        ["friendlyname"] = activity.Value,
-                        ["workflowactivitygroupname"] = group
-                    });
+                    service.Create(type);
                 }
                 catch (FaultException<OrganizationServiceFault> ex)
                 {
