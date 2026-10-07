@@ -2,6 +2,9 @@ name: Build and test
 
 on:
   push:
+    # not tags: the Release workflow builds and tests those
+    branches:
+      - '**'
   pull_request:
   workflow_dispatch:
 
