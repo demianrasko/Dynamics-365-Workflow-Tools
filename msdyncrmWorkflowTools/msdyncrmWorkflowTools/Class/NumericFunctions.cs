@@ -1,17 +1,11 @@
-﻿using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Query;
-using Microsoft.Xrm.Sdk.Workflow;
-using System;
+﻿using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceModel;
-using System.Text;
-using System.Threading.Tasks;
+using System.Globalization;
+
 namespace msdyncrmWorkflowTools.Class
 {
-    public class NumericFunctions : CodeActivity
+    [ActivityName("Numeric Functions")]
+    public class NumericFunctions : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("Number 1")]
@@ -20,7 +14,6 @@ namespace msdyncrmWorkflowTools.Class
         [RequiredArgument]
         [Input("Number 2")]
         public InArgument<decimal> Number2 { get; set; }
-
 
         [Output("Add")]
         public OutArgument<decimal> Add { get; set; }
@@ -34,35 +27,25 @@ namespace msdyncrmWorkflowTools.Class
         [Output("Divide")]
         public OutArgument<decimal> Divide { get; set; }
 
-
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Load CRM Service from context"
+            var number1= Number1.Get(executionContext);
+            var number2 = Number2.Get(executionContext);
 
-            Common objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
+            common.Trace($"number 1 / number 2: {number1.ToString(CultureInfo.InvariantCulture)} / {number2.ToString(CultureInfo.InvariantCulture)}");
 
-            #region "Read Parameters"
-            decimal number1= this.Number1.Get(executionContext);
-            decimal number2 = this.Number2.Get(executionContext);
-            objCommon.tracingService.Trace(String.Format("number 1 / number 2: {0} / {1}", number1.ToString(), number2.ToString()));
+            Add.Set(executionContext, number1+number2);
+            Subtract.Set(executionContext, number1 - number2);
+            Multiply.Set(executionContext, number1 * number2);
 
-            #endregion
-
-            this.Add.Set(executionContext, number1+number2);
-            this.Subtract.Set(executionContext, number1 - number2);
-            this.Multiply.Set(executionContext, number1 * number2);
             if (number2 != 0)
             {
-                this.Divide.Set(executionContext, number1 / number2);
+                Divide.Set(executionContext, number1 / number2);
             }
             else
             {
-                this.Divide.Set(executionContext, 0);
+                Divide.Set(executionContext, 0);
             }
-
         }
-        
     }
 }

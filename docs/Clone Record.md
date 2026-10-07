@@ -1,6 +1,6 @@
 This step is very usefull to Clone some record. You pass the URL of one record, and it will create a new record, with the same values.
 
-For using this activity you mus access here and select Clone Record:
+For using this activity you must access here and select Clone Record:
 
 ![](Clone%20Record_wfclone.gif)
 
@@ -17,3 +17,5 @@ The full params description is:
 ![](CloneRecord44_2.png)
 
 Note: The Parent Record URL, is a standard feature of Dynamics CRM, that contains the full URL of a record. In this URL you have the entity type, and the record GUID. Right now this is the only way we have to pass a "Dynamic" EntityReference (with not hard coding an entity type) to Workflows Activities. If you pass this string URL as a parameter, in the Workflow Activity you can retrieve this entity Reference.
+
+Note: the status and status reason aren't copied, so the copy always starts active, even when the original record is inactive.

@@ -1,6 +1,6 @@
 This step is very usefull to set the active Business Process Flow on a specified record.
 You can also restart the process (setting the same process), or remove the process execution (blank value).
-For using this activity you mus access here and select Set Process:
+For using this activity you must access here and select Set Process:
 
 ![](Set%20Process_wf1.gif)
 

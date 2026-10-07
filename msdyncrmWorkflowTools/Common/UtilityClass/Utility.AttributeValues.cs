@@ -1,0 +1,399 @@
+﻿using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Metadata;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+
+namespace msdyncrmWorkflowTools
+{
+    public static partial class Utility
+    {
+        /// <summary>
+        /// A numeric attribute value (number, Money or an AliasedValue wrapping one) as a decimal; null for
+        /// anything else, including a missing value.
+        /// </summary>
+        public static decimal? ToDecimal(object value)
+        {
+            while (true)
+            {
+                switch (value)
+                {
+                    case AliasedValue aliasedValue:
+                        value = aliasedValue.Value;
+                        continue;
+                    case Money money:
+                        return money.Value;
+                    case decimal _:
+                    case int _:
+                    case long _:
+                    case short _:
+                    case float _:
+                    case double _:
+                        return Convert.ToDecimal(value);
+                    default:
+                        return null;
+                }
+            }
+        }
+
+        /// <summary>
+        /// A typed attribute value as a query condition compares it: the number of a choice, the amount of a currency
+        /// value and the id of a lookup; anything else as it is.
+        /// </summary>
+        public static object ToConditionValue(object value)
+        {
+            switch (value)
+            {
+                case OptionSetValue option:
+                    return option.Value;
+                case Money money:
+                    return money.Value;
+                case EntityReference reference:
+                    return reference.Id;
+                default:
+                    return value;
+            }
+        }
+
+        /// <summary>
+        /// Converts a Dataverse attribute value to the string a workflow output expects.
+        /// </summary>
+        /// <remarks>
+        /// OptionSetValue returns the number, EntityReference the record id, Money the amount,
+        /// OptionSetValueCollection the numbers separated by commas, and AliasedValue the value it wraps.
+        /// Everything else uses its own ToString(), so existing outputs (dates, numbers, text) are unchanged.
+        /// </remarks>
+        /// <param name="value">The attribute value, e.g. entity.Attributes["name"]. Null returns null.</param>
+        public static string AttributeValueToString(object value)
+        {
+            if (value is AliasedValue aliasedValue)
+            {
+                value = aliasedValue.Value;
+            }
+
+            switch (value)
+            {
+                case null:
+                    return null;
+                case OptionSetValue optionSetValue:
+                    return optionSetValue.Value.ToString();
+                case OptionSetValueCollection optionSetValues:
+                    return string.Join(",", optionSetValues.Select(o => o.Value));
+                case EntityReference entityReference:
+                    return entityReference.Id.ToString();
+                case Money money:
+                    return money.Value.ToString(CultureInfo.InvariantCulture);
+                default:
+                    return value.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Copies an attribute value from one record to another when the source record has it.
+        /// A missing source attribute leaves the target unchanged.
+        /// </summary>
+        /// <param name="source">Record to read from.</param>
+        /// <param name="sourceAttribute">Logical name of the attribute to read.</param>
+        /// <param name="target">Record to write to.</param>
+        /// <param name="targetAttribute">Logical name of the attribute to set; defaults to <paramref name="sourceAttribute"/>.</param>
+        /// <returns>True when the value was copied.</returns>
+        public static bool CopyAttributeValue(Entity source, string sourceAttribute, Entity target, string targetAttribute = null)
+        {
+            if (!source.TryGetAttributeValue(sourceAttribute, out object value))
+            {
+                return false;
+            }
+
+            target[targetAttribute ?? sourceAttribute] = value;
+
+            return true;
+        }
+
+        /// <summary>
+        /// Parses a comma-separated list of option values (e.g. "1,3,7") into an OptionSetValueCollection.
+        /// Values that are not whole numbers are skipped and added to <paramref name="invalidValues"/> when given.
+        /// </summary>
+        /// <param name="values">The comma-separated values. Null or empty returns an empty collection.</param>
+        /// <param name="invalidValues">Optional list that receives the values that could not be parsed.</param>
+        public static OptionSetValueCollection ParseOptionSetValues(string values, ICollection<string> invalidValues = null)
+        {
+            var collection = new OptionSetValueCollection();
+
+            if (string.IsNullOrEmpty(values))
+            {
+                return collection;
+            }
+
+            foreach (var value in values.Split(','))
+            {
+                if (int.TryParse(value, out var number))
+                {
+                    collection.Add(new OptionSetValue(number));
+                }
+                else
+                {
+                    invalidValues?.Add(value);
+                }
+            }
+
+            return collection;
+        }
+
+        /// <summary>
+        /// The values of <paramref name="existingValues"/> followed by the values of <paramref name="newValues"/> it
+        /// does not already contain. Either collection may be null.
+        /// </summary>
+        public static OptionSetValueCollection MergeOptionSetValues(OptionSetValueCollection newValues, OptionSetValueCollection existingValues)
+        {
+            var merged = new OptionSetValueCollection();
+
+            foreach (var value in (existingValues ?? new OptionSetValueCollection()).Concat(newValues ?? new OptionSetValueCollection()))
+            {
+                if (merged.All(v => v.Value != value.Value))
+                {
+                    merged.Add(value);
+                }
+            }
+
+            return merged;
+        }
+
+        /// <summary>
+        /// Option set values as a comma-separated list of numbers, e.g. "1,3,7".
+        /// </summary>
+        public static string JoinOptionSetValues(IEnumerable<OptionSetValue> values)
+        {
+            return string.Join(",", values.Select(v => v.Value));
+        }
+
+        /// <summary>
+        /// Option set values as a comma-separated list of labels; a value without a label is written as its number.
+        /// </summary>
+        public static string JoinOptionSetLabels(IEnumerable<OptionSetValue> values, IDictionary<int, string> labels)
+        {
+            return string.Join(",", values.Select(v => labels.TryGetValue(v.Value, out var label) ? label : v.Value.ToString()));
+        }
+
+        /// <summary>
+        /// Splits a comma-separated list, trimming spaces and dropping empty entries, in the original order. With
+        /// <paramref name="removeDuplicates"/>, a repeated entry (ignoring case) is kept once. Leave duplicates in when
+        /// entries are paired by position, as Map Multi Select OptionSet's source and target fields are.
+        /// </summary>
+        public static List<string> SplitList(string text, bool removeDuplicates = false)
+        {
+            var entries = (text ?? string.Empty)
+                .Split(',')
+                .Select(e => e.Trim())
+                .Where(e => e.Length > 0);
+
+            return (removeDuplicates ? entries.Distinct(StringComparer.OrdinalIgnoreCase) : entries).ToList();
+        }
+
+        /// <summary>
+        /// The typed value to store in an organization setting: a whole number, true/false, or the text itself.
+        /// </summary>
+        public static object ConvertSettingValue(string value)
+        {
+            if (int.TryParse(value, out var number))
+            {
+                return number;
+            }
+
+            if (bool.TryParse(value, out var flag))
+            {
+                return flag;
+            }
+
+            return value;
+        }
+
+        /// <summary>The records-per-page values Dataverse accepts for usersettings.paginglimit.</summary>
+        private static readonly int[] ValidPagingLimits = { 25, 50, 75, 100, 250 };
+
+        /// <summary>
+        /// The usersettings update for SetUserSettings, holding only the settings that were supplied:
+        /// 0 leaves a number unchanged, as does an AdvancedFind mode other than 1 or 2 and a calendar view
+        /// other than 0, 1 or 2. A null Send As leaves it unchanged.
+        /// </summary>
+        /// <exception cref="InvalidPluginExecutionException">The paging limit is not 0, 25, 50, 75, 100 or 250.</exception>
+        public static Entity BuildUserSettings(Guid userId, int pagingLimit, int advancedFindStartupMode, int timeZoneCode,
+            int helpLanguageId, int uiLanguageId, int defaultCalendarView, bool? isSendAsAllowed)
+        {
+            var settings = new Entity(EntityNames.UserSettings)
+            {
+                [AttributeNames.SystemUserId] = userId
+            };
+
+            if (pagingLimit != 0)
+            {
+                if (!ValidPagingLimits.Contains(pagingLimit))
+                {
+                    throw new InvalidPluginExecutionException(
+                        $"PagingLimit must be 25, 50, 75, 100 or 250 (or 0 to leave it unchanged), not {pagingLimit}.");
+                }
+
+                settings[AttributeNames.PagingLimit] = pagingLimit;
+            }
+
+            if (advancedFindStartupMode == 1 || advancedFindStartupMode == 2)
+            {
+                settings[AttributeNames.AdvancedFindStartupMode] = advancedFindStartupMode;
+            }
+
+            if (timeZoneCode != 0)
+            {
+                settings[AttributeNames.TimeZoneCode] = timeZoneCode;
+            }
+
+            if (helpLanguageId != 0)
+            {
+                settings[AttributeNames.HelpLanguageId] = helpLanguageId;
+            }
+
+            if (uiLanguageId != 0)
+            {
+                settings[AttributeNames.UILanguageId] = uiLanguageId;
+            }
+
+            if (defaultCalendarView >= 0 && defaultCalendarView <= 2)
+            {
+                settings[AttributeNames.DefaultCalendarView] = defaultCalendarView;
+            }
+
+            if (isSendAsAllowed.HasValue)
+            {
+                settings[AttributeNames.IsSendAsAllowed] = isSendAsAllowed.Value;
+            }
+
+            return settings;
+        }
+
+        /// <summary>
+        /// The marketing list member a workflow step was given: the account, else the contact, else the lead.
+        /// </summary>
+        /// <exception cref="InvalidPluginExecutionException">None of them is set.</exception>
+        public static EntityReference GetMarketingListMember(EntityReference account, EntityReference contact, EntityReference lead)
+        {
+            return account ?? contact ?? lead
+                ?? throw new InvalidPluginExecutionException("Account, Contact or Lead is required.");
+        }
+
+        /// <summary>
+        /// Converts a value to what a field of the given type stores: text such as "42", "12.5", "2026-10-05",
+        /// "true" or a GUID becomes a whole number, decimal, money, date, Yes/No, choice or lookup. Values that already
+        /// have the right type are kept. Empty text clears the field (a Yes/No field becomes No). Numbers and dates are read in the
+        /// invariant culture ("12.5", not "12,5").
+        /// </summary>
+        /// <param name="value">The value: text from a workflow input, or a value copied from another field.</param>
+        /// <param name="attribute">Metadata of the field the value is written to.</param>
+        /// <seealso cref="ToConditionValue"/>
+        /// <exception cref="InvalidPluginExecutionException">The value can't be stored in the field, or a GUID is given for
+        /// a lookup that can point to more than one table.</exception>
+        public static object ConvertToAttributeType(object value, AttributeMetadata attribute)
+        {
+            if (value is AliasedValue aliasedValue)
+            {
+                value = aliasedValue.Value;
+            }
+
+            var type = attribute.AttributeType ?? AttributeTypeCode.String;
+            var isEmpty = value == null || value is string text && string.IsNullOrWhiteSpace(text);
+
+            // no value clears the column; text and Yes/No columns handle it themselves
+            if (isEmpty && type != AttributeTypeCode.String && type != AttributeTypeCode.Memo && type != AttributeTypeCode.Boolean)
+            {
+                return null;
+            }
+
+            try
+            {
+                switch (type)
+                {
+                    case AttributeTypeCode.String:
+                    case AttributeTypeCode.Memo:
+                        return ToText(value);
+                    case AttributeTypeCode.Boolean:
+                        // as before: anything but true, "true" or "1" (including no value) is No
+                        return value is bool flag ? flag : IsTrue(ToText(value));
+                    case AttributeTypeCode.Picklist:
+                    case AttributeTypeCode.Status:
+                    case AttributeTypeCode.State:
+                        return value as OptionSetValue ?? new OptionSetValue(Convert.ToInt32(value, CultureInfo.InvariantCulture));
+                    case AttributeTypeCode.Integer:
+                        return Convert.ToInt32(Unwrap(value), CultureInfo.InvariantCulture);
+                    case AttributeTypeCode.BigInt:
+                        return Convert.ToInt64(Unwrap(value), CultureInfo.InvariantCulture);
+                    case AttributeTypeCode.Decimal:
+                        return Convert.ToDecimal(Unwrap(value), CultureInfo.InvariantCulture);
+                    case AttributeTypeCode.Double:
+                        return Convert.ToDouble(Unwrap(value), CultureInfo.InvariantCulture);
+                    case AttributeTypeCode.Money:
+                        return value as Money ?? new Money(Convert.ToDecimal(Unwrap(value), CultureInfo.InvariantCulture));
+                    case AttributeTypeCode.DateTime:
+                        return value is DateTime date ? date : DateTime.Parse(ToText(value), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                    case AttributeTypeCode.Lookup:
+                    case AttributeTypeCode.Customer:
+                    case AttributeTypeCode.Owner:
+                        return value as EntityReference ?? ToEntityReference(ToText(value), attribute);
+                    default:
+                        return value;
+                }
+            }
+            catch (Exception ex) when (ex is FormatException || ex is InvalidCastException || ex is OverflowException)
+            {
+                throw new InvalidPluginExecutionException($"'{ToText(value)}' can't be stored in {attribute.LogicalName} ({type}).", ex);
+            }
+        }
+
+        private static object Unwrap(object value)
+        {
+            switch (value)
+            {
+                case Money money:
+                    return money.Value;
+                case OptionSetValue option:
+                    return option.Value;
+                default:
+                    return value;
+            }
+        }
+
+        private static string ToText(object value)
+        {
+            switch (value)
+            {
+                case null:
+                    return null;
+                case string text:
+                    return text;
+                case EntityReference reference:
+                    return reference.Name ?? reference.Id.ToString();
+                case OptionSetValue option:
+                    return option.Value.ToString(CultureInfo.InvariantCulture);
+                case Money money:
+                    return money.Value.ToString(CultureInfo.InvariantCulture);
+                default:
+                    return Convert.ToString(value, CultureInfo.InvariantCulture);
+            }
+        }
+
+        private static bool IsTrue(string text)
+        {
+            return text == "1" || string.Equals(text?.Trim(), "true", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static EntityReference ToEntityReference(string text, AttributeMetadata attribute)
+        {
+            var targets = (attribute as LookupAttributeMetadata)?.Targets ?? Array.Empty<string>();
+
+            if (targets.Length != 1)
+            {
+                throw new InvalidPluginExecutionException(
+                    $"{attribute.LogicalName} can point to {(targets.Length == 0 ? "an unknown table" : string.Join(" or ", targets))}, so a GUID alone can't be stored in it. Copy the value from a lookup field instead.");
+            }
+
+            return new EntityReference(targets[0], Guid.Parse(text.Trim().Trim('{', '}')));
+        }
+    }
+}

@@ -1,76 +1,30 @@
 ﻿using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
-using System;
 using System.Activities;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace msdyncrmWorkflowTools
 {
-    public class CheckUserInTeam : CodeActivity
+    [ActivityName("Check If User Is In Team")]
+    public class CheckUserInTeam : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("Team")]
-        [ReferenceTarget("team")]
+        [ReferenceTarget(EntityNames.Team)]
         public InArgument<EntityReference> Team { get; set; }
 
         [Input("User")]
-        [ReferenceTarget("systemuser")]
+        [ReferenceTarget(EntityNames.SystemUser)]
         public InArgument<EntityReference> User { get; set; }
 
         [Output("isUserInTeam")]
         public OutArgument<bool> isUserInTeam { get; set; }
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
+            var team = Team.Get(executionContext);
+            var userId = User.Get(executionContext)?.Id ?? common.Context.InitiatingUserId;
 
-            #region "Load CRM Service from context"
-
-            Common objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
-            #region "Read Parameters"
-            EntityReference teamReference = this.Team.Get(executionContext);
-            EntityReference userReference = null;
-            
-            userReference = this.User.Get(executionContext);
-            
-            objCommon.tracingService.Trace(String.Format("TeamId: {0} ", teamReference.Id.ToString()));
-            #endregion
-
-            string userId = objCommon.context.InitiatingUserId.ToString();
-            if (userReference != null) userId = userReference.Id.ToString();
-
-            string fetchXML = @"<fetch version=""1.0"" output-format=""xml - platform"" mapping=""logical"" distinct=""true""><entity name=""team"">
-                         <attribute name=""teamid""/>
-                         <filter type=""and"">
-                          <condition attribute=""teamid"" operator=""eq"" value="""+ teamReference.Id.ToString() + @"""/>
-                                </filter>
-                                <link-entity name=""teammembership"" from=""teamid"" to=""teamid"" visible=""false"" intersect=""true"">
-                                             <link-entity name=""systemuser"" from=""systemuserid"" to=""systemuserid"" alias=""ag"">
-                                                        <filter type=""and"">
-                                                           <condition attribute=""systemuserid"" operator=""eq""  uitype=""systemuser"" value= """+ userId + @"""/>
-                                                                 </filter>
-                                                               </link-entity>
-                                                             </link-entity>
-                                                           </entity></fetch> ";
-
-            objCommon.tracingService.Trace(String.Format("FetchXML: {0} ", fetchXML));
-            EntityCollection givenTeams = objCommon.service.RetrieveMultiple(new FetchExpression (fetchXML));
-
-            Boolean UserInTeam = (givenTeams.Entities.Count > 0);
-
-            if (UserInTeam)
-                Console.WriteLine("User do not belong to the team.");
-            else
-                Console.WriteLine("User belong to this team.");
-
-            this.isUserInTeam.Set(executionContext, UserInTeam);
-
+            isUserInTeam.Set(executionContext, common.IsMemberOfTeam(team.Id, userId));
         }
     }
 }

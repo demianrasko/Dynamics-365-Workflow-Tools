@@ -1,69 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Activities;
-using Microsoft.Xrm.Sdk;
+﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
-using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk.Query;
+using System;
+using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
-    public class GoalRecalculate : CodeActivity
+    [ActivityName("Goal Recalculate")]
+    public class GoalRecalculate : WorkflowActivityBase
     {
-        #region "Parameter Definition"
         [Input("Goal")]
-        [ReferenceTarget("goal")]
+        [ReferenceTarget(EntityNames.Goal)]
         public InArgument<EntityReference> Goal { get; set; }
 
         [Input("Goal Guid")]
         [Default("")]
         public InArgument<string> GoalGuid { get; set; }
 
-        #endregion
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            
+            // the Goal lookup wins; Goal Guid is used when no lookup is set
+            var goal = Goal.Get(executionContext);
+            var goalGuid = GoalGuid.Get(executionContext);
 
-            #region "Load CRM Service from context"
+            Guid goalId;
 
-            Common objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
-            #region "Read Parameters"
-            EntityReference _goal = this.Goal.Get(executionContext);
-            string _goalguid = this.GoalGuid.Get(executionContext);
-            if (_goal == null)
+            if (goal != null)
             {
-                return;
+                goalId = goal.Id;
             }
-            
-
-            objCommon.tracingService.Trace("GoalID=" + _goal.Id.ToString());
-            #endregion
-
-
-            #region "GoalRequest Execution"
-            string id = "";
-            if (_goal != null)
+            else if (string.IsNullOrWhiteSpace(goalGuid))
             {
-                id = _goal.Id.ToString();
+                throw new InvalidPluginExecutionException("Goal or Goal Guid is required.");
             }
-            else {
-                id = _goalguid;
+            else if (!Guid.TryParse(goalGuid.Trim(), out goalId))
+            {
+                throw new InvalidPluginExecutionException($"Goal Guid '{goalGuid}' is not a valid GUID.");
             }
 
-            RecalculateRequest recalculateRequest = new RecalculateRequest()
-            {
-                Target = new EntityReference("goal", new Guid (id))
-            };
-            objCommon.service.Execute(recalculateRequest);
-
-
-            #endregion
-
+            common.RecalculateGoal(goalId);
         }
     }
 }

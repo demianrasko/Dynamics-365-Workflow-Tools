@@ -1,75 +1,62 @@
 ﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
-using System;
 using System.Activities;
-using System.Linq;
-
 
 namespace msdyncrmWorkflowTools.Class
 {
-    public class EntityAttachmentToEmail : CodeActivity
+    [ActivityName("Entity Attachment To Email")]
+    public class EntityAttachmentToEmail : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("Main Record URL")]
         [ReferenceTarget("")]
-        public InArgument<String> MainRecordURL { get; set; }
+        public InArgument<string> MainRecordURL { get; set; }
 
         [RequiredArgument]
         [Input("File Name (use * for filter)")]
         [ReferenceTarget("")]
-        public InArgument<String> FileName { get; set; }
+        public InArgument<string> FileName { get; set; }
 
         [RequiredArgument]
         [Input("Email")]
-        [ReferenceTarget("email")]
+        [ReferenceTarget(EntityNames.Email)]
         public InArgument<EntityReference> Email { get; set; }
 
         [Input("Retrieve ActivityMimeAttachment")]
-        public InArgument<Boolean> RetrieveActivityMimeAttachment { get; set; }
+        public InArgument<bool> RetrieveActivityMimeAttachment { get; set; }
 
         [Input("Select Most Recent Distinct Files")]
-        public InArgument<Boolean> MostRecent { get; set; }
+        public InArgument<bool> MostRecent { get; set; }
 
         [Input("Top Attachments (Most Recent)")]
         public InArgument<int> TopRecords { get; set; }
 
-
-
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Load CRM Service from context"
-
-            Common objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-
-            #endregion
-
-            #region "Read Parameters"
-
             // Get parameters
-            string mainRecordURL = MainRecordURL.Get(executionContext);
-            string fileName = FileName.Get(executionContext);
-            EntityReference email = Email.Get(executionContext);
-            bool retrieveActivityMimeAttachment = RetrieveActivityMimeAttachment.Get(executionContext);
-            bool mostRecent = MostRecent.Get(executionContext);
+            var mainRecordUrl = MainRecordURL.Get(executionContext);
+            var fileName = FileName.Get(executionContext);
+            var email = Email.Get(executionContext);
+
+            var retrieveActivityMimeAttachment = RetrieveActivityMimeAttachment.Get(executionContext);
+
+            var mostRecent = MostRecent.Get(executionContext);
             int? topRecords = TopRecords.Get(executionContext);
 
-
             // Extract values from URL
-            string[] urlParts = mainRecordURL.Split("?".ToArray());
-            string[] urlParams = urlParts[1].Split("&".ToCharArray());
-            string ParentObjectTypeCode = urlParams[0].Replace("etc=", "");
-            string ParentId = urlParams[1].Replace("id=", "");
-            objCommon.tracingService.Trace("ParentObjectTypeCode=" + ParentObjectTypeCode + "--ParentId=" + ParentId);
+            var parsedUrl = Utility.ParseRecordUrl(mainRecordUrl);
+
+            common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
 
             // Treat file name
-            if (fileName == "*") fileName = "";
+            if (fileName == "*")
+            {
+                fileName = string.Empty;
+            }
+
             fileName = fileName.Replace("*", "%");
 
-            #endregion
-
-            msdyncrmWorkflowTools_Class commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
-            commonClass.EntityAttachmentToEmail(fileName, ParentId, email, retrieveActivityMimeAttachment, mostRecent, topRecords);
+            common.EntityAttachmentToEmail(fileName, parsedUrl.Id, email, retrieveActivityMimeAttachment, mostRecent, topRecords);
         }
     }
 }

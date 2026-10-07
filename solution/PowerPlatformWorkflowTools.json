@@ -1,0 +1,250 @@
+{
+  "uniqueName": "PowerPlatformWorkflowTools",
+  "displayName": "Power Platform Workflow Tools",
+  "description": "Custom workflow activities for Dataverse environments without the Dynamics 365 apps. Documentation: https://github.com/demianrasko/Dynamics-365-Workflow-Tools",
+  "assemblyName": "powerplatformWorkflowTools",
+  "assemblyId": "2825fa3f-0bc1-f111-a05a-6045bd061c5d",
+  "buildFolder": "Release-PowerPlatform",
+  "activities": {
+    "msdyncrmWorkflowTools.AIClassifyText": {
+      "id": "0d4af17f-0bc1-f111-a05a-70a8a5b106ad"
+    },
+    "msdyncrmWorkflowTools.AIDraftReply": {
+      "id": "b135b486-0bc1-f111-a05a-70a8a5b106ad"
+    },
+    "msdyncrmWorkflowTools.AISentimentDetect": {
+      "id": "13227184-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.AISummarizeRecord": {
+      "id": "14227184-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.AISummarizeText": {
+      "id": "1d6c698a-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.AITranslateText": {
+      "id": "cce83d8d-0bc1-f111-a05a-70a8a5b106ad"
+    },
+    "msdyncrmWorkflowTools.AddRoleToTeam": {
+      "id": "fc647290-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.AddRoleToUser": {
+      "id": "31657290-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.AddUserToTeam": {
+      "id": "0c63d178-0bc1-f111-a05a-70a8a5b106ad"
+    },
+    "msdyncrmWorkflowTools.ApplyRoutingRule": {
+      "id": "1e657290-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.AssociateEntity": {
+      "id": "054af17f-0bc1-f111-a05a-70a8a5b106ad"
+    },
+    "msdyncrmWorkflowTools.CalculateAgregateDate": {
+      "id": "2c25fa3f-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.CalculatePrice": {
+      "id": "e9ae7b45-0bc1-f111-a05a-70a8a5b106ad"
+    },
+    "msdyncrmWorkflowTools.CalculateRollupField": {
+      "id": "b1972494-0bc1-f111-a05a-70a8a5b106ad"
+    },
+    "msdyncrmWorkflowTools.CheckAssociateEntity": {
+      "id": "044af17f-0bc1-f111-a05a-70a8a5b106ad"
+    },
+    "msdyncrmWorkflowTools.CheckUserInRole": {
+      "id": "af5f1fa3-0bc1-f111-a05a-70a8a5b2f876"
+    },
+    "msdyncrmWorkflowTools.CheckUserInTeam": {
+      "id": "32657290-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.Class.DeleteRecord": {
+      "id": "c11dddab-0bc1-f111-a05a-70a8a5b106ad"
+    },
+    "msdyncrmWorkflowTools.Class.DeleteRecordAuditHistory": {
+      "id": "27e48aa3-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.Class.EmailToTeam": {
+      "id": "1af45ca5-0bc1-f111-a05a-70a8a5b106ad"
+    },
+    "msdyncrmWorkflowTools.Class.EntityAttachmentToEmail": {
+      "id": "c86c73b0-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.Class.ExecuteWorkflowByID": {
+      "id": "2be48aa3-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.Class.GetInitiatingUser": {
+      "id": "19f45ca5-0bc1-f111-a05a-70a8a5b106ad"
+    },
+    "msdyncrmWorkflowTools.Class.IsMemberOfTeam": {
+      "id": "b15f1fa3-0bc1-f111-a05a-70a8a5b2f876"
+    },
+    "msdyncrmWorkflowTools.Class.NumericFunctions": {
+      "id": "1f6052aa-0bc1-f111-a05a-70a8a5b2f876"
+    },
+    "msdyncrmWorkflowTools.Class.PickFromQueue": {
+      "id": "296052aa-0bc1-f111-a05a-70a8a5b2f876"
+    },
+    "msdyncrmWorkflowTools.Class.QueueItemCount": {
+      "id": "cd1dddab-0bc1-f111-a05a-70a8a5b106ad"
+    },
+    "msdyncrmWorkflowTools.Class.SendEmail": {
+      "id": "c81dddab-0bc1-f111-a05a-70a8a5b106ad"
+    },
+    "msdyncrmWorkflowTools.Class.SendEmailFromTemplateToUsersInRole": {
+      "id": "15f45ca5-0bc1-f111-a05a-70a8a5b106ad"
+    },
+    "msdyncrmWorkflowTools.Class.SendEmailToUsersInRole": {
+      "id": "28e48aa3-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.Class.SetProcess": {
+      "id": "89b921b2-0bc1-f111-a05a-70a8a5b106ad"
+    },
+    "msdyncrmWorkflowTools.Class.SetProcessStage": {
+      "id": "23c51baa-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.CloneChildren": {
+      "id": "01af7b45-0bc1-f111-a05a-70a8a5b106ad"
+    },
+    "msdyncrmWorkflowTools.CloneRecord": {
+      "id": "a0d57196-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.ConcatenateFromQuery": {
+      "id": "c757c649-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.CountChildEntityRecords": {
+      "id": "fa10874b-0bc1-f111-a05a-70a8a5b106ad"
+    },
+    "msdyncrmWorkflowTools.CreateTeam": {
+      "id": "af408b51-0bc1-f111-a05a-70a8a5b106ad"
+    },
+    "msdyncrmWorkflowTools.CurrencyConvert": {
+      "id": "b0408b51-0bc1-f111-a05a-70a8a5b106ad"
+    },
+    "msdyncrmWorkflowTools.DateFunctions": {
+      "id": "73421671-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.DeleteOptionValue": {
+      "id": "94e2bc51-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.DisassociateEntity": {
+      "id": "d3f91d6b-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.DistributeWFActivityManyToMany": {
+      "id": "7f421671-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.DistributeWFActivityOneToMany": {
+      "id": "f4b13e77-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.EncryptText": {
+      "id": "8f40ff7d-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.EntityJsonSerializer": {
+      "id": "cde83d8d-0bc1-f111-a05a-70a8a5b106ad"
+    },
+    "msdyncrmWorkflowTools.EntityMobileDeepLink": {
+      "id": "04227184-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.ExecuteWorkflowForRecordsinQuery": {
+      "id": "f5b13e77-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.GeoCodeAddress": {
+      "id": "206c698a-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.GetAppModuleID": {
+      "id": "6e911258-0bc1-f111-a05a-70a8a5b106ad"
+    },
+    "msdyncrmWorkflowTools.GetAppRecordUrl": {
+      "id": "5714ff57-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.GetEnvironmentVariable": {
+      "id": "5814ff57-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.GetMultiSelectOptionSet": {
+      "id": "4514ff57-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.GetOptionSetValue": {
+      "id": "d6e2bc51-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.GetRecordID": {
+      "id": "9527625f-0bc1-f111-a05a-70a8a5b106ad"
+    },
+    "msdyncrmWorkflowTools.GetRecordUrl": {
+      "id": "ed10335e-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.GetSharepointLocationURL": {
+      "id": "5614ff57-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.GoalRecalculate": {
+      "id": "8e40ff7d-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.InsertOptionValue": {
+      "id": "c4f91d6b-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.JsonParser": {
+      "id": "d4f91d6b-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.MapMultiSelectOptionSet": {
+      "id": "f310335e-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.OrgDBSettingsRetrieve": {
+      "id": "93f0c364-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.OrgDBSettingsUpdate": {
+      "id": "74421671-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.QueryValues": {
+      "id": "b3972494-0bc1-f111-a05a-70a8a5b106ad"
+    },
+    "msdyncrmWorkflowTools.RemoveRoleFromTeam": {
+      "id": "fb647290-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.RemoveRoleFromUser": {
+      "id": "fd647290-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.RemoveUserFromTeam": {
+      "id": "064af17f-0bc1-f111-a05a-70a8a5b106ad"
+    },
+    "msdyncrmWorkflowTools.RetrieveUserBUDefaultTeam": {
+      "id": "ff10335e-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.RollupFunctions": {
+      "id": "b4972494-0bc1-f111-a05a-70a8a5b106ad"
+    },
+    "msdyncrmWorkflowTools.SetLookupFieldFromRecordUrl": {
+      "id": "01b23e77-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.SetMultiSelectOptionSet": {
+      "id": "9f28625f-0bc1-f111-a05a-70a8a5b106ad"
+    },
+    "msdyncrmWorkflowTools.SetState": {
+      "id": "0f63d178-0bc1-f111-a05a-70a8a5b106ad"
+    },
+    "msdyncrmWorkflowTools.SetUserSettings": {
+      "id": "cee83d8d-0bc1-f111-a05a-70a8a5b106ad"
+    },
+    "msdyncrmWorkflowTools.ShareRecordWithTeam": {
+      "id": "0ae8ab9a-0bc1-f111-a05a-70a8a5b106ad"
+    },
+    "msdyncrmWorkflowTools.ShareRecordWithUser": {
+      "id": "34586d9c-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.ShareSecuredField": {
+      "id": "f410874b-0bc1-f111-a05a-70a8a5b106ad"
+    },
+    "msdyncrmWorkflowTools.StringFunctions": {
+      "id": "216c698a-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.TranslateText": {
+      "id": "85f0c364-0bc1-f111-a05a-6045bd061c5d"
+    },
+    "msdyncrmWorkflowTools.UnshareRecordWithTeam": {
+      "id": "0de8ab9a-0bc1-f111-a05a-70a8a5b106ad"
+    },
+    "msdyncrmWorkflowTools.UnshareRecordWithUser": {
+      "id": "3f8d1d9d-0bc1-f111-a05a-70a8a5b2f876"
+    },
+    "msdyncrmWorkflowTools.UpdateChildRecords": {
+      "id": "0b63d178-0bc1-f111-a05a-70a8a5b106ad"
+    }
+  }
+}

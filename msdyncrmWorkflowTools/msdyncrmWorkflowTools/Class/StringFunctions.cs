@@ -1,36 +1,25 @@
-﻿using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Query;
-using Microsoft.Xrm.Sdk.Workflow;
-using System;
+﻿using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace msdyncrmWorkflowTools
 {
-    public class StringFunctions : CodeActivity
+    [ActivityName("String Functions")]
+    public class StringFunctions : WorkflowActivityBase
     {
-        #region "Parameter Definition"
         [RequiredArgument]
         [Input("Input Text")]
         [Default("")]
-        public InArgument<String> InputText { get; set; }
+        public InArgument<string> InputText { get; set; }
 
         [RequiredArgument]
         [Input("Capitalize All Words")]
         [Default("true")]
         public InArgument<bool> CapitalizeAllWords { get; set; }
 
-
         [RequiredArgument]
         [Input("Padding: Pad Character")]
         [Default("")]
-        public InArgument<String> PadCharacter { get; set; }
-
+        public InArgument<string> PadCharacter { get; set; }
 
         [RequiredArgument]
         [Input("Padding: Pad on the Left")]
@@ -45,11 +34,11 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("Replace: Old Value")]
         [Default("")]
-        public InArgument<String> ReplaceOldValue { get; set; }
+        public InArgument<string> ReplaceOldValue { get; set; }
 
         [Input("Replace: New Value")]
         [Default("")]
-        public InArgument<String> ReplaceNewValue { get; set; }
+        public InArgument<string> ReplaceNewValue { get; set; }
 
         [RequiredArgument]
         [Input("Replace: Case Sensitive")]
@@ -69,17 +58,15 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("Substring: Length")]
         [Default("3")]
-        public InArgument<int> SubStringLength{ get; set; }
-
+        public InArgument<int> SubStringLength { get; set; }
 
         [RequiredArgument]
         [Input("Regular Expression")]
         [Default("")]
-        public InArgument<String> RegularExpression { get; set; }
-
+        public InArgument<string> RegularExpression { get; set; }
 
         [Output("Capitalized Text")]
-        public OutArgument<String> CapitalizedText { get; set; }
+        public OutArgument<string> CapitalizedText { get; set; }
 
         [Output("Text Length")]
         public OutArgument<int> TextLength { get; set; }
@@ -98,13 +85,12 @@ namespace msdyncrmWorkflowTools
 
         [Output("Regex Success")]
         public OutArgument<bool> RegexSuccess { get; set; }
+
         [Output("Regex Text")]
         public OutArgument<string> RegexText { get; set; }
 
-
         [Output("Uppercase Text")]
         public OutArgument<string> UppercaseText { get; set; }
-
 
         [Output("Lowercase Text")]
         public OutArgument<string> LowercaseText { get; set; }
@@ -112,65 +98,51 @@ namespace msdyncrmWorkflowTools
         [Output("Without Spaces")]
         public OutArgument<string> WithoutSpaces { get; set; }
 
-        #endregion
-
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
+            var inputText = InputText.Get(executionContext) ?? string.Empty;
+            var capitalizeAllWords = CapitalizeAllWords.Get(executionContext);
 
-            #region "Load CRM Service from context"
+            var padCharacter = PadCharacter.Get(executionContext);
+            var padOnTheLeft = PadontheLeft.Get(executionContext);
+            var finalLengthWithPadding = FinalLengthwithPadding.Get(executionContext);
 
-            Common objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
+            var replaceOldValue = ReplaceOldValue.Get(executionContext);
+            var replaceNewValue = ReplaceNewValue.Get(executionContext) ?? string.Empty;
+            var caseSensitive = CaseSensitive.Get(executionContext);
 
-            #region "Read Parameters"
-            String inputText = this.InputText.Get(executionContext);
-            if (inputText == null) inputText = "";
-            bool capitalizeAllWords = this.CapitalizeAllWords.Get(executionContext);
+            var fromLeftToRight = FromLefttoRight.Get(executionContext);
+            var startIndex = StartIndex.Get(executionContext);
+            var subStringLength = SubStringLength.Get(executionContext);
+            var regularExpression = RegularExpression.Get(executionContext);
 
-            string padCharacter = this.PadCharacter.Get(executionContext);
-            bool padontheLeft = this.PadontheLeft.Get(executionContext);
-            int finalLengthwithPadding = this.FinalLengthwithPadding.Get(executionContext);
+            var capitalizedText = string.Empty;
+            var paddedText = string.Empty;
+            var replacedText = string.Empty;
+            var subStringText = string.Empty;
+            var regexText = string.Empty;
+            var uppercaseText = string.Empty;
+            var lowercaseText = string.Empty;
 
-            string replaceOldValue = this.ReplaceOldValue.Get(executionContext);
-            string replaceNewValue = this.ReplaceNewValue.Get(executionContext);
-            if (replaceNewValue == null) replaceNewValue = "";
-            bool caseSensitive = this.CaseSensitive.Get(executionContext);
+            var regexSuccess = false;
+            var withoutSpaces = string.Empty;
 
-            bool fromLefttoRight = this.FromLefttoRight.Get(executionContext);
-            int startIndex = this.StartIndex.Get(executionContext);
-            int subStringLength = this.SubStringLength.Get(executionContext);
-            string regularExpression = this.RegularExpression.Get(executionContext);
-
-            #endregion
-
-            string capitalizedText="", paddedText = "", replacedText = "", subStringText = "", regexText = "", uppercaseText = "", lowercaseText="";
-            bool regexSuccess=false;
-            string withoutSpaces = "";
-            msdyncrmWorkflowTools_Class commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
-            bool test=commonClass.StringFunctions(capitalizeAllWords, inputText, padCharacter, padontheLeft, finalLengthwithPadding, caseSensitive,
-                replaceOldValue, replaceNewValue, subStringLength, startIndex, fromLefttoRight, regularExpression,
-                ref capitalizedText, ref paddedText, ref replacedText, ref subStringText, ref regexText, 
+            Utility.StringFunctions(capitalizeAllWords, inputText, padCharacter, padOnTheLeft, finalLengthWithPadding, caseSensitive,
+                replaceOldValue, replaceNewValue, subStringLength, startIndex, fromLeftToRight, regularExpression,
+                ref capitalizedText, ref paddedText, ref replacedText, ref subStringText, ref regexText,
                 ref uppercaseText, ref lowercaseText, ref regexSuccess, ref withoutSpaces);
-                
-            
 
-            this.CapitalizedText.Set(executionContext, capitalizedText);
-            this.TextLength.Set(executionContext, capitalizedText.Length);
-            this.PaddedText.Set(executionContext, paddedText);
-            this.ReplacedText.Set(executionContext, replacedText);
-            this.SubstringText.Set(executionContext, subStringText);
-            this.TrimmedText.Set(executionContext, inputText.Trim());
-            this.RegexSuccess.Set(executionContext, regexSuccess);
-            this.RegexText.Set(executionContext, regexText);
-
-            this.UppercaseText.Set(executionContext, uppercaseText);
-            this.LowercaseText.Set(executionContext, lowercaseText);
-
-            this.WithoutSpaces.Set(executionContext, withoutSpaces);
-
+            CapitalizedText.Set(executionContext, capitalizedText);
+            TextLength.Set(executionContext, capitalizedText.Length);
+            PaddedText.Set(executionContext, paddedText);
+            ReplacedText.Set(executionContext, replacedText);
+            SubstringText.Set(executionContext, subStringText);
+            TrimmedText.Set(executionContext, inputText.Trim());
+            RegexSuccess.Set(executionContext, regexSuccess);
+            RegexText.Set(executionContext, regexText);
+            UppercaseText.Set(executionContext, uppercaseText);
+            LowercaseText.Set(executionContext, lowercaseText);
+            WithoutSpaces.Set(executionContext, withoutSpaces);
         }
-        
-
     }
 }

@@ -1,80 +1,34 @@
-﻿using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk;
+﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
-using System;
 using System.Activities;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace msdyncrmWorkflowTools
 {
-    public class UnshareRecordWithTeam : CodeActivity
+    [ActivityName("Unshare Record With Team")]
+    public class UnshareRecordWithTeam : WorkflowActivityBase
     {
-        #region "Parameter Definition"
-
         [RequiredArgument]
         [Input("Sharing Record URL")]
         [ReferenceTarget("")]
-        public InArgument<String> SharingRecordURL { get; set; }
+        public InArgument<string> SharingRecordURL { get; set; }
 
         [RequiredArgument]
         [Input("Team")]
-        [ReferenceTarget("team")]
+        [ReferenceTarget(EntityNames.Team)]
         public InArgument<EntityReference> Team { get; set; }
 
-        List<EntityReference> principals = new List<EntityReference>();
-        #endregion
-
-
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
+            var sharingRecordUrl = SharingRecordURL.Get(executionContext);
 
-
-            #region "Load CRM Service from context"
-
-            Common objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
-            #region "Read Parameters"
-            String _SharingRecordURL = this.SharingRecordURL.Get(executionContext);
-            if (_SharingRecordURL == null || _SharingRecordURL == "")
+            if (string.IsNullOrEmpty(sharingRecordUrl))
             {
-                return;
-            }
-            string[] urlParts = _SharingRecordURL.Split("?".ToArray());
-            string[] urlParams = urlParts[1].Split("&".ToCharArray());
-            string objectTypeCode = urlParams[0].Replace("etc=", "");
-            string objectId = urlParams[1].Replace("id=", "");
-            objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
-
-            EntityReference teamReference = this.Team.Get(executionContext);
-
-            if (teamReference != null) principals.Add(teamReference);
-
-            #endregion
-
-
-            #region "ApplyRoutingRuteamReferenceleRequest Execution"
-            string EntityName = objCommon.sGetEntityNameFromCode(objectTypeCode, objCommon.service);
-
-            EntityReference refObject = new EntityReference(EntityName, new Guid(objectId));
-
-            RevokeAccessRequest revoqueRequest = new RevokeAccessRequest();
-            revoqueRequest.Target = refObject;
-
-            foreach (EntityReference principalObject in principals)
-            {
-                revoqueRequest.Revokee = principalObject;
-                RevokeAccessResponse revoqueResponse = (RevokeAccessResponse)objCommon.service.Execute(revoqueRequest);
+                throw new InvalidPluginExecutionException("Sharing Record URL is required.");
             }
 
-            objCommon.tracingService.Trace("Revoqued Permissions--- OK");
+            var principal = Team.Get(executionContext);
 
-            #endregion
-
+            common.UnshareRecord(sharingRecordUrl, principal);
         }
     }
 }

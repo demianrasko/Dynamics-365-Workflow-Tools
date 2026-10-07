@@ -1,0 +1,16 @@
+// Paste into the msdyncrmWorkflowTools\Common\CommonClass\Common.<Area>.cs file that fits and rename.
+// Dataverse calls go in Common, logic without Dataverse calls in Utility, and QueryExpression builders in Common as public static <Name>Query methods.
+
+        /// <summary>
+        /// TODO: What the method does.
+        /// </summary>
+        /// <param name="record">The record to work on.</param>
+        /// <returns>TODO: What the method returns.</returns>
+        public string MyActivity(EntityReference record)
+        {
+            Trace($"MyActivity on {record.LogicalName} {record.Id}");
+
+            var entity = Service.Retrieve(record.LogicalName, record.Id, new ColumnSet(AttributeNames.Name));
+
+            return entity.GetAttributeValue<string>(AttributeNames.Name);
+        }

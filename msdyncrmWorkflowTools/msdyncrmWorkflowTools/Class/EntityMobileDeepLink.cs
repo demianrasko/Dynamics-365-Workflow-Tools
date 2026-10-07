@@ -1,26 +1,16 @@
-﻿using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Messages;
-using Microsoft.Xrm.Sdk.Query;
+﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
-using System;
 using System.Activities;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace msdyncrmWorkflowTools
 {
-    public class EntityMobileDeepLink : CodeActivity
+    [ActivityName("Entity Mobile Deep Link")]
+    public class EntityMobileDeepLink : WorkflowActivityBase
     {
-        #region "Parameter Definition"
-
         [RequiredArgument]
         [Input("Record URL")]
         [ReferenceTarget("")]
-        public InArgument<String> RecordURL { get; set; }
-
+        public InArgument<string> RecordURL { get; set; }
 
         [Output("Mobile Deep Link Edit")]
         public OutArgument<string> MobileDeepLinkEdit { get; set; }
@@ -31,55 +21,31 @@ namespace msdyncrmWorkflowTools
         [Output("Mobile Deep Link Default View")]
         public OutArgument<string> MobileDeepLinkDefaultView { get; set; }
 
-        #endregion
-
-
-
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Load CRM Service from context"
+            var recordUrl = RecordURL.Get(executionContext);
 
-            Common objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
-            #region "Read Parameters"
-            String _recordURL = this.RecordURL.Get(executionContext);
-            if (_recordURL == null || _recordURL == "")
+            if (string.IsNullOrEmpty(recordUrl))
             {
-                return;
+                throw new InvalidPluginExecutionException("Record URL is required.");
             }
-            string[] urlParts = _recordURL.Split("?".ToArray());
-            string[] urlParams = urlParts[1].Split("&".ToCharArray());
-            string objectTypeCode = urlParams[0].Replace("etc=", "");
-            string entityName = objCommon.sGetEntityNameFromCode(objectTypeCode, objCommon.service);
-            string objectId = urlParams[1].Replace("id=", "");
-            objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
+            var parsedUrl = common.ParseRecordUrl(recordUrl);
 
+            common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
 
-            #endregion
+            var recordUrlEdit = $"ms-dynamicsxrm://?pagetype=entity&etn={parsedUrl.EntityName}&id={parsedUrl.Id}";
+            var recordUrlNew = $"ms-dynamicsxrm://?pagetype=create&etn={parsedUrl.EntityName}";
+            var recordUrlDefaultView = $"ms-dynamicsxrm://?pagetype=view&etn={parsedUrl.EntityName}";
 
-            #region "Generating Mobile Deep Links Execution"
+            common.Trace($"MobileDeepLinkEdit: {recordUrlEdit}");
+            common.Trace($"MobileDeepLinkNew: {recordUrlNew}");
+            common.Trace($"MobileDeepLinkDefaultView: {recordUrlDefaultView}");
 
-            string recordURLEdit = String.Format("ms-dynamicsxrm://?pagetype=entity&etn={0}&id={1}", entityName, objectId);
-            string recordURLNew = String.Format("ms-dynamicsxrm://?pagetype=create&etn={0}", entityName);
-            string recordURLDefaultView = String.Format("ms-dynamicsxrm://?pagetype=view&etn={0}", entityName);
+            MobileDeepLinkEdit.Set(executionContext, recordUrlEdit);
+            MobileDeepLinkNew.Set(executionContext, recordUrlNew);
+            MobileDeepLinkDefaultView.Set(executionContext, recordUrlDefaultView);
 
-            objCommon.tracingService.Trace("MobileDeepLinkEdit: "+ recordURLEdit);
-            objCommon.tracingService.Trace("MobileDeepLinkNew: "+ recordURLNew);
-            objCommon.tracingService.Trace("MobileDeepLinkDefaultView: "+ recordURLDefaultView);
-
-            this.MobileDeepLinkEdit.Set(executionContext, recordURLEdit);
-            this.MobileDeepLinkNew.Set(executionContext, recordURLNew);
-            this.MobileDeepLinkDefaultView.Set(executionContext, recordURLDefaultView);
-
-            objCommon.tracingService.Trace("returned object links OK");
-
-            #endregion
-
+            common.Trace("returned object links OK");
         }
-
-        
     }
-
 }

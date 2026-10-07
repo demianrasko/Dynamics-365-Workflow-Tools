@@ -1,0 +1,64 @@
+name: Integration tests
+
+# Runs msdyncrmWorkflowTools_IntegrationTests: the Common methods against the Dynamics 365 and Power Platform test
+# environments, the deployment test (registers the Power Platform build in the Power Platform environment) and the
+# live service tests (Azure Maps and Translator only when their keys are set as secrets too).
+# Started by hand (Actions > Integration tests > Run workflow), never by a push or pull request, so code from a fork
+# can't reach the environments. The connection strings are secrets of the "dataverse-test" GitHub environment.
+on:
+  workflow_dispatch:
+  # To also run every night, uncomment:
+  # schedule:
+  #   - cron: '0 6 * * 1-5'
+
+# the tests share the environments' data, so only one run at a time
+concurrency:
+  group: dataverse-integration-tests
+  cancel-in-progress: false
+
+jobs:
+  integration-tests:
+    runs-on: windows-latest
+    environment: dataverse-test
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up MSBuild
+        uses: microsoft/setup-msbuild@v3
+
+      - name: Set up NuGet
+        uses: NuGet/setup-nuget@v4
+
+      - name: Restore packages
+        run: nuget restore msdyncrmWorkflowTools\msdyncrmWorkflowTools.sln
+
+      - name: Build (Release)
+        run: msbuild msdyncrmWorkflowTools\msdyncrmWorkflowTools.sln /p:Configuration=Release /m /nologo /v:m
+
+      - name: Build Power Platform assembly (Release)
+        run: msbuild msdyncrmWorkflowTools\msdyncrmWorkflowTools\msdyncrmWorkflowTools.csproj /p:Configuration=Release /p:PowerPlatform=true /nologo /v:m
+
+      - name: Run integration tests
+        shell: pwsh
+        env:
+          DATAVERSE_CONNECTION: ${{ secrets.DATAVERSE_CONNECTION }}
+          DATAVERSE_CONNECTION_PP: ${{ secrets.DATAVERSE_CONNECTION_PP }}
+          AZURE_MAPS_KEY: ${{ secrets.AZURE_MAPS_KEY }}
+          TRANSLATOR_KEY: ${{ secrets.TRANSLATOR_KEY }}
+          TRANSLATOR_REGION: ${{ secrets.TRANSLATOR_REGION }}
+        run: |
+          if (-not $env:DATAVERSE_CONNECTION -or -not $env:DATAVERSE_CONNECTION_PP) {
+            Write-Error 'Add DATAVERSE_CONNECTION and DATAVERSE_CONNECTION_PP as secrets of the dataverse-test environment.'
+            exit 1
+          }
+          $vstest = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -find "**\vstest.console.exe" | Select-Object -First 1
+          & $vstest msdyncrmWorkflowTools\msdyncrmWorkflowTools_IntegrationTests\bin\Release\msdyncrmWorkflowTools_IntegrationTests.dll /Logger:trx /ResultsDirectory:TestResults
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: integration-test-results
+          path: TestResults

@@ -2,7 +2,7 @@ This step allows you to create a new Team on the fly.
 
 
 
-For using this activity you mus access here and select Create Team action:
+For using this activity you must access here and select Create Team action:
 
 ![](CreateTeam1.png)
 

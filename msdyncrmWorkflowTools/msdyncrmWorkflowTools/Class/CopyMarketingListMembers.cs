@@ -1,58 +1,28 @@
-﻿using Microsoft.Crm.Sdk.Messages;
+﻿// Not in the Power Platform build: it needs Dynamics 365 tables (lead, list or salesliterature).
+#if !POWERPLATFORM
 using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
-using System;
 using System.Activities;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceModel;
-using System.Text;
-using System.Threading.Tasks;
+
 namespace msdyncrmWorkflowTools.Class
 {
-    public class CopyMarketingListMembers : CodeActivity
+    [ActivityName("Copy Marketing List Members")]
+    public class CopyMarketingListMembers : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("Source List")]
-        [ReferenceTarget("list")]
+        [ReferenceTarget(EntityNames.List)]
         public InArgument<EntityReference> SourceList { get; set; }
 
         [RequiredArgument]
         [Input("Target List")]
-        [ReferenceTarget("list")]
+        [ReferenceTarget(EntityNames.List)]
         public InArgument<EntityReference> TargetList { get; set; }
 
-
-
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Load CRM Service from context"
-
-            Common objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
-            #region "Read Parameters"
-            EntityReference sourceList = this.SourceList.Get(executionContext);
-            objCommon.tracingService.Trace(String.Format("marketingList: {0} ", sourceList.Id.ToString()));
-
-            EntityReference targetList = this.TargetList.Get(executionContext);
-            objCommon.tracingService.Trace(String.Format("campaign: {0} ", targetList.Id.ToString()));
-
-
-            #endregion
-
-            var request = new CopyMembersListRequest
-            {
-                SourceListId = sourceList.Id,
-                TargetListId = targetList.Id
-            };
-
-            objCommon.service.Execute(request);
-
-
+            common.CopyListMembers(SourceList.Get(executionContext).Id, TargetList.Get(executionContext).Id);
         }
-
     }
 }
+#endif

@@ -1,19 +1,11 @@
-﻿using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Query;
+﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
-using System;
 using System.Activities;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
 
 namespace msdyncrmWorkflowTools
 {
-    public class GetMultiSelectOptionSet : CodeActivity
+    [ActivityName("Get Multi-Select Option Set")]
+    public class GetMultiSelectOptionSet : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("Source Record URL")]
@@ -23,83 +15,55 @@ namespace msdyncrmWorkflowTools
         [Input("Attribute Name")]
         public InArgument<string> AttributeName { get; set; }
 
+        [Input("Retrieve Options Names")]
+        [Default("False")]
+        public InArgument<bool> RetrieveOptionsNames { get; set; }
+
         [Output("Selected Values")]
         public OutArgument<string> SelectedValues { get; set; }
 
-        protected override void Execute(CodeActivityContext executionContext)
+        [Output("Selected Names")]
+        public OutArgument<string> SelectedNames { get; set; }
+
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            Common objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-
-            EntityReference sourceEntityReference = GetSourceEntityReference(objCommon.tracingService, executionContext, objCommon.service);
-            string attributeName = GetAttributeName(objCommon.tracingService, executionContext);
-
-            string selectedValues = GetSelectedValues(sourceEntityReference, attributeName, objCommon.tracingService, objCommon.service);
-
-            this.SelectedValues.Set(executionContext, selectedValues);
-        }
-
-        private EntityReference GetSourceEntityReference(ITracingService tracingService, CodeActivityContext executionContext, IOrganizationService organizationService)
-        {
-            string sourceRecordUrl = SourceRecordUrl.Get<string>(executionContext) ?? throw new ArgumentNullException("Source URL is empty");
-            tracingService.Trace("Source Record URL:'{0}'", sourceRecordUrl);
-            return new DynamicUrlParser(sourceRecordUrl).ToEntityReference(organizationService);
-        }
-
-
-        private string GetAttributeName(ITracingService tracingService, CodeActivityContext executionContext)
-        {
-            string attributeName = AttributeName.Get<string>(executionContext) ?? throw new ArgumentNullException("Attribute Name is empty");
-            tracingService.Trace("Attribute name:'{0}'", attributeName);
-            return attributeName;
-        }
-
-
-        private string GetSelectedValues(EntityReference sourceEntityReference, string attributeName, ITracingService tracingService, IOrganizationService organizationService)
-        {
-            if (sourceEntityReference == null || attributeName == null)
+            var sourceRecordUrl = SourceRecordUrl.Get(executionContext);
+            if (string.IsNullOrEmpty(sourceRecordUrl))
             {
-                tracingService.Trace("Null parameters have been passed, so string will be empty");
-                return string.Empty;
+                throw new InvalidPluginExecutionException("Source URL is empty");
             }
 
-            Entity sourceEntity = organizationService.Retrieve(sourceEntityReference.LogicalName, sourceEntityReference.Id, new ColumnSet(attributeName));
-            tracingService.Trace("Source record has been retrieved correctly. Id:{0}", sourceEntity.Id);
-
-            if (!sourceEntity.Contains(attributeName))
+            var attributeName = AttributeName.Get(executionContext);
+            if (string.IsNullOrEmpty(attributeName))
             {
-                tracingService.Trace("Attribues {0} was not found", attributeName);
-                return string.Empty;
+                throw new InvalidPluginExecutionException("Attribute Name is empty");
             }
 
-            OptionSetValueCollection optionSetValues = sourceEntity[attributeName] as OptionSetValueCollection;
-            if (optionSetValues == null)
-                return string.Empty;
+            var retrieveOptionsNames = RetrieveOptionsNames.Get(executionContext);
+            common.Trace($"Source Record URL:'{sourceRecordUrl}' Attribute name:'{attributeName}' Retrieve names:'{retrieveOptionsNames}'");
 
-            int numberOptions = optionSetValues.Count;
+            var source = common.GetRecordReference(sourceRecordUrl);
+            var values = common.GetMultiSelectOptionSet(source, attributeName);
 
-            if (numberOptions == 0)
+            if (values.Count == 0)
             {
-                tracingService.Trace("No selected options");
-                return string.Empty;
+                common.Trace("No selected options");
+                SelectedValues.Set(executionContext, string.Empty);
+                return;
             }
 
-            tracingService.Trace("Number of selected options: ", numberOptions);
+            var selectedValues = Utility.JoinOptionSetValues(values);
+            common.Trace($"Selected values: {selectedValues}");
+            SelectedValues.Set(executionContext, selectedValues);
 
-            StringBuilder stringBuilder = new StringBuilder();
-            OptionSetValue value = null;
-            for (int i = 0; i < numberOptions; i++)
+            if (!retrieveOptionsNames)
             {
-                value = optionSetValues[i];
-                stringBuilder.Append(value.Value);
-                if ((i + 1) < numberOptions)
-                    stringBuilder.Append(",");
+                return;
             }
 
-            string values = stringBuilder.ToString();
-            tracingService.Trace("Values have been retrieved correctly. Values: ", values);
-
-            return values;
+            var names = common.GetOptionSetNames(source.LogicalName, attributeName, values);
+            common.Trace($"Selected names: {names}");
+            SelectedNames.Set(executionContext, names);
         }
     }
 }

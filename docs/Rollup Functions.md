@@ -1,7 +1,7 @@
 This step is helps you retrieve Rollups results (Count, Sum, Average, Max and Min) on the fly on output parameters of the Workflow Activity.
 It's based on one input Parameter with a Fetch XML, where you can set a Dynamic Value (for the parent filter), or just create an open FetchXML.
 
-For using this activity you mus access here and select Rollup Functions:
+For using this activity you must access here and select Rollup Functions:
 
 ![](Rollup%20Functions_wf1.gif)
 

@@ -1,6 +1,8 @@
-# Dynamics-365-Workflow-Tools
+# Workflow Tools for Dynamics 365
 This Solution includes one Assembly that contains Tools based on Workflow Activities.
-You must import this solution, to use it. It only contains the Workflow Assembly and the activities to be used in Workflows, so the import of this solution it will not affect any form, entity, view or navigation item. In any case, you should allways follow your ALM steps, installing it in Non-production environments, test everything and then move to Production environment when you are sure.
+You must import this solution, to use it. It only contains the Workflow Assembly and the activities to be used in Workflows, so the import of this solution it will not affect any form, entity, view or navigation item. 
+
+NOTE: You should allways follow your ALM procedure,downloading the source Code, installing it in Non-production environments, test everything and then move to Production environment when you are sure that everything works as you need.
 
 To import the Solution follow these steps:
 
@@ -78,15 +80,34 @@ To see how to use each of the tools includes in this solution, please access to 
 * 66 [Get App Record Url](/docs/GetAppRecordUrl.md) Thanks to [Brent Howard](https://github.com/schwoi)
 * 67 [Is Member Of Team](/docs/IsMemberOfTeam.md) Thanks to [Brent Howard](https://github.com/schwoi)
 * 68 [Count Child Entity Record](/docs/CountChildEntityRecord.md) Thanks to [Ravi Kashyap](https://github.com/RaviKKashyap)
-* 69 [Get Multi Select OptionSet](/docs/GetMultiSelectOptionSet.md) Thanks to [Ramon Tebar](https://github.com/rtebar)
-* 70 [Map Multi Select OptionSet](/docs/MapMultiSelectOptionSet.md) Thanks to [Ramon Tebar](https://github.com/rtebar)
-* 71 [Set Multi Select Option Set](/docs/SetMultiSelectOptionSet.md) Thanks to [Ramon Tebar](https://github.com/rtebar)
+* 69 [Get Multi Select OptionSet](/docs/GetMultiSelectOptionSet.md) Thanks to [Ramon Tebar](https://github.com/ramontebar)
+* 70 [Map Multi Select OptionSet](/docs/MapMultiSelectOptionSet.md) Thanks to [Ramon Tebar](https://github.com/ramontebar)
+* 71 [Set Multi Select Option Set](/docs/SetMultiSelectOptionSet.md) Thanks to [Ramon Tebar](https://github.com/ramontebar)
 * 72 [Delete Record Audit History](/docs/DeleteRecordAuditHistory.md) 
 * 73 [Concatenate from Query](/docs/ConcatenateFromQuery.md) Thanks To [Raj](https://github.com/rajrao)
-* 74 [Get Sharepoint Location URL](/docs/GetSharepointLocationURL.md) Thanks To [TarogStar](https://github.com/TarogStar)
+* 74 [Get Sharepoint Location URL](/docs/GetSharepointLocationURL.md) Thanks To [Anne Pessoa](https://github.com/annepessoa)
 * 75 [Create Team](/docs/CreateTeam.md) 
 * 76 [Get Option Set Value](/docs/GetOptionSetValue.md) 
 * 77 [Share Secured Field](/docs/ShareSecuredField.md) Thanks to [zhongchen zhou](https://github.com/zzc000)
+* 78 [Set Lookup Field from Record URL](/docs/SetLookupFieldFromRecordUrl.md) thanks to [beyro](https://github.com/beyro)
+* 79 [Resolve Case](/docs/ResolveCase.md) thanks to [Chris Milton](https://github.com/ChrisMilton)
+* 80 [Get Record URL](/docs/GetRecordUrl.md) thanks to [vinaymenda](https://github.com/vinaymenda)
+* 81 [AI Classify Text](/docs/AI%20Classify%20Text.md) thanks to [rwilson504](https://github.com/rwilson504)
+* 82 [AI Draft Reply](/docs/AI%20Draft%20Reply.md) thanks to [rwilson504](https://github.com/rwilson504)
+* 83 [AI Sentiment Detect](/docs/AI%20Sentiment%20Detect.md) thanks to [rwilson504](https://github.com/rwilson504)
+* 84 [AI Summarize Record](/docs/AI%20Summarize%20Record.md) thanks to [rwilson504](https://github.com/rwilson504)
+* 85 [AI Summarize Text](/docs/AI%20Summarize%20Text.md) thanks to [rwilson504](https://github.com/rwilson504)
+* 86 [AI Translate Text](/docs/AI%20Translate%20Text.md) thanks to [rwilson504](https://github.com/rwilson504)
+* 87 [Create Opportunity Product](/docs/CreateOpportunityProduct.md)
+* 88 [Create Quote From Opportunity](/docs/CreateQuoteFromOpportunity.md)
+* 89 [Update Quote Value](/docs/UpdateQuoteValue.md)
+* 90 [Update Product Quote Value](/docs/UpdateProductQuoteValue.md)
+* 91 [Win Quote](/docs/WinQuote.md)
+* 92 [Distribute Workflow (One To Many)](/docs/DistributeWFActivityOneToMany.md)
+* 93 [Distribute Workflow (Many To Many)](/docs/DistributeWFActivityManyToMany.md)
+* 94 [Execute Workflow For Records In Query](/docs/ExecuteWorkflowForRecordsinQuery.md)
+* 95 [Get Environment Variable](/docs/GetEnvironmentVariable.md)
+
 
 
 NOTE ABOUT CDS: The CDS Version not include all the actions, because it requires the entities "lead, salesliterature, list" not included in CDS. The Actions not included in the CDS Version are:
@@ -100,5 +121,20 @@ NOTE ABOUT CDS: The CDS Version not include all the actions, because it requires
 - AddMarketingListToCampaign
 - SalesLiteratureToEmail
 
-![](docs/Home_wf1_54.gif)
+The quote and opportunity activities added since then are left out of the Power Platform version too, because they need the Sales tables opportunity, product, quote, quotedetail and uom:
+
+- CreateOpportunityProduct
+- CreateQuoteFromOpportunity
+- UpdateProductQuoteValue
+- UpdateQuoteValue
+- WinQuote
+
+Cases and marketing list membership are not part of Dataverse either, so these are left out too:
+
+- ResolveCase (incident)
+- RemoveFromAllMarketingLists (listmember)
+
+To build the Power Platform version, which leaves these activities out, run `msbuild msdyncrmWorkflowTools\msdyncrmWorkflowTools\msdyncrmWorkflowTools.csproj /p:Configuration=Release /p:PowerPlatform=true`. It builds `powerplatformWorkflowTools.dll` (the same assembly name as the original Power Platform version, so existing installs upgrade in place) in `bin\Release-PowerPlatform`.
+
+![](docs/Home_wf1_61.gif)
 

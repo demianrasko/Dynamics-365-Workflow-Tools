@@ -1,29 +1,21 @@
-﻿using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk;
+﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
-using System;
 using System.Activities;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace msdyncrmWorkflowTools
 {
-    public class ShareRecordWithUser : CodeActivity
+    [ActivityName("Share Record With User")]
+    public class ShareRecordWithUser : WorkflowActivityBase
     {
-        #region "Parameter Definition"
-
         [RequiredArgument]
         [Input("Sharing Record URL")]
         [ReferenceTarget("")]
-        public InArgument<String> SharingRecordURL { get; set; }
+        public InArgument<string> SharingRecordURL { get; set; }
 
         [RequiredArgument]
         [Input("User")]
-        [ReferenceTarget("systemuser")]
+        [ReferenceTarget(EntityNames.SystemUser)]
         public InArgument<EntityReference> User { get; set; }
-
 
         /// <summary>
         /// Share Read privilege.
@@ -74,106 +66,27 @@ namespace msdyncrmWorkflowTools
         [Default("False")]
         public InArgument<bool> ShareShare { get; set; }
 
-
-        List<EntityReference> principals = new List<EntityReference>();
-        #endregion
-
-
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Load CRM Service from context"
+            var sharingRecordUrl = SharingRecordURL.Get(executionContext);
 
-            Common objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
-            #region "Read Parameters"
-            String _SharingRecordURL = this.SharingRecordURL.Get(executionContext);
-            if (_SharingRecordURL == null || _SharingRecordURL == "")
+            if (string.IsNullOrEmpty(sharingRecordUrl))
             {
-                return;
-            }
-            string[] urlParts = _SharingRecordURL.Split("?".ToArray());
-            string[] urlParams = urlParts[1].Split("&".ToCharArray());
-            string objectTypeCode = urlParams[0].Replace("etc=", "");
-            string objectId = urlParams[1].Replace("id=", "");
-            objCommon.tracingService.Trace("ObjectTypeCode=" + objectTypeCode + "--ParentId=" + objectId);
-
-            EntityReference systemuserReference = this.User.Get(executionContext);
-            principals.Clear();
-            if (systemuserReference != null) principals.Add(systemuserReference);
-
-            #endregion
-
-
-            #region "ApplyRoutingRuteamReferenceleRequest Execution"
-            string EntityName = objCommon.sGetEntityNameFromCode(objectTypeCode, objCommon.service);
-
-            EntityReference refObject = new EntityReference(EntityName, new Guid(objectId));
-
-            objCommon.tracingService.Trace("Grant Request--- Start");
-
-            GrantAccessRequest grantRequest = new GrantAccessRequest();
-            grantRequest.Target = refObject;
-            grantRequest.PrincipalAccess = new PrincipalAccess();
-            grantRequest.PrincipalAccess.AccessMask = (AccessRights)getMask(executionContext);
-            foreach (EntityReference principalObject2 in principals)
-            {
-                grantRequest.PrincipalAccess.Principal = principalObject2;
-                GrantAccessResponse grantResponse = (GrantAccessResponse)objCommon.service.Execute(grantRequest);
+                throw new InvalidPluginExecutionException("Sharing Record URL is required.");
             }
 
-            objCommon.tracingService.Trace("Grant Request--- end");
+            var principal = User.Get(executionContext);
 
-            #endregion
+            var accessMask = Utility.GetMask(
+                read: ShareRead.Get(executionContext),
+                write: ShareWrite.Get(executionContext),
+                append: ShareAppend.Get(executionContext),
+                appendTo: ShareAppendTo.Get(executionContext),
+                delete: ShareDelete.Get(executionContext),
+                share: ShareShare.Get(executionContext),
+                assign: ShareAssign.Get(executionContext));
 
-        }
-
-        UInt32 getMask(CodeActivityContext executionContext)
-        {
-            bool ShareAppend = this.ShareAppend.Get(executionContext);
-            bool ShareAppendTo = this.ShareAppendTo.Get(executionContext);
-            bool ShareAssign = this.ShareAssign.Get(executionContext);
-            bool ShareDelete = this.ShareDelete.Get(executionContext);
-            bool ShareRead = this.ShareRead.Get(executionContext);
-            bool ShareShare = this.ShareShare.Get(executionContext);
-            bool ShareWrite = this.ShareWrite.Get(executionContext);
-
-            UInt32 mask = 0;
-            if (ShareAppend)
-            {
-                mask |= (UInt32)AccessRights.AppendAccess;
-            }
-            if (ShareAppendTo)
-            {
-                mask |= (UInt32)AccessRights.AppendToAccess;
-            }
-            if (ShareAssign)
-            {
-                mask |= (UInt32)AccessRights.AssignAccess;
-            }
-
-            if (ShareDelete)
-            {
-                mask |= (UInt32)AccessRights.DeleteAccess;
-            }
-            if (ShareRead)
-            {
-                mask |= (UInt32)AccessRights.ReadAccess;
-            }
-            if (ShareShare)
-            {
-                mask |= (UInt32)AccessRights.ShareAccess;
-            }
-            if (ShareWrite)
-            {
-                mask |= (UInt32)AccessRights.WriteAccess;
-            }
-
-
-
-            return mask;
-
+            common.ShareRecord(sharingRecordUrl, principal, accessMask);
         }
     }
 }

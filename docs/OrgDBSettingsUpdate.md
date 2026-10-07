@@ -25,3 +25,5 @@ A really good example for using OrgDBSettings Update&Retrieve is here: [OrgDBSet
 
 
 Regards!
+
+For an example of a table to hold the settings, see [OrgDBSettings example](OrgDBSettingsExample.md).

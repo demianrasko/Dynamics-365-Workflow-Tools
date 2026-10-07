@@ -1,57 +1,32 @@
-﻿using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Query;
+﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 using System;
 using System.Activities;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 
 namespace msdyncrmWorkflowTools.Class
 {
-    public class ExecuteWorkflowByID : CodeActivity
+    [ActivityName("Execute Workflow By ID")]
+    public class ExecuteWorkflowByID : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("Record ID")]
         [ReferenceTarget("")]
-        public InArgument<String> RecordID { get; set; }
+        public InArgument<string> RecordID { get; set; }
 
-        
         [Input("Process")]
-        [ReferenceTarget("workflow")]
+        [ReferenceTarget(EntityNames.Workflow)]
         public InArgument<EntityReference> Process { get; set; }
 
- 
-
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Load CRM Service from context"
+            var recordId = RecordID.Get(executionContext);
 
-            Common objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
+            if (!Guid.TryParse(recordId, out var id))
+            {
+                throw new InvalidPluginExecutionException($"Record ID '{recordId}' is not a valid GUID.");
+            }
 
-            #region "Read Parameters"
-            String _RecordID = this.RecordID.Get(executionContext);
-          
-            
-            EntityReference process = this.Process.Get(executionContext);
-
-
-            #endregion
-
-            #region "SetProcess Execution"
-
-            ExecuteWorkflowRequest wfRequest = new ExecuteWorkflowRequest();
-            wfRequest.EntityId = new Guid(_RecordID);
-            wfRequest.WorkflowId = process.Id;
-            ExecuteWorkflowResponse wfResponse=(ExecuteWorkflowResponse)objCommon.service.Execute(wfRequest);
-
-            #endregion
-
+            common.ExecuteWorkflow(Process.Get(executionContext).Id, new[] { id });
         }
     }
 }

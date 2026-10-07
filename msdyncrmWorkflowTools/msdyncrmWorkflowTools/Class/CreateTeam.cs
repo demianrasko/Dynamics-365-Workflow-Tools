@@ -1,93 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Activities;
-using Microsoft.Xrm.Sdk;
+﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
-using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk.Metadata.Query;
-using Microsoft.Xrm.Sdk.Query;
-using Microsoft.Xrm.Sdk.Messages;
-using Microsoft.Xrm.Sdk.Metadata;
-using msdyncrmWorkflowTools;
-using System.ServiceModel;
-
+using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
-  
-    public class CreateTeam : CodeActivity
+    [ActivityName("Create Team")]
+    public class CreateTeam : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("Team Name")]
         [Default("")]
-        public InArgument<String> TeamName{ get; set; }
-
+        public InArgument<string> TeamName { get; set; }
 
         [RequiredArgument]
         [Input("Team Type")]
-        public InArgument<int> TeamType{ get; set; }
+        public InArgument<int> TeamType { get; set; }
 
         [RequiredArgument]
         [Input("Administrator")]
-        [ReferenceTarget("systemuser")]
+        [ReferenceTarget(EntityNames.SystemUser)]
         public InArgument<EntityReference> Administrator { get; set; }
 
         [RequiredArgument]
         [Input("Business Unit")]
-        [ReferenceTarget("businessunit")]
+        [ReferenceTarget(EntityNames.BusinessUnit)]
         public InArgument<EntityReference> BusinessUnit { get; set; }
 
-
         [Output("Team")]
-        [ReferenceTarget("team")]
+        [ReferenceTarget(EntityNames.Team)]
         public OutArgument<EntityReference> createdTeam { get; set; }
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
+            var teamName = TeamName.Get(executionContext);
+            var teamType = TeamType.Get(executionContext);
+            var administrator = Administrator.Get(executionContext);
+            var businessUnit = BusinessUnit.Get(executionContext);
 
-            #region "Load CRM Service from context"
+            common.Trace($"teamName={teamName}");
 
-            Common objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
+            var createdTeamId = common.CreateTeam(teamName, teamType, administrator, businessUnit);
 
-            #region "Read Parameters"
-            String _teamName = this.TeamName.Get(executionContext);
-            int _teamType = this.TeamType.Get(executionContext);
-            EntityReference _administrator= this.Administrator.Get(executionContext);
-            EntityReference _businessUnit= this.BusinessUnit.Get(executionContext);
-
-            objCommon.tracingService.Trace("_teamName=" + _teamName );
-            #endregion
-
-
-            #region "Associate Execution"
-
-            try
-            {
-                msdyncrmWorkflowTools_Class commonClass = new msdyncrmWorkflowTools_Class(objCommon.service);
-                Guid createdTeamId= commonClass.CreateTeam(_teamName,_teamType, _administrator, _businessUnit);
-                this.createdTeam.Set(executionContext, new EntityReference("team", createdTeamId));
-
-            }
-            catch (FaultException<OrganizationServiceFault> ex)
-            {
-                objCommon.tracingService.Trace("Error : {0} - {1}", ex.Message, ex.StackTrace);
-                //throw ex;
-                // if (ex.Detail.ErrorCode != 2147220937)//ignore if the error is a duplicate insert
-                //{
-                // throw ex;
-                //}
-            }
-            catch (System.Exception ex)
-            {
-                objCommon.tracingService.Trace("Error : {0} - {1}", ex.Message, ex.StackTrace);
-                //throw ex;
-            }
-            #endregion
-
+            createdTeam.Set(executionContext, new EntityReference(EntityNames.Team, createdTeamId));
         }
     }
 }
