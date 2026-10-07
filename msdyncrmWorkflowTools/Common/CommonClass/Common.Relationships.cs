@@ -5,6 +5,7 @@ using Microsoft.Xrm.Sdk.Query;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ServiceModel;
 
 namespace msdyncrmWorkflowTools
 {
@@ -143,6 +144,19 @@ namespace msdyncrmWorkflowTools
         /// which can't be updated this way, or the value can't be stored in the child field.</exception>
         public int UpdateChildRecords(string relationshipName, string parentEntityType, Guid parentEntityId, string parentFieldNameToUpdate, string setValueToUpdate, string childFieldNameToUpdate, bool updateonlyActive)
         {
+            return UpdateChildRecords(relationshipName, parentEntityType, parentEntityId, parentFieldNameToUpdate, setValueToUpdate, childFieldNameToUpdate, updateonlyActive, false, out _);
+        }
+
+        /// <summary>
+        /// Sets a field on every child record of a parent, as <see cref="UpdateChildRecords(string, string, Guid, string, string, string, bool)"/>,
+        /// optionally carrying on past children that can't be updated (e.g. a plugin locks them).
+        /// </summary>
+        /// <param name="continueIfARecordFails">Skip a child whose update fails (traced) instead of stopping.</param>
+        /// <param name="failed">The number of children skipped.</param>
+        /// <returns>The number of child records updated.</returns>
+        public int UpdateChildRecords(string relationshipName, string parentEntityType, Guid parentEntityId, string parentFieldNameToUpdate, string setValueToUpdate, string childFieldNameToUpdate, bool updateonlyActive,
+            bool continueIfARecordFails, out int failed)
+        {
             var relationship = GetOneToManyRelationship(relationshipName);
             var childEntityType = relationship.ReferencingEntity;
 
@@ -174,17 +188,28 @@ namespace msdyncrmWorkflowTools
             var response = (RetrieveAttributeResponse)Service.Execute(request);
             var convertedValue = Utility.ConvertToAttributeType(value, response.AttributeMetadata);
 
+            failed = 0;
+
             foreach (var childId in childIds)
             {
-                Service.Update(new Entity(childEntityType, childId)
+                try
                 {
-                    [childFieldNameToUpdate] = convertedValue
-                });
+                    Service.Update(new Entity(childEntityType, childId)
+                    {
+                        [childFieldNameToUpdate] = convertedValue
+                    });
+                }
+                catch (FaultException<OrganizationServiceFault> ex) when (continueIfARecordFails)
+                {
+                    failed++;
+                    Trace($"Skipped {childEntityType} {childId}: {ex.Detail?.Message ?? ex.Message}");
+                }
             }
 
-            Trace($"Set {childFieldNameToUpdate} on {childIds.Count} {childEntityType} record(s).");
+            var updated = childIds.Count - failed;
+            Trace($"Set {childFieldNameToUpdate} on {updated} {childEntityType} record(s), {failed} failed.");
 
-            return childIds.Count;
+            return updated;
         }
 
         /// <summary>

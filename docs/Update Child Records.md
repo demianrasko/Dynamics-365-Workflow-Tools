@@ -15,6 +15,8 @@ The parameters are:
 * **Value to Set**: (optional) the string value to be set (if the previuos one is empty)
 * **Child Field Name to Update**: The destination field name on the child entity
 * **Update Only Active**: True: updates only active records, False: update all records
+* **Continue If A Record Fails**: (optional, default No) Yes: a child record that can't be updated (for example because a plugin locks it at a certain stage) is skipped and the others are updated. No: the first failure stops the step, and none of the children are updated.
+* **Failed Records** (output): the number of children skipped because their update failed (always 0 when Continue If A Record Fails is No)
 
 NOTES:
 1) The relationship must be a one-to-many relationship that exists in the environment, from the parent table to the child table.
@@ -23,3 +25,4 @@ NOTES:
 4) For Yes/No fields use "1" or "true" for Yes; anything else is No.
 5) Every child record is updated, including when there are more than 5,000.
 6) Product properties (dynamicpropertyinstance) can't be updated with this action; the step fails with a message saying so.
+7) **Continue If A Record Fails** works in background workflows. A real-time workflow runs in a single transaction, and once a plugin has failed an update the transaction can't continue, so there the step still fails. To find out which children were skipped, check **Failed Records** (e.g. a Check Condition on Failed Records greater than 0) and look in the workflow's trace log.

@@ -19,6 +19,11 @@ namespace msdyncrmWorkflowTools_Tests
 
         public Func<string, Guid, ColumnSet, Entity> OnRetrieve { get; set; } = (entityName, id, columns) => new Entity(entityName, id);
 
+        /// <summary>
+        /// Runs before an update is recorded; throw from it to make the update fail.
+        /// </summary>
+        public Action<Entity> OnUpdate { get; set; } = entity => { };
+
         public List<OrganizationRequest> Executed { get; } = new List<OrganizationRequest>();
 
         public List<QueryBase> Queries { get; } = new List<QueryBase>();
@@ -47,6 +52,7 @@ namespace msdyncrmWorkflowTools_Tests
 
         public void Update(Entity entity)
         {
+            OnUpdate(entity);
             Updated.Add(entity);
         }
 

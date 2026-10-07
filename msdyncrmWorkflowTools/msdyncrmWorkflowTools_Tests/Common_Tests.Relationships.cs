@@ -6,6 +6,7 @@ using Microsoft.Xrm.Sdk.Query;
 using msdyncrmWorkflowTools;
 using System;
 using System.Linq;
+using System.ServiceModel;
 
 namespace msdyncrmWorkflowTools_Tests
 {
@@ -105,6 +106,39 @@ namespace msdyncrmWorkflowTools_Tests
             AssertCondition(conditions[0], "parentcustomerid", ConditionOperator.Equal, RecordId);
             AssertCondition(conditions[1], AttributeNames.StateCode, ConditionOperator.Equal, 0);
             Assert.AreEqual(1, service.Executed.OfType<RetrieveAttributeRequest>().Count());
+        }
+
+        [TestMethod]
+        public void UpdateChildRecords_CanContinuePastALockedChild()
+        {
+            // upstream issue #269: a plugin stops updates to some children
+            var children = new[] { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() };
+            SetUpChildRelationship(new IntegerAttributeMetadata { LogicalName = "new_count" });
+            service.OnRetrieveMultiple = query => Collection(children.Select(id => new Entity(EntityNames.Contact, id)).ToArray());
+            service.OnUpdate = entity =>
+            {
+                if (entity.Id == children[1])
+                {
+                    throw new FaultException<OrganizationServiceFault>(new OrganizationServiceFault { Message = "The record is locked." });
+                }
+            };
+
+            var updated = common.UpdateChildRecords("account_contacts", EntityNames.Account, RecordId, string.Empty, "42", "new_count", false, true, out var failed);
+
+            Assert.AreEqual(2, updated);
+            Assert.AreEqual(1, failed);
+            CollectionAssert.AreEqual(new[] { children[0], children[2] }, service.Updated.Select(e => e.Id).ToArray());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(FaultException<OrganizationServiceFault>))]
+        public void UpdateChildRecords_StopsAtAFailedChildByDefault()
+        {
+            SetUpChildRelationship(new IntegerAttributeMetadata { LogicalName = "new_count" });
+            service.OnRetrieveMultiple = query => Collection(new Entity(EntityNames.Contact, Guid.NewGuid()));
+            service.OnUpdate = entity => throw new FaultException<OrganizationServiceFault>(new OrganizationServiceFault { Message = "The record is locked." });
+
+            common.UpdateChildRecords("account_contacts", EntityNames.Account, RecordId, string.Empty, "42", "new_count", false);
         }
 
         [TestMethod]
