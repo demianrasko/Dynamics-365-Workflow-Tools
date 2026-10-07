@@ -47,6 +47,30 @@ namespace msdyncrmWorkflowTools
         {
             Trace($"Setting process {process?.Id} on {record.LogicalName} {record.Id}");
             Service.Execute(new SetProcessRequest { Target = record, NewProcess = process });
+
+            // The record's active process is its most recently changed instance. Switching back to a process the record
+            // has been in reuses that process's old instance without changing it, so another instance stays active
+            // (upstream issue #223); saving the old instance's stage again makes it the latest.
+            var instances = ((RetrieveProcessInstancesResponse)Service.Execute(new RetrieveProcessInstancesRequest
+            {
+                EntityId = record.Id,
+                EntityLogicalName = record.LogicalName
+            })).Processes.Entities;
+            var instance = instances.FirstOrDefault(i => i.GetAttributeValue<EntityReference>(AttributeNames.ProcessId)?.Id == process?.Id);
+
+            if (instance == null || instance.Id == instances.First().Id)
+            {
+                return;
+            }
+
+            var instanceEntityName = GetProcessEntityName(process.Id);
+            var stage = Service.Retrieve(instanceEntityName, instance.Id, new ColumnSet(AttributeNames.ActiveStageId)).GetAttributeValue<EntityReference>(AttributeNames.ActiveStageId);
+            Trace($"Making the existing instance {instance.Id} the active one again.");
+
+            Service.Update(new Entity(instanceEntityName, instance.Id)
+            {
+                [AttributeNames.ActiveStageId] = stage
+            });
         }
 
         /// <summary>

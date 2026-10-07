@@ -86,13 +86,11 @@ namespace msdyncrmWorkflowTools_Tests
         public void SingleRequests_SendTheRightMessage()
         {
             var record = new EntityReference("incident", RecordId);
-            var process = new EntityReference("workflow", Guid.NewGuid());
             var listId = Guid.NewGuid();
             var campaignId = Guid.NewGuid();
             service.OnExecute = r => r is SendEmailRequest ? new SendEmailResponse { Results = { ["Subject"] = "Hello" } } : new OrganizationResponse();
 
             common.ApplyRoutingRule(record);
-            common.SetProcess(record, process);
             common.CalculateRollupField(record, "new_total");
             common.AddListToCampaign(listId, campaignId);
             common.CopyListMembers(listId, campaignId);
@@ -102,16 +100,47 @@ namespace msdyncrmWorkflowTools_Tests
 
             var e = service.Executed;
             Assert.AreEqual(record, ((ApplyRoutingRuleRequest)e[0]).Target);
-            Assert.AreEqual(process, ((SetProcessRequest)e[1]).NewProcess);
-            Assert.AreEqual("new_total", ((CalculateRollupFieldRequest)e[2]).FieldName);
-            Assert.AreEqual(campaignId, ((AddItemCampaignRequest)e[3]).CampaignId);
-            Assert.AreEqual("list", ((AddItemCampaignRequest)e[3]).EntityName);
-            Assert.AreEqual(listId, ((CopyMembersListRequest)e[4]).SourceListId);
-            Assert.AreEqual(listId, ((CopyDynamicListToStaticRequest)e[5]).ListId);
-            var close = (CloseIncidentRequest)e[6];
+            Assert.AreEqual("new_total", ((CalculateRollupFieldRequest)e[1]).FieldName);
+            Assert.AreEqual(campaignId, ((AddItemCampaignRequest)e[2]).CampaignId);
+            Assert.AreEqual("list", ((AddItemCampaignRequest)e[2]).EntityName);
+            Assert.AreEqual(listId, ((CopyMembersListRequest)e[3]).SourceListId);
+            Assert.AreEqual(listId, ((CopyDynamicListToStaticRequest)e[4]).ListId);
+            var close = (CloseIncidentRequest)e[5];
             Assert.AreEqual(5, close.Status.Value);
             Assert.AreEqual(RecordId, close.IncidentResolution.GetAttributeValue<EntityReference>("incidentid").Id);
-            Assert.IsTrue(((SendEmailRequest)e[7]).IssueSend);
+            Assert.IsTrue(((SendEmailRequest)e[6]).IssueSend);
+        }
+
+        [TestMethod]
+        public void SetProcess_LeavesANewInstanceAsItIs()
+        {
+            var process = new EntityReference("workflow", Guid.NewGuid());
+            service.OnExecute = r => r is RetrieveProcessInstancesRequest ? InstancesResponse(Instance(process.Id), Instance(Guid.NewGuid())) : new OrganizationResponse();
+
+            common.SetProcess(new EntityReference("contact", RecordId), process);
+
+            Assert.AreEqual(process, ((SetProcessRequest)service.Executed[0]).NewProcess);
+            Assert.AreEqual(0, service.Updated.Count);
+        }
+
+        [TestMethod]
+        public void SetProcess_MakesAReusedInstanceTheActiveOne()
+        {
+            // upstream issue #223: switching back reuses the old instance, but the latest changed one is active
+            var process = new EntityReference("workflow", Guid.NewGuid());
+            var stage = new EntityReference("processstage", Guid.NewGuid());
+            var reused = Instance(process.Id);
+            service.OnExecute = r => r is RetrieveProcessInstancesRequest ? InstancesResponse(Instance(Guid.NewGuid()), reused) : new OrganizationResponse();
+            service.OnRetrieve = (name, id, columns) => name == "workflow"
+                ? new Entity(name, id) { ["uniquename"] = "new_bpf" }
+                : new Entity(name, id) { ["activestageid"] = stage };
+
+            common.SetProcess(new EntityReference("contact", RecordId), process);
+
+            var update = service.Updated.Single();
+            Assert.AreEqual("new_bpf", update.LogicalName);
+            Assert.AreEqual(reused.Id, update.Id);
+            Assert.AreEqual(stage, update["activestageid"]);
         }
 
         [TestMethod]

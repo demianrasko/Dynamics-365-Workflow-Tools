@@ -5,6 +5,7 @@ using Microsoft.Xrm.Sdk.Query;
 using msdyncrmWorkflowTools;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace msdyncrmWorkflowTools_IntegrationTests
 {
@@ -77,18 +78,22 @@ namespace msdyncrmWorkflowTools_IntegrationTests
 
             var contact = CreateContact(null);
 
-            foreach (var process in new[] { processes[0], processes[1], processes[0] })
+            // a new record gets an instance of the default process just after it's created; it would become the
+            // active one if it arrived after the first switch
+            for (var wait = 0; wait < 20 && ProcessInstances(contact).Count == 0; wait++)
+            {
+                Thread.Sleep(500);
+            }
+
+            // to the second process, then back to the first, whose old instance is reused, then to the second again
+            foreach (var process in new[] { processes[1], processes[0], processes[1] })
             {
                 Common.SetProcess(contact, process.ToEntityReference());
 
-                // the active instance comes first; an instance's table is its process's unique name
-                var active = ((RetrieveProcessInstancesResponse)Service.Execute(new RetrieveProcessInstancesRequest
-                {
-                    EntityId = contact.Id,
-                    EntityLogicalName = contact.LogicalName
-                })).Processes.Entities.First();
+                // the active instance comes first
+                var activeProcessId = ProcessInstances(contact).First().GetAttributeValue<EntityReference>(AttributeNames.ProcessId)?.Id;
 
-                Assert.AreEqual(process.GetAttributeValue<string>(AttributeNames.UniqueName), active.LogicalName);
+                Assert.AreEqual(process.Id, activeProcessId, $"Active process after switching to {process.GetAttributeValue<string>(AttributeNames.Name)}");
             }
 
             foreach (var process in processes)
@@ -138,6 +143,15 @@ namespace msdyncrmWorkflowTools_IntegrationTests
             }
 
             return process;
+        }
+
+        private DataCollection<Entity> ProcessInstances(EntityReference record)
+        {
+            return ((RetrieveProcessInstancesResponse)Service.Execute(new RetrieveProcessInstancesRequest
+            {
+                EntityId = record.Id,
+                EntityLogicalName = record.LogicalName
+            })).Processes.Entities;
         }
 
         /// <summary>
