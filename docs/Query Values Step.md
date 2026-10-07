@@ -13,12 +13,12 @@ The full fields description are:
 * **EntityName (required)** : the schema name of the entity to be searched
 * **Attribute1 (required)** :  first attribute to be retrieved
 * **Attribute2** :  second attribute to be retrieved
-* **FilterAttibute1 (required)** :  first filter attribute name 
+* **FilterAttribute1 (required)** :  first filter attribute name 
 * **ValueAttribute1 (required)** :  first filter attribute value 
-* **FilterAttibute2** :  second filter attribute name 
+* **FilterAttribute2** :  second filter attribute name 
 * **ValueAttribute2** :  second filter attribute value 
-* **ResultValue1** :  retrieved value for the first attibute
-* **ResultValue2** :  retrieved value for the second attibute 
+* **ResultValue1** :  retrieved value for the first attribute
+* **ResultValue2** :  retrieved value for the second attribute 
 
 IMPORTANT NOTE: since version 1.0.36.0 the Attribute2 Parameter is required. for previous versions, please remember to fill something on it.
 

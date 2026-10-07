@@ -23,7 +23,7 @@ namespace msdyncrmWorkflowTools
         public InArgument<string> Attribute2 { get; set; }
 
         [RequiredArgument]
-        [Input("FilterAttibute1")]
+        [Input("FilterAttribute1")]
         [ReferenceTarget("")]
         public InArgument<string> FilterAttribute1 { get; set; }
 
