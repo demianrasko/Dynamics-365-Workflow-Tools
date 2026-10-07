@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -7,6 +8,15 @@ namespace msdyncrmWorkflowTools
 {
     public static partial class Utility
     {
+        // what the character after a backslash stands for in ExpandEscapes
+        private static readonly Dictionary<string, string> Escapes = new Dictionary<string, string>
+        {
+            ["n"] = "\n",
+            ["r"] = "\r",
+            ["t"] = "\t",
+            ["\\"] = "\\"
+        };
+
         public static bool DateFunctions(DateTime date1, DateTime date2, ref TimeSpan difference,
             ref int dayOfWeek, ref int dayOfYear, ref int day, ref int month, ref int year, ref int weekOfYear)
         {
@@ -141,20 +151,7 @@ namespace msdyncrmWorkflowTools
                 return text;
             }
 
-            return Regex.Replace(text, @"\\([\\nrt])", m =>
-            {
-                switch (m.Groups[1].Value)
-                {
-                    case "n":
-                        return "\n";
-                    case "r":
-                        return "\r";
-                    case "t":
-                        return "\t";
-                    default:
-                        return "\\";
-                }
-            });
+            return Regex.Replace(text, @"\\([\\nrt])", m => Escapes[m.Groups[1].Value]);
         }
     }
 }
