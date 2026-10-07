@@ -147,6 +147,64 @@ namespace msdyncrmWorkflowTools
         }
 
         /// <summary>
+        /// Copies the child records of one parent to another parent, for the Clone Children activity: each copy gets
+        /// the new parent as part of its create, so a locked source parent (e.g. an invoiced order) is never touched.
+        /// </summary>
+        /// <param name="sourceRecordUrl">Record URL of the parent whose children are copied.</param>
+        /// <param name="targetRecordUrl">Record URL of the parent the copies belong to.</param>
+        /// <param name="relationshipName">Schema name of the 1:N relationship from the source parent to its children.</param>
+        /// <param name="newParentFieldName">The copies' lookup to set to the target parent.</param>
+        /// <param name="oldParentFieldName">Optional lookup to clear on the copies, when the target parent uses a
+        /// different lookup from the source parent.</param>
+        /// <param name="prefix">Text put in front of each copy's primary name; null for none.</param>
+        /// <param name="fieldsToIgnore">Attributes not to copy, separated by ";" or ",".</param>
+        /// <param name="copyStatus">Give each copy its child's status and status reason.</param>
+        /// <param name="onlyActive">Only copy the active children.</param>
+        /// <returns>The number of copies made.</returns>
+        /// <exception cref="InvalidPluginExecutionException">A required input is empty.</exception>
+        public int CloneChildren(string sourceRecordUrl, string targetRecordUrl, string relationshipName, string newParentFieldName,
+            string oldParentFieldName, string prefix, string fieldsToIgnore, bool copyStatus, bool onlyActive)
+        {
+            Required(relationshipName, "Relationship Name");
+            Required(newParentFieldName, "New Parent Field Name");
+
+            var source = GetRecordReference(Required(sourceRecordUrl, "Source Record URL"));
+            var target = GetRecordReference(Required(targetRecordUrl, "Target Record URL"));
+
+            return CloneChildRecords(relationshipName, source.Id, fieldsToIgnore, prefix,
+                CloneChildrenReplacements(target, newParentFieldName, oldParentFieldName), copyStatus, onlyActive);
+        }
+
+        /// <summary>
+        /// The values Clone Children sets on every copy: the new parent lookup, and the old parent lookup cleared
+        /// when it's a different field.
+        /// </summary>
+        public static Dictionary<string, object> CloneChildrenReplacements(EntityReference newParent, string newParentFieldName, string oldParentFieldName)
+        {
+            var fieldsToReplace = new Dictionary<string, object>
+            {
+                [newParentFieldName] = newParent
+            };
+
+            if (!string.IsNullOrEmpty(oldParentFieldName) && oldParentFieldName != newParentFieldName)
+            {
+                fieldsToReplace[oldParentFieldName] = null;
+            }
+
+            return fieldsToReplace;
+        }
+
+        private static string Required(string value, string inputName)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                throw new InvalidPluginExecutionException($"{inputName} is required.");
+            }
+
+            return value;
+        }
+
+        /// <summary>
         /// Copies the child records of a parent through a 1:N relationship (see <see cref="CloneRecord"/>).
         /// </summary>
         /// <param name="relationshipName">Schema name of the 1:N relationship.</param>
