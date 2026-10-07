@@ -260,5 +260,13 @@ The **Inputs** column gives what to enter. *Record URL* means the record's **Rec
 - **Calculate Agregate Date** still returns 1753-01-01 with Ok = No when nothing is found (unchanged).
 - **Set User Settings:** on steps saved before the upgrade, DefaultCalendarView and IsSendAsAllowed behave exactly as before. That's the SetUserSettings TODO to confirm here.
 - **Clone Record:** the copy is still always created active (unchanged).
+- **Currency Convert** working means 13 now reaches **Translate Text**, which fails with HTTP 401 without a Translator key.
+- **Send Email To Users In Role** fails with a clear message when nobody has the role ("No enabled user has the security role …") instead of "The e-mail must have at least one recipient" (09).
+- **Error messages** name the activity, e.g. "ApplyRoutingRule: Currently there's no active rule to route this case." (11c).
+- **Entity Json Serializer** writes compact JSON, and a multi-select column as an array of values (`[100000000,100000002]`) instead of the type name `Microsoft.Xrm.Sdk.OptionSetValueCollection` (12).
 
 Anything else that differs is a regression to look at.
+
+### Results of the upgrade test (6 October 2026)
+
+The first run after the upgrade found a regression: a naming cleanup had changed the case of six arguments (`RecordURL`, `ParentRecordURL`, `MD5HashValue`, `SHA512HashValue`), so 01, 02, 08 and 12 failed with "Value for a required activity argument 'RecordUrl' was not supplied". The names are restored, and the unit test `EveryArgumentOfThePublishedVersionIsUnchanged` now checks every argument of 1.0.61.1. With the fix, 11 of 16 workflows give the same results as before the upgrade and the other 5 differ only as listed above.
