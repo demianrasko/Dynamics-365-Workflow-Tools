@@ -536,6 +536,10 @@ foreach ($leftover in Get-Records 'quotes' "`$select=quoteid&`$filter=_opportuni
 
 Remove-QualifiedRecords
 
+# 05 deletes the option it inserts, but a deleted option stays (without a label) until the table is published, and the
+# option set integration tests would count it
+Invoke-Api POST 'PublishXml' @{ ParameterXml = '<importexportxml><entities><entity>account</entity></entities></importexportxml>' } | Out-Null
+
 # ---- save ----------------------------------------------------------------------------------------------------------
 
 $folder = Join-Path $OutputFolder "$($runStarted.ToString('yyyy-MM-dd HHmm')) $Label"
