@@ -1,60 +1,28 @@
-﻿using Microsoft.Crm.Sdk.Messages;
+﻿// Not in the Power Platform build: it needs Dynamics 365 tables (lead, list or salesliterature).
+#if !POWERPLATFORM
 using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
-using System;
 using System.Activities;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceModel;
-using System.Text;
-using System.Threading.Tasks;
+
 namespace msdyncrmWorkflowTools.Class
 {
-    public class AddMarketingListToCampaign : CodeActivity
+    [ActivityName("Add Marketing List To Campaign")]
+    public class AddMarketingListToCampaign : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("Marketing List")]
-        [ReferenceTarget("list")]
+        [ReferenceTarget(EntityNames.List)]
         public InArgument<EntityReference> MarketingList { get; set; }
 
         [RequiredArgument]
         [Input("Marketing Campaign")]
-        [ReferenceTarget("campaign")]
+        [ReferenceTarget(EntityNames.Campaign)]
         public InArgument<EntityReference> Campaign { get; set; }
 
-
-
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Load CRM Service from context"
-
-            Common objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
-            #region "Read Parameters"
-            EntityReference marketingList = this.MarketingList.Get(executionContext);
-            objCommon.tracingService.Trace(String.Format("marketingList: {0} ", marketingList.Id.ToString()));
-
-            EntityReference campaign = this.Campaign.Get(executionContext);
-            objCommon.tracingService.Trace(String.Format("campaign: {0} ", campaign.Id.ToString()));
-
-
-            #endregion
-
-           
-            var request = new AddItemCampaignRequest
-            {
-                CampaignId = campaign.Id,
-                EntityId = marketingList.Id,
-                EntityName = "list",
-            };
-
-            objCommon.service.Execute(request);
-            
-
+            common.AddListToCampaign(MarketingList.Get(executionContext).Id, Campaign.Get(executionContext).Id);
         }
-        
     }
 }
+#endif

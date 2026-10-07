@@ -1,100 +1,53 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Activities;
-using Microsoft.Xrm.Sdk;
+﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
-using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk.Metadata.Query;
-using Microsoft.Xrm.Sdk.Query;
-using Microsoft.Xrm.Sdk.Messages;
-using Microsoft.Xrm.Sdk.Metadata;
-using msdyncrmWorkflowTools;
-using System.ServiceModel;
+using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
-
-
-    public class CountChildEntityRecords : CodeActivity
+    [ActivityName("Count Child Entity Records")]
+    public class CountChildEntityRecords : WorkflowActivityBase
     {
-        #region "Parameter Definition"
         [RequiredArgument]
         [Input("Child Entity Schema Name")]
         [Default("")]
-        public InArgument<String> ChildEntityName { get; set; }
+        public InArgument<string> ChildEntityName { get; set; }
 
         [RequiredArgument]
         [Input("Parent Lookup Field Name on Child")]
         [Default("")]
-        public InArgument<String> ParentLookupName { get; set; }
+        public InArgument<string> ParentLookupName { get; set; }
 
         [RequiredArgument]
         [Input("Record URL (Parent)")]
         [ReferenceTarget("")]
-        public InArgument<String> RecordURL { get; set; }
+        public InArgument<string> RecordURL { get; set; }
 
         [Input("FetchXML Filter (Child)")]
         [ReferenceTarget("")]
-        public InArgument<String> FilterExpressionXml { get; set; }
-
+        public InArgument<string> FilterExpressionXml { get; set; }
 
         [Output("Result")]
         public OutArgument<int> Result { get; set; }
-        #endregion
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
+            var childEntityName = ChildEntityName.Get(executionContext);
+            var parentLookupName = ParentLookupName.Get(executionContext);
+            var recordUrl = RecordURL.Get(executionContext);
+            common.Trace($"ChildEntityName={childEntityName}--ParentLookupName={parentLookupName}--RecordURL={recordUrl}");
 
-            #region "Load CRM Service from context"
-
-            Common objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
-            #region "Read Parameters"
-            String _childEntityName = this.ChildEntityName.Get(executionContext);
-            String _parentLookupName = this.ParentLookupName.Get(executionContext);
-            String _recordURL = this.RecordURL.Get(executionContext);
-            String _filterExpressionXml = this.FilterExpressionXml.Get(executionContext);
-            objCommon.tracingService.Trace("ChildEntityName=" + _childEntityName + "--ParentLookupName=" + _parentLookupName + "--RecordURL=" + _recordURL + "--FilterExpressionXml=" + _filterExpressionXml);
-            if (_recordURL == null || _recordURL == "")
+            if (string.IsNullOrEmpty(recordUrl))
             {
-                return;
+                throw new InvalidPluginExecutionException("Record URL (Parent) is required.");
             }
-            string[] urlParts = _recordURL.Split("?".ToArray());
-            string[] urlParams = urlParts[1].Split("&".ToCharArray());
-            string ParentObjectTypeCode = urlParams[0].Replace("etc=", "");
-            string ParenEntityName = objCommon.sGetEntityNameFromCode(ParentObjectTypeCode, objCommon.service);
-            string ParentEntityId = urlParams[1].Replace("id=", "");
-            objCommon.tracingService.Trace("ParentObjectTypeCode=" + ParentObjectTypeCode + "--ParentId=" + ParentEntityId);
-            #endregion
+            var parsedUrl = common.ParseRecordUrl(recordUrl);
 
+            common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
 
-            #region "Process"
+            var count = common.CountChildRecords(childEntityName, parentLookupName, parsedUrl.Id, FilterExpressionXml.Get(executionContext));
+            common.Trace($"{childEntityName} records with {parentLookupName} = {parsedUrl.Id}: {count}");
 
-            try
-            {
-                var fetchXml = @"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='true'>
-                                    <entity name='{0}'>
-                                    <filter type='and'>
-                                        <condition attribute='{1}' operator='eq' value='{2}' />
-                                        {3}
-                                        </filter>
-                                    </entity>
-                                </fetch>";
-                fetchXml = string.Format(fetchXml, _childEntityName, _parentLookupName, ParentEntityId, _filterExpressionXml);
-                objCommon.tracingService.Trace(String.Format("FetchXML: {0} ", fetchXml));
-                var results = objCommon.service.RetrieveMultiple(new FetchExpression(fetchXml));
-
-                this.Result.Set(executionContext, results.Entities.Count);
-            }
-            catch (FaultException<OrganizationServiceFault> ex)
-            {
-                throw ex;
-            }
-            #endregion
+            Result.Set(executionContext, count);
         }
     }
 }

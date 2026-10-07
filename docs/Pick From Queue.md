@@ -11,7 +11,7 @@ Then in the activity you can fill all the parameters:
 
 The Parameters are:
 * Source Queue: Select the source Queue where the items to be picked come from.
-* Remove Items From Source Queue: (yes/no) set if you want to remove the picked items from the source Queue  
-* Quantity Items: quantity of records to be picked from the source Queue. 
+* Remove Items From Source Queue: (yes/no) set if you want to remove the picked items from the source Queue.
+* Quantity Items: Quantity of records to be picked from the source Queue. 
 
 Note: The Picking order is defined by the field "enteredon" on descending order.

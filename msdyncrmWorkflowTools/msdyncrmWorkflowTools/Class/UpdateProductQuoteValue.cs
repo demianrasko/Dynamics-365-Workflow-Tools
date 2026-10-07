@@ -1,57 +1,39 @@
-﻿using Microsoft.Xrm.Sdk;
+﻿// Not in the Power Platform build: it needs Dynamics 365 tables (quotedetail).
+#if !POWERPLATFORM
+using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
-using System;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
-    public class UpdateProductQuoteValue : CodeActivity
+    [ActivityName("Update Product Quote Value")]
+    public class UpdateProductQuoteValue : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("Quote Product")]
-        [ReferenceTarget("quotedetail")]
+        [ReferenceTarget(EntityNames.QuoteDetail)]
         public InArgument<EntityReference> Quote { get; set; }
 
         [RequiredArgument]
         [Input("Discount Amount")]
         public InArgument<decimal> Discountamount { get; set; }
-        
-        //"manualdiscountamount"
+
         [RequiredArgument]
         [Input("Field name to update (manualdiscountamount)")]
         public InArgument<string> Fieldname { get; set; }
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Load CRM Service from context"
+            var record = Quote.Get(executionContext);
+            var fieldName = Fieldname.Get(executionContext);
 
-            Common objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
-            #region "Read Parameters"
-            EntityReference quote = this.Quote.Get(executionContext);
-            objCommon.tracingService.Trace(String.Format("quotedetail: {0} ", quote.Id.ToString()));
-
-            decimal discountamount = this.Discountamount.Get(executionContext);
-            objCommon.tracingService.Trace(String.Format("Discountamount: {0} ", discountamount.ToString()));
-
-            string fieldname = this.Fieldname.Get(executionContext);
-            objCommon.tracingService.Trace(String.Format("Fieldname: {0} ", fieldname.ToString()));
-
-            #endregion  
-
-            Entity quoteEnt = new Entity(quote.LogicalName, quote.Id);
-            if (quoteEnt.Attributes.Contains(fieldname))
+            if (record == null || string.IsNullOrEmpty(fieldName))
             {
-                quoteEnt.Attributes.Add(fieldname, new Money(discountamount));
-            }
-            else
-            {
-                quoteEnt.Attributes[fieldname] = new Money(discountamount);
+                throw new InvalidPluginExecutionException("Quote Product and Field name are required.");
             }
 
-            objCommon.service.Update(quoteEnt);
+            common.SetMoney(record, fieldName, Discountamount.Get(executionContext));
         }
     }
 }
+#endif

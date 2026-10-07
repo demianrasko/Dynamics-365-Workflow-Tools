@@ -1,60 +1,32 @@
-﻿using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Query;
-using Microsoft.Xrm.Sdk.Workflow;
-using System;
+﻿using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace msdyncrmWorkflowTools
 {
-    public class JsonParser : CodeActivity
+    [ActivityName("JSON Parser")]
+    public class JsonParser : WorkflowActivityBase
     {
-        #region "Parameter Definition"
         [RequiredArgument]
         [Input("JSON")]
         [Default("")]
-        public InArgument<String> JSON { get; set; }
+        public InArgument<string> JSON { get; set; }
 
         [RequiredArgument]
         [Input("JSON Path")]
         [Default("")]
         public InArgument<string> JSONPath { get; set; }
 
-
-      
         [Output("JSON Result")]
-        public OutArgument<String> JSONResult { get; set; }
-        
-        #endregion
+        public OutArgument<string> JSONResult { get; set; }
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
+            var json = JSON.Get(executionContext);
+            var jsonPath = JSONPath.Get(executionContext);
 
-            #region "Load CRM Service from context"
+            var res = Utility.JsonParser(json, jsonPath) ?? string.Empty;
 
-            Common objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
-            #region "Read Parameters"
-            String json = this.JSON.Get(executionContext);
-            String jsonPath = this.JSONPath.Get(executionContext);
-
-            #endregion
-
-           
-            msdyncrmWorkflowTools_Class commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
-            string res=commonClass.JsonParser(json, jsonPath);
-
-            if (res == null) res = "";
-
-            this.JSONResult.Set(executionContext, res);
-            
+            JSONResult.Set(executionContext, res);
         }
     }
 }

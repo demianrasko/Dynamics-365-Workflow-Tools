@@ -1,19 +1,12 @@
-using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Query;
+﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
-using System;
 using System.Activities;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace msdyncrmWorkflowTools
 {
-    public class SetLookupFieldFromRecordUrl : CodeActivity
+    [ActivityName("Set Lookup Field From Record URL")]
+    public class SetLookupFieldFromRecordUrl : WorkflowActivityBase
     {
-
         [RequiredArgument]
         [Input("Record URL")]
         public InArgument<string> RecordUrl { get; set; }
@@ -22,50 +15,27 @@ namespace msdyncrmWorkflowTools
         [Input("Lookup Field Name")]
         public InArgument<string> LookupFieldName { get; set; }
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
+            var recordUrl = RecordUrl.Get(executionContext);
 
-            #region "Load CRM Service from context"
-            Common objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            IWorkflowContext workflowContext = executionContext.GetExtension<IWorkflowContext>();
-            #endregion
-
-            #region "Read Parameters"
-            string recordUrl = RecordUrl.Get(executionContext);
-            string lookupFieldName = LookupFieldName.Get(executionContext);
-            objCommon.tracingService.Trace("Inputs -- RecordUrl: " + recordUrl + " | LookupFieldName: " + lookupFieldName);
-            #endregion "Read Parameters"
-
-            #region "Set Lookup Value from Record URL"
-            try
+            if (string.IsNullOrEmpty(recordUrl))
             {
-                // Get the entity reference using the URL Parser
-                DynamicUrlParser urlParser = new DynamicUrlParser(recordUrl);
-                EntityReference entityRef = urlParser.ToEntityReference(objCommon.service);
-
-                // Get details of the primary entity in the workflow context
-                string primaryEntityName = workflowContext.PrimaryEntityName;
-                Guid primaryEntityId = workflowContext.PrimaryEntityId;
-
-                // Retrieve the current record with the lookup field
-                ColumnSet columns = new ColumnSet(new string[] { lookupFieldName });
-                Entity recordToUpdate = objCommon.service.Retrieve(primaryEntityName, primaryEntityId, columns);
-                objCommon.tracingService.Trace("PrimaryEntityName: " + primaryEntityName + " | PrimaryEntityId: " + primaryEntityId);
-
-                // Set the lookup field to our entity ref
-                recordToUpdate[lookupFieldName] = entityRef;
-
-                // Update the record
-                objCommon.service.Update(recordToUpdate);
+                throw new InvalidPluginExecutionException("Record URL is required.");
             }
-            catch (Exception e)
+
+            var lookupFieldName = LookupFieldName.Get(executionContext);
+
+            if (string.IsNullOrEmpty(lookupFieldName))
             {
-
-                throw new InvalidPluginExecutionException("Error updating lookup field. " + e.ToString());
+                throw new InvalidPluginExecutionException("Lookup Field Name is required.");
             }
-            #endregion "Set Lookup Value from Record URL"
 
+            // the record the URL points at becomes the lookup value on the workflow's primary record
+            common.SetLookup(
+                new EntityReference(common.Context.PrimaryEntityName, common.Context.PrimaryEntityId),
+                lookupFieldName,
+                common.GetRecordReference(recordUrl));
         }
     }
 }

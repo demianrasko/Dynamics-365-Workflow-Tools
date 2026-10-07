@@ -1,21 +1,15 @@
-﻿using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Query;
+﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
-using System;
 using System.Activities;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceModel;
-using System.Text;
-using System.Threading.Tasks;
+
 namespace msdyncrmWorkflowTools.Class
 {
-    public class SendEmailFromTemplateToUsersInRole : CodeActivity
+    [ActivityName("Send Email From Template To Users In Role")]
+    public class SendEmailFromTemplateToUsersInRole : WorkflowActivityBase
     {
         [Input("Security Role")]
         [RequiredArgument]
-        [ReferenceTarget("role")]
+        [ReferenceTarget(EntityNames.Role)]
         public InArgument<EntityReference> SecurityRoleLookup
         {
             get;
@@ -24,40 +18,22 @@ namespace msdyncrmWorkflowTools.Class
 
         [Input("Email Template")]
         [RequiredArgument]
-        [ReferenceTarget("template")]
+        [ReferenceTarget(EntityNames.Template)]
         public InArgument<EntityReference> EmailTemplateLookup
         {
             get;
             set;
         }
 
-
-
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Load CRM Service from context"
+            var securityRoleLookup = SecurityRoleLookup.Get(executionContext);
+            common.Trace($"marketingList: {securityRoleLookup.Id.ToString()} ");
 
-            Common objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
+            var emailTemplateLookup = EmailTemplateLookup.Get(executionContext);
+            common.Trace($"campaign: {emailTemplateLookup.Id.ToString()} ");
 
-            #region "Read Parameters"
-            EntityReference securityRoleLookup = this.SecurityRoleLookup.Get(executionContext);
-            objCommon.tracingService.Trace(String.Format("marketingList: {0} ", securityRoleLookup.Id.ToString()));
-
-            EntityReference emailTemplateLookup = this.EmailTemplateLookup.Get(executionContext);
-            objCommon.tracingService.Trace(String.Format("campaign: {0} ", emailTemplateLookup.Id.ToString()));
-
-
-            #endregion
-            objCommon.tracingService.Trace("Init");
-
-            msdyncrmWorkflowTools_Class commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
-            commonClass.SendEmailFromTemplateToUsersInRole(securityRoleLookup,emailTemplateLookup);
-
-
+            common.SendEmailFromTemplateToUsersInRole(securityRoleLookup, emailTemplateLookup);
         }
-
-
     }
 }

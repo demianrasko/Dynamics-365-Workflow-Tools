@@ -1,44 +1,28 @@
-﻿using Microsoft.Crm.Sdk.Messages;
+﻿// Not in the Power Platform build: it needs Dynamics 365 tables (quote).
+#if !POWERPLATFORM
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
-using System;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
-    public class WinQuote : CodeActivity
+    [ActivityName("Win Quote")]
+    public class WinQuote : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("Quote")]
-        [ReferenceTarget("quote")]
+        [ReferenceTarget(EntityNames.Quote)]
         public InArgument<EntityReference> Quote { get; set; }
 
         [Input("Message")]
         public InArgument<string> Message { get; set; }
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Load CRM Service from context"
+            var quote = Quote.Get(executionContext) ?? throw new InvalidPluginExecutionException("Quote is required.");
 
-            Common objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
-            #region "Read Parameters"
-            EntityReference quote = this.Quote.Get(executionContext);
-            objCommon.tracingService.Trace(String.Format("quote: {0} ", quote.Id.ToString()));
-
-            string message = this.Message.Get(executionContext);
-            objCommon.tracingService.Trace(String.Format("Discountamount: {0} ", message.ToString()));
-            #endregion
-
-            Entity quoteclose = new Entity("quoteclose");
-            WinQuoteRequest winQuoteRequest = new WinQuoteRequest();
-            quoteclose.Attributes.Add("subject", message);
-            quoteclose.Attributes.Add("quoteid", quote);
-            winQuoteRequest.QuoteClose = quoteclose;
-            winQuoteRequest.Status = new OptionSetValue(-1);
-            objCommon.service.Execute(winQuoteRequest);
+            common.WinQuote(quote, Message.Get(executionContext));
         }
     }
 }
+#endif

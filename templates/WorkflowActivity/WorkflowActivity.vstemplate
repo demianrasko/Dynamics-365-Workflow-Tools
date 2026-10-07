@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005">
+  <TemplateData>
+    <Name>Workflow Tools Activity</Name>
+    <Description>A custom workflow activity in the Dynamics 365 Workflow Tools format.</Description>
+    <ProjectType>CSharp</ProjectType>
+    <DefaultName>NewActivity.cs</DefaultName>
+  </TemplateData>
+  <TemplateContent>
+    <ProjectItem ReplaceParameters="true" TargetFileName="$fileinputname$.cs">Activity.cs</ProjectItem>
+  </TemplateContent>
+</VSTemplate>

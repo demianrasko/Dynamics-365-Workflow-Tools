@@ -1,47 +1,29 @@
-﻿using Microsoft.Crm.Sdk.Messages;
+﻿// Not in the Power Platform build: it needs Dynamics 365 tables (opportunity and quote).
+#if !POWERPLATFORM
 using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
-using System;
 using System.Activities;
 
 namespace msdyncrmWorkflowTools
 {
-    public class CreateQuoteFromOpportunity : CodeActivity
+    [ActivityName("Create Quote From Opportunity")]
+    public class CreateQuoteFromOpportunity : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("Opportunity")]
-        [ReferenceTarget("opportunity")]
+        [ReferenceTarget(EntityNames.Opportunity)]
         public InArgument<EntityReference> Opportunity { get; set; }
 
         [Output("Quote")]
-        [ReferenceTarget("quote")]
+        [ReferenceTarget(EntityNames.Quote)]
         public OutArgument<EntityReference> Quote { get; set; }
 
-
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Load CRM Service from context"
+            var opportunity = Opportunity.Get(executionContext) ?? throw new InvalidPluginExecutionException("Opportunity is required.");
 
-            Common objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
-            #region "Read Parameters"
-            EntityReference opportunity = this.Opportunity.Get(executionContext);
-            #endregion
-            // Convert the opportunity to a quote
-
-            var genQuoteFromOppRequest = new GenerateQuoteFromOpportunityRequest
-            {
-                OpportunityId = opportunity.Id,
-                ColumnSet = new ColumnSet("quoteid", "name")
-            };
-            var genQuoteFromOppResponse = (GenerateQuoteFromOpportunityResponse)objCommon.service.Execute(genQuoteFromOppRequest);
-            Entity quote = genQuoteFromOppResponse.Entity;
-            EntityReference _quote = new EntityReference(quote.LogicalName, quote.Id);
-
-            this.Quote.Set(executionContext, _quote);
+            Quote.Set(executionContext, common.CreateQuoteFromOpportunity(opportunity.Id));
         }
     }
 }
+#endif

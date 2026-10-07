@@ -1,60 +1,40 @@
-﻿using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Query;
+﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
-using System;
 using System.Activities;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace msdyncrmWorkflowTools
 {
-    public class ExecuteWorkflowForRecordsinQuery : CodeActivity
+    [ActivityName("Execute Workflow For Records In Query")]
+    public class ExecuteWorkflowForRecordsinQuery : WorkflowActivityBase
     {
         [Input("Process")]
-        [ReferenceTarget("workflow")]
+        [ReferenceTarget(EntityNames.Workflow)]
         public InArgument<EntityReference> Process { get; set; }
-
 
         [Input("Query")]
         public InArgument<string> Query { get; set; }
 
-
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Load CRM Service from context"
+            var query = Query.Get(executionContext);
+            var process = Process.Get(executionContext);
 
-            Common objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
-            #region "Read Parameters"
-            String query = this.Query.Get(executionContext);
-            EntityReference process = this.Process.Get(executionContext);
-            #endregion
-
-            #region "SetProcess Execution"
-            EntityCollection entityCollection = new EntityCollection();
-            RunQuery(objCommon.service, query, ref entityCollection);
-            foreach (Entity ent in entityCollection.Entities)
+            if (string.IsNullOrEmpty(query))
             {
-                ExecuteWorkflowRequest wfRequest = new ExecuteWorkflowRequest();
-                wfRequest.EntityId = ent.Id;
-                wfRequest.WorkflowId = process.Id;
-                ExecuteWorkflowResponse wfResponse = (ExecuteWorkflowResponse)objCommon.service.Execute(wfRequest);
+                common.Trace("No query: nothing to run.");
+                return;
             }
-            #endregion
 
-        }
-        public bool RunQuery(IOrganizationService service, string fetchXML, ref EntityCollection result)
-        {
-            if (!string.IsNullOrEmpty(fetchXML))
+            if (process == null)
             {
-                result = service.RetrieveMultiple((QueryBase)new FetchExpression(fetchXML));
-                if (result != null && ((IEnumerable<Entity>)result.Entities).Any<Entity>())
-                    return true;
+                throw new InvalidPluginExecutionException("Process is required when a Query is given.");
             }
-            return false;
+
+            // the user's FetchXML, paged through every record
+            var recordIds = common.RetrieveAllIds(common.FetchXmlToQueryExpression(query));
+            common.Trace($"Running process {process.Id} for {recordIds.Count} records");
+
+            common.ExecuteWorkflow(process.Id, recordIds);
         }
     }
 }

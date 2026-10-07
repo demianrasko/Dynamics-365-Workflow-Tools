@@ -11,7 +11,7 @@ Then in the activity you can fill all the parameters:
 
 The Parameters are:
 * Main Record URL: The URL of the Record that contains the source Attachments
-* File Name: Name of the file you want to find (multiple). You can use "*" to search other files. All the finded files will be added to the Email
+* File Name: Name of the file you want to find. Use "*" as a wildcard (e.g. "*.pdf"), and separate several names with ";" to match any of them (e.g. "*.pdf;*.docx"). Leave it empty or "*" for all files. All the files found are added to the Email
 * Email: Email record to add all the Attachments. 
 * Retrieve ActivityMimeAttachment: false=retrieve attachments from related notes. true=retrieve attachments from ActivityMimeAttachment (for appointments and emails)
 * Select Most Recent Disctinc Files: Added option to only select the Most Recent file by distinct file name.

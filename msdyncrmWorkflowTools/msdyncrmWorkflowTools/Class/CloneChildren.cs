@@ -1,13 +1,7 @@
 ﻿using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Messages;
-using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
-using System;
 using System.Activities;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace msdyncrmWorkflowTools
 {
@@ -21,126 +15,94 @@ namespace msdyncrmWorkflowTools
     /// Note: "Old Parent Field" is optional if the new parent relationship is with the same entity / lookup field
     /// 
     /// </summary>
-    public class CloneChildren : CodeActivity
+    [ActivityName("Clone Children")]
+    public class CloneChildren : WorkflowActivityBase
     {
-        #region "Parameter Definition"
-
         [RequiredArgument]
         [Input("Source Record URL")]
         [ReferenceTarget("")]
-        public InArgument<String> SourceRecordUrl { get; set; }
+        public InArgument<string> SourceRecordUrl { get; set; }
 
         [RequiredArgument]
         [Input("Target Record URL")]
         [ReferenceTarget("")]
-        public InArgument<String> TargetRecordUrl { get; set; }
+        public InArgument<string> TargetRecordUrl { get; set; }
 
         [RequiredArgument]
         [Input("Relationship Name")]
         [ReferenceTarget("")]
-        public InArgument<String> RelationshipName { get; set; }
+        public InArgument<string> RelationshipName { get; set; }
 
         [RequiredArgument]
         [Input("New Parent Field Name")]
         [ReferenceTarget("")]
-        public InArgument<String> NewParentFieldNameToUpdate { get; set; }
+        public InArgument<string> NewParentFieldNameToUpdate { get; set; }
 
         [Input("Old Parent Field Name")]
         [ReferenceTarget("")]
-        public InArgument<String> OldParentFieldNameToUpdate { get; set; }
+        public InArgument<string> OldParentFieldNameToUpdate { get; set; }
 
         [Input("Prefix")]
         [Default("")]
-        public InArgument<String> Prefix { get; set; }
+        public InArgument<string> Prefix { get; set; }
 
         [Input("Fields to Ignore")]
         [Default("")]
-        public InArgument<String> FieldstoIgnore { get; set; }
+        public InArgument<string> FieldstoIgnore { get; set; }
 
-        #endregion
-
-
-
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Load CRM Service from context"
-
-            Common objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
-            #region "Read Parameters"
-
-            String _relationshipName = this.RelationshipName.Get(executionContext);
-            if (_relationshipName == null || _relationshipName == "")
+            var relationshipName = RelationshipName.Get(executionContext);
+            if (string.IsNullOrEmpty(relationshipName))
             {
-                return;
+                throw new InvalidPluginExecutionException("Relationship Name is required.");
             }
 
-            String _newParentFieldName = this.NewParentFieldNameToUpdate.Get(executionContext);
-            if (_newParentFieldName == null || _newParentFieldName == "")
+            var newParentFieldName = NewParentFieldNameToUpdate.Get(executionContext);
+            if (string.IsNullOrEmpty(newParentFieldName))
             {
-                return;
+                throw new InvalidPluginExecutionException("New Parent Field Name is required.");
             }
 
-            String _source = this.SourceRecordUrl.Get(executionContext);
-            if (_source == null || _source == "")
+            var source = SourceRecordUrl.Get(executionContext);
+            if (string.IsNullOrEmpty(source))
             {
-                return;
+                throw new InvalidPluginExecutionException("Source Record URL is required.");
             }
 
-            string[] urlParts = _source.Split("?".ToArray());
-            string[] urlParams = urlParts[1].Split("&".ToCharArray());
-            string parentObjectTypeCode = urlParams[0].Replace("etc=", "");
-            string parentEntityName = objCommon.sGetEntityNameFromCode(parentObjectTypeCode, objCommon.service);
-            string parentId = urlParams[1].Replace("id=", "");
-            objCommon.tracingService.Trace("ObjectTypeCode=" + parentObjectTypeCode + "--ParentId=" + parentId);
+            var parsedUrl = common.ParseRecordUrl(source);
+            common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
 
-            String _destination = this.TargetRecordUrl.Get(executionContext);
-            if (_destination == null || _destination == "")
+            var destination = TargetRecordUrl.Get(executionContext);
+            if (string.IsNullOrEmpty(destination))
             {
-                return;
+                throw new InvalidPluginExecutionException("Target Record URL is required.");
             }
-            string[] destinationUrlParts = _destination.Split("?".ToArray());
-            string[] destinationUrlParams = destinationUrlParts[1].Split("&".ToCharArray());
-            string destinationObjectTypeCode = destinationUrlParams[0].Replace("etc=", "");
-            string destinationEntityName = objCommon.sGetEntityNameFromCode(destinationObjectTypeCode, objCommon.service);
-            string destinationId = destinationUrlParams[1].Replace("id=", "");
-            objCommon.tracingService.Trace("ObjectTypeCode=" + destinationObjectTypeCode + "--ParentId=" + destinationId);
-
+            var parsedDestinationUrl = common.ParseRecordUrl(destination);
+            common.Trace($"EntityName={parsedDestinationUrl.EntityName}--Id={parsedDestinationUrl.Id}");
 
             //Optional
-            String _oldParentFieldName = this.OldParentFieldNameToUpdate.Get(executionContext);
-            string prefix = this.Prefix.Get(executionContext);
-            string fieldstoIgnore = this.FieldstoIgnore.Get(executionContext);
+            var oldParentFieldName = OldParentFieldNameToUpdate.Get(executionContext);
+            var prefix = Prefix.Get(executionContext);
+            var fieldsToIgnore = FieldstoIgnore.Get(executionContext);
 
-            #endregion
+            // the new parent is set when each copy is created, so a locked parent (e.g. an invoiced order) is never touched
+            var fieldsToReplace = new Dictionary<string, object>
+            {
+                [newParentFieldName] = parsedDestinationUrl.ToEntityReference()
+            };
 
-            var tools = new msdyncrmWorkflowTools_Class(objCommon.service);
+            if (!string.IsNullOrEmpty(oldParentFieldName) && oldParentFieldName != newParentFieldName)
+            {
+                fieldsToReplace[oldParentFieldName] = null;
+            }
 
-            var children = tools.GetChildRecords(_relationshipName, parentId);
-             
+            var children = common.GetChildRecords(relationshipName, parsedUrl.Id);
+
             foreach (var item in children.Entities)
             {
-                var newRecordId = objCommon.CloneRecord(item.LogicalName, item.Id.ToString(), fieldstoIgnore, prefix);
-
-                Entity update = new Entity(item.LogicalName);
-                update.Id = newRecordId;
-                update.Attributes.Add(_newParentFieldName, new EntityReference(destinationEntityName, new Guid(destinationId)));
-                if (!string.IsNullOrEmpty(_oldParentFieldName) && _oldParentFieldName != _newParentFieldName)
-                {
-                    update.Attributes.Add(_oldParentFieldName, null);
-                }
-
-                objCommon.service.Update(update);
-
+                common.CloneRecord(item.LogicalName, item.Id, fieldsToIgnore, prefix, fieldsToReplace);
             }
-            
-
         }
-
-
-
     }
-
 }

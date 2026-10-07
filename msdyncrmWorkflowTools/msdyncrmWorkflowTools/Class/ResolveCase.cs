@@ -1,26 +1,17 @@
-﻿using Microsoft.Crm.Sdk.Messages;
+﻿// Not in the Power Platform build: it needs Dynamics 365 tables (incident).
+#if !POWERPLATFORM
 using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
-using System;
 using System.Activities;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace msdyncrmWorkflowTools.Class
 {
-
-    public class ResolveCase : CodeActivity
+    [ActivityName("Resolve Case")]
+    public class ResolveCase : WorkflowActivityBase
     {
-
-        #region "Parameter Definition"
-
         [RequiredArgument]
         [Input("Case")]
-        [ReferenceTarget("incident")]
+        [ReferenceTarget(EntityNames.Incident)]
         public InArgument<EntityReference> Incident { get; set; }
 
         [Input("Case Resolution")]
@@ -29,39 +20,12 @@ namespace msdyncrmWorkflowTools.Class
         [Input("Resolution Description")]
         public InArgument<string> ResolutionDescription { get; set; }
 
-        #endregion
-
-
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
+            var incident = Incident.Get(executionContext) ?? throw new InvalidPluginExecutionException("Case is required.");
 
-            #region "Load CRM Service from context"
-
-            Common objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
-            #region "Read Parameters"
-            EntityReference incident = this.Incident.Get(executionContext);
-            string subject = this.IncidentResolution.Get<string>(executionContext);
-            string description = this.ResolutionDescription.Get<string>(executionContext);
-
-            objCommon.tracingService.Trace(String.Format("IncidentID: {0} - Description: {1} - Subject: {2}", incident.Id.ToString(), description, subject));
-
-            #endregion
-
-            Entity incidentResolution = new Entity("incidentresolution");
-            incidentResolution.Attributes.Add("incidentid", new EntityReference("incident", incident.Id));
-            incidentResolution.Attributes.Add("subject", subject);
-            incidentResolution.Attributes.Add("description", description);
-
-            CloseIncidentRequest closeIncidentRequest = new CloseIncidentRequest
-            {
-                IncidentResolution = incidentResolution,
-                Status = new OptionSetValue(5)
-            };
-
-            objCommon.service.Execute(closeIncidentRequest);
+            common.ResolveCase(incident.Id, IncidentResolution.Get(executionContext), ResolutionDescription.Get(executionContext));
         }
     }
 }
+#endif

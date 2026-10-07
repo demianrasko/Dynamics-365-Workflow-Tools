@@ -1,24 +1,15 @@
-﻿using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Query;
-using Microsoft.Xrm.Sdk.Workflow;
-using System;
+﻿using Microsoft.Xrm.Sdk.Workflow;
 using System.Activities;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace msdyncrmWorkflowTools
 {
-    public class TranslateText : CodeActivity
+    [ActivityName("Translate Text")]
+    public class TranslateText : WorkflowActivityBase
     {
-        #region "Parameter Definition"
         [RequiredArgument]
         [Input("Text To Translate")]
         [Default("")]
-        public InArgument<String> TextToTranslate { get; set; }
+        public InArgument<string> TextToTranslate { get; set; }
 
         [RequiredArgument]
         [Input("Language")]
@@ -30,36 +21,23 @@ namespace msdyncrmWorkflowTools
         [Default("")]
         public InArgument<string> Authenticationkey { get; set; }
 
+        [Input("Region")]
+        [Default("")]
+        public InArgument<string> Region { get; set; }
 
         [Output("Translated Text")]
-        public OutArgument<String> TranslatedText { get; set; }
-        
-        #endregion
+        public OutArgument<string> TranslatedText { get; set; }
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
+            var textToTranslate = TextToTranslate.Get(executionContext);
+            var language = Language.Get(executionContext);
+            var authenticationKey = Authenticationkey.Get(executionContext);
+            var region = Region.Get(executionContext);
 
-            #region "Load CRM Service from context"
+            var res=Utility.TranslateText(textToTranslate, language, authenticationKey, region, common.TracingService) ?? string.Empty;
 
-            Common objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
-            #region "Read Parameters"
-            String _TextToTranslate = this.TextToTranslate.Get(executionContext);
-            String _Language = this.Language.Get(executionContext);
-            String _Authenticationkey = this.Authenticationkey.Get(executionContext);
-
-            #endregion
-
-
-            msdyncrmWorkflowTools_Class commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
-            string res=commonClass.TranslateText(_TextToTranslate, _Language, _Authenticationkey);
-
-            if (res == null) res = "";
-
-            this.TranslatedText.Set(executionContext, res);
-            
+            TranslatedText.Set(executionContext, res);
         }
     }
 }

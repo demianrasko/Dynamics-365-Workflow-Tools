@@ -1,23 +1,15 @@
-﻿using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Query;
+﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
-using System;
 using System.Activities;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace msdyncrmWorkflowTools
 {
-    public class SetUserSettings : CodeActivity
+    [ActivityName("Set User Settings")]
+    public class SetUserSettings : WorkflowActivityBase
     {
-
-
         [RequiredArgument]
         [Input("User")]
-        [ReferenceTarget("systemuser")]
+        [ReferenceTarget(EntityNames.SystemUser)]
         public InArgument<EntityReference> User { get; set; }
 
         [RequiredArgument]
@@ -50,83 +42,35 @@ namespace msdyncrmWorkflowTools
         public InArgument<int> UILanguageId { get; set; }
         //Specify Unique identifier of the language in which to view the user interface (UI). 0 for ignore
 
-
+        //Specify the default calendar view: 0: day, 1: week, 2: month. -1 for ignore
         [RequiredArgument]
         [Input("DefaultCalendarView")]
-        [Default("0")]
+        [Default("-1")]
         public InArgument<int> DefaultCalendarView { get; set; }
- //specify the default calendar view values: Day
-        /*
-0: Show the day by default.
-2: Show the month by default.
-1: Show the week by default
-            */
-
 
         [RequiredArgument]
         [Input("IsSendAsAllowed")]
         [Default("false")]
         public InArgument<bool> IsSendAsAllowed { get; set; }
-        
-       
 
+        //Yes to ignore IsSendAsAllowed. Steps saved before this input existed read No, so they still write it.
+        // Checked by the upgrade test (testing\Upgrade test workflows.md): a step saved on 1.0.61.1 still writes
+        // IsSendAsAllowed and the calendar view after the upgrade, and the designer opens it.
+        [Input("Leave IsSendAsAllowed Unchanged")]
+        [Default("True")]
+        public InArgument<bool> LeaveIsSendAsAllowedUnchanged { get; set; }
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-
-            #region "Load CRM Service from context"
-
-            Common objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
-            #region "Read Parameters"
-
-            EntityReference userReference = this.User.Get(executionContext);
-            int pagingLimit = this.PagingLimit.Get(executionContext);
-            int advancedFindStartupMode = this.AdvancedFindStartupMode.Get(executionContext);
-            int timeZoneCode = this.TimeZoneCode.Get(executionContext);
-            int helpLanguageId = this.HelpLanguageId.Get(executionContext);
-            int uiLanguageId = this.UILanguageId.Get(executionContext);
-            int defaultCalendarView = this.DefaultCalendarView.Get(executionContext);
-            bool isSendAsAllowed = this.IsSendAsAllowed.Get(executionContext);
-            
-
-            objCommon.tracingService.Trace(String.Format("UserID: {0} ", userReference.Id.ToString()));
-            #endregion
-
-            Entity newSettings = new Entity("usersettings");
-            newSettings.Attributes.Add("systemuserid", userReference.Id);
-            if (pagingLimit != 0)
-            {
-                newSettings.Attributes.Add("paginglimit", pagingLimit);
-            }
-            if (advancedFindStartupMode == 1 || advancedFindStartupMode == 2)
-            {
-                newSettings.Attributes.Add("advancedfindstartupmode", advancedFindStartupMode);
-            }
-            if (timeZoneCode != 0)
-            {
-                newSettings.Attributes.Add("timezonecode", timeZoneCode);
-            }
-            if (helpLanguageId != 0)
-            {
-                newSettings.Attributes.Add("helplanguageid", helpLanguageId);
-            }
-            if (uiLanguageId != 0)
-            {
-                newSettings.Attributes.Add("uilanguageid", uiLanguageId);
-            }
-            if (defaultCalendarView == 0 || defaultCalendarView == 1 || defaultCalendarView == 2)
-            {
-                newSettings.Attributes.Add("defaultcalendarview", defaultCalendarView);
-            }
-            newSettings.Attributes.Add("issendasallowed", isSendAsAllowed);
-            
-
-            objCommon.service.Update(newSettings);
-
-
+            common.SetUserSettings(
+                User.Get(executionContext).Id,
+                PagingLimit.Get(executionContext),
+                AdvancedFindStartupMode.Get(executionContext),
+                TimeZoneCode.Get(executionContext),
+                HelpLanguageId.Get(executionContext),
+                UILanguageId.Get(executionContext),
+                DefaultCalendarView.Get(executionContext),
+                LeaveIsSendAsAllowedUnchanged.Get(executionContext) ? (bool?)null : IsSendAsAllowed.Get(executionContext));
         }
     }
 }

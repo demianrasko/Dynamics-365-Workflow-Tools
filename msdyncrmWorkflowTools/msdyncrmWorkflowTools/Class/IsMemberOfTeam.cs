@@ -1,64 +1,33 @@
-﻿using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Query;
+﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
-using System;
 using System.Activities;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Microsoft.Xrm.Sdk.Discovery;
-using Microsoft.Xrm.Sdk.Messages;
-using Microsoft.Xrm.Sdk.Client;
-
-
 
 namespace msdyncrmWorkflowTools.Class
 {
-    public class IsMemberOfTeam : CodeActivity
+    [ActivityName("Is Member Of Team")]
+    public class IsMemberOfTeam : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("User")]
-        [ReferenceTarget("systemuser")]
+        [ReferenceTarget(EntityNames.SystemUser)]
         public InArgument<EntityReference> User { get; set; }
 
         [RequiredArgument]
         [Input("Team")]
-        [ReferenceTarget("team")]
+        [ReferenceTarget(EntityNames.Team)]
         public InArgument<EntityReference> Team { get; set; }
 
         [Output("Result")]
         public OutArgument<bool> Result { get; set; }
-        protected override void Execute(CodeActivityContext executionContext)
+
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Load CRM Service from context"
+            var user = User.Get(executionContext);
+            var team = Team.Get(executionContext);
 
-            Common objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
+            var isMember = common.IsMemberOfTeam(team.Id, user.Id);
 
-            #region "Read Parameters"
-
-           
-            EntityReference user = this.User.Get(executionContext);
-            EntityReference team = this.Team.Get(executionContext);
-
-            #endregion
-
-            #region "Is user member of team"
-
-            msdyncrmWorkflowTools_Class commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
-
-            var isMember = commonClass.IsMemberOfTeam(team.Id, user.Id);
-
-            this.Result.Set(executionContext, isMember);
-            
-            #endregion
-
-
-
+            Result.Set(executionContext, isMember);
         }
     }
 }

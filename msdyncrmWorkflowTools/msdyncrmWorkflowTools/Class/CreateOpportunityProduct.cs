@@ -1,56 +1,49 @@
-﻿using Microsoft.Xrm.Sdk;
+﻿// Not in the Power Platform build: it needs Dynamics 365 tables (opportunity, product and uom).
+#if !POWERPLATFORM
+using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
-using System;
 using System.Activities;
-
 
 namespace msdyncrmWorkflowTools
 {
-    public class CreateOpportunityProduct : CodeActivity
+    [ActivityName("Create Opportunity Product")]
+    public class CreateOpportunityProduct : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("Opportunity")]
-        [ReferenceTarget("opportunity")]
+        [ReferenceTarget(EntityNames.Opportunity)]
         public InArgument<EntityReference> Opportunity { get; set; }
 
         [RequiredArgument]
         [Input("Existing Product")]
-        [ReferenceTarget("product")]
+        [ReferenceTarget(EntityNames.Product)]
         public InArgument<EntityReference> ExistingProduct { get; set; }
 
         [RequiredArgument]
         [Input("Unit")]
-        [ReferenceTarget("uom")]
+        [ReferenceTarget(EntityNames.Uom)]
         public InArgument<EntityReference> UoM { get; set; }
 
         [RequiredArgument]
         [Input("Quantity")]
         public InArgument<decimal> Quantity { get; set; }
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Load CRM Service from context"
+            var opportunity = Opportunity.Get(executionContext);
+            var existingProduct = ExistingProduct.Get(executionContext);
+            var uom = UoM.Get(executionContext);
+            var quantity = Quantity.Get(executionContext);
 
-            Common objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
+            if (opportunity == null || existingProduct == null || uom == null)
+            {
+                throw new InvalidPluginExecutionException("Opportunity, Existing Product and Unit are required.");
+            }
 
+            var id = common.CreateOpportunityProduct(opportunity, existingProduct, uom, quantity);
 
-            EntityReference opportunity = this.Opportunity.Get(executionContext);
-            EntityReference existingProduct = this.ExistingProduct.Get(executionContext);
-            EntityReference uom = this.UoM.Get(executionContext);
-            decimal quantity = this.Quantity.Get(executionContext);
-
-            // Create an opportunity product 
-            Entity newOpportunityProduct = new Entity("opportunityproduct");
-
-            newOpportunityProduct["opportunityid"] = new EntityReference(opportunity.LogicalName, opportunity.Id);
-            newOpportunityProduct["productid"] = new EntityReference(existingProduct.LogicalName, existingProduct.Id);
-            newOpportunityProduct["uomid"] = new EntityReference(uom.LogicalName, uom.Id);
-            newOpportunityProduct["quantity"] = quantity;
-
-            Guid _opportunityProduct1Id = new Guid();
-            _opportunityProduct1Id = objCommon.service.Create(newOpportunityProduct);
+            common.Trace($"Opportunity product {id} created");
         }
     }
 }
+#endif

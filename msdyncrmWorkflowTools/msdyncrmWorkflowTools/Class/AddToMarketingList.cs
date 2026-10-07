@@ -1,76 +1,41 @@
-﻿using Microsoft.Crm.Sdk.Messages;
+﻿// Not in the Power Platform build: it needs Dynamics 365 tables (lead, list or salesliterature).
+#if !POWERPLATFORM
 using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
-using System;
 using System.Activities;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 namespace msdyncrmWorkflowTools.Class
 {
-    public class AddToMarketingList : CodeActivity
+    [ActivityName("Add To Marketing List")]
+    public class AddToMarketingList : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("Marketing List")]
-        [ReferenceTarget("list")]
+        [ReferenceTarget(EntityNames.List)]
         public InArgument<EntityReference> MarketingList { get; set; }
 
         [Input("Account")]
-        [ReferenceTarget("account")]
+        [ReferenceTarget(EntityNames.Account)]
+        // ReSharper disable once InconsistentNaming
         public InArgument<EntityReference> account { get; set; }
 
         [Input("Contact")]
-        [ReferenceTarget("contact")]
+        [ReferenceTarget(EntityNames.Contact)]
+        // ReSharper disable once InconsistentNaming
         public InArgument<EntityReference> contact { get; set; }
 
         [Input("Lead")]
-        [ReferenceTarget("lead")]
+        [ReferenceTarget(EntityNames.Lead)]
+        // ReSharper disable once InconsistentNaming
         public InArgument<EntityReference> lead { get; set; }
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Load CRM Service from context"
+            var marketingList = MarketingList.Get(executionContext);
+            var member = Utility.GetMarketingListMember(account.Get(executionContext), contact.Get(executionContext), lead.Get(executionContext));
 
-            Common objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
-            #region "Read Parameters"
-            EntityReference marketingList = this.MarketingList.Get(executionContext);
-            objCommon.tracingService.Trace(String.Format("marketingList: {0} ", marketingList.Id.ToString()));
-
-            EntityReference account = this.account.Get(executionContext);
-            
-            EntityReference contact = this.contact.Get(executionContext);
-           
-            EntityReference lead = this.lead.Get(executionContext);
-
-            #endregion
-
-            Guid idToAdd = Guid.Empty;
-
-            if (account != null)
-            {
-                idToAdd = account.Id;
-            }
-            else if (contact != null)
-            {
-                idToAdd = contact.Id;
-            }
-            else if (lead != null)
-            {
-                idToAdd = lead.Id;
-            }
-            objCommon.tracingService.Trace(String.Format("idToAdd: {0} ", idToAdd.ToString()));
-
-            AddMemberListRequest addRequest = new AddMemberListRequest();
-            addRequest.ListId = marketingList.Id;
-            addRequest.EntityId = idToAdd;
-            AddMemberListResponse addResponse = (AddMemberListResponse)objCommon.service.Execute(addRequest);
-            
+            common.AddToMarketingList(marketingList.Id, member);
         }
-        
     }
 }
+#endif

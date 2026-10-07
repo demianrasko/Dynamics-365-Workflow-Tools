@@ -1,66 +1,43 @@
-﻿using Microsoft.Crm.Sdk.Messages;
+﻿// Not in the Power Platform build: it needs Dynamics 365 tables (lead, list or salesliterature).
+#if !POWERPLATFORM
 using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
-using System;
 using System.Activities;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Microsoft.Xrm.Sdk.Discovery;
-using Microsoft.Xrm.Sdk.Messages;
-using Microsoft.Xrm.Sdk.Client;
-
-
 
 namespace msdyncrmWorkflowTools.Class
 {
-    public class SalesLiteratureToEmail : CodeActivity
+    [ActivityName("Sales Literature To Email")]
+    public class SalesLiteratureToEmail : WorkflowActivityBase
     {
         [RequiredArgument]
         [Input("Sales Literature")]
-        [ReferenceTarget("salesliterature")]
+        [ReferenceTarget(EntityNames.SalesLiterature)]
         public InArgument<EntityReference> SalesLiterature { get; set; }
 
         [RequiredArgument]
         [Input("File Name (use * for filter)")]
         [ReferenceTarget("")]
-        public InArgument<String> FileName { get; set; }
+        public InArgument<string> FileName { get; set; }
 
         [RequiredArgument]
         [Input("Email")]
-        [ReferenceTarget("email")]
+        [ReferenceTarget(EntityNames.Email)]
         public InArgument<EntityReference> Email { get; set; }
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            #region "Load CRM Service from context"
+            var salesLiterature = SalesLiterature.Get(executionContext);
 
-            Common objCommon = new Common(executionContext);
-            objCommon.tracingService.Trace("Load CRM Service from context --- OK");
-            #endregion
-
-            #region "Read Parameters"
-
-            EntityReference salesLiterature = this.SalesLiterature.Get(executionContext);
-
-            String _FileName = this.FileName.Get(executionContext);
-            if (_FileName == null || _FileName == "")
+            var fileName = FileName.Get(executionContext);
+            if (string.IsNullOrEmpty(fileName))
             {
-                return;
+                throw new InvalidPluginExecutionException("File Name (use * for filter) is required.");
             }
-            
 
-            EntityReference email = this.Email.Get(executionContext);
+            var email = Email.Get(executionContext);
 
-            #endregion
-
-            msdyncrmWorkflowTools_Class commonClass = new msdyncrmWorkflowTools_Class(objCommon.service, objCommon.tracingService);
-            commonClass.SalesLiteratureToEmail(_FileName, salesLiterature.Id.ToString(), email.Id.ToString());
-
-
+            common.SalesLiteratureToEmail(fileName, salesLiterature.Id, email.Id);
         }
     }
 }
+#endif

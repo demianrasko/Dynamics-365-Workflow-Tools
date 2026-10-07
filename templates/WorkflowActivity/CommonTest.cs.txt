@@ -1,0 +1,14 @@
+// Paste into the msdyncrmWorkflowTools\msdyncrmWorkflowTools_Tests\Common_Tests.<Area>.cs file that fits and rename.
+// FakeOrganizationService records every call (Executed, Queries, Retrieved, Created, Updated, Deleted,
+// Associated, Disassociated) and answers through OnExecute, OnRetrieve and OnRetrieveMultiple.
+
+        [TestMethod]
+        public void MyActivity_ReturnsTheRecordName()
+        {
+            var account = new EntityReference(EntityNames.Account, RecordId);
+            service.OnRetrieve = (entityName, id, columns) => new Entity(entityName, id) { [AttributeNames.Name] = "Contoso" };
+
+            var result = common.MyActivity(account);
+
+            Assert.AreEqual("Contoso", result);
+        }

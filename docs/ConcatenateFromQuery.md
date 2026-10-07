@@ -27,7 +27,7 @@ Example FetchXML (this is just an example to show how one can pull data from chi
 
 * **AttributeName (Optional)** : The name of the attribute to concatenate. If one is not specified, then it will attempt to use the first field returned by the query. The best practice is to define the alias for the attribute in your query and use it in this field. In the example above, you would use **contactFullName** for this param.
 
-* **Separator (Optional)** : When not defined, it will use ", ". If you want to use a different separator, define it here. Add a trailing space if you need it. 
+* **Separator (Optional)** : When not defined, it will use ", ". If you want to use a different separator, define it here. Add a trailing space if you need it. Type \n for a new line (e.g. to put each value on its own line), \t for a tab, and \\ for a backslash.
 
 * **Format (Optional)** : The format only if you need a special format. Used for numbers or dates. It uses the C# string format specification. As examples:
 dd-MM-yyyy for dates or

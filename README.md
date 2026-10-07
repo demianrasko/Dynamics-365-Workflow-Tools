@@ -6,12 +6,13 @@ NOTE: You should allways follow your ALM procedure,downloading the source Code, 
 
 To import the Solution follow these steps:
 
-* Download the ZIP file from the Releases tab (https://github.com/demianrasko/Dynamics-365-Workflow-Tools/releases)
- Access to the Dynamics 365 (CRM) environment and navigate to Settings>Solutions
+* Download the ZIP file from the Releases tab (https://github.com/MitchMilam/Dynamics-365-Workflow-Tools/releases)
+* Access to the Dynamics 365 (CRM) environment and navigate to Settings>Solutions
 * Click on Import and select the ZIP file
-* Follow the wizzard steps
+* Follow the wizard steps
 
-To see how to use each of the tools includes in this solution, please access to the following links:
+## Available Activities
+To see how to use each tool in this solution, follow these links:
 * 1: [Force Calculate Rollup Field](/docs/Force%20Calculate%20Rollup%20Field.md)
 * 2: [Apply Routing Rules](/docs/Apply%20Routing%20Rules.md)
 * 3: [Query Values](/docs/Query%20Values%20Step.md)
@@ -85,16 +86,38 @@ To see how to use each of the tools includes in this solution, please access to 
 * 71 [Set Multi Select Option Set](/docs/SetMultiSelectOptionSet.md) Thanks to [Ramon Tebar](https://github.com/ramontebar)
 * 72 [Delete Record Audit History](/docs/DeleteRecordAuditHistory.md) 
 * 73 [Concatenate from Query](/docs/ConcatenateFromQuery.md) Thanks To [Raj](https://github.com/rajrao)
-* 74 [Get Sharepoint Location URL](/docs/GetSharepointLocationURL.md) Thanks To [TarogStar](https://github.com/TarogStar)
+* 74 [Get Sharepoint Location URL](/docs/GetSharepointLocationURL.md) Thanks To [Anne Pessoa](https://github.com/annepessoa)
 * 75 [Create Team](/docs/CreateTeam.md) 
 * 76 [Get Option Set Value](/docs/GetOptionSetValue.md) 
 * 77 [Share Secured Field](/docs/ShareSecuredField.md) Thanks to [zhongchen zhou](https://github.com/zzc000)
 * 78 [Set Lookup Field from Record URL](/docs/SetLookupFieldFromRecordUrl.md) thanks to [beyro](https://github.com/beyro)
 * 79 [Resolve Case](/docs/ResolveCase.md) thanks to [Chris Milton](https://github.com/ChrisMilton)
+* 80 [Get Record URL](/docs/GetRecordUrl.md) thanks to [vinaymenda](https://github.com/vinaymenda)
+* 81 [AI Classify Text](/docs/AI%20Classify%20Text.md) thanks to [rwilson504](https://github.com/rwilson504)
+* 82 [AI Draft Reply](/docs/AI%20Draft%20Reply.md) thanks to [rwilson504](https://github.com/rwilson504)
+* 83 [AI Sentiment Detect](/docs/AI%20Sentiment%20Detect.md) thanks to [rwilson504](https://github.com/rwilson504)
+* 84 [AI Summarize Record](/docs/AI%20Summarize%20Record.md) thanks to [rwilson504](https://github.com/rwilson504)
+* 85 [AI Summarize Text](/docs/AI%20Summarize%20Text.md) thanks to [rwilson504](https://github.com/rwilson504)
+* 86 [AI Translate Text](/docs/AI%20Translate%20Text.md) thanks to [rwilson504](https://github.com/rwilson504)
+* 87 [Create Opportunity Product](/docs/CreateOpportunityProduct.md)
+* 88 [Create Quote From Opportunity](/docs/CreateQuoteFromOpportunity.md)
+* 89 [Update Quote Value](/docs/UpdateQuoteValue.md)
+* 90 [Update Product Quote Value](/docs/UpdateProductQuoteValue.md)
+* 91 [Win Quote](/docs/WinQuote.md)
+* 92 [Distribute Workflow (One To Many)](/docs/DistributeWFActivityOneToMany.md)
+* 93 [Distribute Workflow (Many To Many)](/docs/DistributeWFActivityManyToMany.md)
+* 94 [Execute Workflow For Records In Query](/docs/ExecuteWorkflowForRecordsinQuery.md)
+* 95 [Get Environment Variable](/docs/GetEnvironmentVariable.md)
 
+## Activities, as seen in the Workflow Designer
 
+| ![](docs/WFT%20activities-1.png) | ![](docs/WFT%20activities-2.png) | ![](docs/WFT%20activities-3.png) |
+| :---: | :---: | :---: |
 
-NOTE ABOUT CDS: The CDS Version not include all the actions, because it requires the entities "lead, salesliterature, list" not included in CDS. The Actions not included in the CDS Version are:
+## Activities for the Power Platform (Dataverse, formerly the CDS)
+The Power Platform version does not include all of the actions, because their associated tables are not included in the Power Platform environment.
+
+The Actions not included in the Power Platform version are:
 
 - QualifyLead
 - RemoveFromMarketingList
@@ -104,6 +127,12 @@ NOTE ABOUT CDS: The CDS Version not include all the actions, because it requires
 - CopyMarketingListMembers
 - AddMarketingListToCampaign
 - SalesLiteratureToEmail
+- CreateOpportunityProduct
+- CreateQuoteFromOpportunity
+- UpdateProductQuoteValue
+- UpdateQuoteValue
+- WinQuote
+- ResolveCase (incident)
+- RemoveFromAllMarketingLists (listmember)
 
-![](docs/Home_wf1_61.gif)
-
+To build the Power Platform version, which leaves these activities out, run `msbuild msdyncrmWorkflowTools\msdyncrmWorkflowTools\msdyncrmWorkflowTools.csproj /p:Configuration=Release /p:PowerPlatform=true`. It builds `powerplatformWorkflowTools.dll` (the same assembly name as the original Power Platform version, so existing installs upgrade in place) in `bin\Release-PowerPlatform`.
