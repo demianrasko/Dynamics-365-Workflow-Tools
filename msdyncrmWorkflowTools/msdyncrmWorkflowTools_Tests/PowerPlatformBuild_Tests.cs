@@ -81,32 +81,44 @@ namespace msdyncrmWorkflowTools_Tests
         [TestMethod]
         public void EveryArgumentOfThePublishedVersionIsUnchanged()
         {
-            // workflows saved on 1.0.61.1 pass their inputs by property name, case included
-            var types = GetActivityTypes(LoadWorkflowAssembly(string.Empty)).ToDictionary(t => t.FullName);
+            // workflows saved on 1.0.61.1 pass their inputs by property name, case included; the Power Platform build must
+            // keep the activities upstream's powerplatformWorkflowTools project had
             var problems = new List<string>();
 
-            foreach (var argument in ReleasedActivityArguments.Version_1_0_61_1)
+            foreach (var suffix in new[] { string.Empty, "-PowerPlatform" })
             {
-                var parts = argument.Split(' ');
-                var typeName = parts[0];
-                var propertyName = parts[1];
-                var expected = $"{parts[2]}`1[{parts[3]}]";
+                var types = GetActivityTypes(LoadWorkflowAssembly(suffix)).ToDictionary(t => t.FullName);
+                var build = string.IsNullOrEmpty(suffix) ? "Dynamics 365" : "Power Platform";
+                var released = string.IsNullOrEmpty(suffix) ? null : new HashSet<string>(ReleasedActivityArguments.PowerPlatform_1_0_61_1);
 
-                if (!types.TryGetValue(typeName, out var type))
+                foreach (var argument in ReleasedActivityArguments.Version_1_0_61_1)
                 {
-                    problems.Add($"{typeName} is missing");
-                    continue;
-                }
+                    var parts = argument.Split(' ');
+                    var typeName = parts[0];
+                    var propertyName = parts[1];
+                    var expected = $"{parts[2]}`1[{parts[3]}]";
 
-                var property = type.GetProperty(propertyName);
+                    if (released != null && !released.Contains(typeName))
+                    {
+                        continue;
+                    }
 
-                if (property == null)
-                {
-                    problems.Add($"{typeName}.{propertyName} is missing (renamed?)");
-                }
-                else if ($"{property.PropertyType.Name}[{property.PropertyType.GetGenericArguments().FirstOrDefault()?.FullName}]" != expected)
-                {
-                    problems.Add($"{typeName}.{propertyName} is {property.PropertyType}, was {expected}");
+                    if (!types.TryGetValue(typeName, out var type))
+                    {
+                        problems.Add($"{build}: {typeName} is missing");
+                        continue;
+                    }
+
+                    var property = type.GetProperty(propertyName);
+
+                    if (property == null)
+                    {
+                        problems.Add($"{build}: {typeName}.{propertyName} is missing (renamed?)");
+                    }
+                    else if ($"{property.PropertyType.Name}[{property.PropertyType.GetGenericArguments().FirstOrDefault()?.FullName}]" != expected)
+                    {
+                        problems.Add($"{build}: {typeName}.{propertyName} is {property.PropertyType}, was {expected}");
+                    }
                 }
             }
 
