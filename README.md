@@ -12,7 +12,7 @@ To import the Solution follow these steps:
 * Follow the wizard steps
 
 ## Available Activities
-To see how to use each of the tools includes in this solution, please access to the following links:
+To see how to use each tool in this solution, follow these links:
 * 1: [Force Calculate Rollup Field](/docs/Force%20Calculate%20Rollup%20Field.md)
 * 2: [Apply Routing Rules](/docs/Apply%20Routing%20Rules.md)
 * 3: [Query Values](/docs/Query%20Values%20Step.md)
@@ -109,15 +109,13 @@ To see how to use each of the tools includes in this solution, please access to 
 * 94 [Execute Workflow For Records In Query](/docs/ExecuteWorkflowForRecordsinQuery.md)
 * 95 [Get Environment Variable](/docs/GetEnvironmentVariable.md)
 
-
 ## Activities, as seen in the Workflow Designer
 
 | ![](docs/WFT%20activities-1.png) | ![](docs/WFT%20activities-2.png) | ![](docs/WFT%20activities-3.png) |
 | :---: | :---: | :---: |
 
-
 ## Activities for the Power Platform (Dataverse, formerly the CDS)
-The Power Platform version does not include all of the actions, because their associated tables are not included in the Power Platform environment. 
+The Power Platform version does not include all of the actions, because their associated tables are not included in the Power Platform environment.
 
 The Actions not included in the Power Platform version are:
 
