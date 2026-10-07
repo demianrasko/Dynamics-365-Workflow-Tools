@@ -13,6 +13,19 @@ namespace msdyncrmWorkflowTools
     /// </summary>
     public static partial class Utility
     {
+        private static readonly Dictionary<string, int> ParticipationTypeMasks = new Dictionary<string, int>
+        {
+            [AttributeNames.From] = 1,
+            [AttributeNames.To] = 2,
+            [AttributeNames.Cc] = 3,
+            [AttributeNames.Bcc] = 4,
+            [AttributeNames.RequiredAttendees] = 5,
+            [AttributeNames.OptionalAttendees] = 6,
+            [AttributeNames.Organizer] = 7,
+            [AttributeNames.Resources] = 10,
+            [AttributeNames.Customer] = 11
+        };
+
         /// <summary>
         /// Builds the access mask for a GrantAccessRequest from the individual share flags.
         /// </summary>
@@ -212,23 +225,10 @@ namespace msdyncrmWorkflowTools
             return sb.ToString();
         }
 
-        private static readonly Dictionary<string, int> ParticipationTypeMasks = new Dictionary<string, int>
-        {
-            [AttributeNames.From] = 1,
-            [AttributeNames.To] = 2,
-            [AttributeNames.Cc] = 3,
-            [AttributeNames.Bcc] = 4,
-            [AttributeNames.RequiredAttendees] = 5,
-            [AttributeNames.OptionalAttendees] = 6,
-            [AttributeNames.Organizer] = 7,
-            [AttributeNames.Resources] = 10,
-            [AttributeNames.Customer] = 11
-        };
-
         /// <summary>
         /// The participationtypemask of an activity party attribute (from, to, cc, ...); false for any other name.
         /// </summary>
-        public static bool TryGetParticipation(string attributeName, out int participationTypeMask)
+        public static bool GetParticipation(string attributeName, out int participationTypeMask)
         {
             return ParticipationTypeMasks.TryGetValue(attributeName ?? string.Empty, out participationTypeMask);
         }

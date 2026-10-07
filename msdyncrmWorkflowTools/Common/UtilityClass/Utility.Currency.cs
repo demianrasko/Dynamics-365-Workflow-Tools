@@ -19,6 +19,7 @@ namespace msdyncrmWorkflowTools
         public static decimal ParseCurrencyConversion(string response, string fromCurrency, string toCurrency)
         {
             JObject json;
+
             try
             {
                 using (var reader = new Newtonsoft.Json.JsonTextReader(new StringReader(response ?? string.Empty)))

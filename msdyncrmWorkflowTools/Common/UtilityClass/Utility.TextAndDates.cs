@@ -16,10 +16,11 @@ namespace msdyncrmWorkflowTools
             day = date1.Day;
             month = date1.Month;
             year = date1.Year;
-            var dfi = DateTimeFormatInfo.CurrentInfo;
-            var cal = dfi.Calendar;
 
-            weekOfYear = cal.GetWeekOfYear(date1, dfi.CalendarWeekRule, dfi.FirstDayOfWeek);
+            var dateFormatInfo = DateTimeFormatInfo.CurrentInfo;
+            var cal = dateFormatInfo.Calendar;
+
+            weekOfYear = cal.GetWeekOfYear(date1, dateFormatInfo.CalendarWeekRule, dateFormatInfo.FirstDayOfWeek);
 
             return true;
         }

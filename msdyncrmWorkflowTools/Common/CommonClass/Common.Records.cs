@@ -138,7 +138,7 @@ namespace msdyncrmWorkflowTools
                 {
                     var attribute2 = attribute.Replace("partylist-", string.Empty);
 
-                    if (!Utility.TryGetParticipation(attribute2, out var participationTypeMask))
+                    if (!Utility.GetParticipation(attribute2, out var participationTypeMask))
                     {
                         throw new InvalidPluginExecutionException($"Unsupported party list attribute '{attribute2}'.");
                     }

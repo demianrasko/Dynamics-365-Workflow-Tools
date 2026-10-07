@@ -122,7 +122,7 @@ namespace msdyncrmWorkflowTools_Tests
 
             foreach (var attribute in expected.Keys)
             {
-                Assert.IsTrue(Utility.TryGetParticipation(attribute, out var mask), attribute);
+                Assert.IsTrue(Utility.GetParticipation(attribute, out var mask), attribute);
                 Assert.AreEqual(expected[attribute], mask, attribute);
             }
         }
@@ -130,8 +130,8 @@ namespace msdyncrmWorkflowTools_Tests
         [TestMethod]
         public void TryGetParticipation_UnknownAttributeReturnsFalse()
         {
-            Assert.IsFalse(Utility.TryGetParticipation("subject", out _));
-            Assert.IsFalse(Utility.TryGetParticipation(null, out _));
+            Assert.IsFalse(Utility.GetParticipation("subject", out _));
+            Assert.IsFalse(Utility.GetParticipation(null, out _));
         }
 
         [TestMethod]

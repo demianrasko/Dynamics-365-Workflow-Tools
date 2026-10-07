@@ -17,6 +17,7 @@ namespace msdyncrmWorkflowTools
             }
             var o = JObject.Parse(json);
             var name = string.Empty;
+
             if (o.SelectToken(jsonPath) != null)
             {
                 name = o.SelectToken(jsonPath)?.ToString();

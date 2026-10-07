@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace msdyncrmWorkflowTools
 {
@@ -16,7 +17,7 @@ namespace msdyncrmWorkflowTools
         {
             try
             {
-                return System.Xml.Linq.XElement.Parse(fetchXml).Attribute("top") != null;
+                return XElement.Parse(fetchXml).Attribute("top") != null;
             }
             catch (XmlException)
             {
@@ -77,11 +78,11 @@ namespace msdyncrmWorkflowTools
         /// <returns>The key, or null when the fetch has no attribute element or cannot be parsed.</returns>
         public static string GetFirstFetchAttributeKey(string fetchXml)
         {
-            System.Xml.Linq.XElement attribute;
+            XElement attribute;
 
             try
             {
-                attribute = System.Xml.Linq.XElement.Parse(fetchXml).Descendants("attribute").FirstOrDefault();
+                attribute = XElement.Parse(fetchXml).Descendants("attribute").FirstOrDefault();
             }
             catch (XmlException)
             {
