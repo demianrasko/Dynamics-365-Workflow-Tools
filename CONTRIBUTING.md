@@ -82,6 +82,14 @@ Each activity is registered under its `[ActivityName]` (the name in the workflow
 
 The **Packaging** integration test imports the built unmanaged Power Platform solution into the Power Platform test environment, to prove Dataverse accepts it.
 
+### Releasing
+
+The **Release** workflow (`.github\workflows\release.yml`) runs when a version tag is pushed. It builds both assemblies, runs the unit tests, builds the solution files and creates a draft release with the four zips attached.
+
+1. Set the new version in `Properties\AssemblyInfo.cs` (keep it 1.0.x), merge to master, and run **Integration tests** there.
+2. Tag master with the same version and push the tag: `git tag 1.0.101.0 origin/master` and `git push origin 1.0.101.0`. The workflow stops if the tag doesn't match the assembly version.
+3. On the Releases page, check the draft and its notes, mark it as a pre-release if it isn't ready for everyone, and publish it.
+
 ### Integration tests (real Dataverse environments)
 
 Unit tests (`msdyncrmWorkflowTools_Tests`) use a fake organization service and run everywhere. The integration tests are a separate project, `msdyncrmWorkflowTools_IntegrationTests`, that runs `Common` against real environments: every test in `IntegrationTestBase` runs once against a Dynamics 365 environment and once against a plain Dataverse (Power Platform) environment. Without the environments set up they are inconclusive.
@@ -104,7 +112,8 @@ The same project has more groups (Test Explorer > group by Traits); **Packaging*
 - **Deployment**: registers the built Power Platform assembly (`/p:PowerPlatform=true`) in the Power Platform environment, the way the Plugin Registration Tool does, and checks that it loads in the sandbox, that every activity registers and that the designer sees every input and output. The assembly stays registered, so real test workflows can use it. The Dynamics 365 build isn't deployed this way while the Dynamics 365 test environment has the managed workflow tools solution installed (the manual upgrade test uses it).
 - **LiveServices**: the outside services, for real. Currency conversion (Frankfurter) needs no key; geocoding needs `AZURE_MAPS_KEY` and translation `TRANSLATOR_KEY` (plus `TRANSLATOR_REGION` for a regional resource). Save them with `tools\Set-ServiceKeys.ps1`; without a key the test is inconclusive.
 
-In GitHub, the **Integration tests** workflow (`.github\workflows\integration-tests.yml`) runs the same tests. It only runs when started by hand from the Actions tab, so pull requests from forks can't reach the environments. It needs a GitHub environment named `dataverse-test` (repository Settings > Environments) with the secrets `DATAVERSE_CONNECTION` and `DATAVERSE_CONNECTION_PP` (and optionally `AZURE_MAPS_KEY`, `TRANSLATOR_KEY` and `TRANSLATOR_REGION`). Adding yourself as a required reviewer there makes every run wait for your approval. The **Build and test** workflow runs only the unit tests.
+In GitHub, the **Integration tests** workflow (`.github\workflows\integration-tests.yml`) runs the same tests. It only runs when started by hand from the Actions tab, so pull requests from forks can't reach the environments. Like **Build and test**, it installs the Power Platform CLI and builds the solution files, so the **Packaging** test runs there too. It needs a GitHub environment named `dataverse-test` (repository Settings > Environments) with the secrets `DATAVERSE_CONNECTION` and `DATAVERSE_CONNECTION_PP` (and optionally `AZURE_MAPS_KEY`, `TRANSLATOR_KEY` and `TRANSLATOR_REGION`). Adding yourself as a required reviewer there makes every run wait for your approval. The **Build and test** workflow runs only the unit tests; it also builds the solution files and keeps them with the run (artifact *solutions*).
+
 ### Code style
 
 - Braces on every `if` and `else`, even for one line.

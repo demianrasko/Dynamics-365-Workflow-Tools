@@ -27,6 +27,16 @@ jobs:
       - name: Build Power Platform assembly (Release)
         run: msbuild msdyncrmWorkflowTools\msdyncrmWorkflowTools\msdyncrmWorkflowTools.csproj /p:Configuration=Release /p:PowerPlatform=true /nologo /v:m
 
+      - name: Install the Power Platform CLI
+        shell: pwsh
+        run: |
+          dotnet tool install --global Microsoft.PowerApps.CLI.Tool
+          "$env:USERPROFILE\.dotnet\tools" | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8
+
+      - name: Build the solution files
+        shell: pwsh
+        run: .\tools\Build-Solutions.ps1 -SkipBuild
+
       - name: Run tests
         shell: pwsh
         run: |
@@ -52,3 +62,9 @@ jobs:
         with:
           name: powerplatformWorkflowTools
           path: msdyncrmWorkflowTools\msdyncrmWorkflowTools\bin\Release-PowerPlatform\powerplatformWorkflowTools.dll
+
+      - name: Upload solution files
+        uses: actions/upload-artifact@v7
+        with:
+          name: solutions
+          path: dist

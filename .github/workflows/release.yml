@@ -1,0 +1,69 @@
+# Pushing a version tag (e.g. 1.0.101.0) builds both assemblies, runs the unit tests, packs the four solution files and
+# creates a draft release for that tag with the files attached. The tag must match the assembly version in
+# Properties\AssemblyInfo.cs. Check the draft on the Releases page, then publish it.
+name: Release
+
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+.[0-9]+'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Check the tag matches the assembly version
+        shell: pwsh
+        run: |
+          $info = Get-Content msdyncrmWorkflowTools\msdyncrmWorkflowTools\Properties\AssemblyInfo.cs -Raw
+          $version = [regex]::Match($info, '(?m)^\[assembly: AssemblyVersion\("([^"]+)"\)\]').Groups[1].Value
+          if ($version -ne $env:GITHUB_REF_NAME) {
+              throw "The tag $env:GITHUB_REF_NAME doesn't match the assembly version $version"
+          }
+
+      - name: Set up MSBuild
+        uses: microsoft/setup-msbuild@v3
+
+      - name: Set up NuGet
+        uses: NuGet/setup-nuget@v4
+
+      - name: Restore packages
+        run: nuget restore msdyncrmWorkflowTools\msdyncrmWorkflowTools.sln
+
+      - name: Build (Release)
+        run: msbuild msdyncrmWorkflowTools\msdyncrmWorkflowTools.sln /p:Configuration=Release /m /nologo /v:m
+
+      - name: Build Power Platform assembly (Release)
+        run: msbuild msdyncrmWorkflowTools\msdyncrmWorkflowTools\msdyncrmWorkflowTools.csproj /p:Configuration=Release /p:PowerPlatform=true /nologo /v:m
+
+      - name: Run tests
+        shell: pwsh
+        run: |
+          $vstest = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -find "**\vstest.console.exe" | Select-Object -First 1
+          & $vstest msdyncrmWorkflowTools\msdyncrmWorkflowTools_Tests\bin\Release\msdyncrmWorkflowTools_Tests.dll
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Install the Power Platform CLI
+        shell: pwsh
+        run: |
+          dotnet tool install --global Microsoft.PowerApps.CLI.Tool
+          "$env:USERPROFILE\.dotnet\tools" | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8
+
+      - name: Build the solution files
+        shell: pwsh
+        run: .\tools\Build-Solutions.ps1 -SkipBuild
+
+      - name: Create the draft release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $files = (Get-ChildItem dist\*.zip).FullName
+          gh release create $env:GITHUB_REF_NAME $files --draft --generate-notes --title "Dynamics 365 Workflow Tools Solution $env:GITHUB_REF_NAME"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
