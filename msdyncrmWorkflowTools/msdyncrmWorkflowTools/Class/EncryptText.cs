@@ -12,10 +12,10 @@ namespace msdyncrmWorkflowTools
         public InArgument<string> TexttoEncrypt { get; set; }
 
         [Output("MD5 Hash Value")]
-        public OutArgument<string> Md5HashValue { get; set; }
+        public OutArgument<string> MD5HashValue { get; set; }
 
         [Output("SHA512 Hash Value")]
-        public OutArgument<string> Sha512HashValue { get; set; }
+        public OutArgument<string> SHA512HashValue { get; set; }
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
@@ -26,8 +26,8 @@ namespace msdyncrmWorkflowTools
             var md5HashValue = Utility.Md5Hash(text);
             var sha512HashValue = Utility.Sha512Hash(text);
 
-            Md5HashValue.Set(executionContext, md5HashValue);
-            Sha512HashValue.Set(executionContext, sha512HashValue);
+            MD5HashValue.Set(executionContext, md5HashValue);
+            SHA512HashValue.Set(executionContext, sha512HashValue);
         }
     }
 }

@@ -43,7 +43,7 @@ To get the activity as an Add > New Item choice in Visual Studio, zip the two fi
 
 Workflows store the activity's class name and the names and types of its inputs and outputs. Once an activity has been released:
 
-- Never rename the class, its namespace, or any input or output property, even to fix a typo.
+- Never rename the class, its namespace, or any input or output property, even to fix a typo or its case (`RecordURL` must stay `RecordURL`). The test `EveryArgumentOfThePublishedVersionIsUnchanged` checks every argument of the published 1.0.61.1 (listed in `ReleasedActivityArguments.cs`).
 - Never change an input or output's type, or remove one.
 - Adding a new optional input (without `[RequiredArgument]`) is fine. Steps saved before the input existed may read it as the type's default (empty, 0 or No) rather than the `[Default]` value, so choose a meaning where that keeps the old behavior, and test it against an existing installation.
 - Keep the assembly version at 1.0.x so existing installs upgrade in place; changing the major or minor version registers a second assembly.

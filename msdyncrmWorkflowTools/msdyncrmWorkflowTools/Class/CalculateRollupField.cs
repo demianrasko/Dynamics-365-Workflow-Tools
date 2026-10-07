@@ -15,11 +15,11 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("Parent Record URL")]
         [ReferenceTarget("")]
-        public InArgument<string> ParentRecordUrl { get; set; }
+        public InArgument<string> ParentRecordURL { get; set; }
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var recordUrl = ParentRecordUrl.Get(executionContext);
+            var recordUrl = ParentRecordURL.Get(executionContext);
 
             if (string.IsNullOrEmpty(recordUrl))
             {

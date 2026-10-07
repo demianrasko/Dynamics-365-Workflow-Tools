@@ -78,6 +78,41 @@ namespace msdyncrmWorkflowTools_Tests
             }
         }
 
+        [TestMethod]
+        public void EveryArgumentOfThePublishedVersionIsUnchanged()
+        {
+            // workflows saved on 1.0.61.1 pass their inputs by property name, case included
+            var types = GetActivityTypes(LoadWorkflowAssembly(string.Empty)).ToDictionary(t => t.FullName);
+            var problems = new List<string>();
+
+            foreach (var argument in ReleasedActivityArguments.Version_1_0_61_1)
+            {
+                var parts = argument.Split(' ');
+                var typeName = parts[0];
+                var propertyName = parts[1];
+                var expected = $"{parts[2]}`1[{parts[3]}]";
+
+                if (!types.TryGetValue(typeName, out var type))
+                {
+                    problems.Add($"{typeName} is missing");
+                    continue;
+                }
+
+                var property = type.GetProperty(propertyName);
+
+                if (property == null)
+                {
+                    problems.Add($"{typeName}.{propertyName} is missing (renamed?)");
+                }
+                else if ($"{property.PropertyType.Name}[{property.PropertyType.GetGenericArguments().FirstOrDefault()?.FullName}]" != expected)
+                {
+                    problems.Add($"{typeName}.{propertyName} is {property.PropertyType}, was {expected}");
+                }
+            }
+
+            Assert.AreEqual(0, problems.Count, $"Saved workflows would break: {string.Join("; ", problems.Distinct())}");
+        }
+
         /// <summary>
         /// Loads msdyncrmWorkflowTools.dll (or powerplatformWorkflowTools.dll for the Power Platform build) from the workflow project's bin folder for the test's configuration plus
         /// <paramref name="suffix"/>. It's loaded from bytes so both builds, which share an identity, can be loaded side by side.

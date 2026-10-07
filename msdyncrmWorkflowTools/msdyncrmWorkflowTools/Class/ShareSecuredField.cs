@@ -10,7 +10,7 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("Record URL")]
         [ReferenceTarget("")]
-        public InArgument<string> RecordUrl { get; set; }
+        public InArgument<string> RecordURL { get; set; }
 
         [RequiredArgument]
         [Input("Attribute Name")]
@@ -36,7 +36,7 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var parsedUrl = common.ParseRecordUrl(RecordUrl.Get(executionContext));
+            var parsedUrl = common.ParseRecordUrl(RecordURL.Get(executionContext));
             common.Trace($"EntityName={parsedUrl.EntityName}--Id={parsedUrl.Id}");
 
             common.ShareSecuredField(

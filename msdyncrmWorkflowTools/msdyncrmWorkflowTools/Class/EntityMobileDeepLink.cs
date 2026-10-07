@@ -10,7 +10,7 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("Record URL")]
         [ReferenceTarget("")]
-        public InArgument<string> RecordUrl { get; set; }
+        public InArgument<string> RecordURL { get; set; }
 
         [Output("Mobile Deep Link Edit")]
         public OutArgument<string> MobileDeepLinkEdit { get; set; }
@@ -23,7 +23,7 @@ namespace msdyncrmWorkflowTools
 
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
-            var recordUrl = RecordUrl.Get(executionContext);
+            var recordUrl = RecordURL.Get(executionContext);
 
             if (string.IsNullOrEmpty(recordUrl))
             {

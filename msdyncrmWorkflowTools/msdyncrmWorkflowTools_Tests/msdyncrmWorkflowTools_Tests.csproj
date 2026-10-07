@@ -106,6 +106,7 @@
     <Compile Include="StringFunctions_Tests.cs" />
     <Compile Include="CurrencyConvert_Tests.cs" />
     <Compile Include="PowerPlatformBuild_Tests.cs" />
+    <Compile Include="ReleasedActivityArguments.cs" />
     <Compile Include="Utility_Tests.cs" />
     <Compile Include="Utility_Tests.AttributeValues.cs" />
     <Compile Include="Utility_Tests.ErrorHandling.cs" />

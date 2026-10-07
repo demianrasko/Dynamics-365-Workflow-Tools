@@ -20,7 +20,7 @@ namespace msdyncrmWorkflowTools
         [RequiredArgument]
         [Input("Record URL (Parent)")]
         [ReferenceTarget("")]
-        public InArgument<string> RecordUrl { get; set; }
+        public InArgument<string> RecordURL { get; set; }
 
         [Input("FetchXML Filter (Child)")]
         [ReferenceTarget("")]
@@ -33,7 +33,7 @@ namespace msdyncrmWorkflowTools
         {
             var childEntityName = ChildEntityName.Get(executionContext);
             var parentLookupName = ParentLookupName.Get(executionContext);
-            var recordUrl = RecordUrl.Get(executionContext);
+            var recordUrl = RecordURL.Get(executionContext);
             common.Trace($"ChildEntityName={childEntityName}--ParentLookupName={parentLookupName}--RecordURL={recordUrl}");
 
             if (string.IsNullOrEmpty(recordUrl))
