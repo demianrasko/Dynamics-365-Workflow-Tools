@@ -1,7 +1,8 @@
 This action builds the record URL of any record from its entity logical name and its id (GUID).
 
 It is useful between steps that return an id and steps that need a record URL, for example to pass the record
-created by **Clone Record** (which returns the new record's GUID) to **Clone Children** (which needs a record URL).
+created by **Clone Record** (which returns the new record's GUID) to **Clone Children** (which needs a record URL), or
+to get a link to the record **Query Values** found (see [Query Values](Query%20Values%20Step.md)).
 
 Parameters:
 * **Reference Record URL (required)**: any record URL from the same environment, usually the Record URL of the record
