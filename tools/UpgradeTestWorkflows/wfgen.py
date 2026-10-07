@@ -143,8 +143,16 @@ def ThisRecord():
 
 
 def Output(step, prop):
-    """An output of an earlier custom step, by step number."""
-    return lambda b, variable, t: expression('SelectFirstNonNull', f'CustomActivityStep{step}{prop}_localParameter', t, variable)
+    """An output of an earlier custom step, by step number. A lookup output is read, as the designer does, from the
+    record retrieved after that step (its id column); the designer can't open a step that uses the output directly."""
+    def value(b, variable, t):
+        entity = b.output_entities.get((step, prop))
+        if t != 'mxs:EntityReference' or entity is None:
+            return expression('SelectFirstNonNull', f'CustomActivityStep{step}{prop}_localParameter', t, variable)
+        holder = b.temp()
+        return (get_property(f'{entity}id', created(f'CustomActivityStep{step}{prop}_entity'), entity, holder, 'mxs:EntityReference')
+                + expression('SelectFirstNonNull', holder, 'mxs:EntityReference', variable))
+    return value
 
 
 def OutputColumn(step, prop, entity, attribute):
@@ -183,6 +191,8 @@ class Builder:
         self.primary = primary
         self.step = 0
         self.outputs = []
+        # (step, output) -> the table behind a lookup output
+        self.output_entities = {}
         self.variables = []
         self.prefix = None
         self.count = 0
@@ -224,6 +234,7 @@ class Builder:
             arguments += f'<OutArgument x:TypeArguments="{p["type"]}" x:Key="{p["prop"]}">[{local}]</OutArgument>'
             if p['type'] == 'mxs:EntityReference':
                 entity = (p['entities'] or [OUTPUT_ENTITY[p['prop']]])[0]
+                self.output_entities[(n, p['prop'])] = entity
                 key = created(f'CustomActivityStep{n}{p["prop"]}_entity')
                 after += (f'<If Condition="[Microsoft.VisualBasic.IsNothing({local})]"><If.Then><Assign x:TypeArguments="mxs:Entity" To="[{key}]" Value="[New Entity()]" /></If.Then>'
                           f'<If.Else><mxswa:RetrieveEntity Attributes="{{x:Null}}" Entity="[{key}]" EntityId="[DirectCast({local}.Id, System.Guid)]" EntityName="{entity}" ThrowIfNotExists="False" /></If.Else></If>')
