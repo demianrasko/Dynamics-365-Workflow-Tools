@@ -80,7 +80,7 @@ namespace msdyncrmWorkflowTools_IntegrationTests
 
             // a new record gets an instance of the default process just after it's created; it would become the
             // active one if it arrived after the first switch
-            for (var wait = 0; wait < 20 && ProcessInstances(contact).Count == 0; wait++)
+            for (var wait = 0; wait < 60 && ProcessInstances(contact).Count == 0; wait++)
             {
                 Thread.Sleep(500);
             }
@@ -88,6 +88,8 @@ namespace msdyncrmWorkflowTools_IntegrationTests
             // to the second process, then back to the first, whose old instance is reused, then to the second again
             foreach (var process in new[] { processes[1], processes[0], processes[1] })
             {
+                // instances are ordered by when they last changed, to the second: switches in the same second tie
+                Thread.Sleep(1500);
                 Common.SetProcess(contact, process.ToEntityReference());
 
                 // the active instance comes first
