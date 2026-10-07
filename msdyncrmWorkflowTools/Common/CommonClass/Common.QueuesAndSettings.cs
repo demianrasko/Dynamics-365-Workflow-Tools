@@ -95,7 +95,9 @@ namespace msdyncrmWorkflowTools
         }
 
         /// <summary>Active queue items in a queue, newest first; optionally only those not assigned to a worker.</summary>
+        /// <param name="onlyUnassigned"></param>
         /// <param name="top">Maximum number of records; 0 or less means no limit.</param>
+        /// <param name="queueId"></param>
         public static QueryExpression QueueItemsQuery(Guid queueId, bool onlyUnassigned, int top = 0)
         {
             var query = new QueryExpression(EntityNames.QueueItem)
@@ -144,9 +146,7 @@ namespace msdyncrmWorkflowTools
                 return null;
             }
 
-            var currentValue = definition.GetAttributeValue<AliasedValue>(EnvironmentVariableValueAlias)?.Value as string;
-
-            if (currentValue != null)
+            if (definition.GetAttributeValue<AliasedValue>(EnvironmentVariableValueAlias)?.Value is string currentValue)
             {
                 Trace($"Environment variable {schemaName} has a current value.");
 

@@ -294,7 +294,10 @@ namespace msdyncrmWorkflowTools
         /// The number of <paramref name="childEntityName"/> records whose <paramref name="parentLookupName"/> is
         /// <paramref name="parentId"/>, optionally narrowed by a FetchXML filter on the child.
         /// </summary>
+        /// <param name="parentId"></param>
         /// <param name="filterXml">A FetchXML &lt;filter&gt; fragment for the child, or empty for none.</param>
+        /// <param name="childEntityName"></param>
+        /// <param name="parentLookupName"></param>
         public int CountChildRecords(string childEntityName, string parentLookupName, Guid parentId, string filterXml)
         {
             var query = string.IsNullOrWhiteSpace(filterXml)
