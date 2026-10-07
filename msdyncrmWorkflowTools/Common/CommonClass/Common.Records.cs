@@ -55,12 +55,30 @@ namespace msdyncrmWorkflowTools
         /// <summary>
         /// Recalculates a rollup field now instead of waiting for the scheduled job.
         /// </summary>
-        public void CalculateRollupField(EntityReference record, string fieldName)
+        /// <param name="copyToFieldName">Optional field on the same record to set to the new value, e.g. a plain field
+        /// that a rollup on the next level up can use (a rollup can't use another rollup).</param>
+        /// <returns>The recalculated value.</returns>
+        public object CalculateRollupField(EntityReference record, string fieldName, string copyToFieldName = null)
         {
             // a stray space in the field name makes Dataverse report that the column doesn't exist
             fieldName = fieldName?.Trim();
             Trace($"Calculating rollup {fieldName} on {record.LogicalName} {record.Id}");
-            Service.Execute(new CalculateRollupFieldRequest { Target = record, FieldName = fieldName });
+            var response = Service.Execute(new CalculateRollupFieldRequest { Target = record, FieldName = fieldName });
+            var entity = response.Results.Contains("Entity") ? response.Results["Entity"] as Entity : null;
+            var value = entity != null && entity.Contains(fieldName) ? entity[fieldName] : null;
+
+            copyToFieldName = copyToFieldName?.Trim();
+            if (!string.IsNullOrEmpty(copyToFieldName))
+            {
+                // the response has the new value; a later step reading the record may still get the old one
+                Trace($"Copying it to {copyToFieldName}");
+                Service.Update(new Entity(record.LogicalName, record.Id)
+                {
+                    [copyToFieldName] = value
+                });
+            }
+
+            return value;
         }
 
         /// <summary>
@@ -95,8 +113,10 @@ namespace msdyncrmWorkflowTools
         /// <param name="fieldsToReplace">Attribute values to set on the copy instead of the copied ones (null removes
         /// the value), e.g. the new parent lookup for CloneChildren. They are part of the create, so the copy never
         /// points at the original parent.</param>
+        /// <param name="copyStatus">Give the copy the record's status and status reason. Without it the copy starts in
+        /// its default (active) state.</param>
         /// <returns>The id of the copy.</returns>
-        public Guid CloneRecord(string entityName, Guid objectId, string fieldstoIgnore, string prefix, IDictionary<string, object> fieldsToReplace = null)
+        public Guid CloneRecord(string entityName, Guid objectId, string fieldstoIgnore, string prefix, IDictionary<string, object> fieldsToReplace = null, bool copyStatus = false)
         {
             Trace("entering CloneRecord");
             if (fieldstoIgnore == null)
@@ -185,10 +205,26 @@ namespace msdyncrmWorkflowTools
                 }
             }
 
-            // statecode and statuscode are never copied, so the copy starts in its default (active) state
+            // statecode and statuscode aren't copied above, so the copy starts in its default (active) state unless
+            // copyStatus asks for the record's own
+            var state = copyStatus ? retrievedObject.GetAttributeValue<OptionSetValue>(AttributeNames.StateCode) : null;
+            var status = copyStatus ? retrievedObject.GetAttributeValue<OptionSetValue>(AttributeNames.StatusCode) : null;
+
+            if (state?.Value == 0 && status != null)
+            {
+                // an active status reason can be set on create
+                newEntity[AttributeNames.StatusCode] = status;
+            }
+
             Trace("creating cloned object...");
             var id = Service.Create(newEntity);
             Trace("cloned object OK");
+
+            if (state != null && state.Value != 0 && status != null)
+            {
+                // an inactive state can only be set once the record exists
+                SetState(new EntityReference(entityName, id), state.Value, status.Value);
+            }
 
             return id;
         }

@@ -2,6 +2,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Xrm.Sdk;
 using msdyncrmWorkflowTools;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace msdyncrmWorkflowTools_IntegrationTests
@@ -70,6 +71,39 @@ namespace msdyncrmWorkflowTools_IntegrationTests
             CollectionAssert.AreEquivalent(contacts.Select(c => c.Id).ToList(), Common.GetOneToManyRelatedIds("contact_customer_accounts", account.Id));
             CollectionAssert.AreEquivalent(contacts.Select(c => c.Id).ToList(),
                 Common.GetChildRecords("contact_customer_accounts", account.Id).Entities.Select(e => e.Id).ToList());
+        }
+
+        [TestMethod]
+        public void CloneChildRecords_CopiesTheStatusOrOnlyTheActiveChildren()
+        {
+            var source = Create(new Entity(EntityNames.Account) { [AttributeNames.Name] = UniqueName("clone source") });
+            CreateContact(source);
+            var inactive = CreateContact(source);
+            Common.SetState(inactive, 1, 2);
+
+            var withStatus = Create(new Entity(EntityNames.Account) { [AttributeNames.Name] = UniqueName("clone with status") });
+            var activeOnly = Create(new Entity(EntityNames.Account) { [AttributeNames.Name] = UniqueName("clone active only") });
+
+            Assert.AreEqual(2, Common.CloneChildRecords("contact_customer_accounts", source.Id, null, null,
+                new Dictionary<string, object> { ["parentcustomerid"] = withStatus }, true, false));
+            Assert.AreEqual(1, Common.CloneChildRecords("contact_customer_accounts", source.Id, null, null,
+                new Dictionary<string, object> { ["parentcustomerid"] = activeOnly }, false, true));
+
+            var withStatusCopies = CopiesUnder(withStatus);
+            CollectionAssert.AreEquivalent(new[] { 0, 1 }, withStatusCopies.Select(StateOf).ToList());
+            Assert.AreEqual(0, StateOf(CopiesUnder(activeOnly).Single()));
+        }
+
+        private List<EntityReference> CopiesUnder(EntityReference account)
+        {
+            var copies = Common.GetChildRecords("contact_customer_accounts", account.Id).Entities.Select(e => e.ToEntityReference()).ToList();
+
+            foreach (var copy in copies)
+            {
+                DeleteAfterTest(copy);
+            }
+
+            return copies;
         }
 
         [TestMethod]

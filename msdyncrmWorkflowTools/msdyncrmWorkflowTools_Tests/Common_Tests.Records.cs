@@ -113,6 +113,58 @@ namespace msdyncrmWorkflowTools_Tests
         }
 
         [TestMethod]
+        public void CloneRecord_StartsActiveUnlessAskedToCopyTheStatus()
+        {
+            SetUpRecordToClone(state: 1, status: 2);
+
+            common.CloneRecord("new_item", RecordId, null, null);
+
+            Assert.IsFalse(service.Created.Single().Contains("statuscode"));
+            Assert.AreEqual(0, service.Executed.OfType<SetStateRequest>().Count());
+        }
+
+        [TestMethod]
+        public void CloneRecord_CopyStatus_SetsAnInactiveStateAfterTheCreate()
+        {
+            SetUpRecordToClone(state: 1, status: 2);
+
+            var id = common.CloneRecord("new_item", RecordId, null, null, copyStatus: true);
+
+            Assert.IsFalse(service.Created.Single().Contains("statuscode"));
+            var request = service.Executed.OfType<SetStateRequest>().Single();
+            Assert.AreEqual(id, request.EntityMoniker.Id);
+            Assert.AreEqual(1, request.State.Value);
+            Assert.AreEqual(2, request.Status.Value);
+        }
+
+        [TestMethod]
+        public void CloneRecord_CopyStatus_SetsAnActiveStatusReasonOnCreate()
+        {
+            SetUpRecordToClone(state: 0, status: 100000001);
+
+            common.CloneRecord("new_item", RecordId, null, null, copyStatus: true);
+
+            Assert.AreEqual(100000001, service.Created.Single().GetAttributeValue<OptionSetValue>("statuscode").Value);
+            Assert.AreEqual(0, service.Executed.OfType<SetStateRequest>().Count());
+        }
+
+        private void SetUpRecordToClone(int state, int status)
+        {
+            service.OnExecute = r => r is SetStateRequest
+                ? new SetStateResponse()
+                : (OrganizationResponse)new RetrieveEntityResponse
+                {
+                    Results = { ["EntityMetadata"] = EntityWithAttributes("new_itemid", Attribute<StringAttributeMetadata>("new_name"), Attribute<StateAttributeMetadata>("statecode"), Attribute<StatusAttributeMetadata>("statuscode")) }
+                };
+            service.OnRetrieve = (name, id, columns) => new Entity(name, id)
+            {
+                ["new_name"] = "Item",
+                ["statecode"] = new OptionSetValue(state),
+                ["statuscode"] = new OptionSetValue(status)
+            };
+        }
+
+        [TestMethod]
         public void SetLookupAndSetMoney_UpdateTheField()
         {
             var record = new EntityReference("quote", RecordId);
@@ -178,6 +230,21 @@ namespace msdyncrmWorkflowTools_Tests
             common.CalculateRollupField(new EntityReference(EntityNames.Account, RecordId), "new_answeredcount ");
 
             Assert.AreEqual("new_answeredcount", ((CalculateRollupFieldRequest)service.Executed.Single()).FieldName);
+            Assert.AreEqual(0, service.Updated.Count, "nothing is copied without a field to copy to");
+        }
+
+        [TestMethod]
+        public void CalculateRollupField_CopiesTheNewValueToAnotherField()
+        {
+            var total = new Money(42.5m);
+            service.OnExecute = r => new CalculateRollupFieldResponse { Results = { ["Entity"] = new Entity(EntityNames.Account, RecordId) { ["new_total"] = total } } };
+
+            var value = common.CalculateRollupField(new EntityReference(EntityNames.Account, RecordId), "new_total", " new_totalcopy ");
+
+            Assert.AreEqual(total, value);
+            var update = service.Updated.Single();
+            Assert.AreEqual(RecordId, update.Id);
+            Assert.AreEqual(total, update["new_totalcopy"]);
         }
     }
 }

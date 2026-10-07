@@ -17,6 +17,10 @@ namespace msdyncrmWorkflowTools
         [ReferenceTarget("")]
         public InArgument<string> ParentRecordURL { get; set; }
 
+        [Input("Copy Result To Field")]
+        [Default("")]
+        public InArgument<string> CopyResultToField { get; set; }
+
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             var recordUrl = ParentRecordURL.Get(executionContext);
@@ -26,7 +30,7 @@ namespace msdyncrmWorkflowTools
                 throw new InvalidPluginExecutionException("Parent Record URL is required.");
             }
 
-            common.CalculateRollupField(common.GetRecordReference(recordUrl), FieldName.Get(executionContext));
+            common.CalculateRollupField(common.GetRecordReference(recordUrl), FieldName.Get(executionContext), CopyResultToField.Get(executionContext));
         }
     }
 }

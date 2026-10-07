@@ -113,6 +113,7 @@
     <Compile Include="Utility_Tests.ExternalServices.cs" />
     <Compile Include="Utility_Tests.Hashing.cs" />
     <Compile Include="Utility_Tests.Json.cs" />
+    <Compile Include="Utility_Tests.Numbers.cs" />
     <Compile Include="Utility_Tests.Rollups.cs" />
     <Compile Include="Utility_Tests.TextAndDates.cs" />
   </ItemGroup>
