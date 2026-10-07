@@ -67,26 +67,25 @@ namespace msdyncrmWorkflowTools
         /// <param name="value">The attribute value, e.g. entity.Attributes["name"]. Null returns null.</param>
         public static string AttributeValueToString(object value)
         {
-            while (true)
+            if (value is AliasedValue aliasedValue)
             {
-                switch (value)
-                {
-                    case null:
-                        return null;
-                    case AliasedValue aliasedValue:
-                        value = aliasedValue.Value;
-                        continue;
-                    case OptionSetValue optionSetValue:
-                        return optionSetValue.Value.ToString();
-                    case OptionSetValueCollection optionSetValues:
-                        return string.Join(",", optionSetValues.Select(o => o.Value));
-                    case EntityReference entityReference:
-                        return entityReference.Id.ToString();
-                    case Money money:
-                        return money.Value.ToString(CultureInfo.InvariantCulture);
-                    default:
-                        return value.ToString();
-                }
+                value = aliasedValue.Value;
+            }
+
+            switch (value)
+            {
+                case null:
+                    return null;
+                case OptionSetValue optionSetValue:
+                    return optionSetValue.Value.ToString();
+                case OptionSetValueCollection optionSetValues:
+                    return string.Join(",", optionSetValues.Select(o => o.Value));
+                case EntityReference entityReference:
+                    return entityReference.Id.ToString();
+                case Money money:
+                    return money.Value.ToString(CultureInfo.InvariantCulture);
+                default:
+                    return value.ToString();
             }
         }
 
