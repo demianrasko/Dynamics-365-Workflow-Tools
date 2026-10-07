@@ -136,5 +136,6 @@ Cases and marketing list membership are not part of Dataverse either, so these a
 
 To build the Power Platform version, which leaves these activities out, run `msbuild msdyncrmWorkflowTools\msdyncrmWorkflowTools\msdyncrmWorkflowTools.csproj /p:Configuration=Release /p:PowerPlatform=true`. It builds `powerplatformWorkflowTools.dll` (the same assembly name as the original Power Platform version, so existing installs upgrade in place) in `bin\Release-PowerPlatform`.
 
-![](docs/Home_wf1_61.gif)
+| ![](docs/WFT%20activities-1.png) | ![](docs/WFT%20activities-2.png) | ![](docs/WFT%20activities-3.png) |
+| :---: | :---: | :---: |
 
