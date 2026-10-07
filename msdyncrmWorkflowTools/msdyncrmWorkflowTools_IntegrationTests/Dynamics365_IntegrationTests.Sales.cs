@@ -125,6 +125,19 @@ namespace msdyncrmWorkflowTools_IntegrationTests
         }
 
         [TestMethod]
+        public void ManyToMany_FindsLeadsLinkedToAnAccount()
+        {
+            // accountleads_association's metadata pairs each table with the other one's intersect attribute
+            var account = Create(new Entity(EntityNames.Account) { [AttributeNames.Name] = UniqueName("account") });
+            var lead = Create(new Entity(EntityNames.Lead) { ["lastname"] = UniqueName("lead") });
+
+            Common.AssociateEntity(EntityNames.Account, account.Id, "accountleads_association", "accountleads", EntityNames.Lead, lead.Id);
+
+            CollectionAssert.AreEqual(new[] { lead.Id }, Common.GetManyToManyRelatedIds("accountleads_association", EntityNames.Account, account.Id));
+            CollectionAssert.AreEqual(new[] { account.Id }, Common.GetManyToManyRelatedIds("accountleads_association", EntityNames.Lead, lead.Id));
+        }
+
+        [TestMethod]
         public void QualifyLead_CreatesTheAccountContactAndOpportunity()
         {
             var lead = Create(new Entity(EntityNames.Lead)

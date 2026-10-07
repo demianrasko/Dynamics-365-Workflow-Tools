@@ -103,9 +103,21 @@ namespace msdyncrmWorkflowTools
                 return ids.ToList();
             }
 
-            return RetrieveAllIds(relationship.Entity1LogicalName == primaryEntityName 
-                ? ManyToManyRelatedQuery(relationship.Entity2LogicalName, relationship.Entity2IntersectAttribute, relationship.Entity2IntersectAttribute, intersect, relationship.Entity1IntersectAttribute, primaryEntityId) 
-                : ManyToManyRelatedQuery(relationship.Entity1LogicalName, relationship.Entity1IntersectAttribute, relationship.Entity1IntersectAttribute, intersect, relationship.Entity2IntersectAttribute, primaryEntityId));
+            var primaryIsEntity1 = relationship.Entity1LogicalName == primaryEntityName;
+            var relatedEntityName = primaryIsEntity1 ? relationship.Entity2LogicalName : relationship.Entity1LogicalName;
+            var primaryAttribute = primaryIsEntity1 ? relationship.Entity1IntersectAttribute : relationship.Entity2IntersectAttribute;
+            var relatedAttribute = primaryIsEntity1 ? relationship.Entity2IntersectAttribute : relationship.Entity1IntersectAttribute;
+
+            // some system relationships list each intersect attribute against the other table, e.g. accountleads_association:
+            // Entity1 account with leadid, Entity2 lead with accountid
+            if (primaryAttribute == $"{relatedEntityName}id" && relatedAttribute == $"{primaryEntityName}id")
+            {
+                var swapped = primaryAttribute;
+                primaryAttribute = relatedAttribute;
+                relatedAttribute = swapped;
+            }
+
+            return RetrieveAllIds(ManyToManyRelatedQuery(relatedEntityName, relatedAttribute, relatedAttribute, intersect, primaryAttribute, primaryEntityId));
         }
 
         /// <summary>

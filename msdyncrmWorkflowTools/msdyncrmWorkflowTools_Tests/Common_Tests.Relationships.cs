@@ -58,6 +58,37 @@ namespace msdyncrmWorkflowTools_Tests
         }
 
         [TestMethod]
+        public void GetManyToManyRelatedIds_HandlesSwappedIntersectAttributes()
+        {
+            // accountleads_association's metadata pairs account with leadid and lead with accountid
+            service.OnExecute = r => new RetrieveRelationshipResponse
+            {
+                Results =
+                {
+                    ["RelationshipMetadata"] = new ManyToManyRelationshipMetadata
+                    {
+                        Entity1LogicalName = "account", Entity1IntersectAttribute = "leadid",
+                        Entity2LogicalName = "lead", Entity2IntersectAttribute = "accountid",
+                        IntersectEntityName = "accountleads"
+                    }
+                }
+            };
+
+            common.GetManyToManyRelatedIds("accountleads_association", "account", IdA);
+            common.GetManyToManyRelatedIds("accountleads_association", "lead", IdA);
+
+            var fromAccount = (QueryExpression)service.Queries[0];
+            Assert.AreEqual("lead", fromAccount.EntityName);
+            Assert.AreEqual("leadid", fromAccount.LinkEntities.Single().LinkFromAttributeName);
+            AssertCondition(fromAccount.LinkEntities.Single().LinkCriteria.Conditions.Single(), "accountid", ConditionOperator.Equal, IdA);
+
+            var fromLead = (QueryExpression)service.Queries[1];
+            Assert.AreEqual("account", fromLead.EntityName);
+            Assert.AreEqual("accountid", fromLead.LinkEntities.Single().LinkFromAttributeName);
+            AssertCondition(fromLead.LinkEntities.Single().LinkCriteria.Conditions.Single(), "leadid", ConditionOperator.Equal, IdA);
+        }
+
+        [TestMethod]
         public void ChildRecordsFetchXml_AddsTheUserFilterAndEscapesValues()
         {
             var fetch = Common.ChildRecordsFetchXmlQuery("contact", "parentcustomerid", IdA, "<condition attribute='lastname' operator='eq' value='O&apos;Brien' />");
