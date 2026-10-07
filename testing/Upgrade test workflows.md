@@ -73,7 +73,7 @@ The **Inputs** column gives what to enter. *Record URL* means the record's **Rec
 
 | # | Activity | Inputs |
 | --- | --- | --- |
-| 1 | Query Values | EntityName `contact`; Attribute1 `firstname`, Attribute2 `emailaddress1`; FilterAttribute1 `lastname`, ValueAttribute1 `Contact 1`; FilterAttribute2 `emailaddress1`, ValueAttribute2 `wft-1@example.com`. Filter on text columns only: the values are sent as text, so a status, choice, number or lookup filter (e.g. `statecode` = `0`) fails in 1.0.61.1. |
+| 1 | Query Values | EntityName `contact`; Attribute1 `firstname`, Attribute2 `emailaddress1`; FilterAttribute1 `lastname`, ValueAttribute1 `Contact 1`; FilterAttribute2 `emailaddress1`, ValueAttribute2 `wft-1@example.com`. Filter on text columns only: 1.0.61.1 sends the values as text, so a status, choice, number or lookup filter (e.g. `statecode` = `0`) fails there (ours converts them; see the expected differences). |
 | 2 | Rollup Functions | FetchXML: contacts with `parentcustomerid` = `{PARENT_GUID}`, attribute `numberofchildren` (give the contacts 1, 2 and 3 children) |
 | 3 | Concatenate From Query | FetchXML: the same contacts, attribute `fullname`; Separator `, `; Top Record Count 0 |
 | 4 | Count Child Entity Records | Child Entity Schema Name `contact`; Parent Lookup Field `parentcustomerid`; Record URL (Parent) = Record URL; FetchXML Filter `<filter><condition attribute="statecode" operator="eq" value="0" /></filter>` |
@@ -264,6 +264,7 @@ The **Inputs** column gives what to enter. *Record URL* means the record's **Rec
 - **Currency Convert** working means 13 now reaches **Translate Text**, which fails with HTTP 401 without a Translator key.
 - **Send Email To Users In Role** fails with a clear message when nobody has the role ("No enabled user has the security role …") instead of "The e-mail must have at least one recipient" (09).
 - **Error messages** name the activity, e.g. "ApplyRoutingRule: Currently there's no active rule to route this case." (11c).
+- **Query Values** can filter on status, choice, number, currency, date, Yes/No and lookup columns: the value is converted to the column's type (e.g. `statecode` = `0`, a lookup's GUID). 1.0.61.1 sent it as text, which failed. Text filters are unchanged (02).
 - **Entity Json Serializer** writes compact JSON, and a multi-select column as an array of values (`[100000000,100000002]`) instead of the type name `Microsoft.Xrm.Sdk.OptionSetValueCollection` (12).
 
 Anything else that differs is a regression to look at.

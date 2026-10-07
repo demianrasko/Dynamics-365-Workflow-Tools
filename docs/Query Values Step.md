@@ -20,6 +20,16 @@ The full fields description are:
 * **ResultValue1** :  retrieved value for the first attribute
 * **ResultValue2** :  retrieved value for the second attribute 
 
+The filter values are typed as text and converted to the filter column's type, so you can filter on more than text columns:
+* **Choice, status and status reason**: the option's number, e.g. `statecode` = `0` for active records
+* **Whole number, decimal, floating point and currency**: the number, with a "." decimal point, e.g. `12.5`
+* **Yes/No**: `1` or `true` for Yes; anything else is No
+* **Date**: e.g. `2026-10-05`
+* **Lookup** (including Customer and Owner): the GUID of the record, e.g. from a Get Record ID step
+* An empty value finds records where the column is empty (for a column that isn't text)
+
+(Versions before 1.0.100.0 sent the value as text, so only text columns could be used as filters.)
+
 IMPORTANT NOTE: since version 1.0.36.0 the Attribute2 Parameter is required. for previous versions, please remember to fill something on it.
 
 Then you can use the retrieved values in following steps of the Workflow:

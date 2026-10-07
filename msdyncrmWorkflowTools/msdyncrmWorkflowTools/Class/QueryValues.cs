@@ -59,10 +59,11 @@ namespace msdyncrmWorkflowTools
             common.Trace(
                 $"EntityName: {entityName} - Attribute1:{attribute1} - Attribute2:{attribute2} - FilterAttribute1:{filterAttribute1} - FilterAttribute2:{filterAttribute2} - ValueAttribute1:{valueAttribute1} ValueAttribute2:{valueAttribute2}");
 
+            // the values are typed as text; a choice, status, number, date, Yes/No or lookup column needs its own type
             var record = common.RetrieveFirstMatch(entityName,
                 new[] { attribute1, attribute2 },
-                new KeyValuePair<string, object>(filterAttribute1, valueAttribute1),
-                new KeyValuePair<string, object>(filterAttribute2, valueAttribute2));
+                new KeyValuePair<string, object>(filterAttribute1, string.IsNullOrEmpty(filterAttribute1) ? null : common.ToFilterValue(entityName, filterAttribute1, valueAttribute1)),
+                new KeyValuePair<string, object>(filterAttribute2, string.IsNullOrEmpty(filterAttribute2) ? null : common.ToFilterValue(entityName, filterAttribute2, valueAttribute2)));
 
             if (record == null)
             {

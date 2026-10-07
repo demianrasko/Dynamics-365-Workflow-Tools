@@ -38,6 +38,25 @@ namespace msdyncrmWorkflowTools
         }
 
         /// <summary>
+        /// A typed attribute value as a query condition compares it: the number of a choice, the amount of a currency
+        /// value and the id of a lookup; anything else as it is.
+        /// </summary>
+        public static object ToConditionValue(object value)
+        {
+            switch (value)
+            {
+                case OptionSetValue option:
+                    return option.Value;
+                case Money money:
+                    return money.Value;
+                case EntityReference reference:
+                    return reference.Id;
+                default:
+                    return value;
+            }
+        }
+
+        /// <summary>
         /// Converts a Dataverse attribute value to the string a workflow output expects.
         /// </summary>
         /// <remarks>
@@ -269,6 +288,7 @@ namespace msdyncrmWorkflowTools
         /// </summary>
         /// <param name="value">The value: text from a workflow input, or a value copied from another field.</param>
         /// <param name="attribute">Metadata of the field the value is written to.</param>
+        /// <seealso cref="ToConditionValue"/>
         /// <exception cref="InvalidPluginExecutionException">The value can't be stored in the field, or a GUID is given for
         /// a lookup that can point to more than one table.</exception>
         public static object ConvertToAttributeType(object value, AttributeMetadata attribute)

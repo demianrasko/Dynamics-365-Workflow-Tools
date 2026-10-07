@@ -1,5 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Messages;
+using Microsoft.Xrm.Sdk.Metadata;
 using Microsoft.Xrm.Sdk.Query;
 using msdyncrmWorkflowTools;
 using System;
@@ -156,6 +158,43 @@ namespace msdyncrmWorkflowTools_Tests
             Assert.AreEqual(1, query.TopCount);
             CollectionAssert.AreEqual(new[] { "name" }, query.ColumnSet.Columns.ToArray());
             AssertCondition(query.Criteria.Conditions.Single(), "accountnumber", ConditionOperator.Equal, "A-1");
+        }
+
+        [TestMethod]
+        public void FirstMatch_NullValueMatchesAnEmptyColumn()
+        {
+            var query = Common.FirstMatchQuery("account", new[] { "name" }, new KeyValuePair<string, object>("accountnumber", null));
+
+            var condition = query.Criteria.Conditions.Single();
+            Assert.AreEqual(ConditionOperator.Null, condition.Operator);
+            Assert.AreEqual(0, condition.Values.Count);
+        }
+
+        [TestMethod]
+        public void ToFilterValue_ConvertsTheTextToTheColumnsType()
+        {
+            // Query Values filters are typed as text; statecode = "0" used to fail (testing\Upgrade test workflows.md, 02)
+            var customerId = Guid.NewGuid();
+            AttributeMetadata column = null;
+            service.OnExecute = r => new RetrieveAttributeResponse { Results = { ["AttributeMetadata"] = column } };
+
+            column = new StateAttributeMetadata { LogicalName = "statecode" };
+            Assert.AreEqual(0, common.ToFilterValue("account", "statecode", "0"));
+            column = new IntegerAttributeMetadata { LogicalName = "numberofemployees" };
+            Assert.AreEqual(25, common.ToFilterValue("account", "numberofemployees", "25"));
+            Assert.IsNull(common.ToFilterValue("account", "numberofemployees", string.Empty));
+            column = new MoneyAttributeMetadata { LogicalName = "creditlimit" };
+            Assert.AreEqual(12.5m, common.ToFilterValue("account", "creditlimit", "12.5"));
+            column = new BooleanAttributeMetadata { LogicalName = "donotemail" };
+            Assert.AreEqual(true, common.ToFilterValue("account", "donotemail", "1"));
+            column = new LookupAttributeMetadata(LookupFormat.None) { LogicalName = "parentcustomerid", Targets = new[] { "account", "contact" } };
+            Assert.AreEqual(customerId, common.ToFilterValue("contact", "parentcustomerid", customerId.ToString()));
+            column = new StringAttributeMetadata { LogicalName = "lastname" };
+            Assert.AreEqual("Contact 1", common.ToFilterValue("contact", "lastname", "Contact 1"));
+
+            var request = (RetrieveAttributeRequest)service.Executed.Last();
+            Assert.AreEqual("contact", request.EntityLogicalName);
+            Assert.AreEqual("lastname", request.LogicalName);
         }
 
         [TestMethod]

@@ -55,6 +55,29 @@ namespace msdyncrmWorkflowTools_IntegrationTests
         }
 
         [TestMethod]
+        public void ToFilterValue_LetsQueryValuesFilterOnNumbersStatusAndLookups()
+        {
+            // Query Values' filter values are text; these columns need a number, a status and a GUID
+            var name = UniqueName("filter");
+            var account = Create(new Entity(EntityNames.Account) { [AttributeNames.Name] = name, ["numberofemployees"] = 42 });
+            var contact = CreateContact(account);
+
+            var byNumber = Common.RetrieveFirstMatch(EntityNames.Account, new[] { AttributeNames.Name },
+                new KeyValuePair<string, object>(AttributeNames.Name, Common.ToFilterValue(EntityNames.Account, AttributeNames.Name, name)),
+                new KeyValuePair<string, object>("numberofemployees", Common.ToFilterValue(EntityNames.Account, "numberofemployees", "42")));
+            Assert.AreEqual(account.Id, byNumber?.Id);
+
+            var byStatus = Common.RetrieveFirstMatch(EntityNames.Account, new[] { AttributeNames.Name },
+                new KeyValuePair<string, object>(AttributeNames.Name, name),
+                new KeyValuePair<string, object>(AttributeNames.StateCode, Common.ToFilterValue(EntityNames.Account, AttributeNames.StateCode, "0")));
+            Assert.AreEqual(account.Id, byStatus?.Id);
+
+            var byLookup = Common.RetrieveFirstMatch(EntityNames.Contact, new[] { "lastname" },
+                new KeyValuePair<string, object>("parentcustomerid", Common.ToFilterValue(EntityNames.Contact, "parentcustomerid", account.Id.ToString())));
+            Assert.AreEqual(contact.Id, byLookup?.Id);
+        }
+
+        [TestMethod]
         public void RetrieveFirstMatch_FindsTheRecordByItsValues()
         {
             var name = UniqueName("match");

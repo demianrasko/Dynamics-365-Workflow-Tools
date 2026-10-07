@@ -210,6 +210,18 @@ namespace msdyncrmWorkflowTools_Tests
         }
 
         [TestMethod]
+        public void ToConditionValue_UnwrapsChoicesMoneyAndLookups()
+        {
+            var id = Guid.NewGuid();
+
+            Assert.AreEqual(2, Utility.ToConditionValue(new OptionSetValue(2)));
+            Assert.AreEqual(7.5m, Utility.ToConditionValue(new Money(7.5m)));
+            Assert.AreEqual(id, Utility.ToConditionValue(new EntityReference(EntityNames.Account, id)));
+            Assert.AreEqual("text", Utility.ToConditionValue("text"));
+            Assert.IsNull(Utility.ToConditionValue(null));
+        }
+
+        [TestMethod]
         public void ConvertToAttributeType_KeepsTypedValuesAndClearsOnEmpty()
         {
             var money = new Money(5m);

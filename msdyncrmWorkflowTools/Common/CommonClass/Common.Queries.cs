@@ -1,5 +1,7 @@
 ﻿using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Messages;
+using Microsoft.Xrm.Sdk.Metadata;
 using Microsoft.Xrm.Sdk.Query;
 using System;
 using System.Collections.Generic;
@@ -144,8 +146,8 @@ namespace msdyncrmWorkflowTools
         }
 
         /// <summary>
-        /// The first record of <paramref name="entityName"/> where every filter attribute equals its value.
-        /// Empty column names and filters with an empty attribute name are skipped.
+        /// The first record of <paramref name="entityName"/> where every filter attribute equals its value (a null
+        /// value matches an empty attribute). Empty column names and filters with an empty attribute name are skipped.
         /// </summary>
         public static QueryExpression FirstMatchQuery(string entityName, IEnumerable<string> columns, params KeyValuePair<string, object>[] equalFilters)
         {
@@ -157,10 +159,42 @@ namespace msdyncrmWorkflowTools
 
             foreach (var filter in equalFilters.Where(f => !string.IsNullOrEmpty(f.Key)))
             {
-                query.Criteria.AddCondition(filter.Key, ConditionOperator.Equal, filter.Value);
+                if (filter.Value == null)
+                {
+                    query.Criteria.AddCondition(filter.Key, ConditionOperator.Null);
+                }
+                else
+                {
+                    query.Criteria.AddCondition(filter.Key, ConditionOperator.Equal, filter.Value);
+                }
             }
 
             return query;
+        }
+
+        /// <summary>
+        /// A value typed into a workflow as text, converted for comparing with a column in a query: a number for whole
+        /// number, decimal, currency, choice and status columns, true/false for Yes/No, a date, and the GUID for any
+        /// lookup (see <see cref="Utility.ConvertToAttributeType"/>). Text columns compare with the text as it is.
+        /// </summary>
+        /// <returns>The value, or null for an empty value of a column that isn't text.</returns>
+        /// <exception cref="InvalidPluginExecutionException">The text can't be read as the column's type.</exception>
+        public object ToFilterValue(string entityName, string attributeName, string value)
+        {
+            var response = (RetrieveAttributeResponse)Service.Execute(new RetrieveAttributeRequest
+            {
+                EntityLogicalName = entityName,
+                LogicalName = attributeName
+            });
+            var attribute = response.AttributeMetadata;
+
+            // a lookup is compared by its id, whichever table it points to
+            if (attribute is LookupAttributeMetadata && Guid.TryParse(value, out var id))
+            {
+                return id;
+            }
+
+            return Utility.ToConditionValue(Utility.ConvertToAttributeType(value, attribute));
         }
 
         /// <summary>
