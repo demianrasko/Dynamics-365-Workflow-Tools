@@ -9,8 +9,9 @@ To import the Solution follow these steps:
 * Download the ZIP file from the Releases tab (https://github.com/demianrasko/Dynamics-365-Workflow-Tools/releases)
  Access to the Dynamics 365 (CRM) environment and navigate to Settings>Solutions
 * Click on Import and select the ZIP file
-* Follow the wizzard steps
+* Follow the wizard steps
 
+## Available Activities
 To see how to use each of the tools includes in this solution, please access to the following links:
 * 1: [Force Calculate Rollup Field](/docs/Force%20Calculate%20Rollup%20Field.md)
 * 2: [Apply Routing Rules](/docs/Apply%20Routing%20Rules.md)
@@ -109,8 +110,16 @@ To see how to use each of the tools includes in this solution, please access to 
 * 95 [Get Environment Variable](/docs/GetEnvironmentVariable.md)
 
 
+## Activities, as seen in the Workflow Designer
 
-NOTE ABOUT CDS: The CDS Version not include all the actions, because it requires the entities "lead, salesliterature, list" not included in CDS. The Actions not included in the CDS Version are:
+| ![](docs/WFT%20activities-1.png) | ![](docs/WFT%20activities-2.png) | ![](docs/WFT%20activities-3.png) |
+| :---: | :---: | :---: |
+
+
+## Activities for the Power Platform (Dataverse, formerly the CDS)
+The Power Platform version does not include all of the actions, because their associated tables are not included in the Power Platform environment. 
+
+The Actions not included in the Power Platform version are:
 
 - QualifyLead
 - RemoveFromMarketingList
@@ -120,22 +129,12 @@ NOTE ABOUT CDS: The CDS Version not include all the actions, because it requires
 - CopyMarketingListMembers
 - AddMarketingListToCampaign
 - SalesLiteratureToEmail
-
-The quote and opportunity activities added since then are left out of the Power Platform version too, because they need the Sales tables opportunity, product, quote, quotedetail and uom:
-
 - CreateOpportunityProduct
 - CreateQuoteFromOpportunity
 - UpdateProductQuoteValue
 - UpdateQuoteValue
 - WinQuote
-
-Cases and marketing list membership are not part of Dataverse either, so these are left out too:
-
 - ResolveCase (incident)
 - RemoveFromAllMarketingLists (listmember)
 
 To build the Power Platform version, which leaves these activities out, run `msbuild msdyncrmWorkflowTools\msdyncrmWorkflowTools\msdyncrmWorkflowTools.csproj /p:Configuration=Release /p:PowerPlatform=true`. It builds `powerplatformWorkflowTools.dll` (the same assembly name as the original Power Platform version, so existing installs upgrade in place) in `bin\Release-PowerPlatform`.
-
-| ![](docs/WFT%20activities-1.png) | ![](docs/WFT%20activities-2.png) | ![](docs/WFT%20activities-3.png) |
-| :---: | :---: | :---: |
-
