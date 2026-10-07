@@ -259,7 +259,7 @@ The **Inputs** column gives what to enter. *Record URL* means the record's **Rec
 - **Update Child Records** handles more field types and more than 5,000 children. Behaviour for text and Yes/No fields is unchanged (03b).
 - **Rollup Functions Min** was 0 on 1.0.61.1 when values exist; now it's the real minimum (02).
 - **Calculate Agregate Date** still returns 1753-01-01 with Ok = No when nothing is found (unchanged).
-- **Set User Settings:** on steps saved before the upgrade, DefaultCalendarView and IsSendAsAllowed behave exactly as before. That's the SetUserSettings TODO to confirm here.
+- **Set User Settings:** on steps saved before the upgrade, DefaultCalendarView and IsSendAsAllowed behave exactly as before (confirmed in 07: same results, and the step opens in the designer).
 - **Clone Record:** the copy is still always created active (unchanged).
 - **Currency Convert** working means 13 now reaches **Translate Text**, which fails with HTTP 401 without a Translator key.
 - **Send Email To Users In Role** fails with a clear message when nobody has the role ("No enabled user has the security role …") instead of "The e-mail must have at least one recipient" (09).
