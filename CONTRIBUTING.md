@@ -82,6 +82,14 @@ Each activity is registered under its `[ActivityName]` (the name in the workflow
 
 The **Packaging** integration test imports the built unmanaged Power Platform solution into the Power Platform test environment, to prove Dataverse accepts it.
 
+### Releasing
+
+The **Release** workflow (`.github\workflows\release.yml`) runs when a version tag is pushed. It builds both assemblies, runs the unit tests, builds the solution files and creates a draft release with the four zips attached.
+
+1. Set the new version in `Properties\AssemblyInfo.cs` (keep it 1.0.x), merge to master, and run **Integration tests** there.
+2. Tag master with the same version and push the tag: `git tag 1.0.101.0 origin/master` and `git push origin 1.0.101.0`. The workflow stops if the tag doesn't match the assembly version.
+3. On the Releases page, check the draft and its notes, mark it as a pre-release if it isn't ready for everyone, and publish it.
+
 ### Integration tests (real Dataverse environments)
 
 Unit tests (`msdyncrmWorkflowTools_Tests`) use a fake organization service and run everywhere. The integration tests are a separate project, `msdyncrmWorkflowTools_IntegrationTests`, that runs `Common` against real environments: every test in `IntegrationTestBase` runs once against a Dynamics 365 environment and once against a plain Dataverse (Power Platform) environment. Without the environments set up they are inconclusive.
