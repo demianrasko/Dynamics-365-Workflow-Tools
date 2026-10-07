@@ -1,11 +1,11 @@
 # Upgrade test workflows
 
-Classic workflows to build in **tldsandbox** while it runs Demian's published **Dynamics365WorkflowTools 1.0.61.1**, so the upgrade to our build can be checked step by step. Together they use all 79 activities in 1.0.61.1. The activities added since 1.0.61.1 get their own set later.
+Classic workflows to build in **tldsandbox** while it runs Demian's published **Dynamics365WorkflowTools 1.0.61.1**, so the upgrade to our build can be checked step by step. Together they use all 79 activities in 1.0.61.1. The 16 activities added since 1.0.61.1 are tested by 14 to 16, built after the upgrade (they need our build).
 
 **The plan:**
 
 1. Create the test data below.
-2. Build the 14 workflows below. All of them are **on-demand**, never automatic, and each one ends with a **log note**.
+2. Build the workflows below (01 to 13; 14 to 16 test the newer activities after the upgrade). All of them are **on-demand**, never automatic, and each one ends with a **log note**.
    `testing\solutions` has all 16 exported from tldsandbox as the UpgradeTestWorkflows solution (unmanaged and managed). Their steps point at tldsandbox's records (WFT Team, WFT Test, WFT Test BPF and the others), and WFT Test and WFT Test BPF aren't in the solution, so in another environment build them with the script instead.
    01 to 03 were built in the designer. `tools\Publish-UpgradeTestWorkflows.ps1` builds 03b to 13, with every input filled in, as drafts (it needs Python 3); open each one in the designer to check it, then activate it.
 3. Run each workflow on its test record and keep the log notes and system jobs: this is the 1.0.61.1 baseline. `tools\Invoke-UpgradeTestRun.ps1 -Label before -User <your email>` does it: it refreshes the test data, runs every workflow in turn, collects each one's log notes and checks the records it created or changed, cleans up after, and saves `results.json` and `summary.md` in `testing\results\<date> before\`.
@@ -243,6 +243,65 @@ The **Inputs** column gives what to enter. *Record URL* means the record's **Rec
 | 1 | Currency Convert | Amount 100, From `EUR`, To `USD`. **Expected to fail on 1.0.61.1**: it calls Google's retired service. Ours uses Frankfurter, so put it in its own workflow. |
 | 2 | Translate Text | Text `Hola`; Language `pt`; Authentication key = a Translator key (only if you have one) |
 | 3 | Geocode Address | Address = Address 1; Bing Maps Key = a key (Bing keys are being retired, so it may fail both before and after) |
+
+## The activities added since 1.0.61.1
+
+Built with `tools\Publish-UpgradeTestWorkflows.ps1` on our build, and run by `tools\Invoke-UpgradeTestRun.ps1` with the others. Their test data comes from the data script: the draft *WFT Quote* with a line, an active *WFT Quote Win* (made again for each run, since 15b wins it), *WFT Child Account* (a child of WFT Upgrade Account) and the environment variable `new_wfttestvariable` (default `wft default`).
+
+### 14 WFT AI — Account
+
+| # | Activity | Inputs |
+| --- | --- | --- |
+| 1 | AI Summarize Record | Record URL |
+| 2 | AI Summarize Text | A few sentences about a late delivery |
+| 3 | AI Classify Text | `My invoice shows the wrong amount.`; categories `Billing,Support,Sales` |
+| 4 | AI Sentiment Detect | `I love the new product, thank you!` |
+| 5 | AI Draft Reply | `Can you send me the price list for next year?` |
+| 6 | AI Translate Text | `Hello, how are you?` to `fr` |
+| 7 | Log note | Each output, Failed and FailureMessage |
+
+The AI answers differ from run to run, so the comparison always shows them. In tldsandbox the text activities fail with "No capacity was found" (no AI Builder capacity); Summarize Record works.
+
+### 15a WFT Quotes — Opportunity (run on WFT Opportunity)
+
+| # | Activity | Inputs |
+| --- | --- | --- |
+| 1 | Create Opportunity Product | Opportunity = this; Product = WFT Product; Unit = its default unit; Quantity 3 |
+| 2 | Create Quote From Opportunity | Opportunity = this |
+| 3 | Update Quote Value | Quote = step 2's quote; Discount Amount 5; field `discountamount` |
+| 4 | Log note | The quote's name |
+
+The run deletes the opportunity product and the quote afterwards, so WFT Opportunity's total (11a) doesn't change.
+
+### 15b WFT Win quote — Quote (run on the active WFT Quote Win)
+
+| # | Activity | Inputs |
+| --- | --- | --- |
+| 1 | Win Quote | Quote = this; Message `WFT won` |
+| 2 | Log note | — |
+
+### 15c WFT Quote product discount — Quote product (run on WFT Quote's line)
+
+| # | Activity | Inputs |
+| --- | --- | --- |
+| 1 | Update Product Quote Value | Quote Product = this; Discount Amount 1; field `manualdiscountamount` |
+
+No log note: quote products don't have notes.
+
+### 16 WFT Utilities — Account
+
+| # | Activity | Inputs |
+| --- | --- | --- |
+| 1 | Get Environment Variable | `new_wfttestvariable` |
+| 2 | Get Record URL | Record URL as reference; WFT Contact 1's id; `contact` |
+| 3 | Execute Workflow For Records in Query | Process = WFT Test Lead; a fetch for WFT Lead |
+| 4 | Distribute Workflow 1:N | `account_parent_account`; WFT Test (runs on WFT Child Account) |
+| 5 | Associate Entity | WFT Lead's URL; `accountleads_association` |
+| 6 | Distribute Workflow N:N | `accountleads_association`; WFT Test Lead |
+| 7 | Disassociate Entity | The same |
+| 8 | Log note | The variable's value, Found, the record URL |
+
+*WFT Test Lead* (on-demand, lead) only writes a note "WFT Test Lead ran", so the run counts its notes on WFT Lead: two, one from step 3 and one from step 6. The first run of 16 found a bug: Distribute N:N found nothing for `accountleads_association`, whose metadata pairs each table with the other one's intersect column; it's fixed.
 
 ## After the upgrade: what to check
 

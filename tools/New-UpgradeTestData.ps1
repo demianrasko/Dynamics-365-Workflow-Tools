@@ -200,6 +200,56 @@ catch {
     Write-Warning "The opportunity couldn't be created (a plug-in in this environment may block it): $_"
 }
 
+# ---- quotes (15b wins one, 15c discounts a line of the other) -------------------------------------------------------
+
+function New-Quote([string]$what, [string]$name, [string]$filter) {
+    $existing = Get-Records 'quotes' "`$select=quoteid&`$filter=name eq '$name' and $filter&`$top=1"
+
+    if ($existing.Count -gt 0) {
+        $kept.Add($what)
+        return $existing[0].quoteid
+    }
+
+    $quote = Invoke-Api POST 'quotes' @{
+        name                            = $name
+        'customerid_account@odata.bind' = Bind 'accounts' $account
+        'pricelevelid@odata.bind'       = Bind 'pricelevels' $priceList
+    }
+
+    Invoke-Api POST 'quotedetails' @{
+        quantity               = 1
+        'quoteid@odata.bind'   = Bind 'quotes' $quote
+        'productid@odata.bind' = Bind 'products' $product
+        'uomid@odata.bind'     = Bind 'uoms' $unit.uomid
+    } | Out-Null
+
+    $created.Add($what)
+
+    return $quote
+}
+
+New-Quote 'Quote WFT Quote (draft, with a line)' 'WFT Quote' 'statecode eq 0' | Out-Null
+$winQuote = New-Quote 'Quote WFT Quote Win (active)' 'WFT Quote Win' 'statecode eq 1'
+
+# a new quote is a draft; Win Quote needs an active one
+if ((Invoke-Api GET "quotes($winQuote)?`$select=statecode").statecode -eq 0) {
+    Invoke-Api PATCH "quotes($winQuote)" @{ statecode = 1; statuscode = 2 } | Out-Null
+}
+
+# ---- child account and environment variable (16) -------------------------------------------------------------------
+
+Find-OrCreate 'Account WFT Child Account' 'accounts' 'accountid' "name eq 'WFT Child Account'" @{
+    name                         = 'WFT Child Account'
+    'parentaccountid@odata.bind' = Bind 'accounts' $account
+} | Out-Null
+
+Find-OrCreate 'Environment variable new_wfttestvariable' 'environmentvariabledefinitions' 'environmentvariabledefinitionid' "schemaname eq 'new_wfttestvariable'" @{
+    schemaname   = 'new_wfttestvariable'
+    displayname  = 'WFT Test Variable'
+    type         = 100000000
+    defaultvalue = 'wft default'
+} | Out-Null
+
 # ---- case ----------------------------------------------------------------------------------------------------------
 
 Find-OrCreate 'Case WFT Case (active)' 'incidents' 'incidentid' "title eq 'WFT Case' and statecode eq 0" @{

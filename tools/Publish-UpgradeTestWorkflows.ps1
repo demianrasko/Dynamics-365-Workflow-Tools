@@ -1,6 +1,6 @@
 ﻿<#
 .SYNOPSIS
-    Builds the upgrade test workflows (testing\Upgrade test workflows.md) from WFT 03b to WFT 13.
+    Builds the upgrade test workflows (testing\Upgrade test workflows.md) from WFT 03b to WFT 16, and WFT Test Lead.
 
 .DESCRIPTION
     Generates each workflow's steps, with every input filled in, and saves it in the Dynamics 365 test environment
@@ -93,6 +93,9 @@ $activities = @(Get-Records 'plugintypes' "`$select=typename,customworkflowactiv
 $rootBusinessUnit = Get-TestRecord 'businessunit' 'businessunits' 'businessunitid' 'name' '_parentbusinessunitid_value eq null'
 $me = Invoke-Api GET 'WhoAmI'
 
+$product = Get-TestRecord 'product' 'products' 'productid' 'name' "productnumber eq 'WFT-PRODUCT'"
+$productUnit = (Invoke-Api GET "products($($product.id))?`$select=_defaultuomid_value")._defaultuomid_value
+
 $records = @{
     team             = Get-TestRecord 'team' 'teams' 'teamid' 'name' "name eq 'WFT Team'"
     role             = Get-TestRecord 'role' 'roles' 'roleid' 'name' "name eq 'WFT Role' and _businessunitid_value eq $($rootBusinessUnit.id)"
@@ -115,6 +118,8 @@ $records = @{
     scratch          = Get-TestRecord 'account' 'accounts' 'accountid' 'name' "name eq 'WFT Scratch Account'"
     lead             = Get-TestRecord 'lead' 'leads' 'leadid' 'fullname' "emailaddress1 eq 'wft-lead@example.com'"
     opportunity      = Get-TestRecord 'opportunity' 'opportunities' 'opportunityid' 'name' "name eq 'WFT Opportunity'"
+    product          = $product
+    uom              = Get-TestRecord 'uom' 'uoms' 'uomid' 'name' "uomid eq $productUnit"
     choiceTwo        = Get-OptionValue 'account' 'new_wfttestchoices' 'MultiSelectPicklistAttributeMetadata' 'Two'
     processStage     = $ProcessStage
     # Join builds the clone's URL from this and the cloned id

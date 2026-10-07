@@ -174,6 +174,13 @@ $choiceThree = Get-OptionValue 'account' 'new_wfttestchoices' 'MultiSelectPickli
 $scratch = Get-Required 'An active WFT Scratch Account' 'accounts' "`$select=accountid,name&`$filter=name eq 'WFT Scratch Account' and statecode eq 0&`$orderby=createdon desc"
 $qualifyLead = Get-Required 'An open WFT Lead Qualify' 'leads' "`$select=leadid,fullname&`$filter=emailaddress1 eq 'wft-qualify@example.com' and statecode eq 0&`$orderby=createdon desc"
 $case = Get-Required 'An active WFT Case' 'incidents' "`$select=incidentid,title&`$filter=title eq 'WFT Case' and statecode eq 0&`$orderby=createdon desc"
+$winQuote = Get-Required 'An active WFT Quote Win' 'quotes' "`$select=quoteid,name&`$filter=name eq 'WFT Quote Win' and statecode eq 1&`$orderby=createdon desc"
+
+# 15c discounts the line of the draft WFT Quote; 16 runs workflows on WFT Child Account and WFT Lead
+$draftQuote = Get-Required 'The draft WFT Quote' 'quotes' "`$select=quoteid&`$filter=name eq 'WFT Quote' and statecode eq 0&`$orderby=createdon desc"
+$quoteLine = Get-Required "WFT Quote's line" 'quotedetails' "`$select=quotedetailid&`$filter=_quoteid_value eq $($draftQuote.quoteid)"
+$childAccount = Get-Required 'WFT Child Account' 'accounts' "`$select=accountid&`$filter=name eq 'WFT Child Account'"
+$wftLead = Get-Required 'WFT Lead' 'leads' "`$select=leadid&`$filter=emailaddress1 eq 'wft-lead@example.com'"
 
 $records = @{
     account     = @{ entity = 'account'; id = $account.accountid; name = $account.name }
@@ -181,6 +188,9 @@ $records = @{
     contact     = @{ entity = 'contact'; id = $contact1.contactid; name = $contact1.fullname }
     qualifyLead = @{ entity = 'lead'; id = $qualifyLead.leadid; name = $qualifyLead.fullname }
     case        = @{ entity = 'incident'; id = $case.incidentid; name = $case.title }
+    opportunity = @{ entity = 'opportunity'; id = $opportunity.opportunityid; name = 'WFT Opportunity' }
+    winQuote    = @{ entity = 'quote'; id = $winQuote.quoteid; name = $winQuote.name }
+    quoteLine   = @{ entity = 'quotedetail'; id = $quoteLine.quotedetailid; name = "WFT Quote's line" }
 }
 
 # ---- what each workflow did, beyond its log note -------------------------------------------------------------------
@@ -194,6 +204,7 @@ $wftTestRan = {
 $beforeStep = @{
     'WFT 03 Records'              = { Invoke-Api PATCH "accounts($($account.accountid))" @{ description = 'wft upgrade test' } | Out-Null }
     'WFT 10 Processes and queues' = { Invoke-Api PATCH "accounts($($account.accountid))" @{ description = 'wft upgrade test' } | Out-Null }
+    'WFT 16 Utilities'            = { Invoke-Api PATCH "accounts($($childAccount.accountid))" @{ description = $null } | Out-Null }
 }
 
 $checks = @{
@@ -322,6 +333,37 @@ $checks = @{
 
         $result
     }
+    'WFT 15a Quotes' = {
+        param($since)
+        $result = [ordered]@{}
+        $result['Opportunity products added'] = (Get-Records 'opportunityproducts' "`$select=opportunityproductid&`$filter=_opportunityid_value eq $($opportunity.opportunityid) and createdon ge $since").Count
+
+        foreach ($quote in Get-Records 'quotes' "`$select=name,discountamount,statecode&`$filter=_opportunityid_value eq $($opportunity.opportunityid) and createdon ge $since") {
+            $result['New quote'] = "$($quote.name), $($quote.'statecode@OData.Community.Display.V1.FormattedValue')"
+            $result['New quote discount'] = $quote.discountamount
+        }
+
+        $result
+    }
+    'WFT 15b Win quote' = {
+        param($since)
+        $quote = Invoke-Api GET "quotes($($winQuote.quoteid))?`$select=statecode,statuscode"
+        [ordered]@{ 'Quote state' = $quote.'statecode@OData.Community.Display.V1.FormattedValue'; 'Quote status' = $quote.'statuscode@OData.Community.Display.V1.FormattedValue' }
+    }
+    'WFT 15c Quote product discount' = {
+        param($since)
+        [ordered]@{ 'Quote line manual discount' = (Invoke-Api GET "quotedetails($($quoteLine.quotedetailid))?`$select=manualdiscountamount").manualdiscountamount }
+    }
+    'WFT 16 Utilities' = {
+        param($since)
+        [ordered]@{
+            # Distribute 1:N runs WFT Test, which sets the description to 1
+            'WFT Child Account description' = (Invoke-Api GET "accounts($($childAccount.accountid))?`$select=description").description
+            # Execute Workflow For Records in Query and Distribute N:N each run WFT Test Lead on WFT Lead
+            'WFT Test Lead runs on WFT Lead' = (Get-Records 'annotations' "`$select=annotationid&`$filter=_objectid_value eq $($wftLead.leadid) and subject eq 'WFT Test Lead ran' and createdon ge $since").Count
+            'Account still linked to WFT Lead' = (Get-Records "accounts($($account.accountid))/accountleads_association" "`$select=leadid&`$filter=leadid eq $($wftLead.leadid)").Count -gt 0
+        }
+    }
     'WFT 11c Case' = {
         param($since)
         $record = Invoke-Api GET "incidents($($case.incidentid))?`$select=statecode,statuscode"
@@ -343,7 +385,8 @@ $plan = @(
     @('WFT 06 Relationships', 'account'), @('WFT 07 Users, teams and roles', 'account'), @('WFT 08 Sharing', 'account'),
     @('WFT 09 Email', 'account'), @('WFT 10 Processes and queues', 'contact'), @('WFT 11a Sales and marketing', 'account'),
     @('WFT 11b Qualify lead', 'qualifyLead'), @('WFT 11c Case', 'case'), @('WFT 12 Settings, apps and SharePoint', 'account'),
-    @('WFT 13 External services', 'account')
+    @('WFT 13 External services', 'account'), @('WFT 14 AI', 'account'), @('WFT 15a Quotes', 'opportunity'),
+    @('WFT 15b Win quote', 'winQuote'), @('WFT 15c Quote product discount', 'quoteLine'), @('WFT 16 Utilities', 'account')
 )
 
 if ($Workflow) {
@@ -429,10 +472,9 @@ foreach ($step in $plan) {
         }
     } until ($job.statecode -eq 3 -or $job.statecode -eq 1 -or (Get-Date) -gt $deadline)
 
-    # WFT workflows it started (Execute Workflow By ID runs WFT Test) finish too, so their results are in this step's window:
-    # wait while one is ready (0) or running (2)
-    $regarding = "_regardingobjectid_value eq $($record.id) or _regardingobjectid_value eq $($account.accountid)"
-    $others = "createdon ge $since and operationtype eq 10 and startswith(name,'WFT') and asyncoperationid ne $jobId and (statecode eq 0 or statecode eq 2) and ($regarding)"
+    # WFT workflows it started (Execute Workflow By ID runs WFT Test, 16 runs WFT Test Lead on WFT Lead) finish too, so
+    # their results are in this step's window: wait while one is ready (0) or running (2)
+    $others = "createdon ge $since and operationtype eq 10 and startswith(name,'WFT') and asyncoperationid ne $jobId and (statecode eq 0 or statecode eq 2)"
 
     while ((Get-Date) -lt $deadline -and (Get-Records 'asyncoperations' "`$select=asyncoperationid&`$filter=$others").Count -gt 0) {
         Start-Sleep -Seconds 3
@@ -481,6 +523,15 @@ foreach ($leftover in Get-Records 'teams' "`$select=teamid&`$filter=name eq 'WFT
 
 foreach ($leftover in Get-Records 'lists' "`$select=listid&`$filter=createdon ge $since") {
     Invoke-Api DELETE "lists($($leftover.listid))" | Out-Null
+}
+
+# 15a's opportunity product and quote: the product would change WFT Opportunity's total (11a)
+foreach ($leftover in Get-Records 'opportunityproducts' "`$select=opportunityproductid&`$filter=_opportunityid_value eq $($opportunity.opportunityid) and createdon ge $since") {
+    Invoke-Api DELETE "opportunityproducts($($leftover.opportunityproductid))" | Out-Null
+}
+
+foreach ($leftover in Get-Records 'quotes' "`$select=quoteid&`$filter=_opportunityid_value eq $($opportunity.opportunityid) and createdon ge $since") {
+    Invoke-Api DELETE "quotes($($leftover.quoteid))" | Out-Null
 }
 
 Remove-QualifiedRecords

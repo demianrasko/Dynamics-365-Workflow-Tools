@@ -1,4 +1,4 @@
-"""The upgrade test workflows (testing\\Upgrade test workflows.md), 03b to 13.
+"""The upgrade test workflows (testing\\Upgrade test workflows.md), 03b to 16 and WFT Test Lead.
 
 Run by tools\\Publish-UpgradeTestWorkflows.ps1: python upgrade_workflows.py <input.json> <output folder>
 input.json has the org URL, the installed activities' registrations, the test records and the existing workflows' ids.
@@ -189,12 +189,71 @@ def definitions(org, r):
                                                 ('Latitude', Output(3, 'Latitude')), ('Longitude', Output(3, 'Longitude'))]),
         ]
 
+    # ---- the activities added since 1.0.61.1 --------------------------------------------------------------------
+
+    def wf14(b):
+        return [
+            b.custom(W + 'AISummarizeRecord', 'AI Summarize Record', {'RecordUrl': RecordUrl}),
+            b.custom(W + 'AISummarizeText', 'AI Summarize Text', {'TextToSummarize': Text(
+                'The customer called about a late delivery. The order left the warehouse on Monday but the carrier lost the '
+                'tracking. We sent a replacement by express and offered a 10% discount on the next order.')}),
+            b.custom(W + 'AIClassifyText', 'AI Classify Text', {'TextToClassify': Text('My invoice shows the wrong amount.'),
+                                                                'CategoriesCsv': Text('Billing,Support,Sales')}),
+            b.custom(W + 'AISentimentDetect', 'AI Sentiment Detect', {'TextToAnalyzeSentiment': Text('I love the new product, thank you!')}),
+            b.custom(W + 'AIDraftReply', 'AI Draft Reply', {'TextToReplyTo': Text('Can you send me the price list for next year?')}),
+            b.custom(W + 'AITranslateText', 'AI Translate Text', {'TextToTranslate': Text('Hello, how are you?'), 'TargetLanguage': Text('fr')}),
+            b.note('WFT 14 AI', [line for step, label, output in [
+                (1, 'Summarize Record', 'SummaryText'), (2, 'Summarize Text', 'SummaryText'), (3, 'Classify', 'TopCategory'),
+                (4, 'Sentiment', 'Sentiment'), (5, 'Draft Reply', 'ReplyText'), (6, 'Translate', 'TranslatedText')]
+                for line in [(label, Output(step, output)), (f'{label} failed', Output(step, 'Failed')), (f'{label} error', Output(step, 'FailureMessage'))]]),
+        ]
+
+    def wf15a(b):
+        return [
+            b.custom(W + 'CreateOpportunityProduct', 'Create Opportunity Product', {'Opportunity': ThisRecord(), 'ExistingProduct': Lookup(r['product']),
+                                                                                   'UoM': Lookup(r['uom']), 'Quantity': Number(3)}),
+            b.custom(W + 'CreateQuoteFromOpportunity', 'Create Quote From Opportunity', {'Opportunity': ThisRecord()}),
+            b.custom(W + 'UpdateQuoteValue', 'Update Quote Value', {'Quote': Output(2, 'Quote'), 'Discountamount': Number(5), 'Fieldname': Text('discountamount')}),
+            b.note('WFT 15a Quotes', [('Quote', OutputColumn(2, 'Quote', 'quote', 'name'))]),
+        ]
+
+    def wf15b(b):
+        return [b.custom(W + 'WinQuote', 'Win Quote', {'Quote': ThisRecord(), 'Message': Text('WFT won')}),
+                b.note('WFT 15b Win quote', [])]
+
+    # quote products have no notes, so 15c has no log note
+    def wf15c(b):
+        return [b.custom(W + 'UpdateProductQuoteValue', 'Update Product Quote Value', {'Quote': ThisRecord(), 'Discountamount': Number(1),
+                                                                                      'Fieldname': Text('manualdiscountamount')})]
+
+    # run by 16 on WFT Lead
+    def wf_test_lead(b):
+        return [b.note('WFT Test Lead ran', [])]
+
+    def wf16(b):
+        lead = Text(url(r['lead']))
+        test_lead = Lookup({'entity': 'workflow', 'id': r['workflowIds']['WFT Test Lead'], 'name': 'WFT Test Lead'})
+        leads_query = "<fetch><entity name='lead'><attribute name='leadid' /><filter><condition attribute='emailaddress1' operator='eq' value='wft-lead@example.com' /></filter></entity></fetch>"
+        return [
+            b.custom(W + 'GetEnvironmentVariable', 'Get Environment Variable', {'SchemaName': Text('new_wfttestvariable')}),
+            b.custom(W + 'GetRecordUrl', 'Get Record URL', {'ReferenceRecordUrl': RecordUrl, 'RecordId': Text(r['contact1']['id']), 'EntityName': Text('contact')}),
+            b.custom(W + 'ExecuteWorkflowForRecordsinQuery', 'Execute Workflow For Records in Query', {'Process': test_lead, 'Query': Text(leads_query)}),
+            b.custom(W + 'DistributeWFActivityOneToMany', 'Distribute Workflow 1:N', {'RelationshipName': Text('account_parent_account'), 'Workflow': Lookup(r['wftTest'])}),
+            b.custom(W + 'AssociateEntity', 'Associate WFT Lead', {'RecordURL': lead, 'RelationshipName': Text('accountleads_association'),
+                                                                  'RelationshipEntityName': Text('accountleads')}),
+            b.custom(W + 'DistributeWFActivityManyToMany', 'Distribute Workflow N:N', {'RelationshipName': Text('accountleads_association'), 'Workflow': test_lead}),
+            b.custom(W + 'DisassociateEntity', 'Disassociate WFT Lead', {'RecordURL': lead, 'RelationshipName': Text('accountleads_association')}),
+            b.note('WFT 16 Utilities', [('Variable', Output(1, 'Value')), ('Found', Output(1, 'Found')), ('Record URL', Output(2, 'RecordUrl'))]),
+        ]
+
     return [
         ('WFT 03b Clone and child records', 'account', wf03b), ('WFT 04 Status', 'account', wf04), ('WFT 05 Option sets', 'account', wf05),
         ('WFT 06 Relationships', 'account', wf06), ('WFT 07 Users, teams and roles', 'account', wf07), ('WFT 08 Sharing', 'account', wf08),
         ('WFT 09 Email', 'account', wf09), ('WFT 10 Processes and queues', 'contact', wf10), ('WFT 11a Sales and marketing', 'account', wf11a),
         ('WFT 11b Qualify lead', 'lead', wf11b), ('WFT 11c Case', 'incident', wf11c), ('WFT 12 Settings, apps and SharePoint', 'account', wf12),
         ('WFT 13 External services', 'account', wf13),
+        ('WFT 14 AI', 'account', wf14), ('WFT 15a Quotes', 'opportunity', wf15a), ('WFT 15b Win quote', 'quote', wf15b),
+        ('WFT 15c Quote product discount', 'quotedetail', wf15c), ('WFT Test Lead', 'lead', wf_test_lead), ('WFT 16 Utilities', 'account', wf16),
     ]
 
 
@@ -203,8 +262,14 @@ def main(input_file, output_folder):
     load_activities(data['activities'])
     os.makedirs(output_folder, exist_ok=True)
     manifest = []
-    for name, primary, build in definitions(data['org'], data['records']):
-        id = data['workflows'].get(name) or str(uuid.uuid4())
+    # every workflow's id, new ones too, before any is built: a step can run another of them (16 runs WFT Test Lead)
+    ids = dict(data['workflows'])
+    data['records']['workflowIds'] = ids
+    workflows = definitions(data['org'], data['records'])
+    for name, primary, build in workflows:
+        ids.setdefault(name, str(uuid.uuid4()))
+    for name, primary, build in workflows:
+        id = ids[name]
         file = os.path.join(output_folder, name + '.xaml')
         with open(file, 'w', encoding='utf-8', newline='') as f:
             f.write(workflow(id, primary, build))
