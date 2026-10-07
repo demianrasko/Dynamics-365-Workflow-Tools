@@ -6,7 +6,7 @@ NOTE: You should allways follow your ALM procedure,downloading the source Code, 
 
 To import the Solution follow these steps:
 
-* Download the ZIP file from the Releases tab (https://github.com/MitchMilam/Dynamics-365-Workflow-Tools/releases)
+* Download the ZIP file from the Releases tab (https://github.com/demianrasko/Dynamics-365-Workflow-Tools/releases)
 * Access to the Dynamics 365 (CRM) environment and navigate to Settings>Solutions
 * Click on Import and select the ZIP file
 * Follow the wizard steps
