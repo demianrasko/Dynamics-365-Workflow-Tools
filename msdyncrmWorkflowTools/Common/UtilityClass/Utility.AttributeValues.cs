@@ -132,7 +132,7 @@ namespace msdyncrmWorkflowTools
 
             foreach (var value in (existingValues ?? new OptionSetValueCollection()).Concat(newValues ?? new OptionSetValueCollection()))
             {
-                if (!merged.Any(v => v.Value == value.Value))
+                if (merged.All(v => v.Value != value.Value))
                 {
                     merged.Add(value);
                 }
@@ -158,15 +158,18 @@ namespace msdyncrmWorkflowTools
         }
 
         /// <summary>
-        /// Splits a comma-separated list of field logical names, trimming spaces and dropping empty entries.
+        /// Splits a comma-separated list, trimming spaces and dropping empty entries, in the original order. With
+        /// <paramref name="removeDuplicates"/>, a repeated entry (ignoring case) is kept once. Leave duplicates in when
+        /// entries are paired by position, as Map Multi Select OptionSet's source and target fields are.
         /// </summary>
-        public static string[] SplitAttributeNames(string attributeNames)
+        public static List<string> SplitList(string text, bool removeDuplicates = false)
         {
-            return (attributeNames ?? string.Empty)
+            var entries = (text ?? string.Empty)
                 .Split(',')
-                .Select(a => a.Trim())
-                .Where(a => a.Length > 0)
-                .ToArray();
+                .Select(e => e.Trim())
+                .Where(e => e.Length > 0);
+
+            return (removeDuplicates ? entries.Distinct(StringComparer.OrdinalIgnoreCase) : entries).ToList();
         }
 
         /// <summary>
@@ -249,20 +252,6 @@ namespace msdyncrmWorkflowTools
         }
 
         /// <summary>
-        /// Splits a comma-separated category list for AIClassify: trimmed, no empty entries, no duplicates
-        /// (ignoring case), in the original order.
-        /// </summary>
-        public static List<string> ParseCategories(string categories)
-        {
-            return (categories ?? string.Empty)
-                .Split(',')
-                .Select(c => c.Trim())
-                .Where(c => c.Length > 0)
-                .Distinct(StringComparer.OrdinalIgnoreCase)
-                .ToList();
-        }
-
-        /// <summary>
         /// The marketing list member a workflow step was given: the account, else the contact, else the lead.
         /// </summary>
         /// <exception cref="InvalidPluginExecutionException">None of them is set.</exception>
@@ -290,19 +279,10 @@ namespace msdyncrmWorkflowTools
             }
 
             var type = attribute.AttributeType ?? AttributeTypeCode.String;
+            var isEmpty = value == null || value is string text && string.IsNullOrWhiteSpace(text);
 
-            if (type == AttributeTypeCode.String || type == AttributeTypeCode.Memo)
-            {
-                return ToText(value);
-            }
-
-            if (type == AttributeTypeCode.Boolean)
-            {
-                // as before: anything but true, "true" or "1" (including no value) is No
-                return value is bool flag ? flag : IsTrue(ToText(value));
-            }
-
-            if (value == null || value is string text && string.IsNullOrWhiteSpace(text))
+            // no value clears the column; text and Yes/No columns handle it themselves
+            if (isEmpty && type != AttributeTypeCode.String && type != AttributeTypeCode.Memo && type != AttributeTypeCode.Boolean)
             {
                 return null;
             }
@@ -311,10 +291,16 @@ namespace msdyncrmWorkflowTools
             {
                 switch (type)
                 {
+                    case AttributeTypeCode.String:
+                    case AttributeTypeCode.Memo:
+                        return ToText(value);
+                    case AttributeTypeCode.Boolean:
+                        // as before: anything but true, "true" or "1" (including no value) is No
+                        return value is bool flag ? flag : IsTrue(ToText(value));
                     case AttributeTypeCode.Picklist:
                     case AttributeTypeCode.Status:
                     case AttributeTypeCode.State:
-                        return value is OptionSetValue option ? option : new OptionSetValue(Convert.ToInt32(value, CultureInfo.InvariantCulture));
+                        return value as OptionSetValue ?? new OptionSetValue(Convert.ToInt32(value, CultureInfo.InvariantCulture));
                     case AttributeTypeCode.Integer:
                         return Convert.ToInt32(Unwrap(value), CultureInfo.InvariantCulture);
                     case AttributeTypeCode.BigInt:
@@ -324,13 +310,13 @@ namespace msdyncrmWorkflowTools
                     case AttributeTypeCode.Double:
                         return Convert.ToDouble(Unwrap(value), CultureInfo.InvariantCulture);
                     case AttributeTypeCode.Money:
-                        return value is Money money ? money : new Money(Convert.ToDecimal(Unwrap(value), CultureInfo.InvariantCulture));
+                        return value as Money ?? new Money(Convert.ToDecimal(Unwrap(value), CultureInfo.InvariantCulture));
                     case AttributeTypeCode.DateTime:
                         return value is DateTime date ? date : DateTime.Parse(ToText(value), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
                     case AttributeTypeCode.Lookup:
                     case AttributeTypeCode.Customer:
                     case AttributeTypeCode.Owner:
-                        return value is EntityReference reference ? reference : ToEntityReference(ToText(value), attribute);
+                        return value as EntityReference ?? ToEntityReference(ToText(value), attribute);
                     default:
                         return value;
                 }
@@ -380,7 +366,7 @@ namespace msdyncrmWorkflowTools
 
         private static EntityReference ToEntityReference(string text, AttributeMetadata attribute)
         {
-            var targets = (attribute as LookupAttributeMetadata)?.Targets ?? new string[0];
+            var targets = (attribute as LookupAttributeMetadata)?.Targets ?? Array.Empty<string>();
 
             if (targets.Length != 1)
             {

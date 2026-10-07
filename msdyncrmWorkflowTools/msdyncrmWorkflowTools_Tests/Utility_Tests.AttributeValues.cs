@@ -89,10 +89,10 @@ namespace msdyncrmWorkflowTools_Tests
         }
 
         [TestMethod]
-        public void SplitAttributeNames_TrimsAndDropsEmptyEntries()
+        public void SplitList_TrimsAndDropsEmptyEntriesAndKeepsDuplicates()
         {
-            CollectionAssert.AreEqual(new[] { "new_colors", "new_sizes" }, Utility.SplitAttributeNames(" new_colors, ,new_sizes "));
-            Assert.AreEqual(0, Utility.SplitAttributeNames(null).Length);
+            CollectionAssert.AreEqual(new[] { "new_colors", "new_sizes", "new_colors" }, Utility.SplitList(" new_colors, ,new_sizes ,new_colors"));
+            Assert.AreEqual(0, Utility.SplitList(null).Count);
         }
 
         [TestMethod]
@@ -126,10 +126,10 @@ namespace msdyncrmWorkflowTools_Tests
         }
 
         [TestMethod]
-        public void ParseCategories_TrimsAndRemovesEmptyAndDuplicateEntries()
+        public void SplitList_RemovesDuplicatesIgnoringCase()
         {
-            CollectionAssert.AreEqual(new[] { "Billing", "support" }, Utility.ParseCategories(" Billing, ,support,Support , billing"));
-            Assert.AreEqual(0, Utility.ParseCategories(null).Count);
+            CollectionAssert.AreEqual(new[] { "Billing", "support" }, Utility.SplitList(" Billing, ,support,Support , billing", removeDuplicates: true));
+            Assert.AreEqual(0, Utility.SplitList(null, removeDuplicates: true).Count);
         }
 
         [TestMethod]

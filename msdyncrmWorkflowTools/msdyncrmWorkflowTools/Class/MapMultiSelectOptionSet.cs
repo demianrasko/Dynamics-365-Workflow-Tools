@@ -31,8 +31,8 @@ namespace msdyncrmWorkflowTools
         {
             var sourceRecordUrl = SourceRecordUrl.Get(executionContext) ?? throw new InvalidPluginExecutionException("Source URL is empty");
             var targetRecordUrl = TargetRecordUrl.Get(executionContext) ?? throw new InvalidPluginExecutionException("Target URL is empty");
-            var sourceAttributes = Utility.SplitAttributeNames(SourceAttributes.Get(executionContext) ?? throw new InvalidPluginExecutionException("Source Attributes is empty"));
-            var targetAttributes = Utility.SplitAttributeNames(TargetAttributes.Get(executionContext) ?? throw new InvalidPluginExecutionException("Target Attributes is empty"));
+            var sourceAttributes = Utility.SplitList(SourceAttributes.Get(executionContext) ?? throw new InvalidPluginExecutionException("Source Attributes is empty"));
+            var targetAttributes = Utility.SplitList(TargetAttributes.Get(executionContext) ?? throw new InvalidPluginExecutionException("Target Attributes is empty"));
 
             common.MapMultiSelectOptionSets(
                 common.GetRecordReference(sourceRecordUrl),

@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Xrm.Sdk;
 using msdyncrmWorkflowTools;
+using System.Collections.Generic;
 
 namespace msdyncrmWorkflowTools_Tests
 {
@@ -115,18 +116,22 @@ namespace msdyncrmWorkflowTools_Tests
         }
 
         [TestMethod]
-        public void GetParticipation_MapsKnownAttributes()
+        public void TryGetParticipation_MapsKnownAttributes()
         {
-            Assert.AreEqual("1", Utility.GetParticipation("from"));
-            Assert.AreEqual("2", Utility.GetParticipation("to"));
-            Assert.AreEqual("5", Utility.GetParticipation("requiredattendees"));
-            Assert.AreEqual("11", Utility.GetParticipation("customer"));
+            var expected = new Dictionary<string, int> { ["from"] = 1, ["to"] = 2, ["requiredattendees"] = 5, ["customer"] = 11 };
+
+            foreach (var attribute in expected.Keys)
+            {
+                Assert.IsTrue(Utility.TryGetParticipation(attribute, out var mask), attribute);
+                Assert.AreEqual(expected[attribute], mask, attribute);
+            }
         }
 
         [TestMethod]
-        public void GetParticipation_UnknownAttributeReturnsEmpty()
+        public void TryGetParticipation_UnknownAttributeReturnsFalse()
         {
-            Assert.AreEqual(string.Empty, Utility.GetParticipation("subject"));
+            Assert.IsFalse(Utility.TryGetParticipation("subject", out _));
+            Assert.IsFalse(Utility.TryGetParticipation(null, out _));
         }
 
         [TestMethod]

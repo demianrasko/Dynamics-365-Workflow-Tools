@@ -1,6 +1,7 @@
 ﻿using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml;
@@ -211,46 +212,25 @@ namespace msdyncrmWorkflowTools
             return sb.ToString();
         }
 
-        /// <summary>
-        /// Maps an activity party attribute name (from, to, cc, ...) to its participationtypemask value,
-        /// or returns an empty string for an unknown name.
-        /// </summary>
-        public static string GetParticipation(string attributeName)
+        private static readonly Dictionary<string, int> ParticipationTypeMasks = new Dictionary<string, int>
         {
-            var sReturn = string.Empty;
+            [AttributeNames.From] = 1,
+            [AttributeNames.To] = 2,
+            [AttributeNames.Cc] = 3,
+            [AttributeNames.Bcc] = 4,
+            [AttributeNames.RequiredAttendees] = 5,
+            [AttributeNames.OptionalAttendees] = 6,
+            [AttributeNames.Organizer] = 7,
+            [AttributeNames.Resources] = 10,
+            [AttributeNames.Customer] = 11
+        };
 
-            switch (attributeName)
-            {
-                case AttributeNames.From:
-                    sReturn = "1";
-                    break;
-                case AttributeNames.To:
-                    sReturn = "2";
-                    break;
-                case AttributeNames.Cc:
-                    sReturn = "3";
-                    break;
-                case AttributeNames.Bcc:
-                    sReturn = "4";
-                    break;
-                case AttributeNames.Organizer:
-                    sReturn = "7";
-                    break;
-                case AttributeNames.RequiredAttendees:
-                    sReturn = "5";
-                    break;
-                case AttributeNames.OptionalAttendees:
-                    sReturn = "6";
-                    break;
-                case AttributeNames.Customer:
-                    sReturn = "11";
-                    break;
-                case AttributeNames.Resources:
-                    sReturn = "10";
-                    break;
-            }
-
-            return sReturn;
+        /// <summary>
+        /// The participationtypemask of an activity party attribute (from, to, cc, ...); false for any other name.
+        /// </summary>
+        public static bool TryGetParticipation(string attributeName, out int participationTypeMask)
+        {
+            return ParticipationTypeMasks.TryGetValue(attributeName ?? string.Empty, out participationTypeMask);
         }
     }
 }

@@ -138,14 +138,12 @@ namespace msdyncrmWorkflowTools
                 {
                     var attribute2 = attribute.Replace("partylist-", string.Empty);
 
-                    var participationTypeMask = Utility.GetParticipation(attribute2);
-                    if (string.IsNullOrEmpty(participationTypeMask))
+                    if (!Utility.TryGetParticipation(attribute2, out var participationTypeMask))
                     {
                         throw new InvalidPluginExecutionException($"Unsupported party list attribute '{attribute2}'.");
                     }
 
-                    var returnCollection = Service.RetrieveMultiple(
-                        ActivityPartiesQuery(objectId, int.Parse(participationTypeMask)));
+                    var returnCollection = Service.RetrieveMultiple(ActivityPartiesQuery(objectId, participationTypeMask));
 
                     Trace($"attribute:{attribute2}");
 
@@ -278,18 +276,18 @@ namespace msdyncrmWorkflowTools
         /// <param name="target">The record to copy to.</param>
         /// <param name="targetAttributes">Target field logical names, in the same order as <paramref name="sourceAttributes"/>.</param>
         /// <param name="keepExistingValues">Add the copied values to the target's current values instead of replacing them.</param>
-        public void MapMultiSelectOptionSets(EntityReference source, string[] sourceAttributes, EntityReference target, string[] targetAttributes, bool keepExistingValues)
+        public void MapMultiSelectOptionSets(EntityReference source, IList<string> sourceAttributes, EntityReference target, IList<string> targetAttributes, bool keepExistingValues)
         {
-            if (sourceAttributes.Length != targetAttributes.Length)
+            if (sourceAttributes.Count != targetAttributes.Count)
             {
                 throw new InvalidPluginExecutionException(
-                    $"The number of source attributes ({sourceAttributes.Length}) does not match the number of target attributes ({targetAttributes.Length}).");
+                    $"The number of source attributes ({sourceAttributes.Count}) does not match the number of target attributes ({targetAttributes.Count}).");
             }
 
-            var sourceRecord = Service.Retrieve(source.LogicalName, source.Id, new ColumnSet(sourceAttributes));
+            var sourceRecord = Service.Retrieve(source.LogicalName, source.Id, new ColumnSet(sourceAttributes.ToArray()));
             var values = new Dictionary<string, OptionSetValueCollection>();
 
-            for (var i = 0; i < sourceAttributes.Length; i++)
+            for (var i = 0; i < sourceAttributes.Count; i++)
             {
                 if (sourceRecord.GetAttributeValue<object>(sourceAttributes[i]) is OptionSetValueCollection sourceValues)
                 {

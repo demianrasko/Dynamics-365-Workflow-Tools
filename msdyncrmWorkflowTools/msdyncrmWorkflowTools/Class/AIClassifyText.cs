@@ -32,7 +32,7 @@ namespace msdyncrmWorkflowTools
         protected override void ExecuteActivity(CodeActivityContext executionContext, Common common)
         {
             var text = TextToClassify.Get(executionContext);
-            var categories = Utility.ParseCategories(CategoriesCsv.Get(executionContext));
+            var categories = Utility.SplitList(CategoriesCsv.Get(executionContext), removeDuplicates: true);
 
             SetResultOrFailure(executionContext, common, () =>
             {
